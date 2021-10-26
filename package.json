@@ -1,0 +1,59 @@
+{
+  "name": "foca",
+  "version": "0.0.1",
+  "repository": "git@github.com:foca-js/foca.git",
+  "description": "Modern react state management based on redux",
+  "author": "fwh1990",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "scripts": {
+    "test": "jest",
+    "prepublishOnly": "ts-prepublish"
+  },
+  "exports": {
+    ".": {
+      "require": "./lib/index.js",
+      "import": "./es/index.js"
+    },
+    "./": "./"
+  },
+  "files": [
+    "lib",
+    "es",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "dependencies": {
+    "@types/react-redux": "^7.1.20",
+    "clone": "^2.1.2",
+    "immer": "^9.0.6",
+    "lodash.isequal": "^4.5.0",
+    "object-assign": "^4.1.1",
+    "react-redux": "^7.2.5",
+    "redux": "^4.1.1",
+    "symbol-observable": "^4.0.0",
+    "tslib": "^2.3.1"
+  },
+  "devDependencies": {
+    "@types/clone": "^2.1.1",
+    "@types/jest": "^27.0.2",
+    "@types/lodash.isequal": "^4.5.5",
+    "@types/node": "^16.11.6",
+    "@types/object-assign": "^4.0.30",
+    "docsify-cli": "^4.4.3",
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "sleep-promise": "^9.1.0",
+    "ts-jest": "^27.0.7",
+    "ts-prepublish": "^2.0.0",
+    "typescript": "^4.4.4"
+  }
+}

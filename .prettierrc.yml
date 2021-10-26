@@ -1,0 +1,16 @@
+semi: true
+singleQuote: true
+# Change when properties in objects are quoted.
+# If at least one property in an object requires quotes, quote all properties.
+quoteProps: consistent
+tabWidth: 2
+printWidth: 100
+endOfLine: lf
+trailingComma: all
+bracketSpacing: true
+# Include parentheses around a sole arrow function parameter.
+arrowParens: always
+proseWrap: preserve
+jsxSingleQuote: false
+# Put > on the last line instead of at a new line.
+jsxBracketSameLine: false
