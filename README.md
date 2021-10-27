@@ -9,13 +9,20 @@
 # 特性
 
 - 模块化开发
-- 植入 immer 快速处理状态
-- 无 typescript 不编程
-- 异步状态追踪
-- 数据持久化
+- 支持 Map/Set 数据类型
+- 内置 immer 快速处理状态
+- 异步方法自动追踪状态
+- 多功能数据持久化
+- 专注 typescript 体验
 
 # 安装
 
 ```bash
 yarn add foca
 ```
+
+# 相关库
+
+(foca-axios)[https://github.com/foca-js/foca-axios] : React/RN 请求库
+(foca-taro)[https://github.com/foca-js/foca-taro-request] : Taro 请求库/存储引擎
+(foca-graphql)[https://github.com/foca-js/foca-graphql] : Graphql 生成工具（模板 + TS）
