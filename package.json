@@ -1,6 +1,6 @@
 {
   "name": "foca",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": "git@github.com:foca-js/foca.git",
   "description": "Modern react state management based on redux",
   "author": "fwh1990",
@@ -16,6 +16,10 @@
     ".": {
       "require": "./lib/index.js",
       "import": "./es/index.js"
+    },
+    "./storages/": {
+      "require": "./lib/storages/",
+      "import": "./es/storages/"
     },
     "./": "./"
   },

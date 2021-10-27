@@ -18,4 +18,4 @@ export { connect } from './react/connect';
 export { useModel } from './hooks/useModel';
 export { useLoading } from './hooks/useLoading';
 export { Meta } from './reducers/MetaManger';
-export { PersistStorage } from './storage/PersistStorage';
+export { PersistStorage } from './store/PersistStorage';
