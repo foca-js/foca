@@ -1,6 +1,6 @@
 {
   "name": "foca",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "git@github.com:foca-js/foca.git",
   "description": "Modern react state management based on redux",
   "author": "fwh1990",
