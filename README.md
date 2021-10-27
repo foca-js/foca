@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/github/license/foca-js/foca)](https://github.com/foca-js/foca/blob/master/LICENSE)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/CI/master)](https://github.com/foca-js/foca/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca)](https://codecov.io/gh/foca-js/foca)
+[![npm](https://img.shields.io/npm/v/foca)](https://www.npmjs.com/package/foca)
 
 # 特性
 
@@ -23,6 +24,8 @@ yarn add foca
 
 # 相关库
 
-(foca-axios)[https://github.com/foca-js/foca-axios] : React/RN 请求库
-(foca-taro)[https://github.com/foca-js/foca-taro-request] : Taro 请求库/存储引擎
-(foca-graphql)[https://github.com/foca-js/foca-graphql] : Graphql 生成工具（模板 + TS）
+| 仓库                                                    | 版本                                                                                            | 描述                  |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------- |
+| [foca-axios](https://github.com/foca-js/foca-axios)     | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)     | React/RN 请求库       |
+| [foca-taro](https://github.com/foca-js/foca-taro)       | [![npm](https://img.shields.io/npm/v/foca-taro)](https://www.npmjs.com/package/foca-taro)       | Taro 请求库/存储引擎  |
+| [foca-graphql](https://github.com/foca-js/foca-graphql) | [![npm](https://img.shields.io/npm/v/foca-graphql)](https://www.npmjs.com/package/foca-graphql) | 生成动态 Graphql 模板 |
