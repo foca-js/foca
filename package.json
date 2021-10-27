@@ -9,7 +9,8 @@
   "module": "es/index.js",
   "scripts": {
     "test": "jest",
-    "prepublishOnly": "ts-prepublish"
+    "prepublishOnly": "ts-prepublish",
+    "prepare": "husky install"
   },
   "exports": {
     ".": {
@@ -46,7 +47,9 @@
     "@types/lodash.isequal": "^4.5.5",
     "@types/node": "^16.11.6",
     "@types/object-assign": "^4.0.30",
+    "commitlint": "^13.2.1",
     "docsify-cli": "^4.4.3",
+    "husky": "^7.0.0",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
     "react": "^17.0.2",
