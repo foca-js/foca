@@ -3,7 +3,7 @@ import cloneDeep from 'clone';
 import assign from 'object-assign';
 import { DispatchAction, WrapAction, wrapAction } from './ActionManager';
 import { WrapEffect, wrapEffect } from './EffectManager';
-import { store, StoreAdvanced } from '../overrides/StoreAdvanced';
+import { store, StoreAdvanced } from '../store/StoreAdvanced';
 import { ReducerManager } from '../reducers/ReducerManager';
 
 export interface GetName<Name extends string> {

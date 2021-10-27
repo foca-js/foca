@@ -3,7 +3,7 @@ import observable from 'symbol-observable';
 import { RefreshAction, ACTION_TYPE_REFRESH } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
 import type { Model } from '../model/defineModel';
-import { PersistStorage } from '../persist/PersistStorage';
+import { PersistStorage } from '../storage/PersistStorage';
 import type { ReducerManager } from '../reducers/ReducerManager';
 
 const assignStoreKeys: (keyof Store | symbol)[] = ['dispatch', 'subscribe', observable];

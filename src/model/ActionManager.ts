@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { store } from '../overrides/StoreAdvanced';
+import { store } from '../store/StoreAdvanced';
 import type { ActionCtx } from './defineModel';
 
 export interface DispatchAction<State extends object = object, Payload = object>

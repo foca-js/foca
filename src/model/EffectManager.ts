@@ -1,4 +1,4 @@
-import { store } from '../overrides/StoreAdvanced';
+import { store } from '../store/StoreAdvanced';
 import type { DispatchAction } from './ActionManager';
 import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';

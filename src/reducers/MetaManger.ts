@@ -1,5 +1,5 @@
 import { AnyAction } from 'redux';
-import { store, StoreAdvanced } from '../overrides/StoreAdvanced';
+import { store, StoreAdvanced } from '../store/StoreAdvanced';
 import { DispatchAction } from '../model/ActionManager';
 import { MetaAction } from '../model/EffectManager';
 import { ReducerManager } from './ReducerManager';

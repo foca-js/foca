@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import { ReduxContext } from './Context';
-import { store } from './StoreAdvanced';
+import { store } from '../store/StoreAdvanced';
 
 /**
  * 状态上下文组件，请挂载到入口文件。
