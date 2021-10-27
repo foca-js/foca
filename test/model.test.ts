@@ -1,5 +1,6 @@
 import { store } from '../src';
 import { basicModel } from './mock/basic-model';
+import { complexModel } from './mock/complex-model';
 
 beforeEach(() => {
   store.init({});
@@ -88,4 +89,30 @@ test.skip('Meta is unsupported for non-async effect method', () => {
   basicModel.foo.loading.valueOf();
   basicModel.foo.meta.message?.trim();
   basicModel.foo.meta.loading?.valueOf();
+});
+
+test('Support Map/Set State', () => {
+  complexModel.addUser(1, 'tom');
+  expect(complexModel.state.users.get(1)).toBe('tom');
+  expect(complexModel.state.ids.has(1)).toBeTruthy();
+
+  const map = complexModel.state.users;
+  const set = complexModel.state.ids;
+
+  complexModel.addUser(1, 'tom');
+  expect(complexModel.state.users).toBe(map);
+  expect(complexModel.state.ids).toBe(set);
+
+  complexModel.deleteUser(15);
+  expect(complexModel.state.users).toBe(map);
+  expect(complexModel.state.ids).toBe(set);
+
+  complexModel.addUser(1, 'lili');
+  expect(complexModel.state.users.get(1)).toBe('lili');
+  expect(complexModel.state.users).not.toBe(map);
+  expect(complexModel.state.ids).toBe(set);
+
+  complexModel.addUser(2, 'lili');
+  expect(complexModel.state.users).not.toBe(map);
+  expect(complexModel.state.ids).not.toBe(set);
 });
