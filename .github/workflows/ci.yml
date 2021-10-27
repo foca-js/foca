@@ -29,3 +29,16 @@ jobs:
       - name: Coverage
         uses: codecov/codecov-action@v1
         if: matrix.node-version == '14.x' && matrix.ts-version == '4.4.x' && github.ref == 'refs/heads/master'
+  publish:
+    if: "!contains(toJson(github.event.commits), '[skip ci]')"
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: yarn install
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
