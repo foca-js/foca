@@ -40,11 +40,12 @@ export interface SetState<State extends object> {
   dispatch(fn: (state: State) => State | void): AnyAction;
 }
 
-export interface ThisContext<State extends object>
+export interface ActionCtx<State extends object> extends GetName<string>, GetInitialState<State> {}
+
+export interface EffectCtx<State extends object>
   extends SetState<State>,
     GetState<State>,
-    GetInitialState<State>,
-    GetName<string> {}
+    ActionCtx<State> {}
 
 export interface BaseModel<Name extends string, State extends object>
   extends GetState<State>,
@@ -104,7 +105,7 @@ export interface DefineModelOptions<
    */
   state: State;
   /**
-   * 定义可状态的方法。参数一自动推断为state类型，支持**immer**操作。
+   * 定义修改状态的方法。参数一自动推断为state类型。支持**immer**操作。支持多参数。
    *
    * ```typescript
    * const model = defineModel('model1', {
@@ -122,9 +123,7 @@ export interface DefineModelOptions<
    * });
    * ```
    */
-  actions?: Action &
-    InternalAction<State> &
-    ThisType<ModelAction<State, Action> & Effect & ThisContext<State>>;
+  actions?: Action & InternalAction<State> & ThisType<ActionCtx<State>>;
   /**
    * 定义普通方法，异步方法等。
    * 调用effect方法时，一般会伴随异步操作（请求数据、耗时任务），框架会自动收集当前方法的调用状态。
@@ -144,7 +143,7 @@ export interface DefineModelOptions<
    * useLoading(model.foo); // TYPE: boolean
    * ```
    */
-  effects?: Effect & ThisType<ModelAction<State, Action> & Effect & ThisContext<State>>;
+  effects?: Effect & ThisType<ModelAction<State, Action> & Effect & EffectCtx<State>>;
   /**
    * 清空仓库所有数据时，是否保留该模型的数据，默认：false
    *
@@ -187,7 +186,7 @@ export const defineModel = <
 ): Model<Name, State, Action, Effect> => {
   const { state, actions, effects, keepStateFromRefresh } = options;
 
-  const ctx: ThisContext<State> = {
+  const ctx: EffectCtx<State> = {
     name,
     get state() {
       return store.getState()[name] as State;

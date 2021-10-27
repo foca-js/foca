@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { store } from '../overrides/StoreAdvanced';
-import type { ThisContext } from './defineModel';
+import type { ActionCtx } from './defineModel';
 
 export interface DispatchAction<State extends object = object, Payload = object>
   extends Action<string> {
@@ -14,7 +14,7 @@ export class ActionManager<State extends object> {
   protected readonly actionType: string;
 
   constructor(
-    protected ctx: ThisContext<State>,
+    protected ctx: ActionCtx<State>,
     protected actionName: string,
     protected fn: (state: State, ...args: any[]) => any,
   ) {
@@ -45,7 +45,7 @@ export interface WrapAction<State extends object> {
 const slice = Array.prototype.slice;
 
 export const wrapAction = <State extends object>(
-  ctx: ThisContext<State>,
+  ctx: ActionCtx<State>,
   actionName: string,
   action: (state: State, ...args: any[]) => any,
 ): WrapAction<State> => {

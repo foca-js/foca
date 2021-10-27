@@ -18,21 +18,13 @@ export const basicModel = defineModel('basic', {
     minus(state, step: number) {
       state.count -= step;
     },
-    plus_minus(state) {
-      state.count += 1;
-      queueMicrotask(() => {
-        this.dispatch((state) => {
-          state.count -= 1;
-        });
-      });
-    },
     moreParams(state, step: number, hello: string) {
       state.count += step;
       state.hello += ', ' + hello;
     },
-    // reset() {
-    //   return this.initialState;
-    // },
+    reset() {
+      return this.initialState;
+    },
   },
   effects: {
     async foo(hello: string, step: number) {
@@ -49,7 +41,7 @@ export const basicModel = defineModel('basic', {
       return this.foo('', 100);
     },
     async bos() {
-      return this.plus_minus();
+      return this.plus(4);
     },
     async hasError() {
       throw new Error('my-test');

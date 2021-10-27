@@ -35,4 +35,19 @@ test('Clone model with same name is invalid', () => {
   expect(() => cloneModel(basicModel.name, basicModel)).toThrowError(DuplicateModelError);
 });
 
-test.todo('Reset cloned model state');
+test('Reset cloned model state', () => {
+  const model = cloneModel('model' + ++modelIndex, basicModel, {
+    state: {
+      count: 20,
+      hello: 'cat',
+    },
+  });
+
+  model.moreParams(3, 'earth');
+  expect(model.state.count).toBe(23);
+  expect(model.state.hello).toBe('cat, earth');
+
+  model.reset();
+  expect(model.state.count).toBe(20);
+  expect(model.state.hello).toBe('cat');
+});

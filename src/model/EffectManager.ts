@@ -1,6 +1,6 @@
 import { store } from '../overrides/StoreAdvanced';
 import type { DispatchAction } from './ActionManager';
-import type { ThisContext } from './defineModel';
+import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
 import { Meta, MetaStateItem } from '../reducers/MetaManger';
 import { metaManager } from '../reducers/MetaManger';
@@ -14,7 +14,7 @@ export class EffectManager<State extends object> {
   protected readonly uniqueKey: string;
 
   constructor(
-    protected ctx: ThisContext<State>,
+    protected ctx: EffectCtx<State>,
     protected methodName: string,
     protected fn: (...args: any[]) => any,
   ) {
@@ -89,7 +89,7 @@ export type WrapEffect<
 const slice = Array.prototype.slice;
 
 export const wrapEffect = <State extends object>(
-  ctx: ThisContext<State>,
+  ctx: EffectCtx<State>,
   key: string,
   effect: (...args: any[]) => any,
 ): WrapEffect<State> => {

@@ -1,4 +1,3 @@
-import sleep from 'sleep-promise';
 import { store } from '../src';
 import { basicModel } from './mock/basic-model';
 
@@ -14,7 +13,15 @@ test('Model name', () => {
   expect(basicModel.name).toBe('basic');
 });
 
-test.todo('Reset model state');
+test('Reset model state', () => {
+  basicModel.moreParams(3, 'earth');
+  expect(basicModel.state.count).toBe(3);
+  expect(basicModel.state.hello).toBe('world, earth');
+
+  basicModel.reset();
+  expect(basicModel.state.count).toBe(0);
+  expect(basicModel.state.hello).toBe('world');
+});
 
 test('Call action', () => {
   expect(basicModel.state.count).toBe(0);
@@ -36,16 +43,6 @@ test('call action with multiple parameters', () => {
   basicModel.moreParams(13, 'timi');
   expect(basicModel.state.count).toBe(13);
   expect(basicModel.state.hello).toBe('world, timi');
-});
-
-test('Call action in action', async () => {
-  expect(basicModel.state.count).toBe(0);
-
-  basicModel.plus_minus();
-  expect(basicModel.state.count).toBe(1);
-
-  await sleep(50);
-  expect(basicModel.state.count).toBe(0);
 });
 
 test('Set state in effect method', async () => {
