@@ -2,9 +2,9 @@
 
 基于 redux 的现代化 react 状态管理库。
 
-[![License](https://img.shields.io/github/license/focs-js/foca)](https://github.com/focs-js/foca/blob/master/LICENSE)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/focs-js/foca/CI/master)](https://github.com/focs-js/foca/actions)
-[![Codecov](https://img.shields.io/codecov/c/github/focs-js/foca)](https://codecov.io/gh/focs-js/foca)
+[![License](https://img.shields.io/github/license/foca-js/foca)](https://github.com/foca-js/foca/blob/master/LICENSE)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/CI/master)](https://github.com/foca-js/foca/actions)
+[![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca)](https://codecov.io/gh/foca-js/foca)
 
 # 特性
 
