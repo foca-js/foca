@@ -3,7 +3,7 @@ import observable from 'symbol-observable';
 import { RefreshAction, ACTION_TYPE_REFRESH } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
 import type { Model } from '../model/defineModel';
-import { PersistStorage } from './PersistStorage';
+import { PersistEngine } from '../storages/PersistEngine';
 import type { ReducerManager } from '../reducers/ReducerManager';
 
 const assignStoreKeys: (keyof Store | symbol)[] = ['dispatch', 'subscribe', observable];
@@ -12,10 +12,22 @@ interface CreateStoreOptions {
   compose?: 'default' | 'redux-devtools' | typeof compose;
   middleware?: Middleware[];
   persist?: Array<{
-    version: string | number;
+    /**
+     * 存储标识名称
+     */
     key: string;
-    storage: PersistStorage;
-    allowlist: Model<any, any, any, any>[];
+    /**
+     * 版本号
+     */
+    version: string | number;
+    /**
+     * 存储引擎
+     */
+    engine: PersistEngine;
+    /**
+     * 允许同步的模型列表
+     */
+    models: Model<any, any, any, any>[];
   }>;
 }
 

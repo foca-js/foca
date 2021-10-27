@@ -17,10 +17,6 @@
       "require": "./lib/index.js",
       "import": "./es/index.js"
     },
-    "./storages/": {
-      "require": "./lib/storages/",
-      "import": "./es/storages/"
-    },
     "./": "./"
   },
   "files": [

@@ -1,8 +1,8 @@
-import { PersistStorage } from '../store/PersistStorage';
+import { PersistEngine } from './PersistEngine';
 
-const cache: Record<string, string> = {};
+let cache: Record<string, string> = {};
 
-const memory: PersistStorage = {
+export const memory: PersistEngine = {
   getItem(key) {
     return Promise.resolve(cache[key] === undefined ? null : cache[key]!);
   },
@@ -10,6 +10,8 @@ const memory: PersistStorage = {
     cache[key] = value;
     return Promise.resolve();
   },
+  clear() {
+    cache = {};
+    return Promise.resolve();
+  },
 };
-
-export default memory;

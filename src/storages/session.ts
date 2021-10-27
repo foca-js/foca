@@ -1,12 +1,15 @@
-import { PersistStorage } from '../store/PersistStorage';
+import { PersistEngine } from './PersistEngine';
 
-const session: PersistStorage = {
+export const session: PersistEngine = {
   getItem(key) {
     return Promise.resolve(sessionStorage.getItem(key));
   },
   setItem(key, value) {
-    return Promise.resolve(sessionStorage.setItem(key, value));
+    sessionStorage.setItem(key, value);
+    return Promise.resolve();
+  },
+  clear() {
+    sessionStorage.clear();
+    return Promise.resolve(void 0);
   },
 };
-
-export default session;
