@@ -1,6 +1,6 @@
 import { StorageEngine } from './StorageEngine';
 
-let cache: Record<string, string> = {};
+let cache: Partial<Record<string, string>> = {};
 
 export const memory: StorageEngine = {
   getItem(key) {
@@ -8,6 +8,10 @@ export const memory: StorageEngine = {
   },
   setItem(key, value) {
     cache[key] = value;
+    return Promise.resolve();
+  },
+  removeItem(key) {
+    cache[key] = undefined;
     return Promise.resolve();
   },
   clear() {

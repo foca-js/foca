@@ -8,6 +8,10 @@ export const local: StorageEngine = {
     localStorage.setItem(key, value);
     return Promise.resolve();
   },
+  removeItem(key) {
+    localStorage.removeItem(key);
+    return Promise.resolve();
+  },
   clear() {
     localStorage.clear();
     return Promise.resolve();

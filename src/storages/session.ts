@@ -8,6 +8,10 @@ export const session: StorageEngine = {
     sessionStorage.setItem(key, value);
     return Promise.resolve();
   },
+  removeItem(key) {
+    sessionStorage.removeItem(key);
+    return Promise.resolve();
+  },
   clear() {
     sessionStorage.clear();
     return Promise.resolve(void 0);
