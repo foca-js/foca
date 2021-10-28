@@ -1,6 +1,6 @@
-import { PersistEngine } from './PersistEngine';
+import { StorageEngine } from './StorageEngine';
 
-export const session: PersistEngine = {
+export const session: StorageEngine = {
   getItem(key) {
     return Promise.resolve(sessionStorage.getItem(key));
   },

@@ -3,7 +3,7 @@ import observable from 'symbol-observable';
 import { RefreshAction, ACTION_TYPE_REFRESH } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
 import type { Model } from '../model/defineModel';
-import { PersistEngine } from '../storages/PersistEngine';
+import { StorageEngine } from '../storages/StorageEngine';
 import type { ReducerManager } from '../reducers/ReducerManager';
 
 const assignStoreKeys: (keyof Store | symbol)[] = ['dispatch', 'subscribe', observable];
@@ -23,7 +23,7 @@ interface CreateStoreOptions {
     /**
      * 存储引擎
      */
-    engine: PersistEngine;
+    engine: StorageEngine;
     /**
      * 允许同步的模型列表
      */

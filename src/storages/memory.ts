@@ -1,8 +1,8 @@
-import { PersistEngine } from './PersistEngine';
+import { StorageEngine } from './StorageEngine';
 
 let cache: Record<string, string> = {};
 
-export const memory: PersistEngine = {
+export const memory: StorageEngine = {
   getItem(key) {
     return Promise.resolve(cache[key] === undefined ? null : cache[key]!);
   },

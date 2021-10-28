@@ -1,6 +1,6 @@
-import { PersistEngine } from './PersistEngine';
+import { StorageEngine } from './StorageEngine';
 
-export const local: PersistEngine = {
+export const local: StorageEngine = {
   getItem(key) {
     return Promise.resolve(localStorage.getItem(key));
   },
