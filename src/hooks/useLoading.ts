@@ -1,8 +1,8 @@
-import { WrapEffect } from '../model/EffectManager';
+import { AsyncEffect } from '../model/EffectManager';
 import { metaManager } from '../reducers/MetaManger';
-import { useSelector } from './useSelector';
+import { useCustomSelector } from './useCustomSelector';
 
-type Effect = WrapEffect;
+type PromiseEffect = AsyncEffect;
 
 /**
  * 检测给定的effect方法中是否有正在请求的。支持多个方法同时传入。
@@ -13,8 +13,8 @@ type Effect = WrapEffect;
  * ```
  *
  */
-export const useLoading = (effect: Effect, ...more: Effect[]): boolean => {
-  return useSelector(() => {
+export const useLoading = (effect: PromiseEffect, ...more: PromiseEffect[]): boolean => {
+  return useCustomSelector(() => {
     return more.concat(effect).some((wrapper) => {
       return (
         wrapper &&

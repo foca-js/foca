@@ -17,6 +17,7 @@ export { ReduxProvider } from './react/Provider';
 export { connect } from './react/connect';
 export { useModel } from './hooks/useModel';
 export { useLoading } from './hooks/useLoading';
+export { useMeta } from './hooks/useMeta';
 export { Meta } from './reducers/MetaManger';
 export { PersistEngine as PersistStorage } from './storages/PersistEngine';
 export { engine } from './storages';

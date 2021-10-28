@@ -1,4 +1,5 @@
-import { store } from '../src';
+import { store, useLoading, useModel, useMeta } from '../src';
+import { EffectError } from '../src/exceptions/EffectError';
 import { basicModel } from './mock/basic-model';
 import { complexModel } from './mock/complex-model';
 
@@ -78,6 +79,15 @@ test('Collect error message for effect method', async () => {
   expect(basicModel.hasError.meta.message).toBe('my-test');
 });
 
+test('More info will be stored from EffectError', async () => {
+  expect(basicModel.hasEffectError.meta).not.toHaveProperty('hello');
+
+  await expect(basicModel.hasEffectError()).rejects.toThrowError(EffectError);
+
+  expect(basicModel.hasEffectError.meta.message).toBe('next-test');
+  expect(basicModel.hasEffectError.meta).toHaveProperty('hello', 'world');
+});
+
 test.skip('Meta is unsupported for non-async effect method', () => {
   // @ts-expect-error
   basicModel.normalMethod.loading;
@@ -89,6 +99,57 @@ test.skip('Meta is unsupported for non-async effect method', () => {
   basicModel.foo.loading.valueOf();
   basicModel.foo.meta.message?.trim();
   basicModel.foo.meta.loading?.valueOf();
+});
+
+test.skip('hook useMeta', () => {
+  const basic = useModel(basicModel);
+  basic.count.toFixed();
+  basic.hello.trim();
+  // @ts-expect-error
+  basic.notExist;
+
+  const count = useModel(basicModel, (state) => state.count);
+  count.toFixed();
+  // @ts-expect-error
+  count.trim();
+
+  const obj = useModel(basicModel, complexModel);
+  obj.basic.count.toFixed();
+  obj.complex.ids.entries();
+  // @ts-expect-error
+  obj.notExists;
+
+  const hello = useModel(
+    basicModel,
+    complexModel,
+    (basic, complex) => basic.hello + complex.ids.size,
+  );
+
+  hello.trim();
+  // @ts-expect-error
+  hello.toFixed();
+});
+
+test.skip('hook useLoading', () => {
+  useLoading(basicModel.bar).valueOf();
+  useLoading(basicModel.foo, basicModel.bar).valueOf();
+  // @ts-expect-error
+  useLoading(basicModel.minus);
+  // @ts-expect-error
+  useLoading(basicModel);
+  // @ts-expect-error
+  useLoading({});
+});
+
+test.skip('hook useMeta', () => {
+  const meta = useMeta(basicModel.bar);
+  meta.message?.trim();
+  meta.loading?.valueOf();
+  // @ts-expect-error
+  meta.message?.toFixed();
+
+  // @ts-expect-error
+  useMeta(basicModel.plus);
 });
 
 test('Support Map/Set State', () => {

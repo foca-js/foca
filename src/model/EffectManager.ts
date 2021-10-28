@@ -52,7 +52,7 @@ export class EffectManager<State extends object> {
   }
 
   dispatchStatus(status: '->' | 'ok' | 'fail', loading: boolean, meta?: Meta) {
-    const action: MetaAction = {
+    store.dispatch<MetaAction>({
       type: this.uniqueKey + ' ' + status,
       model: this.ctx.name,
       method: this.methodName,
@@ -61,10 +61,23 @@ export class EffectManager<State extends object> {
         loading,
         ...meta,
       },
-    };
-
-    store.dispatch(action);
+    });
   }
+}
+
+export interface AsyncEffect<
+  State extends object = object,
+  P extends any[] = any[],
+  R = Promise<any>,
+> {
+  (...args: P): R;
+  loading: boolean;
+  meta: Partial<MetaStateItem>;
+  $$: {
+    model: string;
+    method: string;
+    effect: EffectManager<State>;
+  };
 }
 
 export type WrapEffect<
@@ -72,16 +85,7 @@ export type WrapEffect<
   P extends any[] = any[],
   R = Promise<any>,
 > = R extends Promise<any>
-  ? {
-      (...args: P): R;
-      loading: boolean;
-      meta: Partial<MetaStateItem>;
-      $$: {
-        model: string;
-        method: string;
-        effect: EffectManager<State>;
-      };
-    }
+  ? AsyncEffect<State, P, R>
   : {
       (...args: P): R;
     };

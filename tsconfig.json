@@ -9,6 +9,7 @@
     "outDir": "./build",
     "rootDir": ".",
     "importHelpers": true,
+    "jsx": "react",
 
     "strict": true,
     "noImplicitAny": true,
@@ -29,7 +30,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
 
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitOverride": true,
     "useUnknownInCatchVariables": true

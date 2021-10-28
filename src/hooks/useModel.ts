@@ -1,6 +1,6 @@
 import isEqual from 'lodash.isequal';
 import { Model } from '../model/defineModel';
-import { useSelector } from './useSelector';
+import { useCustomSelector } from './useCustomSelector';
 
 /**
  * * 获取模型的状态数据。
@@ -167,7 +167,7 @@ export function useModel(...args: any[]): any {
   const selector: Function | undefined =
     typeof args[args.length - 1] === 'function' ? args.pop() : void 0;
 
-  useSelector((state) => {
+  return useCustomSelector((state) => {
     if (selector) {
       return selector.apply(
         null,

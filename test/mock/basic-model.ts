@@ -1,5 +1,6 @@
 import sleep from 'sleep-promise';
 import { defineModel } from '../../src';
+import { EffectError } from '../../src/exceptions/EffectError';
 
 interface State {
   count: number;
@@ -45,6 +46,20 @@ export const basicModel = defineModel('basic', {
     },
     async hasError() {
       throw new Error('my-test');
+    },
+    async hasEffectError() {
+      throw new EffectError(
+        Object.assign(
+          { message: 'next-test' },
+          {
+            hello: 'world',
+          },
+        ),
+      );
+    },
+    async pureAsync() {
+      await sleep(300);
+      return 'OK';
     },
     normalMethod() {
       return 'YES';

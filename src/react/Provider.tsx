@@ -1,3 +1,4 @@
+import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { ReduxContext } from './Context';
 import { store } from '../store/StoreAdvanced';
@@ -16,9 +17,6 @@ import { store } from '../store/StoreAdvanced';
  * );
  * ```
  */
-export class ReduxProvider extends Provider {
-  static defaultProps = {
-    context: ReduxContext,
-    store: store,
-  };
-}
+export const ReduxProvider: FC = ({ children }) => {
+  return <Provider context={ReduxContext} store={store} children={children} />;
+};

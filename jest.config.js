@@ -4,7 +4,7 @@ module.exports = {
   bail: true,
   collectCoverage: true,
   coverageReporters: ['text-summary', 'lcov'],
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts?(x)'],
   verbose: true,
-  testMatch: ['<rootDir>/test/**/*.test.ts'],
+  testMatch: ['<rootDir>/test/**/*.test.ts?(x)'],
 };
