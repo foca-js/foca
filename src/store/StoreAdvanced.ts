@@ -1,9 +1,9 @@
+import { StorageEngine } from 'foca-storage-engine';
 import { applyMiddleware, compose, createStore, Middleware, Reducer, Store } from 'redux';
 import observable from 'symbol-observable';
 import { RefreshAction, ACTION_TYPE_REFRESH } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
 import type { Model } from '../model/defineModel';
-import { StorageEngine } from '../storages/StorageEngine';
 import type { ReducerManager } from '../reducers/ReducerManager';
 
 const assignStoreKeys: (keyof Store | symbol)[] = ['dispatch', 'subscribe', observable];

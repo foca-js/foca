@@ -1,6 +1,6 @@
 {
   "name": "foca",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "repository": "git@github.com:foca-js/foca.git",
   "description": "Modern react state management based on redux",
   "author": "fwh1990",
@@ -33,6 +33,7 @@
   "dependencies": {
     "@types/react-redux": "^7.1.20",
     "clone": "^2.1.2",
+    "foca-storage-engine": "^0.0.1",
     "immer": "^9.0.6",
     "lodash.isequal": "^4.5.0",
     "object-assign": "^4.1.1",
