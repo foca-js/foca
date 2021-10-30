@@ -1,7 +1,6 @@
 import { FC } from 'hoist-non-react-statics/node_modules/@types/react';
 import React from 'react';
 import { act, create } from 'react-test-renderer';
-import sleep from 'sleep-promise';
 import { ReduxProvider, store } from '../src';
 import { AppFC } from './mock/AppFC';
 import { basicModel } from './mock/basic-model';
@@ -57,20 +56,25 @@ test('useLoading', async () => {
   expect(loading1.children[0]).toBe('false');
   expect(loading2.children[0]).toBe('false');
 
-  await act(async () => {
-    const promise = basicModel.pureAsync();
+  let promise!: Promise<any>;
 
-    await sleep(1);
+  act(() => {
+    promise = basicModel.pureAsync();
     dom.update(<Root />);
-    expect(loading1.children[0]).toBe('true');
-    expect(loading2.children[0]).toBe('true');
+  });
 
+  expect(loading1.children[0]).toBe('true');
+  expect(loading2.children[0]).toBe('true');
+
+  await act(async () => {
     await promise;
     dom.update(<Root />);
   });
 
   expect(loading1.children[0]).toBe('false');
   expect(loading2.children[0]).toBe('false');
+
+  dom.unmount();
 });
 
 test('useMeta', async () => {
@@ -87,4 +91,6 @@ test('useMeta', async () => {
   });
 
   expect(message.children[0]).toBe('my-test');
+
+  dom.unmount();
 });
