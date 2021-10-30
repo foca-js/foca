@@ -1,6 +1,6 @@
 import { cloneModel, store } from '../src';
 import { DuplicateModelError } from '../src/exceptions/DuplicateModelError';
-import { basicModel } from './mock/basic-model';
+import { basicModel } from './models/basic-model';
 
 let modelIndex = 0;
 

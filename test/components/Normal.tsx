@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useLoading, useMeta, useModel } from '../../src';
-import { basicModel } from './basic-model';
-import { complexModel } from './complex-model';
+import { basicModel } from '../models/basic-model';
+import { complexModel } from '../models/complex-model';
 
 export const AppFC: FC = () => {
   const count1 = useModel(basicModel).count;

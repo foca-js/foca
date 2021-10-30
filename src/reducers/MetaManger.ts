@@ -33,7 +33,7 @@ interface HydrateMetaAction extends DispatchAction {
 }
 
 class MetaManager extends ReducerManager<State> {
-  protected stash: Stash;
+  protected stash: Stash = {};
   protected status: Record<string, Status> = {};
 
   constructor() {
@@ -42,8 +42,6 @@ class MetaManager extends ReducerManager<State> {
       initial: {},
       keepStateFromRefresh: false,
     });
-
-    this.stash = {};
   }
 
   public getMeta(model: string, method: string): Partial<MetaStateItem> {
@@ -122,6 +120,7 @@ class MetaManager extends ReducerManager<State> {
 
     if (this.isRefreshAction(action)) {
       this.stash = {};
+      this.status = {};
       return this.initial;
     }
 
