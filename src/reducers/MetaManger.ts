@@ -12,15 +12,12 @@ export interface MetaStateItem extends Meta {
   loading: boolean;
 }
 
-const USED_FLAG = 'meta-used';
-const ACTION_TYPE_RESTORE_META = '@@meta/restore';
+const ACTION_TYPE_HYDRATE_META = '@@meta.hydrate';
 
-interface MetaStash {
-  [model: string]:
-    | {
-        [method: string]: MetaStateItem | typeof USED_FLAG | undefined;
-      }
-    | undefined;
+type Status = 'untracked' | 'pending' | 'using';
+
+interface Stash {
+  [model_method: string]: MetaStateItem | undefined;
 }
 
 interface State {
@@ -29,16 +26,15 @@ interface State {
   };
 }
 
-interface RestoreMetaAction extends DispatchAction {
-  type: typeof ACTION_TYPE_RESTORE_META;
+interface HydrateMetaAction extends DispatchAction {
+  type: typeof ACTION_TYPE_HYDRATE_META;
   model: string;
   method: string;
 }
 
 class MetaManager extends ReducerManager<State> {
-  // All metas will be stored here before user need them.
-  protected stash: MetaStash;
-  protected pending: Record<string, boolean> = {};
+  protected stash: Stash;
+  protected status: Record<string, Status> = {};
 
   constructor() {
     super({
@@ -51,26 +47,35 @@ class MetaManager extends ReducerManager<State> {
   }
 
   public getMeta(model: string, method: string): Partial<MetaStateItem> {
-    const stashValue = this.getStash(model, method);
-    let meta: MetaStateItem | undefined = store.getState()[this.name]?.[model]?.[method];
+    let meta: MetaStateItem | undefined;
 
-    if (!meta && stashValue && stashValue !== USED_FLAG) {
-      // Using micro task to dispatch as soon as possible.
+    switch (this.getStatus(model, method)) {
+      case 'untracked':
+        meta = this.getStash(model, method);
 
-      if (!this.isPending(model, method)) {
-        this.setPending(model, method);
-
-        Promise.resolve().then(() => {
-          store.dispatch<RestoreMetaAction>({
-            type: ACTION_TYPE_RESTORE_META,
-            model,
-            method,
-            payload: {},
+        if (meta) {
+          this.setStatus(model, method, 'pending');
+          // Using micro task to dispatch as soon as possible.
+          Promise.resolve().then(() => {
+            store.dispatch<HydrateMetaAction>({
+              type: ACTION_TYPE_HYDRATE_META,
+              model,
+              method,
+              payload: {},
+            });
           });
-        });
-      }
+        } else {
+          this.setStatus(model, method, 'using');
+        }
 
-      meta = stashValue;
+        break;
+      case 'pending':
+        meta = this.getStash(model, method);
+        break;
+      case 'using':
+        const metas: State = store.getState()[this.name];
+        meta = metas && metas[model] && metas[model]![method];
+        break;
     }
 
     return meta || {};
@@ -81,30 +86,10 @@ class MetaManager extends ReducerManager<State> {
       return this.initial;
     }
 
-    if (this.isRestoreMeta(action)) {
-      const { model, method } = action;
-      const stashValue = this.getStash(model, method);
-
-      this.setStash(model, method, USED_FLAG);
-
-      if (!stashValue || stashValue === USED_FLAG) {
-        return state;
-      }
-
-      return {
-        ...state,
-        [model]: {
-          ...state[model],
-          [method]: stashValue,
-        },
-      };
-    }
-
     if (this.isMetaAction(action)) {
       const { model, method, payload } = action;
-      const stashValue = this.getStash(model, method);
 
-      if (stashValue === USED_FLAG) {
+      if (this.getStatus(model, method) === 'using') {
         return {
           ...state,
           [model]: {
@@ -117,6 +102,24 @@ class MetaManager extends ReducerManager<State> {
       return this.setStash(model, method, payload), state;
     }
 
+    if (this.isRestoreMeta(action)) {
+      const { model, method } = action;
+      const stash = this.getStash(model, method);
+
+      this.setStatus(model, method, 'using');
+      this.setStash(model, method, undefined);
+
+      return stash
+        ? {
+            ...state,
+            [model]: {
+              ...state[model],
+              [method]: stash,
+            },
+          }
+        : state;
+    }
+
     if (this.isRefreshAction(action)) {
       this.stash = {};
       return this.initial;
@@ -125,28 +128,28 @@ class MetaManager extends ReducerManager<State> {
     return state;
   }
 
-  protected isPending(model: string, method: string): boolean {
-    return this.pending[model + '|' + method] === true;
+  protected getStatus(model: string, method: string): Status {
+    return this.status[model + '|' + method] || 'untracked';
   }
 
-  protected setPending(model: string, method: string) {
-    this.pending[model + '|' + method] = true;
+  protected setStatus(model: string, method: string, status: Status) {
+    this.status[model + '|' + method] = status;
   }
 
-  protected getStash(model: string, method: string): MetaStateItem | typeof USED_FLAG | undefined {
-    return this.stash[model] && this.stash[model]![method];
+  protected getStash(model: string, method: string): MetaStateItem | undefined {
+    return this.stash[model + '|' + method];
   }
 
-  protected setStash(model: string, method: string, value: MetaStateItem | typeof USED_FLAG) {
-    (this.stash[model] ||= {})[method] = value;
+  protected setStash(model: string, method: string, value: MetaStateItem | undefined) {
+    this.stash[model + '|' + method] = value;
   }
 
-  protected isRestoreMeta(action: AnyAction): action is RestoreMetaAction {
-    return action.type === ACTION_TYPE_RESTORE_META;
+  protected isRestoreMeta(action: AnyAction): action is HydrateMetaAction {
+    return action.type === ACTION_TYPE_HYDRATE_META;
   }
 
   protected isMetaAction(action: AnyAction): action is MetaAction {
-    return (action as MetaAction).meta === true;
+    return (action as MetaAction).setMeta === true;
   }
 }
 

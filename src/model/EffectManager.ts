@@ -7,7 +7,7 @@ import { metaManager } from '../reducers/MetaManger';
 import { isPromise } from '../utils/isPromise';
 
 export interface MetaAction extends DispatchAction<object, MetaStateItem> {
-  meta: true;
+  setMeta: true;
 }
 
 export class EffectManager<State extends object> {
@@ -55,7 +55,7 @@ export class EffectManager<State extends object> {
       type: this.uniqueKey + ' ' + status,
       model: this.ctx.name,
       method: this.methodName,
-      meta: true,
+      setMeta: true,
       payload: {
         loading,
         ...meta,
