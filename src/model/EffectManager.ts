@@ -18,7 +18,7 @@ export class EffectManager<State extends object> {
     protected methodName: string,
     protected fn: (...args: any[]) => any,
   ) {
-    this.uniqueKey = ctx.name + '_' + methodName;
+    this.uniqueKey = ctx.name + '.' + methodName;
   }
 
   execute(args: any[]) {
@@ -28,7 +28,7 @@ export class EffectManager<State extends object> {
       return mayBePromise;
     }
 
-    this.dispatchStatus('->', true);
+    this.dispatchStatus('-', true);
 
     return mayBePromise
       .then((result) => {
@@ -46,12 +46,11 @@ export class EffectManager<State extends object> {
               },
         );
 
-        // listen-catch?
         throw e;
       });
   }
 
-  dispatchStatus(status: '->' | 'ok' | 'fail', loading: boolean, meta?: Meta) {
+  dispatchStatus(status: '-' | 'ok' | 'fail', loading: boolean, meta?: Meta) {
     store.dispatch<MetaAction>({
       type: this.uniqueKey + ' ' + status,
       model: this.ctx.name,
@@ -71,26 +70,30 @@ export interface AsyncEffect<
   R = Promise<any>,
 > {
   (...args: P): R;
-  loading: boolean;
-  meta: Partial<MetaStateItem>;
-  $$: {
-    model: string;
-    method: string;
-    effect: EffectManager<State>;
+  readonly loading: boolean;
+  readonly meta: Partial<MetaStateItem>;
+  readonly $$: {
+    readonly model: string;
+    readonly method: string;
+    readonly effect: EffectManager<State>;
   };
+}
+
+interface SyncEffect<P extends any[] = any[], R = Promise<any>> {
+  (...args: P): R;
 }
 
 export type WrapEffect<
   State extends object = object,
   P extends any[] = any[],
   R = Promise<any>,
-> = R extends Promise<any>
-  ? AsyncEffect<State, P, R>
-  : {
-      (...args: P): R;
-    };
+> = R extends Promise<any> ? AsyncEffect<State, P, R> : SyncEffect<P, R>;
 
 const slice = Array.prototype.slice;
+
+type NonReadonly<T extends object> = {
+  -readonly [K in keyof T]: T[K];
+};
 
 export const wrapEffect = <State extends object>(
   ctx: EffectCtx<State>,
@@ -98,7 +101,7 @@ export const wrapEffect = <State extends object>(
   effect: (...args: any[]) => any,
 ): WrapEffect<State> => {
   const manager = new EffectManager(ctx, key, effect);
-  const fn: WrapEffect<State> = function () {
+  const fn: NonReadonly<WrapEffect<State>> & SyncEffect = function () {
     return manager.execute.call(manager, slice.call(arguments));
   };
 
