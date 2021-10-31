@@ -1,8 +1,12 @@
-### [0.1.1](https://github.com/foca-js/foca/compare/v0.1.0...v0.1.1) &nbsp;&nbsp;<small>2021-03-06</small>
+## [0.1.1](https://github.com/foca-js/foca/compare/v0.1.0...v0.1.1)
+
+#### 2021-10-31
 
 - 存储引擎放回当前库
 
-### [0.1.0](https://github.com/foca-js/foca/compare) &nbsp;&nbsp;<small>2021-03-06</small>
+## [0.1.0](https://github.com/foca-js/foca/compare)
+
+#### 2021-10-31
 
 - 模块化
 - 持久化
