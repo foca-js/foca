@@ -1,8 +1,15 @@
 {
   "name": "foca",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "repository": "git@github.com:foca-js/foca.git",
-  "description": "Modern react state management based on redux",
+  "keywords": [
+    "redux",
+    "redux-model",
+    "redux-typescript",
+    "react-redux",
+    "react-model"
+  ],
+  "description": "基于redux的现代化react状态管理库",
   "author": "fwh1990",
   "license": "MIT",
   "main": "lib/index.js",
