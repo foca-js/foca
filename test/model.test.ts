@@ -3,11 +3,11 @@ import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
 
 beforeEach(() => {
-  store.init({});
+  store.init();
 });
 
 afterEach(() => {
-  store.refresh(true);
+  store.unmount();
 });
 
 test('Model name', () => {

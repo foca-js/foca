@@ -1,9 +1,11 @@
 import React, { FC } from 'react';
-import { useLoading, useMeta, useModel } from '../../src';
+import { connect, useLoading, useMeta, useModel } from '../../src';
 import { basicModel } from '../models/basic-model';
 import { complexModel } from '../models/complex-model';
 
-export const AppFC: FC = () => {
+type Props = ReturnType<typeof mapStateToProps>;
+
+const App: FC<Props> = ({ countFromConnect }) => {
   const count1 = useModel(basicModel).count;
   const count2 = useModel(basicModel, (state) => state.count);
   const state1 = useModel(basicModel, complexModel);
@@ -21,6 +23,15 @@ export const AppFC: FC = () => {
       <div id="loading1">{String(loading1)}</div>
       <div id="loading2">{String(loading2)}</div>
       <div id="message">{message}</div>
+      <div id="countFromConnect">{countFromConnect}</div>
     </>
   );
 };
+
+const mapStateToProps = () => {
+  return {
+    countFromConnect: basicModel.state.count + complexModel.state.ids.size,
+  };
+};
+
+export default connect(mapStateToProps)(App);

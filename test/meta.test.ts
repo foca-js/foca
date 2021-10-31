@@ -4,11 +4,11 @@ import { metaManager, MetaStateItem } from '../src/reducers/MetaManger';
 import { basicModel } from './models/basic-model';
 
 beforeEach(() => {
-  store.init({});
+  store.init();
 });
 
 afterEach(() => {
-  store.refresh(true);
+  store.unmount();
 });
 
 test('Collect loading status for effect method', async () => {

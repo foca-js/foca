@@ -4098,6 +4098,11 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
+topic@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/topic/-/topic-3.0.0.tgz#f247173d27c8da121917c8f5f05efe8df60bce4b"
+  integrity sha512-H8WFUpCQwbtKAjnKvkQ7YT+/pcVVbGmehiOyw7ZwKtsCaOyHnz6o4CSQhFKqc+VODjpy8XmeWie0Hq7X+uMIag==
+
 tough-cookie@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-4.0.0.tgz#d822234eeca882f991f0f908824ad2622ddbece4"

@@ -2,7 +2,7 @@ import type { AnyAction } from 'redux';
 import { Draft, enableES5, enableMapSet, enablePatches, Immer, isDraft } from 'immer';
 import isEqual from 'lodash.isequal';
 import type { DispatchAction } from '../model/ActionManager';
-import { ACTION_TYPE_REFRESH, RefreshAction } from '../actions/refresh';
+import { ACTION_TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
 
 const immer = new Immer({
   autoFreeze: process.env.NODE_ENV !== 'production',
@@ -58,7 +58,7 @@ export class ReducerManager<State extends object> {
   }
 
   protected isRefreshAction(action: AnyAction): action is RefreshAction {
-    return (action as RefreshAction).type === ACTION_TYPE_REFRESH;
+    return (action as RefreshAction).type === ACTION_TYPE_REFRESH_STORE;
   }
 
   protected execute(

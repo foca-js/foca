@@ -1,24 +1,24 @@
 import React, { FC } from 'react';
 import { act, create } from 'react-test-renderer';
-import { ReduxProvider, store, useLoading, useMeta, useModel } from '../src';
-import { AppFC } from './components/Normal';
+import { FocaProvider, store, useLoading, useMeta, useModel } from '../src';
+import App from './components/App';
 import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
 
 beforeEach(() => {
-  store.init({});
+  store.init();
 });
 
 afterEach(() => {
-  store.refresh(true);
+  store.unmount();
 });
 
 const Root: FC = ({ children }) => {
   return (
-    <ReduxProvider>
-      <AppFC />
+    <FocaProvider>
+      <App />
       {children}
-    </ReduxProvider>
+    </FocaProvider>
   );
 };
 

@@ -12,7 +12,7 @@ export const cloneModel = <
   name: Name,
   model: Model<string, State, Action, Effect>,
   options?: Partial<
-    Pick<DefineModelOptions<State, Action, Effect>, 'state' | 'keepStateFromRefresh'>
+    Pick<DefineModelOptions<State, Action, Effect>, 'state' | 'keepStateFromRefresh' | 'persist'>
   >,
 ): Model<Name, State, Action, Effect> => {
   if (name === model.name) {

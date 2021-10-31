@@ -3,7 +3,7 @@ import cloneDeep from 'clone';
 import assign from 'object-assign';
 import { DispatchAction, WrapAction, wrapAction } from './ActionManager';
 import { WrapEffect, wrapEffect } from './EffectManager';
-import { store, StoreAdvanced } from '../store/StoreAdvanced';
+import { store } from '../store/StoreAdvanced';
 import { ReducerManager } from '../reducers/ReducerManager';
 
 export interface GetName<Name extends string> {
@@ -38,6 +38,22 @@ export interface SetState<State extends object> {
    * ```
    */
   dispatch(fn: (state: State) => State | void): AnyAction;
+}
+
+export interface ModelPersist<State extends object> {
+  /**
+   * 持久化版本号，数据结构变化后建议立即升级该版本。默认值：0
+   */
+  version?: number | string;
+  /**
+   * 持久化数据活跃时间（ms)，默认：Infinity
+   */
+  maxAge?: number;
+  /**
+   * 持久化数据恢复到模型时的过滤函数，此时可修改数据以满足业务需求。
+   *
+   */
+  decode?: (this: void, persist: State) => State | void;
 }
 
 export interface ActionCtx<State extends object> extends GetName<string>, GetInitialState<State> {}
@@ -151,26 +167,11 @@ export interface DefineModelOptions<
    */
   keepStateFromRefresh?: boolean;
   /**
-   * 定制持久化，请确保已经在初始化store的时候加入了当前模型，否则当前设置无效
+   * 定制持久化，请确保已经在初始化store的时候把当前模型加入persist配置，否则当前设置无效
    *
    * @see store.init()
    */
-  persist?: {
-    /**
-     * 持久化版本号，数据结构变化后建议立即升级该版本
-     */
-    version?: number | string;
-    /**
-     * 持久化数据活跃时间，单位（秒）
-     */
-    ttl?: number;
-    /**
-     * 持久化数据恢复到模型时的过滤函数，此时可修改数据以满足业务需求。
-     *
-     * 支持**immer**操作。
-     */
-    decode?: (persist: State) => State | void;
-  };
+  persist?: ModelPersist<State>;
 }
 
 const noop = () => {};
@@ -251,7 +252,7 @@ export const defineModel = <
     keepStateFromRefresh: !!keepStateFromRefresh,
   });
 
-  StoreAdvanced.appendReducer(reducer);
+  store.appendReducer(reducer);
 
   return model as unknown as Model<Name, State, Action, Effect>;
 };

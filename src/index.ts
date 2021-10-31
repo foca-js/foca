@@ -6,6 +6,7 @@ export {
   Dispatch,
   MiddlewareAPI,
   Middleware,
+  PreloadedState,
   StoreEnhancer,
   Unsubscribe,
 } from 'redux';
@@ -13,7 +14,7 @@ export { StorageEngine, engines } from 'foca-storage-engine';
 export { Model, defineModel } from './model/defineModel';
 export { cloneModel } from './model/cloneModel';
 export { store, StoreAdvanced } from './store/StoreAdvanced';
-export { ReduxProvider } from './react/Provider';
+export { FocaProvider } from './react/FocaProvider';
 export { connect } from './react/connect';
 export { useModel } from './hooks/useModel';
 export { useLoading } from './hooks/useLoading';

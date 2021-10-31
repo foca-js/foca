@@ -5,11 +5,11 @@ import { basicModel } from './models/basic-model';
 let modelIndex = 0;
 
 beforeEach(() => {
-  store.init({});
+  store.init();
 });
 
 afterEach(() => {
-  store.refresh(true);
+  store.unmount();
 });
 
 test('Model can be cloned', async () => {

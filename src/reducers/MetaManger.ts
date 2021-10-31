@@ -1,8 +1,8 @@
 import { AnyAction } from 'redux';
-import { store, StoreAdvanced } from '../store/StoreAdvanced';
-import { DispatchAction } from '../model/ActionManager';
+import { store } from '../store/StoreAdvanced';
 import { MetaAction } from '../model/EffectManager';
 import { ReducerManager } from './ReducerManager';
+import { HydrateMetaAction, ACTION_TYPE_HYDRATE_META } from '../actions/meta';
 
 export interface Meta {
   message?: string;
@@ -11,8 +11,6 @@ export interface Meta {
 export interface MetaStateItem extends Meta {
   loading: boolean;
 }
-
-const ACTION_TYPE_HYDRATE_META = '@@meta.hydrate';
 
 type Status = 'untracked' | 'pending' | 'using';
 
@@ -26,12 +24,6 @@ interface State {
   };
 }
 
-interface HydrateMetaAction extends DispatchAction {
-  type: typeof ACTION_TYPE_HYDRATE_META;
-  model: string;
-  method: string;
-}
-
 class MetaManager extends ReducerManager<State> {
   protected stash: Stash = {};
   protected status: Record<string, Status> = {};
@@ -42,6 +34,7 @@ class MetaManager extends ReducerManager<State> {
       initial: {},
       keepStateFromRefresh: false,
     });
+    store.appendReducer(this);
   }
 
   public getMeta(model: string, method: string): Partial<MetaStateItem> {
@@ -153,5 +146,3 @@ class MetaManager extends ReducerManager<State> {
 }
 
 export const metaManager = new MetaManager();
-
-StoreAdvanced.appendReducer(metaManager);

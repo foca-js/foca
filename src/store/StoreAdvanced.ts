@@ -1,44 +1,44 @@
-import { StorageEngine } from 'foca-storage-engine';
-import { applyMiddleware, compose, createStore, Middleware, Reducer, Store } from 'redux';
+import assign from 'object-assign';
+import {
+  applyMiddleware,
+  compose,
+  createStore,
+  Middleware,
+  PreloadedState,
+  Reducer,
+  Store,
+} from 'redux';
 import observable from 'symbol-observable';
-import { RefreshAction, ACTION_TYPE_REFRESH } from '../actions/refresh';
+import { Topic } from 'topic';
+import { ACTION_TYPE_PERSIST_HYDRATE, PersistHydrateAction } from '../actions/persist';
+import { RefreshAction, ACTION_TYPE_REFRESH_STORE } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
-import type { Model } from '../model/defineModel';
+import { PersistOptions } from '../persist/PersistItem';
+import { PersistManager } from '../persist/PersistManager';
 import type { ReducerManager } from '../reducers/ReducerManager';
 
 const assignStoreKeys: (keyof Store | symbol)[] = ['dispatch', 'subscribe', observable];
 
 interface CreateStoreOptions {
-  compose?: 'default' | 'redux-devtools' | typeof compose;
+  preloadedState?: PreloadedState<any>;
+  compose?: 'redux-devtools' | typeof compose;
   middleware?: Middleware[];
-  persist?: Array<{
-    /**
-     * 存储标识名称
-     */
-    key: string;
-    /**
-     * 版本号
-     */
-    version: string | number;
-    /**
-     * 存储引擎
-     */
-    engine: StorageEngine;
-    /**
-     * 允许同步的模型列表
-     */
-    models: Model<any, any, any, any>[];
-  }>;
+  persist?: PersistOptions[];
 }
 
 export class StoreAdvanced implements Store {
+  protected topic: Topic<{
+    storeReady: [];
+  }> = new Topic();
+
   protected origin?: Store;
   protected consumers: Record<string, Reducer> = {};
   protected state: object = {};
   protected dispatching = false;
   protected reducerKeys: string[] = [];
+  public /*protected*/ persistManager?: PersistManager;
 
-  protected readonly reducer: Reducer;
+  protected reducer: Reducer;
 
   /** @deprecated */
   replaceReducer(): never {
@@ -51,8 +51,9 @@ export class StoreAdvanced implements Store {
 
   constructor() {
     this.reducer = this.combineReducers();
+
     assignStoreKeys.forEach((key) => {
-      //@ts-ignore
+      // @ts-expect-error
       this[key] = () => {
         throw new StoreError(`Call method ${key.toString()} before initialize store.`);
       };
@@ -63,32 +64,59 @@ export class StoreAdvanced implements Store {
     return this.dispatching ? this.state : this.store.getState();
   }
 
-  init(options: CreateStoreOptions): void {
+  init(options: CreateStoreOptions = {}) {
     if (this.origin) {
-      if (process.env.NODE_ENV === 'production') {
-        throw new Error('Call store.init() multiple times.');
-      }
-      return;
+      throw new StoreError('Call store.init() multiple times.');
     }
 
-    const customCompose = this.getCompose(options.compose);
+    if (options.persist) {
+      this.reducer = this.combineReducerWithPersist();
+    }
 
     const store = (this.origin = createStore(
       this.reducer,
-      customCompose(applyMiddleware.apply(null, options.middleware || [])),
+      options.preloadedState,
+      this.getCompose(options.compose)(applyMiddleware.apply(null, options.middleware || [])),
     ));
+
     assignStoreKeys.forEach((key) => {
-      // @ts-ignore
+      // @ts-expect-error
       this[key] = store[key];
     });
+
+    if (options.persist) {
+      const persist = (this.persistManager = new PersistManager(options.persist));
+
+      store.subscribe(() => {
+        persist.update(store.getState());
+      });
+
+      persist.init().then(() => {
+        this.dispatch<PersistHydrateAction>({
+          type: ACTION_TYPE_PERSIST_HYDRATE,
+          payload: persist.collect(),
+        });
+        this.topic.keep('storeReady', true);
+      });
+    } else {
+      this.topic.keep('storeReady', true);
+    }
+
+    return this;
   }
 
   refresh(force: boolean = false): RefreshAction {
     return this.dispatch<RefreshAction>({
-      type: ACTION_TYPE_REFRESH,
+      type: ACTION_TYPE_REFRESH_STORE,
       payload: {
         force,
       },
+    });
+  }
+
+  onReady(callback: Function) {
+    return this.topic.subscribeOnce('storeReady', () => {
+      callback();
     });
   }
 
@@ -101,8 +129,6 @@ export class StoreAdvanced implements Store {
             window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
           compose
         );
-      case 'default':
-        return compose;
       default:
         return customCompose || compose;
     }
@@ -113,6 +139,22 @@ export class StoreAdvanced implements Store {
       throw new StoreError('Store is not defined, do you forget to initialize it?');
     }
     return this.origin;
+  }
+
+  protected combineReducerWithPersist(): Reducer<Record<string, object>> {
+    const reducer = this.combineReducers();
+
+    return (state, action) => {
+      if (state === void 0) {
+        state = {};
+      }
+
+      if ((action as PersistHydrateAction).type === ACTION_TYPE_PERSIST_HYDRATE) {
+        return assign({}, state, (action as PersistHydrateAction).payload);
+      }
+
+      return reducer(state, action);
+    };
   }
 
   protected combineReducers(): Reducer<Record<string, object>> {
@@ -141,10 +183,6 @@ export class StoreAdvanced implements Store {
 
       hasChanged = hasChanged || keyAmount !== Object.keys(state).length;
 
-      // if (hasChanged) {
-      //   this.persist.update(nextState, action.type === ACTION_TYPES.persist);
-      // }
-
       this.dispatching = false;
       this.state = {};
 
@@ -152,7 +190,15 @@ export class StoreAdvanced implements Store {
     };
   }
 
-  protected appendReducer(reducer: ReducerManager<object>) {
+  public /*protected*/ unmount(): this {
+    this.origin = undefined;
+    this.state = {};
+    this.persistManager = undefined;
+    this.topic = new Topic();
+    return this;
+  }
+
+  public /*protected*/ appendReducer(reducer: ReducerManager<object>) {
     const key = reducer.name;
     const store = this.origin;
     const exists = store && this.consumers.hasOwnProperty(key);
@@ -160,10 +206,6 @@ export class StoreAdvanced implements Store {
     this.consumers[key] = reducer.consumer.bind(reducer);
     this.reducerKeys = Object.keys(this.consumers);
     store && !exists && store.replaceReducer(this.reducer);
-  }
-
-  static appendReducer(reducer: ReducerManager<object>) {
-    store.appendReducer(reducer);
   }
 }
 
