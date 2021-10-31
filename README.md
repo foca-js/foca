@@ -11,11 +11,11 @@
 
 - 模块化开发
 - 专注 typescript 极致体验
-- 额外支持 Map/Set 数据类型
+- 支持 Map/Set 数据类型
 - 内置 immer 快速处理状态
 - effect 方法自动追踪状态
-- 支持多引擎的数据持久化
-- 可与其他 redux 库共存，互不干扰
+- 差异化多引擎数据持久化
+- 与其他 redux 库共存，方便迁移
 
 # 安装
 
@@ -25,8 +25,9 @@ yarn add foca
 
 # 相关库
 
-| 仓库                                                    | 版本                                                                                            | 描述                  |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------- |
-| [foca-axios](https://github.com/foca-js/foca-axios)     | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)     | React/RN 请求库       |
-| [foca-taro](https://github.com/foca-js/foca-taro)       | [![npm](https://img.shields.io/npm/v/foca-taro)](https://www.npmjs.com/package/foca-taro)       | Taro 请求库/存储引擎  |
-| [foca-graphql](https://github.com/foca-js/foca-graphql) | [![npm](https://img.shields.io/npm/v/foca-graphql)](https://www.npmjs.com/package/foca-graphql) | 生成动态 Graphql 模板 |
+| 仓库                                                    | 版本                                                                                            | 描述                  | 平台      |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------- | --------- |
+| [axios](https://github.com/axios/axios)                 | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)               | 当下最流行的请求库    | React, RN |
+| [foca-axios](https://github.com/foca-js/foca-axios)     | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)     | 基于 axios 定制封装   | React, RN |
+| [foca-taro](https://github.com/foca-js/foca-taro)       | [![npm](https://img.shields.io/npm/v/foca-taro)](https://www.npmjs.com/package/foca-taro)       | Taro 请求库/存储引擎  | TaroJs    |
+| [foca-graphql](https://github.com/foca-js/foca-graphql) | [![npm](https://img.shields.io/npm/v/foca-graphql)](https://www.npmjs.com/package/foca-graphql) | 生成动态 Graphql 模板 | All       |
