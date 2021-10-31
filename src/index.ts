@@ -10,7 +10,7 @@ export {
   StoreEnhancer,
   Unsubscribe,
 } from 'redux';
-export { StorageEngine, engines } from 'foca-storage-engine';
+export { StorageEngine, engines } from './engines';
 export { Model, defineModel } from './model/defineModel';
 export { cloneModel } from './model/cloneModel';
 export { store, StoreAdvanced } from './store/StoreAdvanced';

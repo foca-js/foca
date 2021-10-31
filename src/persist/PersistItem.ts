@@ -1,4 +1,4 @@
-import { StorageEngine } from 'foca-storage-engine';
+import { StorageEngine } from '../engines';
 import { InternalModel, Model, ModelPersist } from '../model/defineModel';
 import { jsonParseReciever, jsonStringifyReplacer } from '../utils/json';
 

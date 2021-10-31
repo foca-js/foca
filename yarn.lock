@@ -1831,11 +1831,6 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-foca-storage-engine@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/foca-storage-engine/-/foca-storage-engine-0.0.1.tgz#dd9cc59c2626ce852f56f93c20c1fec9dd1e839a"
-  integrity sha512-F1rZUzY40McJvhdNBiadtNGGlgJaFg8QqHvGxswfYVl8kfoN5/S6el7f7j3twCh7ttwZQXP5kI2oGbH4oultig==
-
 form-data@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.1.tgz#ebd53791b78356a99af9a300d4282c4d5eb9755f"

@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "clone": "^2.1.2",
-    "foca-storage-engine": "^0.0.1",
     "immer": "^9.0.6",
     "lodash.isequal": "^4.5.0",
     "object-assign": "^4.1.1",
