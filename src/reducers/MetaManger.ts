@@ -132,7 +132,11 @@ class MetaManager extends ReducerManager<State> {
     return this.stash[model + '|' + method];
   }
 
-  protected setStash(model: string, method: string, value: MetaStateItem | undefined) {
+  protected setStash(
+    model: string,
+    method: string,
+    value: MetaStateItem | undefined,
+  ) {
     this.stash[model + '|' + method] = value;
   }
 

@@ -8,7 +8,9 @@ import { useCustomSelector } from './useCustomSelector';
  * * 传入多个模型时，则返回一个以模型名称为key、状态为value的大对象。
  * * 最后一个参数如果是**函数**，则为状态过滤函数，过滤函数的结果视为最终返回值。
  */
-export function useModel<State extends object>(model: Model<string, State, object, object>): State;
+export function useModel<State extends object>(
+  model: Model<string, State, object, object>,
+): State;
 export function useModel<State extends object, T>(
   model: Model<any, State, object, object>,
   selector: (state: State) => T,
@@ -110,7 +112,12 @@ export function useModel<
   model2: Model<Name2, State2, object, object>,
   model3: Model<Name3, State3, object, object>,
   model4: Model<Name4, State4, object, object>,
-  selector: (state1: State1, state2: State2, state3: State3, state4: State4) => T,
+  selector: (
+    state1: State1,
+    state2: State2,
+    state3: State3,
+    state4: State4,
+  ) => T,
 ): T;
 
 export function useModel<
@@ -159,7 +166,13 @@ export function useModel<
   model3: Model<Name3, State3, object, object>,
   model4: Model<Name4, State4, object, object>,
   model5: Model<Name5, State5, object, object>,
-  selector: (state1: State1, state2: State2, state3: State3, state4: State4, state5: State5) => T,
+  selector: (
+    state1: State1,
+    state2: State2,
+    state3: State3,
+    state4: State4,
+    state5: State5,
+  ) => T,
 ): T;
 
 export function useModel(...args: any[]): any {

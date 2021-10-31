@@ -56,7 +56,9 @@ export interface ModelPersist<State extends object> {
   decode?: (this: void, persist: State) => State | void;
 }
 
-export interface ActionCtx<State extends object> extends GetName<string>, GetInitialState<State> {}
+export interface ActionCtx<State extends object>
+  extends GetName<string>,
+    GetInitialState<State> {}
 
 export interface EffectCtx<State extends object>
   extends SetState<State>,
@@ -68,7 +70,10 @@ export interface BaseModel<Name extends string, State extends object>
     GetName<Name> {}
 
 type ModelAction<State extends object, Action extends object> = {
-  readonly [K in keyof Action]: Action[K] extends (state: State, ...args: infer P) => State | void
+  readonly [K in keyof Action]: Action[K] extends (
+    state: State,
+    ...args: infer P
+  ) => State | void
     ? (...args: P) => DispatchAction<State, P[0]>
     : never;
 };
@@ -84,7 +89,9 @@ export type Model<
   State extends object,
   Action extends object,
   Effect extends object,
-> = BaseModel<Name, State> & ModelAction<State, Action> & ModelEffect<State, Effect>;
+> = BaseModel<Name, State> &
+  ModelAction<State, Action> &
+  ModelEffect<State, Effect>;
 
 export type InternalModel<
   Name extends string,
@@ -159,7 +166,8 @@ export interface DefineModelOptions<
    * useLoading(model.foo); // TYPE: boolean
    * ```
    */
-  effects?: Effect & ThisType<ModelAction<State, Action> & Effect & EffectCtx<State>>;
+  effects?: Effect &
+    ThisType<ModelAction<State, Action> & Effect & EffectCtx<State>>;
   /**
    * 清空仓库所有数据时，是否保留该模型的数据，默认：false
    *
@@ -212,7 +220,11 @@ export const defineModel = <
     const keys = Object.keys(actions);
     for (let i = 0; i < keys.length; ++i) {
       const actionName = keys[i]!;
-      transformedActions[actionName] = wrapAction(ctx, actionName, actions[actionName]!);
+      transformedActions[actionName] = wrapAction(
+        ctx,
+        actionName,
+        actions[actionName]!,
+      );
     }
   }
 

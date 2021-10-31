@@ -4,7 +4,7 @@ singleQuote: true
 # If at least one property in an object requires quotes, quote all properties.
 quoteProps: consistent
 tabWidth: 2
-printWidth: 100
+printWidth: 80
 endOfLine: lf
 trailingComma: all
 bracketSpacing: true

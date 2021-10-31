@@ -37,8 +37,12 @@ test('rehydrate state to storage', async () => {
 
   await persist.init();
 
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBe(JSON.stringify(persist));
-  expect(engines.memoryStorage.getItem(persist.key)).not.toContain(stringifyState(persistModel));
+  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBe(
+    JSON.stringify(persist),
+  );
+  expect(engines.memoryStorage.getItem(persist.key)).not.toContain(
+    stringifyState(persistModel),
+  );
 
   persistModel.plus(15);
   expect(persistModel.state.counter).toBe(15);
@@ -183,14 +187,18 @@ test('rehydrate due to time expired', async () => {
     [persistModel.name]: persistModel.state,
   });
   await sleep(1);
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBe(currentValue);
+  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBe(
+    currentValue,
+  );
 
   await sleep(100);
   persist.update({
     [persistModel.name]: persistModel.state,
   });
   await sleep(1);
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.not.toBe(currentValue);
+  await expect(engines.memoryStorage.getItem(persist.key)).resolves.not.toBe(
+    currentValue,
+  );
 });
 
 test('hydrate failed due to invalid format', async () => {

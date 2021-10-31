@@ -10,14 +10,21 @@ import {
 } from 'redux';
 import observable from 'symbol-observable';
 import { Topic } from 'topic';
-import { ACTION_TYPE_PERSIST_HYDRATE, PersistHydrateAction } from '../actions/persist';
+import {
+  ACTION_TYPE_PERSIST_HYDRATE,
+  PersistHydrateAction,
+} from '../actions/persist';
 import { RefreshAction, ACTION_TYPE_REFRESH_STORE } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
 import { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
 import type { ReducerManager } from '../reducers/ReducerManager';
 
-const assignStoreKeys: (keyof Store | symbol)[] = ['dispatch', 'subscribe', observable];
+const assignStoreKeys: (keyof Store | symbol)[] = [
+  'dispatch',
+  'subscribe',
+  observable,
+];
 
 interface CreateStoreOptions {
   preloadedState?: PreloadedState<any>;
@@ -55,7 +62,9 @@ export class StoreAdvanced implements Store {
     assignStoreKeys.forEach((key) => {
       // @ts-expect-error
       this[key] = () => {
-        throw new StoreError(`Call method ${key.toString()} before initialize store.`);
+        throw new StoreError(
+          `Call method ${key.toString()} before initialize store.`,
+        );
       };
     });
   }
@@ -76,7 +85,9 @@ export class StoreAdvanced implements Store {
     const store = (this.origin = createStore(
       this.reducer,
       options.preloadedState,
-      this.getCompose(options.compose)(applyMiddleware.apply(null, options.middleware || [])),
+      this.getCompose(options.compose)(
+        applyMiddleware.apply(null, options.middleware || []),
+      ),
     ));
 
     assignStoreKeys.forEach((key) => {
@@ -85,7 +96,9 @@ export class StoreAdvanced implements Store {
     });
 
     if (options.persist) {
-      const persist = (this.persistManager = new PersistManager(options.persist));
+      const persist = (this.persistManager = new PersistManager(
+        options.persist,
+      ));
 
       store.subscribe(() => {
         persist.update(store.getState());
@@ -120,7 +133,9 @@ export class StoreAdvanced implements Store {
     });
   }
 
-  protected getCompose(customCompose: CreateStoreOptions['compose']): typeof compose {
+  protected getCompose(
+    customCompose: CreateStoreOptions['compose'],
+  ): typeof compose {
     switch (customCompose) {
       case 'redux-devtools':
         return (
@@ -136,7 +151,9 @@ export class StoreAdvanced implements Store {
 
   protected get store() {
     if (!this.origin) {
-      throw new StoreError('Store is not defined, do you forget to initialize it?');
+      throw new StoreError(
+        'Store is not defined, do you forget to initialize it?',
+      );
     }
     return this.origin;
   }
@@ -149,7 +166,9 @@ export class StoreAdvanced implements Store {
         state = {};
       }
 
-      if ((action as PersistHydrateAction).type === ACTION_TYPE_PERSIST_HYDRATE) {
+      if (
+        (action as PersistHydrateAction).type === ACTION_TYPE_PERSIST_HYDRATE
+      ) {
         return assign({}, state, (action as PersistHydrateAction).payload);
       }
 

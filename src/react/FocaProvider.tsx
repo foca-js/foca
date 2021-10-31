@@ -23,7 +23,11 @@ interface OwnProps extends PersistGateProps {}
 export const FocaProvider: FC<OwnProps> = ({ children, loading }) => {
   return (
     <Provider context={ReduxContext} store={store}>
-      {store.persistManager ? <PersistGate loading={loading} children={children} /> : children}
+      {store.persistManager ? (
+        <PersistGate loading={loading} children={children} />
+      ) : (
+        children
+      )}
     </Provider>
   );
 };

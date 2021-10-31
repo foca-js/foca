@@ -73,7 +73,9 @@ export class PersistItem {
     this.key = '@@foca.persist:' + options.key;
 
     options.models.forEach((model) => {
-      const persist = (model as unknown as InternalModel<any, any, any, any>)._$opts.persist || {};
+      const persist =
+        (model as unknown as InternalModel<any, any, any, any>)._$opts
+          .persist || {};
 
       this.records[model.name] = {
         model,
@@ -154,9 +156,15 @@ export class PersistItem {
       const { version, maxAge } = record.persist;
       const now = Date.now();
       const optionChanged =
-        !record.serialized || version !== record.serialized.v || record.serialized.t + maxAge < now;
+        !record.serialized ||
+        version !== record.serialized.v ||
+        record.serialized.t + maxAge < now;
 
-      if (optionChanged || !record.decodeState || nextStateForKey !== record.decodeState) {
+      if (
+        optionChanged ||
+        !record.decodeState ||
+        nextStateForKey !== record.decodeState
+      ) {
         const serialized: PersistSerialized = {
           t: now,
           v: version,
@@ -191,7 +199,10 @@ export class PersistItem {
     );
   }
 
-  protected validateSerialized(serialized: PersistSerialized, modelPersist: CustomModelPersist) {
+  protected validateSerialized(
+    serialized: PersistSerialized,
+    modelPersist: CustomModelPersist,
+  ) {
     return (
       serialized.v === modelPersist.version &&
       typeof serialized.d === 'string' &&

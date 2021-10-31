@@ -1,5 +1,12 @@
 import type { AnyAction } from 'redux';
-import { Draft, enableES5, enableMapSet, enablePatches, Immer, isDraft } from 'immer';
+import {
+  Draft,
+  enableES5,
+  enableMapSet,
+  enablePatches,
+  Immer,
+  isDraft,
+} from 'immer';
 import isEqual from 'lodash.isequal';
 import type { DispatchAction } from '../model/ActionManager';
 import { ACTION_TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
@@ -38,11 +45,15 @@ export class ReducerManager<State extends object> {
     }
 
     if (this.isSelfModel(action)) {
-      return action.consumer ? this.execute(state, action, action.consumer) : state;
+      return action.consumer
+        ? this.execute(state, action, action.consumer)
+        : state;
     }
 
     if (this.isRefreshAction(action)) {
-      return action.payload.force || !this.preventRefresh ? this.initial : state;
+      return action.payload.force || !this.preventRefresh
+        ? this.initial
+        : state;
     }
 
     return state;

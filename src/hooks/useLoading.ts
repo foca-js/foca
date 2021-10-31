@@ -13,7 +13,10 @@ type PromiseEffect = AsyncEffect;
  * ```
  *
  */
-export const useLoading = (effect: PromiseEffect, ...more: PromiseEffect[]): boolean => {
+export const useLoading = (
+  effect: PromiseEffect,
+  ...more: PromiseEffect[]
+): boolean => {
   return useCustomSelector(() => {
     return more.concat(effect).some((wrapper) => {
       return (

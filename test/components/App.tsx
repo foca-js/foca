@@ -9,7 +9,11 @@ const App: FC<Props> = ({ countFromConnect }) => {
   const count1 = useModel(basicModel).count;
   const count2 = useModel(basicModel, (state) => state.count);
   const state1 = useModel(basicModel, complexModel);
-  const state2 = useModel(basicModel, complexModel, (a, b) => a.count + b.ids.size);
+  const state2 = useModel(
+    basicModel,
+    complexModel,
+    (a, b) => a.count + b.ids.size,
+  );
   const loading1 = useLoading(basicModel.pureAsync);
   const loading2 = useLoading(basicModel.foo, basicModel.pureAsync);
   const message = useMeta(basicModel.hasError).message || '--';

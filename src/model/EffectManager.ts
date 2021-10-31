@@ -42,7 +42,12 @@ export class EffectManager<State extends object> {
           e instanceof EffectError
             ? e.meta
             : {
-                message: e instanceof Error ? e.message : typeof e === 'string' ? e : void 0,
+                message:
+                  e instanceof Error
+                    ? e.message
+                    : typeof e === 'string'
+                    ? e
+                    : void 0,
               },
         );
 

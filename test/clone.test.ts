@@ -32,7 +32,9 @@ test('Cloned model name', () => {
 });
 
 test('Clone model with same name is invalid', () => {
-  expect(() => cloneModel(basicModel.name, basicModel)).toThrowError(DuplicateModelError);
+  expect(() => cloneModel(basicModel.name, basicModel)).toThrowError(
+    DuplicateModelError,
+  );
 });
 
 test('Reset cloned model state', () => {
