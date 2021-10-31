@@ -1,5 +1,6 @@
 import { StorageEngine } from 'foca-storage-engine';
 import { InternalModel, Model, ModelPersist } from '../model/defineModel';
+import { jsonParseReciever, jsonStringifyReplacer } from '../utils/json';
 
 export interface PersistSchema {
   /**
@@ -112,7 +113,10 @@ export class PersistItem {
 
           if (record) {
             if (this.validateSerialized(serialized, record.persist)) {
-              const state = JSON.parse(serialized.d) as object;
+              const state = JSON.parse(
+                serialized.d,
+                jsonParseReciever,
+              ) as object;
 
               record.serialized = serialized;
               record.decodeState = record.persist.decode(state) || state;
@@ -166,8 +170,7 @@ export class PersistItem {
         const serialized: PersistSerialized = {
           t: now,
           v: version,
-          // TODO: support Map/Set
-          d: JSON.stringify(nextStateForKey),
+          d: JSON.stringify(nextStateForKey, jsonStringifyReplacer),
         };
 
         if (optionChanged || serialized.d !== record.serialized!.d) {

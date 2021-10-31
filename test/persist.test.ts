@@ -1,7 +1,9 @@
 import sleep from 'sleep-promise';
 import { engines, Model, store } from '../src';
 import { PersistItem, PersistSchema } from '../src/persist/PersistItem';
+import { jsonStringifyReplacer } from '../src/utils/json';
 import { basicModel } from './models/basic-model';
+import { complexModel } from './models/complex-model';
 import {
   hasDecodePersistModel,
   hasVersionPersistModel,
@@ -9,7 +11,7 @@ import {
 } from './models/persist-model';
 
 const stringifyState = (model: Model) => {
-  return JSON.stringify(JSON.stringify(model.state));
+  return JSON.stringify(JSON.stringify(model.state, jsonStringifyReplacer));
 };
 
 const createDefaultInstance = () => {
@@ -326,4 +328,40 @@ test('model can specific persist decoder', async () => {
       counter: 57,
     },
   });
+});
+
+test('Map/Set are allowed for persist', async () => {
+  const persist = new PersistItem({
+    version: 1,
+    key: 'test1',
+    engine: engines.memoryStorage,
+    models: [complexModel],
+  });
+
+  complexModel.addUser(15, 'Lucifer');
+  expect(complexModel.state.users.get(15)).toBe('Lucifer');
+
+  await engines.memoryStorage.setItem(
+    persist.key,
+    JSON.stringify(<PersistSchema>{
+      v: 1,
+      d: {
+        [complexModel.name]: {
+          t: Date.now(),
+          v: 0,
+          d: JSON.stringify(complexModel.state, jsonStringifyReplacer),
+        },
+      },
+    }),
+  );
+
+  await persist.init();
+
+  expect(persist.collect()).toMatchObject({
+    [complexModel.name]: complexModel.state,
+  });
+
+  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toContain(
+    stringifyState(complexModel),
+  );
 });
