@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 import { store } from '../store/StoreAdvanced';
 import { MetaAction } from '../model/EffectManager';
 import { ReducerManager } from './ReducerManager';
-import { HydrateMetaAction, ACTION_TYPE_HYDRATE_META } from '../actions/meta';
+import { HydrateMetaAction, TYPE_HYDRATE_META } from '../actions/meta';
 
 export interface Meta {
   message?: string;
@@ -32,7 +32,7 @@ class MetaManager extends ReducerManager<State> {
     super({
       name: '_metas_',
       initial: {},
-      keepStateFromRefresh: false,
+      preventRefresh: false,
     });
     store.appendReducer(this);
   }
@@ -49,7 +49,7 @@ class MetaManager extends ReducerManager<State> {
           // Using micro task to dispatch as soon as possible.
           Promise.resolve().then(() => {
             store.dispatch<HydrateMetaAction>({
-              type: ACTION_TYPE_HYDRATE_META,
+              type: TYPE_HYDRATE_META,
               model,
               method,
               payload: {},
@@ -77,7 +77,7 @@ class MetaManager extends ReducerManager<State> {
       return this.initial;
     }
 
-    if (this.isMetaAction(action)) {
+    if (this.isMeta(action)) {
       const { model, method, payload } = action;
 
       if (this.getStatus(model, method) === 'using') {
@@ -93,12 +93,12 @@ class MetaManager extends ReducerManager<State> {
       return this.setStash(model, method, payload), state;
     }
 
-    if (this.isRestoreMeta(action)) {
+    if (this.isMetaHydrate(action)) {
       const { model, method } = action;
       const stash = this.getStash(model, method);
 
       this.setStatus(model, method, 'using');
-      this.setStash(model, method, undefined);
+      this.setStash(model, method, void 0);
 
       return stash
         ? {
@@ -111,7 +111,7 @@ class MetaManager extends ReducerManager<State> {
         : state;
     }
 
-    if (this.isRefreshAction(action)) {
+    if (this.isRefresh(action)) {
       this.stash = {};
       this.status = {};
       return this.initial;
@@ -140,11 +140,11 @@ class MetaManager extends ReducerManager<State> {
     this.stash[model + '|' + method] = value;
   }
 
-  protected isRestoreMeta(action: AnyAction): action is HydrateMetaAction {
-    return action.type === ACTION_TYPE_HYDRATE_META;
+  protected isMetaHydrate(action: AnyAction): action is HydrateMetaAction {
+    return action.type === TYPE_HYDRATE_META;
   }
 
-  protected isMetaAction(action: AnyAction): action is MetaAction {
+  protected isMeta(action: AnyAction): action is MetaAction {
     return (action as MetaAction).setMeta === true;
   }
 }

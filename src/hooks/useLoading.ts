@@ -21,10 +21,8 @@ export const useLoading = (
     return more.concat(effect).some((wrapper) => {
       return (
         wrapper &&
-        wrapper.$$ &&
-        wrapper.$$.model &&
-        wrapper.$$.method &&
-        metaManager.getMeta(wrapper.$$.model, wrapper.$$.method).loading
+        wrapper._ &&
+        metaManager.getMeta(wrapper._.model, wrapper._.method).loading
       );
     });
   });

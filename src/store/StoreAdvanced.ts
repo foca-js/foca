@@ -10,11 +10,8 @@ import {
 } from 'redux';
 import observable from 'symbol-observable';
 import { Topic } from 'topic';
-import {
-  ACTION_TYPE_PERSIST_HYDRATE,
-  PersistHydrateAction,
-} from '../actions/persist';
-import { RefreshAction, ACTION_TYPE_REFRESH_STORE } from '../actions/refresh';
+import { TYPE_PERSIST_HYDRATE, PersistHydrateAction } from '../actions/persist';
+import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
 import { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
@@ -106,7 +103,7 @@ export class StoreAdvanced implements Store {
 
       persist.init().then(() => {
         this.dispatch<PersistHydrateAction>({
-          type: ACTION_TYPE_PERSIST_HYDRATE,
+          type: TYPE_PERSIST_HYDRATE,
           payload: persist.collect(),
         });
         this.topic.keep('storeReady', true);
@@ -120,7 +117,7 @@ export class StoreAdvanced implements Store {
 
   refresh(force: boolean = false): RefreshAction {
     return this.dispatch<RefreshAction>({
-      type: ACTION_TYPE_REFRESH_STORE,
+      type: TYPE_REFRESH_STORE,
       payload: {
         force,
       },
@@ -166,9 +163,7 @@ export class StoreAdvanced implements Store {
         state = {};
       }
 
-      if (
-        (action as PersistHydrateAction).type === ACTION_TYPE_PERSIST_HYDRATE
-      ) {
+      if ((action as PersistHydrateAction).type === TYPE_PERSIST_HYDRATE) {
         return assign({}, state, (action as PersistHydrateAction).payload);
       }
 

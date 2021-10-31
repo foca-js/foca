@@ -13,8 +13,8 @@ type PromiseEffect = AsyncEffect;
  */
 export const useMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
   return useCustomSelector(() => {
-    return effect && effect.$$ && effect.$$.model && effect.$$.method
-      ? metaManager.getMeta(effect.$$.model, effect.$$.method)
+    return effect && effect._
+      ? metaManager.getMeta(effect._.model, effect._.method)
       : {};
   });
 };

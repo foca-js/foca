@@ -9,7 +9,7 @@ import {
 } from 'immer';
 import isEqual from 'lodash.isequal';
 import type { DispatchAction } from '../model/ActionManager';
-import { ACTION_TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
+import { TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
 
 const immer = new Immer({
   autoFreeze: process.env.NODE_ENV !== 'production',
@@ -25,7 +25,7 @@ enableES5(), enableMapSet(), enablePatches();
 interface Options<State extends object> {
   readonly name: string;
   readonly initial: State;
-  readonly keepStateFromRefresh: boolean;
+  readonly preventRefresh: boolean;
 }
 
 export class ReducerManager<State extends object> {
@@ -36,7 +36,7 @@ export class ReducerManager<State extends object> {
   constructor(options: Options<State>) {
     this.name = options.name;
     this.initial = options.initial;
-    this.preventRefresh = options.keepStateFromRefresh !== true;
+    this.preventRefresh = options.preventRefresh;
   }
 
   consumer(state: State | undefined, action: AnyAction) {
@@ -50,7 +50,7 @@ export class ReducerManager<State extends object> {
         : state;
     }
 
-    if (this.isRefreshAction(action)) {
+    if (this.isRefresh(action)) {
       return action.payload.force || !this.preventRefresh
         ? this.initial
         : state;
@@ -68,8 +68,8 @@ export class ReducerManager<State extends object> {
     );
   }
 
-  protected isRefreshAction(action: AnyAction): action is RefreshAction {
-    return (action as RefreshAction).type === ACTION_TYPE_REFRESH_STORE;
+  protected isRefresh(action: AnyAction): action is RefreshAction {
+    return (action as RefreshAction).type === TYPE_REFRESH_STORE;
   }
 
   protected execute(

@@ -3,7 +3,7 @@ import assign from 'object-assign';
 
 export class PersistManager {
   protected readonly list: PersistItem[] = [];
-  protected updateTimer?: NodeJS.Timeout;
+  protected timer?: NodeJS.Timeout;
 
   constructor(options: PersistOptions[]) {
     this.list = options.map((option) => new PersistItem(option));
@@ -18,9 +18,9 @@ export class PersistManager {
   }
 
   update(nextState: Record<string, object>) {
-    this.updateTimer && clearTimeout(this.updateTimer);
-    this.updateTimer = setTimeout(() => {
-      this.updateTimer = undefined;
+    this.timer && clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.timer = void 0;
       this.list.forEach((item) => {
         item.update(nextState);
       });

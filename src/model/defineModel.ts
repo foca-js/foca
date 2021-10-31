@@ -261,7 +261,7 @@ export const defineModel = <
   const reducer = new ReducerManager({
     name: name,
     initial: state,
-    keepStateFromRefresh: !!keepStateFromRefresh,
+    preventRefresh: !!keepStateFromRefresh,
   });
 
   store.appendReducer(reducer);

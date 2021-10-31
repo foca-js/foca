@@ -77,7 +77,7 @@ export interface AsyncEffect<
   (...args: P): R;
   readonly loading: boolean;
   readonly meta: Partial<MetaStateItem>;
-  readonly $$: {
+  readonly _: {
     readonly model: string;
     readonly method: string;
     readonly effect: EffectManager<State>;
@@ -112,7 +112,7 @@ export const wrapEffect = <State extends object>(
 
   fn.meta = {};
   fn.loading = false;
-  fn.$$ = {
+  fn._ = {
     model: ctx.name,
     method: key,
     effect: manager,
