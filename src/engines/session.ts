@@ -5,15 +5,18 @@ export const session: StorageEngine = {
     return Promise.resolve(sessionStorage.getItem(key));
   },
   setItem(key, value) {
-    sessionStorage.setItem(key, value);
-    return Promise.resolve();
+    return Promise.resolve().then(() => {
+      sessionStorage.setItem(key, value);
+    });
   },
   removeItem(key) {
-    sessionStorage.removeItem(key);
-    return Promise.resolve();
+    return Promise.resolve().then(() => {
+      sessionStorage.removeItem(key);
+    });
   },
   clear() {
-    sessionStorage.clear();
-    return Promise.resolve(void 0);
+    return Promise.resolve(void 0).then(() => {
+      sessionStorage.clear();
+    });
   },
 };

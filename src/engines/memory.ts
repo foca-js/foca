@@ -7,15 +7,18 @@ export const memory: StorageEngine = {
     return Promise.resolve(cache[key] === undefined ? null : cache[key]!);
   },
   setItem(key, value) {
-    cache[key] = value;
-    return Promise.resolve();
+    return Promise.resolve().then(() => {
+      cache[key] = value;
+    });
   },
   removeItem(key) {
-    cache[key] = undefined;
-    return Promise.resolve();
+    return Promise.resolve().then(() => {
+      cache[key] = undefined;
+    });
   },
   clear() {
-    cache = {};
-    return Promise.resolve();
+    return Promise.resolve().then(() => {
+      cache = {};
+    });
   },
 };
