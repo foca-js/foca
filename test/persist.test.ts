@@ -8,7 +8,7 @@ import {
   persistModel,
 } from './models/persist-model';
 
-const stringifyState = (model: Model<string, object, object, object>) => {
+const stringifyState = (model: Model) => {
   return JSON.stringify(JSON.stringify(model.state));
 };
 

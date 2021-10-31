@@ -49,7 +49,7 @@ export interface PersistOptions {
   /**
    * 允许持久化的模型列表
    */
-  models: Model<string, object, object, object>[];
+  models: Model[];
 }
 
 type CustomModelPersist = Required<ModelPersist<object>>;
@@ -62,7 +62,7 @@ export class PersistItem {
   protected readonly records: Record<
     string,
     {
-      model: Model<string, object, object, object>;
+      model: Model;
       persist: CustomModelPersist;
       serialized?: PersistSerialized;
       decodeState?: object;
@@ -73,9 +73,7 @@ export class PersistItem {
     this.key = '@@foca.persist:' + options.key;
 
     options.models.forEach((model) => {
-      const persist =
-        (model as unknown as InternalModel<any, any, any, any>)._$opts
-          .persist || {};
+      const persist = (model as unknown as InternalModel)._$opts.persist || {};
 
       this.records[model.name] = {
         model,

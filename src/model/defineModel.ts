@@ -85,19 +85,19 @@ type ModelEffect<State extends object, Effect extends object> = {
 };
 
 export type Model<
-  Name extends string,
-  State extends object,
-  Action extends object,
-  Effect extends object,
+  Name extends string = string,
+  State extends object = object,
+  Action extends object = object,
+  Effect extends object = object,
 > = BaseModel<Name, State> &
   ModelAction<State, Action> &
   ModelEffect<State, Effect>;
 
 export type InternalModel<
-  Name extends string,
-  State extends object,
-  Action extends object,
-  Effect extends object,
+  Name extends string = string,
+  State extends object = object,
+  Action extends object = object,
+  Effect extends object = object,
 > = BaseModel<Name, State> & {
   _$opts: DefineModelOptions<State, Action, Effect>;
 };

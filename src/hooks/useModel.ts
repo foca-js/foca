@@ -9,10 +9,10 @@ import { useCustomSelector } from './useCustomSelector';
  * * 最后一个参数如果是**函数**，则为状态过滤函数，过滤函数的结果视为最终返回值。
  */
 export function useModel<State extends object>(
-  model: Model<string, State, object, object>,
+  model: Model<string, State>,
 ): State;
 export function useModel<State extends object, T>(
-  model: Model<any, State, object, object>,
+  model: Model<any, State>,
   selector: (state: State) => T,
 ): T;
 
@@ -22,8 +22,8 @@ export function useModel<
   Name2 extends string,
   State2 extends object,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
 ): {
   [K in Name1]: State1;
 } & {
@@ -36,8 +36,8 @@ export function useModel<
   State2 extends object,
   T,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
   selector: (state1: State1, state2: State2) => T,
 ): T;
 
@@ -49,9 +49,9 @@ export function useModel<
   Name3 extends string,
   State3 extends object,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
-  model3: Model<Name3, State3, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
+  model3: Model<Name3, State3>,
 ): {
   [K in Name1]: State1;
 } & {
@@ -68,9 +68,9 @@ export function useModel<
   State3 extends object,
   T,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
-  model3: Model<Name3, State3, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
+  model3: Model<Name3, State3>,
   selector: (state1: State1, state2: State2, state3: State3) => T,
 ): T;
 
@@ -84,10 +84,10 @@ export function useModel<
   Name4 extends string,
   State4 extends object,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
-  model3: Model<Name3, State3, object, object>,
-  model4: Model<Name4, State4, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
+  model3: Model<Name3, State3>,
+  model4: Model<Name4, State4>,
 ): {
   [K in Name1]: State1;
 } & {
@@ -108,10 +108,10 @@ export function useModel<
   State4 extends object,
   T,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
-  model3: Model<Name3, State3, object, object>,
-  model4: Model<Name4, State4, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
+  model3: Model<Name3, State3>,
+  model4: Model<Name4, State4>,
   selector: (
     state1: State1,
     state2: State2,
@@ -132,11 +132,11 @@ export function useModel<
   Name5 extends string,
   State5 extends object,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
-  model3: Model<Name3, State3, object, object>,
-  model4: Model<Name4, State4, object, object>,
-  model5: Model<Name5, State5, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
+  model3: Model<Name3, State3>,
+  model4: Model<Name4, State4>,
+  model5: Model<Name5, State5>,
 ): {
   [K in Name1]: State1;
 } & {
@@ -161,11 +161,11 @@ export function useModel<
   State5 extends object,
   T,
 >(
-  model1: Model<Name1, State1, object, object>,
-  model2: Model<Name2, State2, object, object>,
-  model3: Model<Name3, State3, object, object>,
-  model4: Model<Name4, State4, object, object>,
-  model5: Model<Name5, State5, object, object>,
+  model1: Model<Name1, State1>,
+  model2: Model<Name2, State2>,
+  model3: Model<Name3, State3>,
+  model4: Model<Name4, State4>,
+  model5: Model<Name5, State5>,
   selector: (
     state1: State1,
     state2: State2,
@@ -176,7 +176,7 @@ export function useModel<
 ): T;
 
 export function useModel(...args: any[]): any {
-  const models = args as Model<any, any, object, object>[];
+  const models = args as Model<any, any>[];
   const selector: Function | undefined =
     typeof args[args.length - 1] === 'function' ? args.pop() : void 0;
 
