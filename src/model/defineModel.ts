@@ -36,7 +36,14 @@ export interface SetState<State extends object> {
    *   state.count += 1;
    * });
    * ```
+   *
+   * 如果你要返回一个全新的**完整数据**，你也可以直接传给dispatch而不需要使用回调。
+   *
+   * ```typescript
+   * this.dispatch({ count: 10 });
+   * ```
    */
+  dispatch(state: State): AnyAction;
   dispatch(fn: (state: State) => State | void): AnyAction;
 }
 
@@ -213,7 +220,11 @@ export const defineModel = <
     (state: State, fn: (state: State) => State | void) => fn(state),
   );
 
-  ctx.dispatch = (fn: (state: State) => State | void) => anonymousAction(fn);
+  ctx.dispatch = (fn_state: State | ((state: State) => State | void)) => {
+    return anonymousAction(
+      typeof fn_state === 'function' ? fn_state : () => fn_state,
+    );
+  };
 
   const transformedActions: Record<string, WrapAction<State>> = {};
   if (actions) {

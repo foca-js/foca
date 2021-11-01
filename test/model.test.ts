@@ -81,3 +81,16 @@ test('Support Map/Set State', () => {
   expect(complexModel.state.users).not.toBe(map);
   expect(complexModel.state.ids).not.toBe(set);
 });
+
+test('Dispatch without function callback in effect method', () => {
+  expect(basicModel.state.count).toBe(0);
+
+  basicModel.dispatchWithFunction(15);
+  expect(basicModel.state.count).toBe(15);
+
+  basicModel.dispatchWithFunction(26);
+  expect(basicModel.state.count).toBe(26);
+
+  basicModel.dispatchWithFunction(54.3);
+  expect(basicModel.state.count).toBe(54.3);
+});

@@ -38,6 +38,12 @@ export const basicModel = defineModel('basic', {
 
       return 'OK';
     },
+    dispatchWithFunction(step: number) {
+      this.dispatch({
+        count: step,
+        hello: 'earth',
+      });
+    },
     async bar() {
       return this.foo('', 100);
     },
