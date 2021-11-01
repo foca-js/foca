@@ -1,7 +1,7 @@
 import { AnyAction } from 'redux';
 import cloneDeep from 'clone';
 import assign from 'object-assign';
-import { DispatchAction, WrapAction, wrapAction } from './ActionManager';
+import { WrapAction, wrapAction } from './ActionManager';
 import { WrapEffect, wrapEffect } from './EffectManager';
 import { store } from '../store/StoreAdvanced';
 import { ReducerManager } from '../reducers/ReducerManager';
@@ -74,7 +74,7 @@ type ModelAction<State extends object, Action extends object> = {
     state: State,
     ...args: infer P
   ) => State | void
-    ? (...args: P) => DispatchAction<State, P[0]>
+    ? (...args: P) => AnyAction
     : never;
 };
 
