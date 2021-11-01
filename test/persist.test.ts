@@ -71,7 +71,7 @@ test('hydrate state from storage', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify({ counter: 15 }),
+          d: JSON.stringify({ counter: 15 }, jsonStringifyReplacer),
         },
       },
     }),
@@ -97,7 +97,7 @@ test('hydrate failed due to different persist version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
         },
       },
     }),
@@ -119,7 +119,7 @@ test('hydrate failed due to different model version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 17,
-          d: JSON.stringify(persistModel.state),
+          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
         },
       },
     }),
@@ -147,7 +147,7 @@ test('hydrate failed due to expired', async () => {
         [persistModel.name]: {
           t: Date.now() - 101,
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
         },
       },
     }),
@@ -175,7 +175,7 @@ test('rehydrate due to time expired', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
         },
       },
     }),
@@ -214,7 +214,7 @@ test('hydrate failed due to invalid format', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state) + '$$$$',
+          d: JSON.stringify(persistModel.state, jsonStringifyReplacer) + '$$$$',
         },
       },
     }),
@@ -245,12 +245,12 @@ test('abandon unregisted model', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
         },
         [basicModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(basicModel.state),
+          d: JSON.stringify(basicModel.state, jsonStringifyReplacer),
         },
       },
     }),
@@ -286,7 +286,10 @@ test('model can specific persist version', async () => {
         [hasVersionPersistModel.name]: {
           t: Date.now(),
           v: 10,
-          d: JSON.stringify(hasVersionPersistModel.state),
+          d: JSON.stringify(
+            hasVersionPersistModel.state,
+            jsonStringifyReplacer,
+          ),
         },
       },
     }),
@@ -315,7 +318,7 @@ test('model can specific persist decoder', async () => {
         [hasDecodePersistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(hasDecodePersistModel.state),
+          d: JSON.stringify(hasDecodePersistModel.state, jsonStringifyReplacer),
         },
       },
     }),

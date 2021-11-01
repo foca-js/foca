@@ -2,6 +2,7 @@ import sleep from 'sleep-promise';
 import { engines, store } from '../src';
 import { StoreError } from '../src/exceptions/StoreError';
 import { PersistSchema } from '../src/persist/PersistItem';
+import { jsonStringifyReplacer } from '../src/utils/json';
 import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
 import {
@@ -20,18 +21,21 @@ const initializeStoreWithPersist = () => {
     persist: [
       {
         key: 'test1',
+        keyPrefix: 'Test:',
         version: 1,
         engine: engines.memoryStorage,
         models: [basicModel, complexModel],
       },
       {
         key: 'test1',
+        keyPrefix: 'Test:',
         version: 1,
         engine: engines.localStorage,
         models: [persistModel],
       },
       {
         key: 'test2',
+        keyPrefix: 'Test:',
         version: 1,
         engine: engines.memoryStorage,
         models: [hasVersionPersistModel, hasDecodePersistModel],
@@ -81,17 +85,20 @@ test('Store can define persist with different engine', async () => {
 
 test('Store can hydrate persist state', async () => {
   await engines.memoryStorage.setItem(
-    '@@foca.persist:test1',
+    'Test:test1',
     JSON.stringify(<PersistSchema>{
       v: 1,
       d: {
         [basicModel.name]: {
           v: 0,
           t: Date.now(),
-          d: JSON.stringify({
-            count: 123,
-            hello: 'earth',
-          }),
+          d: JSON.stringify(
+            {
+              count: 123,
+              hello: 'earth',
+            },
+            jsonStringifyReplacer,
+          ),
         },
       },
     }),

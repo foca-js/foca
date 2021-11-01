@@ -40,6 +40,10 @@ export interface PersistOptions {
    */
   key: string;
   /**
+   * 存储名称前缀，默认值：@@foca.persist:
+   */
+  keyPrefix?: string;
+  /**
    * 版本号
    */
   version: string | number;
@@ -71,7 +75,7 @@ export class PersistItem {
   > = {};
 
   constructor(protected readonly options: PersistOptions) {
-    this.key = '@@foca.persist:' + options.key;
+    this.key = (options.keyPrefix || '@@foca.persist:') + options.key;
 
     options.models.forEach((model) => {
       const persist = (model as unknown as InternalModel)._$opts.persist || {};
