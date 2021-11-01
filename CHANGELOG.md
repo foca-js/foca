@@ -1,3 +1,9 @@
+## [0.1.2](https://github.com/foca-js/foca/compare/v0.1.1...v0.1.2)
+
+#### 2021-11-01
+
+- 存储引擎可自定义 keyPrefix 参数
+
 ## [0.1.1](https://github.com/foca-js/foca/compare/v0.1.0...v0.1.1)
 
 #### 2021-10-31
