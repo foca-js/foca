@@ -37,7 +37,7 @@ export class EffectManager<State extends object> {
       })
       .catch((e: unknown) => {
         this.dispatchStatus(
-          'fail',
+          'failed',
           false,
           e instanceof EffectError
             ? e.meta
@@ -55,7 +55,7 @@ export class EffectManager<State extends object> {
       });
   }
 
-  dispatchStatus(status: '-' | 'ok' | 'fail', loading: boolean, meta?: Meta) {
+  dispatchStatus(status: '-' | 'ok' | 'failed', loading: boolean, meta?: Meta) {
     store.dispatch<MetaAction>({
       type: this.uniqueKey + ' ' + status,
       model: this.ctx.name,
