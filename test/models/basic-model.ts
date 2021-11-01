@@ -38,7 +38,7 @@ export const basicModel = defineModel('basic', {
 
       return 'OK';
     },
-    dispatchWithFunction(step: number) {
+    dispatchWithoutFunction(step: number) {
       this.dispatch({
         count: step,
         hello: 'earth',

@@ -85,12 +85,12 @@ test('Support Map/Set State', () => {
 test('Dispatch without function callback in effect method', () => {
   expect(basicModel.state.count).toBe(0);
 
-  basicModel.dispatchWithFunction(15);
+  basicModel.dispatchWithoutFunction(15);
   expect(basicModel.state.count).toBe(15);
 
-  basicModel.dispatchWithFunction(26);
+  basicModel.dispatchWithoutFunction(26);
   expect(basicModel.state.count).toBe(26);
 
-  basicModel.dispatchWithFunction(54.3);
+  basicModel.dispatchWithoutFunction(54.3);
   expect(basicModel.state.count).toBe(54.3);
 });
