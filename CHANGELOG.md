@@ -1,3 +1,11 @@
+## [0.1.3](https://github.com/foca-js/foca/compare/v0.1.1...v0.1.2)
+
+#### 2021-11-012
+
+- action 的返回类型更新为 AnyAction
+- 内部方法 dispatch 现支持**直接**传入完整的新 state。如果你只想更新 state 的某个值，则任然使用回调。
+- 修改异步方法报错时 action.type 的文字
+
 ## [0.1.2](https://github.com/foca-js/foca/compare/v0.1.1...v0.1.2)
 
 #### 2021-11-01
