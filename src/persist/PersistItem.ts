@@ -68,8 +68,19 @@ export class PersistItem {
     string,
     {
       model: Model;
+      /**
+       * 模型的persist参数
+       */
       persist: CustomModelPersist;
+      /**
+       * 已经存储的模型内容，data是字符串。
+       * 存储时，如果各项属性符合条件，则会当作最终值，从而省去了系列化的过程。
+       */
       serialized?: PersistSerialized;
+      /**
+       * 已经存储的模型内容，data是对象。
+       * 主要用于和store变化后的state对比。
+       */
       decodeState?: object;
     }
   > = {};
