@@ -27,26 +27,6 @@ export interface GetInitialState<State> {
   readonly initialState: State;
 }
 
-export interface SetState<State extends object> {
-  /**
-   * 立即更改状态，支持**immer**操作
-   *
-   * ```typescript
-   * this.dispatch((state) => {
-   *   state.count += 1;
-   * });
-   * ```
-   *
-   * 如果你要返回一个全新的**完整数据**，你也可以直接传给dispatch而不需要使用回调。
-   *
-   * ```typescript
-   * this.dispatch({ count: 10 });
-   * ```
-   */
-  dispatch(state: State): AnyAction;
-  dispatch(fn: (state: State) => State | void): AnyAction;
-}
-
 export interface ModelPersist<State extends object> {
   /**
    * 持久化版本号，数据结构变化后建议立即升级该版本。默认值：0
@@ -68,9 +48,28 @@ export interface ActionCtx<State extends object>
     GetInitialState<State> {}
 
 export interface EffectCtx<State extends object>
-  extends SetState<State>,
-    GetState<State>,
-    ActionCtx<State> {}
+  extends ActionCtx<State>,
+    GetState<State> {
+  /**
+   * 立即更改状态，支持**immer**操作
+   *
+   * ```typescript
+   * this.dispatch((state) => {
+   *   state.count += 1;
+   * });
+   * ```
+   *
+   * 如果你是要替换**全部状态**，可以直接传给dispatch
+   *
+   * ```typescript
+   * this.dispatch({
+   *   count: 10,
+   * });
+   * ```
+   */
+  dispatch(state: State): AnyAction;
+  dispatch(fn: (state: State) => State | void): AnyAction;
+}
 
 export interface BaseModel<Name extends string, State extends object>
   extends GetState<State>,
@@ -214,15 +213,15 @@ export const defineModel = <
     dispatch: noop,
   };
 
-  const anonymousAction = wrapAction(
+  const internalDispatcher = wrapAction(
     ctx,
-    'anonymous',
+    'dispatch',
     (state: State, fn: (state: State) => State | void) => fn(state),
   );
 
-  ctx.dispatch = (fn_state: State | ((state: State) => State | void)) => {
-    return anonymousAction(
-      typeof fn_state === 'function' ? fn_state : () => fn_state,
+  ctx.dispatch = (fn_or_state: State | ((state: State) => State | void)) => {
+    return internalDispatcher(
+      typeof fn_or_state === 'function' ? fn_or_state : () => fn_or_state,
     );
   };
 

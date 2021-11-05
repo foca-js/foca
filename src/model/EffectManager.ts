@@ -24,7 +24,7 @@ export class EffectManager<State extends object> {
   execute(args: any[]) {
     const mayBePromise = this.fn.apply(this.ctx, args);
 
-    if (!isPromise<any>(mayBePromise)) {
+    if (!isPromise(mayBePromise)) {
       return mayBePromise;
     }
 

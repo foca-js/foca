@@ -18,7 +18,7 @@ export class ActionManager<State extends object> {
     protected actionName: string,
     protected fn: (state: State, ...args: any[]) => any,
   ) {
-    this.actionType = ctx.name + '_' + actionName;
+    this.actionType = ctx.name + '.' + actionName;
   }
 
   execute(args: any[]) {
