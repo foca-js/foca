@@ -20,3 +20,4 @@ export { useModel } from './hooks/useModel';
 export { useLoading } from './hooks/useLoading';
 export { useMeta } from './hooks/useMeta';
 export { Meta } from './actions/meta';
+export { EffectError } from './exceptions/EffectError';
