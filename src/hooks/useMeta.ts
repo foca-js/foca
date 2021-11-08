@@ -1,5 +1,6 @@
+import { MetaStateItem } from '../actions/meta';
 import { AsyncEffect } from '../model/EffectManager';
-import { metaManager, MetaStateItem } from '../reducers/MetaManger';
+import { metaManager } from '../reducers/MetaManger';
 import { useCustomSelector } from './useCustomSelector';
 
 type PromiseEffect = AsyncEffect;

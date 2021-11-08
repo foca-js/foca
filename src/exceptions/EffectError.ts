@@ -1,4 +1,4 @@
-import type { Meta } from '../reducers/MetaManger';
+import { Meta } from '../actions/meta';
 
 export class EffectError extends Error {
   constructor(public readonly meta: Meta) {

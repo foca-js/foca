@@ -1,16 +1,12 @@
 import { AnyAction } from 'redux';
 import { store } from '../store/StoreAdvanced';
-import { MetaAction } from '../model/EffectManager';
 import { ReducerManager } from './ReducerManager';
-import { HydrateMetaAction, TYPE_HYDRATE_META } from '../actions/meta';
-
-export interface Meta {
-  message?: string;
-}
-
-export interface MetaStateItem extends Meta {
-  loading: boolean;
-}
+import {
+  HydrateMetaAction,
+  MetaAction,
+  MetaStateItem,
+  TYPE_HYDRATE_META,
+} from '../actions/meta';
 
 type Status = 'untracked' | 'pending' | 'using';
 

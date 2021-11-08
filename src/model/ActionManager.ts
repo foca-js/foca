@@ -1,14 +1,6 @@
-import { Action } from 'redux';
+import { DispatchAction } from '../actions/dispatch';
 import { store } from '../store/StoreAdvanced';
 import type { ActionCtx } from './defineModel';
-
-export interface DispatchAction<State extends object = object, Payload = object>
-  extends Action<string> {
-  model: string;
-  method: string;
-  payload: Payload;
-  consumer?(state: State, action: DispatchAction<State, Payload>): State | void;
-}
 
 export class ActionManager<State extends object> {
   protected readonly actionType: string;

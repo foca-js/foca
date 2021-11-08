@@ -1,14 +1,9 @@
 import { store } from '../store/StoreAdvanced';
-import type { DispatchAction } from './ActionManager';
+import { Meta, MetaAction, MetaStateItem } from '../actions/meta';
 import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
-import { Meta, MetaStateItem } from '../reducers/MetaManger';
 import { metaManager } from '../reducers/MetaManger';
 import { isPromise } from '../utils/isPromise';
-
-export interface MetaAction extends DispatchAction<object, MetaStateItem> {
-  setMeta: true;
-}
 
 export class EffectManager<State extends object> {
   protected readonly uniqueKey: string;

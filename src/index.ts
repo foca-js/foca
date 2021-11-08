@@ -19,4 +19,4 @@ export { connect } from './react/connect';
 export { useModel } from './hooks/useModel';
 export { useLoading } from './hooks/useLoading';
 export { useMeta } from './hooks/useMeta';
-export { Meta } from './reducers/MetaManger';
+export { Meta } from './actions/meta';

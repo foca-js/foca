@@ -8,8 +8,8 @@ import {
   isDraft,
 } from 'immer';
 import isEqual from 'lodash.isequal';
-import type { DispatchAction } from '../model/ActionManager';
 import { TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
+import { DispatchAction } from '../actions/dispatch';
 
 const immer = new Immer({
   autoFreeze: process.env.NODE_ENV !== 'production',

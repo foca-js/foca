@@ -1,6 +1,7 @@
 import { store } from '../src';
+import { MetaStateItem } from '../src/actions/meta';
 import { EffectError } from '../src/exceptions/EffectError';
-import { metaManager, MetaStateItem } from '../src/reducers/MetaManger';
+import { metaManager } from '../src/reducers/MetaManger';
 import { basicModel } from './models/basic-model';
 
 beforeEach(() => {
