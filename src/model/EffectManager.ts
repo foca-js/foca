@@ -1,3 +1,4 @@
+import assign from 'object-assign';
 import { store } from '../store/StoreAdvanced';
 import { Meta, MetaAction, MetaStateItem } from '../actions/meta';
 import type { EffectCtx } from './defineModel';
@@ -6,15 +7,11 @@ import { metaManager } from '../reducers/MetaManger';
 import { isPromise } from '../utils/isPromise';
 
 export class EffectManager<State extends object> {
-  protected readonly uniqueKey: string;
-
   constructor(
     protected ctx: EffectCtx<State>,
     protected methodName: string,
     protected fn: (...args: any[]) => any,
-  ) {
-    this.uniqueKey = ctx.name + '.' + methodName;
-  }
+  ) {}
 
   execute(args: any[]) {
     const mayBePromise = this.fn.apply(this.ctx, args);
@@ -23,15 +20,15 @@ export class EffectManager<State extends object> {
       return mayBePromise;
     }
 
-    this.dispatchStatus('-', true);
+    this.dispatchMeta('-', true);
 
     return mayBePromise
       .then((result) => {
-        this.dispatchStatus('ok', false);
+        this.dispatchMeta('ok', false);
         return result;
       })
       .catch((e: unknown) => {
-        this.dispatchStatus(
+        this.dispatchMeta(
           'failed',
           false,
           e instanceof EffectError
@@ -50,16 +47,17 @@ export class EffectManager<State extends object> {
       });
   }
 
-  dispatchStatus(status: '-' | 'ok' | 'failed', loading: boolean, meta?: Meta) {
+  protected dispatchMeta(
+    status: '-' | 'ok' | 'failed',
+    loading: boolean,
+    meta?: Meta,
+  ) {
     store.dispatch<MetaAction>({
-      type: this.uniqueKey + ' ' + status,
+      type: this.ctx.name + '.' + this.methodName + ' ' + status,
       model: this.ctx.name,
       method: this.methodName,
       setMeta: true,
-      payload: {
-        loading,
-        ...meta,
-      },
+      payload: assign({ loading }, meta),
     });
   }
 }

@@ -1,5 +1,6 @@
 import { AnyAction } from 'redux';
 import { store } from '../store/StoreAdvanced';
+import assign from 'object-assign';
 import { ReducerManager } from './ReducerManager';
 import {
   HydrateMetaAction,
@@ -77,13 +78,11 @@ class MetaManager extends ReducerManager<State> {
       const { model, method, payload } = action;
 
       if (this.getStatus(model, method) === 'using') {
-        return {
-          ...state,
-          [model]: {
-            ...state[model],
+        return assign({}, state, {
+          [model]: assign({}, state[model], {
             [method]: payload,
-          },
-        };
+          }),
+        });
       }
 
       return this.setStash(model, method, payload), state;
@@ -97,13 +96,11 @@ class MetaManager extends ReducerManager<State> {
       this.setStash(model, method, void 0);
 
       return stash
-        ? {
-            ...state,
-            [model]: {
-              ...state[model],
+        ? assign({}, state, {
+            [model]: assign({}, state[model], {
               [method]: stash,
-            },
-          }
+            }),
+          })
         : state;
     }
 
