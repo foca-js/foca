@@ -17,6 +17,7 @@
   "scripts": {
     "test": "jest",
     "prepublishOnly": "ts-prepublish",
+    "docs": "docsify serve ./docs",
     "prepare": "husky install"
   },
   "exports": {
