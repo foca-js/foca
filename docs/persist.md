@@ -38,7 +38,18 @@ key 即为存储路径，最好采用`项目名-环境名`的形式组织。纯�
 
 #### engine
 
-存储引擎。为了统一操作，引擎操作都是异步的，目前内置的引擎有：localStorage，sessionStorage 和 memoryStorage 。如果有必要，你可以自己实现一个引擎：
+存储引擎。不同的引擎会把数据存储到不同的空间，使用哪个引擎取决于项目跑在什么环境。为了统一操作，引擎操作都是异步的，目前内置的引擎有：
+
+- localStorage
+- sessionStorage
+- memoryStorage
+
+如果内置引擎无法满足，那么下面列举的第三方库也可以直接引入当作存储引擎：
+
+- [localForage](https://www.npmjs.com/package/localforage)
+- [@react-native-async-storage/async-storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage)
+
+如果有必要，你也可以自己实现一个引擎：
 
 ```typescript
 import { StorageEngine } from 'foca';
@@ -50,8 +61,6 @@ export const customEngine: StorageEngine = {
   clear() {},
 };
 ```
-
-如果你的 React-Native 应用正在使用`@react-native-async-storage/async-storage`，那么可以直接引入当作引擎。
 
 #### version
 
