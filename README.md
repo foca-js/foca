@@ -26,9 +26,7 @@ yarn add foca
 
 # 推荐搭配
 
-| 仓库                                                    | 版本                                                                                            | 描述                        | 平台      |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------- | --------- |
-| [axios](https://github.com/axios/axios)                 | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)               | 当下最流行的请求库          | React, RN |
-| [foca-request](https://github.com/foca-js/foca-request) | [![npm](https://img.shields.io/npm/v/foca-request)](https://www.npmjs.com/package/foca-request) | 基于 axios 定制封装的请求库 | React, RN |
-| [foca-taro](https://github.com/foca-js/foca-taro)       | [![npm](https://img.shields.io/npm/v/foca-taro)](https://www.npmjs.com/package/foca-taro)       | Taro 请求库/存储引擎        | TaroJs    |
-| [foca-graphql](https://github.com/foca-js/foca-graphql) | [![npm](https://img.shields.io/npm/v/foca-graphql)](https://www.npmjs.com/package/foca-graphql) | 生成动态 Graphql 模板       | All       |
+| 仓库                                                                  | 版本                                                                                                          | 描述                      | 平台      |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------- | --------- |
+| [axios](https://github.com/axios/axios)                               | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                             | 当下最流行的请求库        | React, RN |
+| [foca-axios-enhancer](https://github.com/foca-js/foca-axios-enhancer) | [![npm](https://img.shields.io/npm/v/foca-axios-enhancer)](https://www.npmjs.com/package/foca-axios-enhancer) | 针对 axios 的增强型适配器 | React, RN |
