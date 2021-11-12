@@ -22,7 +22,7 @@ export interface GetState<State> {
 
 export interface GetInitialState<State> {
   /**
-   * 模型的初始状态（每次深拷贝）
+   * 模型的初始状态，每次获取该属性都会执行深拷贝操作
    */
   readonly initialState: State;
 }
@@ -121,14 +121,14 @@ export interface DefineModelOptions<
    * 初始状态
    *
    * ```typescript
-   * interface State {
+   * cosnt state: {
    *   count: number;
+   * } = {
+   *   count: 0,
    * }
    *
    * const model = defineModel('model1', {
-   *   state: <State>{
-   *     count: 0,
-   *   }
+   *   state
    * });
    * ```
    */
@@ -138,9 +138,7 @@ export interface DefineModelOptions<
    *
    * ```typescript
    * const model = defineModel('model1', {
-   *   state: <{ count: 0 }>{
-   *     count: 0,
-   *   },
+   *   state,
    *   actions: {
    *     plus(state, step: number) {
    *       state.count += step;
@@ -159,7 +157,7 @@ export interface DefineModelOptions<
    *
    * ```typescript
    * const model = defineModel('model1', {
-   *   state: {},
+   *   state,
    *   effects: {
    *     async foo(p1: string, p2: number) {
    *       await Promise.resolve();

@@ -16,10 +16,10 @@ export interface UserItem {
   age: number;
 }
 
-type State = UserItem[];
+const state: UserItem[] = [];
 
 export const userModel = defineModel('users', {
-  state: <State>[],
+  state,
 });
 ```
 
@@ -33,31 +33,31 @@ foca 基于 redux 深度定制，所以理论上 state 必须是个纯对象。�
 
 ```typescript
 // 1
-type State = Map<string, string>;
+cosnt state = new Map<string, string>();
 defineModel('model-map', {
-  state: <State>new Map(),
+  state,
 });
 
 // 2
-type State = Set<string>;
+cosnt state = new Set<string>();
 defineModel('model-set', {
-  state: <State>new Set(),
+  state,
 });
 
 // 3
-type State = {
+cosnt state: {
   data1: Set<string>;
   data2: Map<string, string>;
   data3: number;
   data4: { [k: string]: string };
-};
-defineModel('model-map-set', {
-  state: <State>{
+} = {
     data1: new Set(),
     data2: new Map(),
     data3: 1,
     data4: {},
-  },
+};
+defineModel('model-map-set', {
+  state,
 });
 ```
 
@@ -67,7 +67,7 @@ defineModel('model-map-set', {
 
 ```typescript
 export const userModel = defineModel('users', {
-  state: <State>[],
+  state,
   actions: {
     addUser(state, user: UserItem) {
       state.push(user);
@@ -105,7 +105,7 @@ export const userModel = defineModel('users', {
 
 ```typescript
 const userModel = defineModel('users', {
-  state: <State>[],
+  state,
   effects: {
     async get() {
       const users = await http.get<UserItem[]>('/users');
@@ -133,7 +133,7 @@ const userModel = defineModel('users', {
 
 ```typescript
 const userModel = defineModel('users', {
-  state: <State>[],
+  state,
   actions: {
     addUser(state, user: UserItem) {
       state.push(user);

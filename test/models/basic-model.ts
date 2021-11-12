@@ -2,16 +2,16 @@ import sleep from 'sleep-promise';
 import { defineModel } from '../../src';
 import { EffectError } from '../../src/exceptions/EffectError';
 
-interface State {
+const state: {
   count: number;
   hello: string;
-}
+} = {
+  count: 0,
+  hello: 'world',
+};
 
 export const basicModel = defineModel('basic', {
-  state: <State>{
-    count: 0,
-    hello: 'world',
-  },
+  state,
   actions: {
     plus(state, step: number) {
       state.count += step;

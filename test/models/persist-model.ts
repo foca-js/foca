@@ -1,13 +1,13 @@
 import { cloneModel, defineModel } from '../../src';
 
-interface State {
+const state: {
   counter: number;
-}
+} = {
+  counter: 0,
+};
 
 export const persistModel = defineModel('persist', {
-  state: <State>{
-    counter: 0,
-  },
+  state,
   actions: {
     plus(state, step: number) {
       state.counter += step;

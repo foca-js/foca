@@ -1,15 +1,15 @@
 import { defineModel } from '../../src';
 
-interface State {
+const state: {
   users: Map<number, string>;
   ids: Set<number>;
-}
+} = {
+  users: new Map(),
+  ids: new Set(),
+};
 
 export const complexModel = defineModel('complex', {
-  state: <State>{
-    users: new Map(),
-    ids: new Set(),
-  },
+  state,
   actions: {
     addUser(state, id: number, name: string) {
       state.users.set(id, name);
