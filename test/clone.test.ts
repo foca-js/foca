@@ -39,7 +39,7 @@ test('Clone model with same name is invalid', () => {
 
 test('Reset cloned model state', () => {
   const model = cloneModel('model' + ++modelIndex, basicModel, {
-    state: {
+    initialState: {
       count: 20,
       hello: 'cat',
     },

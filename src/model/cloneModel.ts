@@ -19,7 +19,7 @@ export const cloneModel = <
   options?: Partial<
     Pick<
       DefineModelOptions<State, Action, Effect>,
-      'state' | 'keepStateFromRefresh' | 'persist'
+      'initialState' | 'keepStateFromRefresh' | 'persist'
     >
   >,
 ): Model<Name, State, Action, Effect> => {

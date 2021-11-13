@@ -16,10 +16,10 @@ export interface UserItem {
   age: number;
 }
 
-const state: UserItem[] = [];
+const initialState: UserItem[] = [];
 
 export const userModel = defineModel('users', {
-  state,
+  initialState,
 });
 ```
 
@@ -33,19 +33,19 @@ foca 基于 redux 深度定制，所以理论上 state 必须是个纯对象。�
 
 ```typescript
 // 1
-cosnt state = new Map<string, string>();
+cosnt initialState = new Map<string, string>();
 defineModel('model-map', {
-  state,
+  initialState,
 });
 
 // 2
-cosnt state = new Set<string>();
+cosnt initialState = new Set<string>();
 defineModel('model-set', {
-  state,
+  initialState,
 });
 
 // 3
-cosnt state: {
+cosnt initialState: {
   data1: Set<string>;
   data2: Map<string, string>;
   data3: number;
@@ -57,7 +57,7 @@ cosnt state: {
     data4: {},
 };
 defineModel('model-map-set', {
-  state,
+  initialState,
 });
 ```
 
@@ -67,7 +67,7 @@ defineModel('model-map-set', {
 
 ```typescript
 export const userModel = defineModel('users', {
-  state,
+  initialState,
   actions: {
     addUser(state, user: UserItem) {
       state.push(user);
@@ -105,7 +105,7 @@ export const userModel = defineModel('users', {
 
 ```typescript
 const userModel = defineModel('users', {
-  state,
+  initialState,
   effects: {
     async get() {
       const users = await http.get<UserItem[]>('/users');
@@ -133,7 +133,7 @@ const userModel = defineModel('users', {
 
 ```typescript
 const userModel = defineModel('users', {
-  state,
+  initialState,
   actions: {
     addUser(state, user: UserItem) {
       state.push(user);
@@ -152,14 +152,18 @@ const userModel = defineModel('users', {
 
 # 克隆
 
-如果你有两个 state 长得很像，而且操作方法也一致，你会重复写一遍模型吗？还是复制过去另起炉灶？不用这么麻烦，看看 foca 怎么做：
+虽然比较不常用，但有时候为了同一个页面的不同模块能独立使用模型数据，你就得需要复制这个模型，并把名字改掉。其实也不用这么麻烦，foca 给你来个惊喜：
 
 ```typescript
-import { cloneModel } from 'foca';
+import { defineModel, cloneModel } from 'foca';
 
+// 你打算用在各个普通页面里。
+cosnt userModel = defineModel('users', { ... });
+
+// 你打算用在通用的用户列表弹窗里。
 const user1Model = cloneModel('users1', userModel);
-const agentModel = cloneModel('agents', userModel);
-const teacherModel = cloneModel('teachers', userModel);
+// 你打算用在页头或页脚模块里。
+const user2Model = cloneModel('users2', userModel);
 ```
 
-共享方法但 state 是独立的，这是个不错的主意，你不用再维护多份代码了。
+共享方法但状态是独立的，这是个不错的主意，你只要维护一份代码就行了。

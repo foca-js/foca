@@ -1,6 +1,6 @@
 import { defineModel } from '../../src';
 
-const state: {
+const initialState: {
   users: Map<number, string>;
   ids: Set<number>;
 } = {
@@ -9,7 +9,7 @@ const state: {
 };
 
 export const complexModel = defineModel('complex', {
-  state,
+  initialState,
   actions: {
     addUser(state, id: number, name: string) {
       state.users.set(id, name);

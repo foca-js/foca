@@ -121,24 +121,24 @@ export interface DefineModelOptions<
    * 初始状态
    *
    * ```typescript
-   * cosnt state: {
+   * cosnt initialState: {
    *   count: number;
    * } = {
    *   count: 0,
    * }
    *
    * const model = defineModel('model1', {
-   *   state
+   *   initialState
    * });
    * ```
    */
-  state: State;
+  initialState: State;
   /**
    * 定义修改状态的方法。参数一自动推断为state类型。支持**immer**操作。支持多参数。
    *
    * ```typescript
    * const model = defineModel('model1', {
-   *   state,
+   *   initialState,
    *   actions: {
    *     plus(state, step: number) {
    *       state.count += step;
@@ -157,7 +157,7 @@ export interface DefineModelOptions<
    *
    * ```typescript
    * const model = defineModel('model1', {
-   *   state,
+   *   initialState,
    *   effects: {
    *     async foo(p1: string, p2: number) {
    *       await Promise.resolve();
@@ -197,7 +197,7 @@ export const defineModel = <
   name: Name,
   options: DefineModelOptions<State, Action, Effect>,
 ): Model<Name, State, Action, Effect> => {
-  const { state, actions, effects, keepStateFromRefresh } = options;
+  const { initialState, actions, effects, keepStateFromRefresh } = options;
 
   const ctx: EffectCtx<State> = {
     name,
@@ -205,7 +205,7 @@ export const defineModel = <
       return store.getState()[name] as State;
     },
     get initialState() {
-      return cloneDeep(state);
+      return cloneDeep(initialState);
     },
     // @ts-expect-error
     dispatch: noop,
@@ -268,7 +268,7 @@ export const defineModel = <
 
   const reducer = new ReducerManager({
     name: name,
-    initial: state,
+    initial: initialState,
     preventRefresh: !!keepStateFromRefresh,
   });
 

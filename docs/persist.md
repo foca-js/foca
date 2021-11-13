@@ -70,7 +70,7 @@ export const customEngine: StorageEngine = {
 
 ```typescript
 const userModel = defineModel({
-  state: [],
+  initialState: [],
   persist: {
     version: 1,
   },
@@ -99,7 +99,7 @@ store.init({
 
 // File: userModel.ts
 const userModel = defineModel({
-  state: [],
+  initialState: [],
   persist: {
     maxAge: 10 * 60 * 1000,
   },

@@ -1,13 +1,13 @@
 import { cloneModel, defineModel } from '../../src';
 
-const state: {
+const initialState: {
   counter: number;
 } = {
   counter: 0,
 };
 
 export const persistModel = defineModel('persist', {
-  state,
+  initialState,
   actions: {
     plus(state, step: number) {
       state.counter += step;
@@ -19,7 +19,7 @@ export const persistModel = defineModel('persist', {
 });
 
 export const hasVersionPersistModel = cloneModel('persit1', persistModel, {
-  state: {
+  initialState: {
     counter: 56,
   },
   persist: {
