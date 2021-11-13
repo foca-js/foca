@@ -1,3 +1,10 @@
+## [0.1.4](https://github.com/foca-js/foca/compare/v0.1.3...v0.1.4)
+
+#### 2021-11-13
+
+- 删除 tslib 依赖
+- 定义模型时的属性 state 重构为 initialState，防止和 actions 的 state 变量名重叠以及 eslint 规则报错。
+
 ## [0.1.3](https://github.com/foca-js/foca/compare/v0.1.2...v0.1.3)
 
 #### 2021-11-02
