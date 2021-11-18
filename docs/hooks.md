@@ -92,8 +92,6 @@ const loading = useLoading(userModel.create, userModel.update, ...);
 
 # useMeta
 
-本质上，useLoading 派生自 useMeta，meta 总是存储了异步函数的一些执行信息，比如是否正在执行，比如执行异常时的 message。
-
 ```typescript
 /**
  * {
@@ -101,7 +99,5 @@ const loading = useLoading(userModel.create, userModel.update, ...);
  *   message?: string;
  * }
  */
-const meta = useMeta(userModel.getUser);
+const meta = useMeta(userModel.meta);
 ```
-
-foca 自带的 meta 信息虽然只有 loading 和 message 两个属性，但这并不意味着你不能扩展它。
