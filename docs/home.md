@@ -57,8 +57,4 @@ foca 提供 **100%** 的基础类型提示，你只需关注业务中的类型�
 
 # 例子
 
-#### Sandbox
-
-#### Github 仓库
-
-[TODO 面板](https://github.com/foca-js/foca-example-todo-list)
+[foca + axios](https://github.com/foca-js/foca-demos)
