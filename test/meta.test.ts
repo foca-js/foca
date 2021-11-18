@@ -60,29 +60,12 @@ const effectName = 'pureAsync';
 const getMeta = (): MetaStateItem | undefined =>
   store.getState()[metaManager.name]?.[basicModel.name]?.[effectName];
 
-test('meta from untracked to padding', async () => {
+test('meta from untracked to used', async () => {
   expect(getMeta()).toBeUndefined();
-  const promise = basicModel.pureAsync();
-  expect(getMeta()).toBeUndefined();
-  // untracked -> pending
-  expect(metaManager.getMeta(basicModel.name, effectName).loading).toBeTruthy();
-  // pending
-  expect(metaManager.getMeta(basicModel.name, effectName).loading).toBeTruthy();
+  metaManager.get(basicModel.name, effectName);
   expect(getMeta()).toBeUndefined();
 
-  await Promise.resolve();
-  expect(getMeta()?.loading).toBeTruthy();
-
-  await promise;
-  expect(getMeta()?.loading).toBeFalsy();
-});
-
-test('meta from untracket to used', async () => {
-  expect(getMeta()).toBeUndefined();
-  metaManager.getMeta(basicModel.name, effectName);
-  expect(getMeta()).toBeUndefined();
-
-  const promise = basicModel.pureAsync();
+  const promise = basicModel[effectName]();
   expect(getMeta()).toMatchObject<MetaStateItem>({ loading: true });
 
   await promise;

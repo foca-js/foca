@@ -114,7 +114,7 @@ export const wrapEffect = <State extends object>(
   Object.defineProperties(fn, {
     meta: {
       get() {
-        return metaManager.getMeta(ctx.name, key);
+        return metaManager.get(ctx.name, key);
       },
     },
     loading: {
