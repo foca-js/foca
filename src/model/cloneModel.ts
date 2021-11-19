@@ -25,7 +25,7 @@ export const cloneModel = <
 ): Model<Name, State, Action, Effect> => {
   if (name === model.name) {
     throw new DuplicateModelError(
-      `Stop to clone model with the same name ${name}`,
+      `Stop cloning model with the same name ${name}`,
     );
   }
 
