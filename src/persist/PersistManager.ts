@@ -20,11 +20,10 @@ export class PersistManager {
   update(nextState: Record<string, object>) {
     this.timer && clearTimeout(this.timer);
     this.timer = setTimeout(() => {
-      this.timer = void 0;
-      this.list.forEach((item) => {
+      this.timer = void this.list.forEach((item) => {
         item.update(nextState);
       });
-    });
+    }, 50);
   }
 
   collect(): Record<string, object> {

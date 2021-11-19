@@ -74,7 +74,7 @@ test('Store can define persist with different engine', async () => {
   expect(spy).toHaveBeenCalledTimes(3);
   spy.mockRestore();
 
-  await sleep(5);
+  await sleep(50);
   expect(store.persistManager?.collect()).toMatchObject({
     [basicModel.name]: basicModel.state,
     [persistModel.name]: persistModel.state,
