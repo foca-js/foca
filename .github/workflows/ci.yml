@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
-        ts-version: [4.4.x]
+        ts-version: [4.4.x, 4.5.x]
 
     runs-on: ubuntu-latest
 
