@@ -44,6 +44,7 @@ class MetaManager extends ReducerManager<State> {
       const { model, method, payload } = action;
 
       if (this.isActive(model, method)) {
+        // 每次dispatch过来，loading的值理论上都是要变的，所以这里没有优化空间了
         return assign({}, state, {
           [model]: assign({}, state[model], {
             [method]: payload,

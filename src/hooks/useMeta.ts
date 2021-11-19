@@ -9,7 +9,7 @@ type PromiseEffect = AsyncEffect;
  * 检测给定的effect方法的状态
  *
  * ```typescript
- * const meta = useMeta(model.m1);
+ * const meta = useMeta(model.effectX);
  * ```
  */
 export const useMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
