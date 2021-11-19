@@ -1,5 +1,6 @@
 import { DispatchAction } from '../actions/dispatch';
 import { store } from '../store/StoreAdvanced';
+import { getArgs } from '../utils/getArgs';
 import type { ActionCtx } from './defineModel';
 
 export class ActionManager<State extends object> {
@@ -34,8 +35,6 @@ export interface WrapAction<State extends object> {
   _$action: ActionManager<State>;
 }
 
-const slice = Array.prototype.slice;
-
 export const wrapAction = <State extends object>(
   ctx: ActionCtx<State>,
   actionName: string,
@@ -43,7 +42,7 @@ export const wrapAction = <State extends object>(
 ): WrapAction<State> => {
   const manager = new ActionManager(ctx, actionName, action);
   const fn: WrapAction<State> = function () {
-    return manager.execute(slice.call(arguments));
+    return manager.execute(getArgs(arguments));
   };
 
   fn._$action = manager;

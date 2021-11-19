@@ -1,6 +1,7 @@
 import isEqual from 'lodash.isequal';
 import { shallowEqual } from 'react-redux';
 import { Model } from '../model/defineModel';
+import { getArgs } from '../utils/getArgs';
 import { useCustomSelector } from './useCustomSelector';
 
 /**
@@ -196,7 +197,7 @@ export function useModel<
 ): T;
 
 export function useModel(): any {
-  const args = slice.call(arguments);
+  const args = getArgs(arguments);
   let compareAlgorithm: CompareAlgorithm | false =
     getLastElementType(args) === 'string' && args.pop();
   const selector: Function | false =
@@ -247,8 +248,6 @@ const compareFn: Record<
   shallowEqual: shallowEqual,
   strictEqual: void 0,
 };
-
-const slice = Array.prototype.slice;
 
 const getLastElementType = (args: any[]) => {
   return args.length > 1 && typeof args[args.length - 1];

@@ -5,6 +5,7 @@ import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
 import { metaManager } from '../reducers/MetaManger';
 import { isPromise } from '../utils/isPromise';
+import { getArgs } from '../utils/getArgs';
 
 export class EffectManager<State extends object> {
   constructor(
@@ -87,8 +88,6 @@ export type WrapEffect<
   R = Promise<any>,
 > = R extends Promise<any> ? AsyncEffect<State, P, R> : SyncEffect<P, R>;
 
-const slice = Array.prototype.slice;
-
 type NonReadonly<T extends object> = {
   -readonly [K in keyof T]: T[K];
 };
@@ -100,7 +99,7 @@ export const wrapEffect = <State extends object>(
 ): WrapEffect<State> => {
   const manager = new EffectManager(ctx, key, effect);
   const fn: NonReadonly<WrapEffect<State>> & SyncEffect = function () {
-    return manager.execute.call(manager, slice.call(arguments));
+    return manager.execute.call(manager, getArgs(arguments));
   };
 
   fn.meta = {};
