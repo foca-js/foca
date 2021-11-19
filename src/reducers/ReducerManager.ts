@@ -1,12 +1,5 @@
 import type { AnyAction } from 'redux';
-import {
-  Draft,
-  enableES5,
-  enableMapSet,
-  enablePatches,
-  Immer,
-  isDraft,
-} from 'immer';
+import { enableES5, enableMapSet, Immer, isDraft } from 'immer';
 import isEqual from 'lodash.isequal';
 import { TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
 import { DispatchAction } from '../actions/dispatch';
@@ -20,7 +13,7 @@ const immer = new Immer({
  * @link https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
  * @since immer 6.0
  */
-enableES5(), enableMapSet(), enablePatches();
+enableES5(), enableMapSet();
 
 interface Options<State extends object> {
   readonly name: string;
@@ -78,37 +71,14 @@ export class ReducerManager<State extends object> {
     consumer: NonNullable<DispatchAction<State>['consumer']>,
   ): State {
     const draft = immer.createDraft(state);
-    let nextState = consumer(draft as State, action);
+    let next = consumer(draft as State, action);
 
-    if (nextState === void 0) {
-      return this.finishDraft(state, draft);
+    if (next === void 0) {
+      next = immer.finishDraft(draft) as State;
+    } else if (isDraft(next)) {
+      next = immer.finishDraft(next) as State;
     }
 
-    if (isDraft(nextState)) {
-      return this.finishDraft(state, nextState as Draft<State>);
-    }
-
-    return isEqual(state, nextState) ? state : nextState;
-  }
-
-  protected finishDraft(prevState: State, draft: Draft<State>) {
-    let changed = false;
-
-    const nextState = immer.finishDraft(draft, (migrate, revert) => {
-      changed = migrate.length !== revert.length;
-
-      if (!changed) {
-        for (let i = 0; i < migrate.length; ++i) {
-          if (migrate[i]!.op !== 'replace' || revert[i]!.op !== 'replace') {
-            changed = true;
-            break;
-          }
-        }
-      }
-
-      changed = changed || !isEqual(migrate, revert);
-    }) as State;
-
-    return changed ? nextState : prevState;
+    return isEqual(state, next) ? state : next;
   }
 }
