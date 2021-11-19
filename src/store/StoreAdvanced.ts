@@ -133,17 +133,13 @@ export class StoreAdvanced implements Store {
   protected getCompose(
     customCompose: CreateStoreOptions['compose'],
   ): typeof compose {
-    switch (customCompose) {
-      case 'redux-devtools':
-        return (
-          (typeof window === 'object' &&
-            // @ts-expect-error
-            window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-          compose
-        );
-      default:
-        return customCompose || compose;
-    }
+    return (
+      (customCompose === 'redux-devtools'
+        ? typeof window === 'object' &&
+          // @ts-expect-error
+          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+        : customCompose) || compose
+    );
   }
 
   protected get store() {
@@ -156,7 +152,7 @@ export class StoreAdvanced implements Store {
   }
 
   protected combineReducerWithPersist(): Reducer<Record<string, object>> {
-    const reducer = this.combineReducers();
+    const reducer = this.reducer;
 
     return (state, action) => {
       if (state === void 0) {
