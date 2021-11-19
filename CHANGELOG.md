@@ -1,3 +1,11 @@
+## [0.1.5](https://github.com/foca-js/foca/compare/v0.1.4...v0.1.5)
+
+#### 2021-11-19
+
+- useModel 可以手动传入对比算法，未传则由框架动态决策
+- 提升异步状态追踪性能
+- 提升数据合并性能
+
 ## [0.1.4](https://github.com/foca-js/foca/compare/v0.1.3...v0.1.4)
 
 #### 2021-11-13
