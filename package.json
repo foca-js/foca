@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^15.0.0",
+    "@testing-library/react-hooks": "^7.0.2",
     "@types/clone": "^2.1.1",
     "@types/jest": "^27.0.2",
     "@types/lodash.isequal": "^4.5.5",

@@ -1,10 +1,29 @@
 import React from 'react';
 import { FC } from 'react';
 import { act, create } from 'react-test-renderer';
-import { store, FocaProvider } from '../src';
-import App from './components/App';
+import { store, connect, FocaProvider } from '../src';
 import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
+
+let App: FC<ReturnType<typeof mapStateToProps>> = ({ countFromConnect }) => {
+  return <div id="countFromConnect">{countFromConnect}</div>;
+};
+
+const mapStateToProps = () => {
+  return {
+    countFromConnect: basicModel.state.count + complexModel.state.ids.size,
+  };
+};
+
+const Connect = connect(mapStateToProps)(App);
+
+const Root: FC = () => {
+  return (
+    <FocaProvider>
+      <Connect />
+    </FocaProvider>
+  );
+};
 
 beforeEach(() => {
   store.init();
@@ -13,15 +32,6 @@ beforeEach(() => {
 afterEach(() => {
   store.unmount();
 });
-
-const Root: FC = ({ children }) => {
-  return (
-    <FocaProvider>
-      <App />
-      {children}
-    </FocaProvider>
-  );
-};
 
 test('Get state from connect', () => {
   const dom = create(<Root />);
