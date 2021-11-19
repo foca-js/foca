@@ -10,7 +10,7 @@ import { useCustomSelector } from './useCustomSelector';
  * - `shallowEqual`  浅对比，只比较对象第一层。传递多个模型但没有selector时默认使用。
  * - `strictEqual`   全等（===）对比。只传一个模型但没有selector时默认使用。
  */
-export type CompareType = 'strictEqual' | 'shallowEqual' | 'deepEqual';
+export type CompareAlgorithm = 'strictEqual' | 'shallowEqual' | 'deepEqual';
 
 /**
  * * 获取模型的状态数据。
@@ -20,12 +20,12 @@ export type CompareType = 'strictEqual' | 'shallowEqual' | 'deepEqual';
  */
 export function useModel<State extends object>(
   model: Model<string, State>,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): State;
 export function useModel<State extends object, T>(
   model: Model<any, State>,
   selector: (state: State) => T,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): T;
 
 export function useModel<
@@ -36,7 +36,7 @@ export function useModel<
 >(
   model1: Model<Name1, State1>,
   model2: Model<Name2, State2>,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -52,7 +52,7 @@ export function useModel<
   model1: Model<Name1, State1>,
   model2: Model<Name2, State2>,
   selector: (state1: State1, state2: State2) => T,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): T;
 
 export function useModel<
@@ -66,7 +66,7 @@ export function useModel<
   model1: Model<Name1, State1>,
   model2: Model<Name2, State2>,
   model3: Model<Name3, State3>,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -87,7 +87,7 @@ export function useModel<
   model2: Model<Name2, State2>,
   model3: Model<Name3, State3>,
   selector: (state1: State1, state2: State2, state3: State3) => T,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): T;
 
 export function useModel<
@@ -104,7 +104,7 @@ export function useModel<
   model2: Model<Name2, State2>,
   model3: Model<Name3, State3>,
   model4: Model<Name4, State4>,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -135,7 +135,7 @@ export function useModel<
     state3: State3,
     state4: State4,
   ) => T,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): T;
 
 export function useModel<
@@ -155,7 +155,7 @@ export function useModel<
   model3: Model<Name3, State3>,
   model4: Model<Name4, State4>,
   model5: Model<Name5, State5>,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -192,28 +192,28 @@ export function useModel<
     state4: State4,
     state5: State5,
   ) => T,
-  compare?: CompareType,
+  compare?: CompareAlgorithm,
 ): T;
 
 export function useModel(): any {
   const args = slice.call(arguments);
-  let compareType: CompareType | false =
+  let compareAlgorithm: CompareAlgorithm | false =
     getLastElementType(args) === 'string' && args.pop();
   const selector: Function | false =
     getLastElementType(args) === 'function' && args.pop();
   const models: Model<any, any>[] = args;
 
-  if (!compareType) {
+  if (!compareAlgorithm) {
     if (selector) {
       // 返回子集或者计算过的内容，数据量相对较少。
-      compareType = 'deepEqual';
+      compareAlgorithm = 'deepEqual';
     } else if (models.length > 1) {
       // { key => model } 集合。
-      compareType = 'shallowEqual';
+      compareAlgorithm = 'shallowEqual';
     } else {
       // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
       // 所以使用时只需要全等判断。
-      compareType = 'strictEqual';
+      compareAlgorithm = 'strictEqual';
     }
   }
 
@@ -236,11 +236,11 @@ export function useModel(): any {
       result[reducerName] = state[reducerName]!;
     }
     return result;
-  }, compareFn[compareType]);
+  }, compareFn[compareAlgorithm]);
 }
 
 const compareFn: Record<
-  CompareType,
+  CompareAlgorithm,
   undefined | ((previous: any, next: any) => boolean)
 > = {
   deepEqual: isEqual,
