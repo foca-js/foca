@@ -13,17 +13,23 @@ type PromiseEffect = AsyncEffect;
  * ```
  *
  */
-export const useLoading = (
+export function useLoading(
   effect: PromiseEffect,
   ...more: PromiseEffect[]
-): boolean => {
+): boolean;
+
+export function useLoading(): boolean {
   return useCustomSelector(() => {
-    return more.concat(effect).some((wrapper) => {
-      return (
-        wrapper &&
-        wrapper._ &&
-        metaManager.get(wrapper._.model, wrapper._.method).type === 'pending'
-      );
-    });
+    for (let i = 0; i < arguments.length; ++i) {
+      const {
+        _: { model, method },
+      }: PromiseEffect = arguments[i];
+
+      // 初次执行时，必定是没有正在run的effect，所以可以全部循环到并激活meta
+      if (metaManager.get(model, method).type === 'pending') {
+        return true;
+      }
+    }
+    return false;
   });
-};
+}
