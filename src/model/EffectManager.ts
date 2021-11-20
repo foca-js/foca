@@ -33,7 +33,7 @@ export class EffectManager<State extends object> {
           'failed',
           false,
           e instanceof EffectError
-            ? e.meta
+            ? assign({}, e.meta)
             : {
                 message:
                   e instanceof Error

@@ -268,7 +268,7 @@ export const defineModel = <
 
   const reducer = new ReducerManager({
     name: name,
-    initial: initialState,
+    initialState: ctx.initialState,
     preventRefresh: !!keepStateFromRefresh,
   });
 

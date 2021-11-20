@@ -1,3 +1,4 @@
+import { freeze } from 'immer';
 import assign from 'object-assign';
 import {
   applyMiddleware,
@@ -16,6 +17,9 @@ import { StoreError } from '../exceptions/StoreError';
 import { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
 import type { ReducerManager } from '../reducers/ReducerManager';
+import { isCrushed } from '../utils/isCrushed';
+
+const DEV = !isCrushed();
 
 const assignStoreKeys: (keyof Store | symbol)[] = [
   'dispatch',
@@ -160,7 +164,13 @@ export class StoreAdvanced implements Store {
       }
 
       if ((action as PersistHydrateAction).type === TYPE_PERSIST_HYDRATE) {
-        return assign({}, state, (action as PersistHydrateAction).payload);
+        const next = assign(
+          {},
+          state,
+          (action as PersistHydrateAction).payload,
+        );
+
+        return DEV ? freeze(next, true) : next;
       }
 
       return reducer(state, action);

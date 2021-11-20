@@ -1,11 +1,14 @@
 import type { AnyAction } from 'redux';
-import { enableES5, enableMapSet, Immer, isDraft } from 'immer';
+import { enableES5, enableMapSet, freeze, Immer } from 'immer';
 import isEqual from 'lodash.isequal';
 import { TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
 import { DispatchAction } from '../actions/dispatch';
+import { isCrushed } from '../utils/isCrushed';
+
+const DEV = !isCrushed();
 
 const immer = new Immer({
-  autoFreeze: process.env.NODE_ENV !== 'production',
+  autoFreeze: false,
 });
 
 /**
@@ -17,24 +20,24 @@ enableES5(), enableMapSet();
 
 interface Options<State extends object> {
   readonly name: string;
-  readonly initial: State;
+  readonly initialState: State;
   readonly preventRefresh: boolean;
 }
 
 export class ReducerManager<State extends object> {
   public readonly name: string;
-  protected readonly initial: State;
+  protected readonly initialState: State;
   protected readonly preventRefresh: boolean;
 
   constructor(options: Options<State>) {
     this.name = options.name;
-    this.initial = options.initial;
+    this.initialState = this.freeze(options.initialState);
     this.preventRefresh = options.preventRefresh;
   }
 
   consumer(state: State | undefined, action: AnyAction) {
     if (state === void 0) {
-      return this.initial;
+      return this.initialState;
     }
 
     if (this.isSelfModel(action)) {
@@ -45,7 +48,7 @@ export class ReducerManager<State extends object> {
 
     if (this.isRefresh(action)) {
       return action.payload.force || !this.preventRefresh
-        ? this.initial
+        ? this.initialState
         : state;
     }
 
@@ -70,15 +73,14 @@ export class ReducerManager<State extends object> {
     action: DispatchAction<State>,
     consumer: NonNullable<DispatchAction<State>['consumer']>,
   ): State {
-    const draft = immer.createDraft(state);
-    let next = consumer(draft as State, action);
+    const next = immer.produce(state, (draft) => {
+      return consumer(draft as State, action) as typeof draft | void;
+    });
 
-    if (next === void 0) {
-      next = immer.finishDraft(draft) as State;
-    } else if (isDraft(next)) {
-      next = immer.finishDraft(next) as State;
-    }
+    return isEqual(state, next) ? state : this.freeze(next);
+  }
 
-    return isEqual(state, next) ? state : next;
+  protected freeze(state: any) {
+    return DEV ? freeze(state, true) : state;
   }
 }

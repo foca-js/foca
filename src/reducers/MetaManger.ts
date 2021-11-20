@@ -16,7 +16,7 @@ class MetaManager extends ReducerManager<State> {
   constructor() {
     super({
       name: '_metas_',
-      initial: {},
+      initialState: {},
       preventRefresh: false,
     });
     store.appendReducer(this);
@@ -37,7 +37,7 @@ class MetaManager extends ReducerManager<State> {
 
   override consumer(state: State | undefined, action: AnyAction) {
     if (state === void 0) {
-      return this.initial;
+      state = this.initialState;
     }
 
     if (this.isMeta(action)) {
@@ -47,7 +47,7 @@ class MetaManager extends ReducerManager<State> {
         // 每次dispatch过来，loading的值理论上都是要变的，所以这里没有优化空间了
         return assign({}, state, {
           [model]: assign({}, state[model], {
-            [method]: payload,
+            [method]: this.freeze(payload),
           }),
         });
       }
@@ -56,7 +56,7 @@ class MetaManager extends ReducerManager<State> {
     }
 
     if (this.isRefresh(action)) {
-      return this.initial;
+      return this.initialState;
     }
 
     return state;
