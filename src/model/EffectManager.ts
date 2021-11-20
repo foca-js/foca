@@ -1,6 +1,6 @@
 import assign from 'object-assign';
 import { store } from '../store/StoreAdvanced';
-import { Meta, MetaAction, MetaStateItem } from '../actions/meta';
+import { Meta, MetaAction, MetaStateItem, MetaType } from '../actions/meta';
 import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
 import { metaManager } from '../reducers/MetaManger';
@@ -21,16 +21,16 @@ export class EffectManager<State extends object> {
       return mayBePromise;
     }
 
-    this.dispatchMeta('-', true);
+    this.dispatchMeta('pending', true);
 
     return mayBePromise
       .then((result) => {
-        this.dispatchMeta('ok', false);
+        this.dispatchMeta('resolved', false);
         return result;
       })
       .catch((e: unknown) => {
         this.dispatchMeta(
-          'failed',
+          'rejected',
           false,
           e instanceof EffectError
             ? assign({}, e.meta)
@@ -48,17 +48,13 @@ export class EffectManager<State extends object> {
       });
   }
 
-  protected dispatchMeta(
-    status: '-' | 'ok' | 'failed',
-    loading: boolean,
-    meta?: Meta,
-  ) {
+  protected dispatchMeta(type: MetaType, loading: boolean, meta?: Meta) {
     store.dispatch<MetaAction>({
-      type: this.ctx.name + '.' + this.methodName + ' ' + status,
+      type: this.ctx.name + '.' + this.methodName + ' ' + type,
       model: this.ctx.name,
       method: this.methodName,
       setMeta: true,
-      payload: assign({ loading }, meta),
+      payload: assign({ loading, type }, meta),
     });
   }
 }

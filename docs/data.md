@@ -10,11 +10,11 @@
 
 # loading
 
-模型异步函数的当前状态，通过`model.xxEffect.loading`获取。
+模型异步函数的当前状态，通过`model.effectX.loading`获取。
 
 # meta
 
-模型异步函数的当前状态，通过`model.xxEffect.meta`获取。
+模型异步函数的**当前**状态，通过`model.effectX.meta`获取。
 
 本质上，loading 派生自 meta，meta 总是存储了异步函数的一些执行信息，比如是否正在执行，比如执行异常时的 message。
 
@@ -22,6 +22,7 @@
 /**
  * {
  *   loading?: boolean;
+ *   type?: string;
  *   message?: string;
  * }
  */
@@ -30,7 +31,7 @@ const meta = userModel.get.meta;
 
 # meta plus
 
-foca 自带的 meta 信息虽然只有 loading 和 message 两个属性，但这并不意味着你不能扩展它。
+foca 自带的 meta 属性屈指可数，你决定扩展一些自己的业务属性。
 
 ```json5
 // File: tsconfig.json
@@ -54,7 +55,7 @@ declare module 'foca' {
 }
 ```
 
-扩展类型的好处就是可以满足更多的业务需求，因为单靠 message 无法存储更多的异常信息。
+扩展的好处就是可以满足更多的业务需求，因为单靠 message 无法存储更多的异常信息。
 
 ```typescript
 import { EffectError } from 'foca';
