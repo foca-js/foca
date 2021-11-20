@@ -21,8 +21,7 @@
 ```typescript
 /**
  * {
- *   loading?: boolean;
- *   type?: string;
+ *   type?: 'pending' | 'resolved' | 'rejected';
  *   message?: string;
  * }
  */

@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { FocaProvider, store, useMeta } from '../src';
+import { MetaStateItem } from '../src/actions/meta';
 import { basicModel } from './models/basic-model';
 
 beforeEach(() => {
@@ -15,7 +16,7 @@ test('get meta from effect method', async () => {
     wrapper: FocaProvider,
   });
 
-  expect(result.current).toStrictEqual({});
+  expect(result.current).toStrictEqual<MetaStateItem>({});
 
   let promise!: Promise<any>;
 
@@ -23,16 +24,16 @@ test('get meta from effect method', async () => {
     promise = basicModel.hasError();
   });
 
-  expect(result.current).toStrictEqual({
-    loading: true,
+  expect(result.current).toStrictEqual<MetaStateItem>({
+    type: 'pending',
   });
 
   await act(async () => {
     await expect(promise).rejects.toThrowError();
   });
 
-  expect(result.current).toStrictEqual({
-    loading: false,
+  expect(result.current).toStrictEqual<MetaStateItem>({
+    type: 'rejected',
     message: 'my-test',
   });
 });
@@ -40,7 +41,7 @@ test('get meta from effect method', async () => {
 test.skip('type checking', () => {
   const meta = useMeta(basicModel.bar);
   meta.message?.trim();
-  meta.loading?.valueOf();
+  meta.type?.valueOf();
   // @ts-expect-error
   meta.message?.toFixed();
 

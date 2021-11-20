@@ -22,7 +22,7 @@ export const useLoading = (
       return (
         wrapper &&
         wrapper._ &&
-        metaManager.get(wrapper._.model, wrapper._.method).loading
+        metaManager.get(wrapper._.model, wrapper._.method).type === 'pending'
       );
     });
   });

@@ -7,8 +7,7 @@ export interface Meta {
 export type MetaType = 'pending' | 'resolved' | 'rejected';
 
 export interface MetaStateItem extends Meta {
-  loading: boolean;
-  type: MetaType;
+  type?: MetaType;
 }
 
 export interface MetaAction extends DispatchAction<object, MetaStateItem> {

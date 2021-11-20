@@ -15,23 +15,21 @@ export class EffectManager<State extends object> {
   ) {}
 
   execute(args: any[]) {
-    const mayBePromise = this.fn.apply(this.ctx, args);
+    const maybePromise = this.fn.apply(this.ctx, args);
 
-    if (!isPromise(mayBePromise)) {
-      return mayBePromise;
+    if (!isPromise(maybePromise)) {
+      return maybePromise;
     }
 
-    this.dispatchMeta('pending', true);
+    this.dispatchMeta('pending');
 
-    return mayBePromise
+    return maybePromise
       .then((result) => {
-        this.dispatchMeta('resolved', false);
-        return result;
+        return this.dispatchMeta('resolved'), result;
       })
       .catch((e: unknown) => {
         this.dispatchMeta(
           'rejected',
-          false,
           e instanceof EffectError
             ? assign({}, e.meta)
             : {
@@ -48,13 +46,13 @@ export class EffectManager<State extends object> {
       });
   }
 
-  protected dispatchMeta(type: MetaType, loading: boolean, meta?: Meta) {
+  protected dispatchMeta(type: MetaType, meta?: Meta) {
     store.dispatch<MetaAction>({
       type: this.ctx.name + '.' + this.methodName + ' ' + type,
       model: this.ctx.name,
       method: this.methodName,
       setMeta: true,
-      payload: assign({ loading, type }, meta),
+      payload: assign({ type }, meta),
     });
   }
 }
@@ -114,7 +112,7 @@ export const wrapEffect = <State extends object>(
     },
     loading: {
       get() {
-        return !!fn.meta.loading;
+        return fn.meta.type === 'pending';
       },
     },
   });

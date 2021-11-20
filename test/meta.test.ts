@@ -53,7 +53,7 @@ test.skip('Meta is unsupported for non-async effect method', () => {
 
   basicModel.foo.loading.valueOf();
   basicModel.foo.meta.message?.trim();
-  basicModel.foo.meta.loading?.valueOf();
+  basicModel.foo.meta.type?.valueOf();
 });
 
 const effectName = 'pureAsync';
@@ -66,8 +66,8 @@ test('meta from untracked to used', async () => {
   expect(getMeta()).toBeUndefined();
 
   const promise = basicModel[effectName]();
-  expect(getMeta()).toMatchObject<MetaStateItem>({ loading: true });
+  expect(getMeta()).toMatchObject<MetaStateItem>({ type: 'pending' });
 
   await promise;
-  expect(getMeta()).toMatchObject<MetaStateItem>({ loading: false });
+  expect(getMeta()).toMatchObject<MetaStateItem>({ type: 'resolved' });
 });
