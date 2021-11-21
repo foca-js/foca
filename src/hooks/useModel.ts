@@ -1,7 +1,7 @@
 import isEqual from 'lodash.isequal';
 import { shallowEqual } from 'react-redux';
 import { Model } from '../model/defineModel';
-import { getArgs } from '../utils/getArgs';
+import { toArgs } from '../utils/toArgs';
 import { useCustomSelector } from './useCustomSelector';
 
 /**
@@ -197,7 +197,7 @@ export function useModel<
 ): T;
 
 export function useModel(): any {
-  const args = getArgs(arguments);
+  const args = toArgs(arguments);
   let compareAlgorithm: CompareAlgorithm | false =
     getLastElementType(args) === 'string' && args.pop();
   const selector: Function | false =

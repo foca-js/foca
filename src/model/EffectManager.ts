@@ -5,7 +5,7 @@ import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
 import { metaManager } from '../reducers/MetaManger';
 import { isPromise } from '../utils/isPromise';
-import { getArgs } from '../utils/getArgs';
+import { toArgs } from '../utils/toArgs';
 
 export class EffectManager<State extends object> {
   constructor(
@@ -93,7 +93,7 @@ export const wrapEffect = <State extends object>(
 ): WrapEffect<State> => {
   const manager = new EffectManager(ctx, key, effect);
   const fn: NonReadonly<WrapEffect<State>> & SyncEffect = function () {
-    return manager.execute.call(manager, getArgs(arguments));
+    return manager.execute.call(manager, toArgs(arguments));
   };
 
   fn.meta = {};

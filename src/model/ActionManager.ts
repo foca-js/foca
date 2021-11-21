@@ -1,6 +1,6 @@
 import { DispatchAction } from '../actions/dispatch';
 import { store } from '../store/StoreAdvanced';
-import { getArgs } from '../utils/getArgs';
+import { toArgs } from '../utils/toArgs';
 import type { ActionCtx } from './defineModel';
 
 export class ActionManager<State extends object> {
@@ -42,7 +42,7 @@ export const wrapAction = <State extends object>(
 ): WrapAction<State> => {
   const manager = new ActionManager(ctx, actionName, action);
   const fn: WrapAction<State> = function () {
-    return manager.execute(getArgs(arguments));
+    return manager.execute(toArgs(arguments));
   };
 
   fn._$action = manager;
