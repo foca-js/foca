@@ -19,9 +19,11 @@ export function useLoading(
 ): boolean;
 
 export function useLoading(): boolean {
+  const args = arguments;
+
   return useCustomSelector(() => {
-    for (let i = 0; i < arguments.length; ++i) {
-      const meta = metaManager.get(arguments[i]);
+    for (let i = 0; i < args.length; ++i) {
+      const meta = metaManager.get(args[i]);
 
       if (pickLoading.call(meta, META_DEFAULT_ID)) {
         return true;
