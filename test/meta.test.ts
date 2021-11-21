@@ -46,11 +46,9 @@ test('More info will be stored from EffectError', async () => {
 
 test.skip('Meta is unsupported for non-async effect method', () => {
   // @ts-expect-error
-  basicModel.normalMethod.loading;
+  getMeta(basicModel.normalMethod);
   // @ts-expect-error
-  basicModel.normalMethod.meta;
-  // @ts-expect-error
-  basicModel.normalMethod.meta?.loading;
+  getMeta(basicModel.normalMethod);
 
   getLoading(basicModel.foo).valueOf();
   getMeta(basicModel.foo).message?.trim();
