@@ -149,21 +149,3 @@ const userModel = defineModel('users', {
 ```
 
 是的，这样看起来更纯粹一些，代价就是要委屈你多写几行代码了。
-
-# 克隆
-
-虽然比较不常用，但有时候为了同一个页面的不同模块能独立使用模型数据，你就得需要复制这个模型，并把名字改掉。其实也不用这么麻烦，foca 给你来个惊喜：
-
-```typescript
-import { defineModel, cloneModel } from 'foca';
-
-// 你打算用在各个普通页面里。
-cosnt userModel = defineModel('users', { ... });
-
-// 你打算用在通用的用户列表弹窗里。
-const user1Model = cloneModel('users1', userModel);
-// 你打算用在页头或页脚模块里。
-const user2Model = cloneModel('users2', userModel);
-```
-
-共享方法但状态是独立的，这是个不错的主意，你只要维护一份代码就行了。

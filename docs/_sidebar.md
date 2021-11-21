@@ -8,6 +8,8 @@
 
 - [实时数据](/data.md)
 
-- [Connect](/connect.md)
+- [connect](/connect.md)
 
 - [持久化](/persist.md)
+
+- [进阶用法](/advanced.md)
