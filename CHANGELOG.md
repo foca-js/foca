@@ -1,3 +1,11 @@
+## [0.2.0](https://github.com/foca-js/foca/compare/v0.1.5...v0.2.0)
+
+#### 2021-11-21
+
+- 增加及时状态方法：`getLoading`, `getLoadings`, `getMeta`, `getMetas`
+- 增加 hooks 方法：`useLoadings`, `useMetas`
+- meta 增加 type 字段，并由此检测 loading 状态
+
 ## [0.1.5](https://github.com/foca-js/foca/compare/v0.1.4...v0.1.5)
 
 #### 2021-11-19
