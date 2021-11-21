@@ -21,3 +21,5 @@ export { useLoading } from './hooks/useLoading';
 export { useMeta } from './hooks/useMeta';
 export { Meta } from './actions/meta';
 export { EffectError } from './exceptions/EffectError';
+export { getLoading } from './metas/getLoading';
+export { getMeta } from './metas/getMeta';

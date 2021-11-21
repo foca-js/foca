@@ -1,9 +1,8 @@
 import assign from 'object-assign';
 import { store } from '../store/StoreAdvanced';
-import { Meta, MetaAction, MetaStateItem, MetaType } from '../actions/meta';
+import { Meta, MetaAction, MetaType, META_DEFAULT_ID } from '../actions/meta';
 import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
-import { metaManager } from '../reducers/MetaManger';
 import { isPromise } from '../utils/isPromise';
 import { toArgs } from '../utils/toArgs';
 
@@ -12,6 +11,7 @@ export class EffectManager<State extends object> {
     protected ctx: EffectCtx<State>,
     protected methodName: string,
     protected fn: (...args: any[]) => any,
+    protected metaId: number | string = META_DEFAULT_ID,
   ) {}
 
   execute(args: any[]) {
@@ -53,24 +53,35 @@ export class EffectManager<State extends object> {
       method: this.methodName,
       setMeta: true,
       payload: assign({ type }, meta),
+      metaId: this.metaId,
     });
   }
 }
 
-export interface AsyncEffect<
+interface AsyncEffect<
   State extends object = object,
   P extends any[] = any[],
   R = Promise<any>,
 > {
   (...args: P): R;
-  readonly loading: boolean;
-  readonly meta: Partial<MetaStateItem>;
   readonly _: {
     readonly model: string;
     readonly method: string;
     readonly effect: EffectManager<State>;
   };
+  /**
+   * 根据id对执行状态进行分类以实现独立保存。
+   *
+   * 想获得分类后的meta，则需要使用方法，getMetas 或者 useMetas。
+   *
+   * 想获得分类后的loading，则需要使用方法 getLoadings 或者 useLoadings。
+   */
+  metaId(id: number | string): {
+    execute(...args: P): R;
+  };
 }
+
+export type PromiseEffect = AsyncEffect;
 
 interface SyncEffect<P extends any[] = any[], R = Promise<any>> {
   (...args: P): R;
@@ -96,26 +107,21 @@ export const wrapEffect = <State extends object>(
     return manager.execute(toArgs(arguments));
   };
 
-  fn.meta = {};
-  fn.loading = false;
   fn._ = {
     model: ctx.name,
     method: key,
     effect: manager,
   };
 
-  Object.defineProperties(fn, {
-    meta: {
-      get() {
-        return metaManager.get(ctx.name, key);
+  fn.metaId = function (id: number | string) {
+    const innerManger = new EffectManager(ctx, key, effect, id);
+
+    return {
+      execute() {
+        return innerManger.execute(toArgs(arguments));
       },
-    },
-    loading: {
-      get() {
-        return fn.meta.type === 'pending';
-      },
-    },
-  });
+    };
+  };
 
   return fn;
 };

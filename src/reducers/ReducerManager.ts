@@ -7,7 +7,7 @@ import { isCrushed } from '../utils/isCrushed';
 
 const DEV = !isCrushed();
 
-const immer = new Immer({
+export const customImmer = new Immer({
   autoFreeze: false,
 });
 
@@ -73,7 +73,7 @@ export class ReducerManager<State extends object> {
     action: DispatchAction<State>,
     consumer: NonNullable<DispatchAction<State>['consumer']>,
   ): State {
-    const next = immer.produce(state, (draft) => {
+    const next = customImmer.produce(state, (draft) => {
       return consumer(draft as State, action) as typeof draft | void;
     });
 

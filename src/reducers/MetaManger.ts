@@ -1,12 +1,15 @@
 import { AnyAction } from 'redux';
-import assign from 'object-assign';
 import { store } from '../store/StoreAdvanced';
-import { ReducerManager } from './ReducerManager';
+import { customImmer, ReducerManager } from './ReducerManager';
 import { MetaAction, MetaStateItem } from '../actions/meta';
+import type { PromiseEffect } from '../model/EffectManager';
+import { getMetaId } from '../utils/getMetaId';
 
 interface State {
   [model: string]: {
-    [method: string]: MetaStateItem;
+    [method: string]: {
+      [id: string]: MetaStateItem;
+    };
   };
 }
 
@@ -22,7 +25,11 @@ class MetaManager extends ReducerManager<State> {
     store.appendReducer(this);
   }
 
-  public get(model: string, method: string): Partial<MetaStateItem> {
+  public get(effect: PromiseEffect): Partial<MetaStateItem> {
+    const {
+      _: { model, method },
+    } = effect;
+
     let meta: MetaStateItem | undefined;
 
     if (this.isActive(model, method)) {
@@ -41,14 +48,12 @@ class MetaManager extends ReducerManager<State> {
     }
 
     if (this.isMeta(action)) {
-      const { model, method, payload } = action;
+      const { model, method, payload, metaId } = action;
 
       if (this.isActive(model, method)) {
-        // 每次dispatch过来，loading的值理论上都是要变的，所以这里没有优化空间了
-        return assign({}, state, {
-          [model]: assign({}, state[model], {
-            [method]: this.freeze(payload),
-          }),
+        return customImmer.produce(state, (draft) => {
+          ((draft[model] ||= {})[method] ||= {})[getMetaId(metaId)] =
+            this.freeze(payload);
         });
       }
 
