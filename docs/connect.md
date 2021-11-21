@@ -26,8 +26,8 @@ class App extends PureComponent<Props> {
 const mapStateToProps = () => {
   return {
     users: userModel.state,
-    loading: userModel.get.loading,
-    meta: userModel.get.meta,
+    loading: getLoading(userModel.fetchUser),
+    meta: getMeta(userModel.fetchUser),
   };
 };
 
