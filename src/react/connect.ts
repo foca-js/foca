@@ -1,17 +1,14 @@
 import { Connect, connect as originalConnect } from 'react-redux';
 import isEqual from 'lodash.isequal';
 import { ReduxContext } from './Context';
+import { getArgs } from '../utils/getArgs';
 
-// @ts-ignore
-export const connect: Connect = (...args: Parameters<Connect>) => {
-  const [mapStateToProps, mapDispatchToProps, mergeProps, options = {}] = args;
+export const connect: Connect = function () {
+  const [mapState, mapDispatch, mergeProps, options = {}] =
+    getArgs<Parameters<Connect>>(arguments);
+
   options.context ||= ReduxContext;
   options.areStatePropsEqual ||= isEqual;
 
-  return originalConnect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-    options,
-  );
+  return originalConnect(mapState, mapDispatch, mergeProps, options);
 };
