@@ -10,11 +10,11 @@
 
 # loading
 
-模型异步函数的当前状态，通过`model.effectX.loading`获取。
+模型异步函数的当前状态，通过`getLoading(model.effectX)`获取。
 
 # meta
 
-模型异步函数的**当前**状态，通过`model.effectX.meta`获取。
+模型异步函数的**当前**状态，通过`getMeta(model.effectX)`获取。
 
 本质上，loading 派生自 meta，meta 总是存储了异步函数的一些执行信息，比如是否正在执行，比如执行异常时的 message。
 
@@ -25,7 +25,7 @@
  *   message?: string;
  * }
  */
-const meta = userModel.get.meta;
+const meta = getMeta(userModel.fetchUser);
 ```
 
 # meta plus
