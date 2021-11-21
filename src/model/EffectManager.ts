@@ -93,7 +93,7 @@ export const wrapEffect = <State extends object>(
 ): WrapEffect<State> => {
   const manager = new EffectManager(ctx, key, effect);
   const fn: NonReadonly<WrapEffect<State>> & SyncEffect = function () {
-    return manager.execute.call(manager, toArgs(arguments));
+    return manager.execute(toArgs(arguments));
   };
 
   fn.meta = {};
