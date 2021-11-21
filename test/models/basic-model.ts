@@ -50,8 +50,8 @@ export const basicModel = defineModel('basic', {
     async bos() {
       return this.plus(4);
     },
-    async hasError() {
-      throw new Error('my-test');
+    async hasError(msg: string = 'my-test') {
+      throw new Error(msg);
     },
     async hasEffectError() {
       throw new EffectError(

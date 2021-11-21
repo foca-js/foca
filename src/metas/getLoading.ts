@@ -4,7 +4,7 @@ import { metaManager } from '../reducers/MetaManger';
 import { pickMeta } from './getMeta';
 
 export interface PickLoading {
-  pick(id: number | string): boolean;
+  pick(metaId: number | string): boolean;
 }
 
 export const pickLoading: PickLoading['pick'] = function (
