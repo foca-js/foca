@@ -1,3 +1,7 @@
+## [0.2.2](https://github.com/foca-js/foca/compare/v0.2.1...v0.2.2)&nbsp;&nbsp;(2021-11-22)
+
+- meta 数据使用新的内部 store 存储
+
 ## [0.2.1](https://github.com/foca-js/foca/compare/v0.2.0...v0.2.1)&nbsp;&nbsp;(2021-11-22)
 
 - 异步函数中的`metaId()`重命名为`meta()`
