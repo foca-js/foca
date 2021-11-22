@@ -103,3 +103,26 @@ const App: FC = () => {
 ```
 
 这种场景也常出现在一些表格里，每一行通常都带有切换（switch UI）控件，点击后该控件需要被禁用或者出现 loading 图标，提前是你得知道是谁。
+
+# sync effect
+
+没有人规定 effects 里的方法就必须是异步的，你可以随意写，只要是函数就行了。比如有时候一个模型里重复代码太多，提取通用的部分代码到 effects 里就很合适。或者组件里经常需要大量操作才能获得 state 里的一个数据，那么也建议放到 effects 里节省工作量。
+
+```typescript
+export const userModel = defineModel('users', {
+  initialState,
+  effects: {
+    getUsersAmount() {
+      return this.state.length;
+    },
+    getOther() {
+      return {
+        amount: this.getUsersAmount(),
+        other: 'xyz',
+      };
+    },
+  },
+});
+
+// const count = userModel.getUsersAmount();
+```
