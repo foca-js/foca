@@ -48,6 +48,11 @@ test('Get state from connect', async () => {
   expect($loading.children[0]).toBe('false');
 
   act(() => {
+    basicModel.plus(0);
+  });
+  expect($count.children[0]).toBe('0');
+
+  act(() => {
     basicModel.plus(1);
   });
   expect($count.children[0]).toBe('1');

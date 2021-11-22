@@ -4,13 +4,32 @@ import { modelStore } from './modelStore';
 
 export const emptyStore = createStore(() => ({}));
 
+let prevModelState: object = metaStore.getState();
+let prevMetaState: object;
+
 const dispatch = () => {
   emptyStore.dispatch({
     type: '-',
   });
 };
 
-metaStore.subscribe(dispatch);
+metaStore.subscribe(() => {
+  const nextState = metaStore.getState();
+
+  if (prevMetaState !== nextState) {
+    prevMetaState = nextState;
+    dispatch();
+  }
+});
+
 modelStore.onReady(() => {
-  modelStore.subscribe(dispatch);
+  prevModelState = modelStore.getState();
+
+  modelStore.subscribe(() => {
+    const nextState = modelStore.getState();
+    if (prevModelState !== nextState) {
+      prevModelState = nextState;
+      dispatch();
+    }
+  });
 });
