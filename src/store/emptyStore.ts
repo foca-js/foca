@@ -2,9 +2,7 @@ import { createStore } from 'redux';
 import { metaStore } from './metaStore';
 import { modelStore } from './modelStore';
 
-const initialState = {};
-
-export const emptyStore = createStore(() => initialState);
+export const emptyStore = createStore(() => ({}));
 
 const dispatch = () => {
   emptyStore.dispatch({
