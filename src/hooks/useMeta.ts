@@ -1,4 +1,4 @@
-import { MetaStateItem, META_DEFAULT_ID } from '../actions/meta';
+import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { pickMeta } from '../metas/getMeta';
 import { PromiseEffect } from '../model/EffectManager';
 import { metaManager } from '../reducers/MetaManger';
@@ -13,6 +13,6 @@ import { useCustomSelector } from './useCustomSelector';
  */
 export const useMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
   return useCustomSelector(() => {
-    return pickMeta.call(metaManager.get(effect), META_DEFAULT_ID);
+    return pickMeta.call(metaManager.get(effect), META_DEFAULT_CATEGORY);
   });
 };

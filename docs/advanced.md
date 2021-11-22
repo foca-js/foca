@@ -83,7 +83,7 @@ const App: FC = () => {
   const loadings = useLoadings(model.myMethod);
 
   const handleClick = (id: number) => {
-    model.myMethod.metaId(id).execute(id);
+    model.myMethod.meta(id).execute(id);
   };
 
   return (

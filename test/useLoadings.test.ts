@@ -20,7 +20,7 @@ test('Trace loading from effect method', async () => {
   let promise!: Promise<any>;
 
   act(() => {
-    promise = basicModel.pureAsync.metaId('x').execute();
+    promise = basicModel.pureAsync.meta('x').execute();
   });
 
   expect(result.current).toBeTruthy();
@@ -43,7 +43,7 @@ test('Pick loading', async () => {
   let promise!: Promise<any>;
 
   act(() => {
-    promise = basicModel.pureAsync.metaId('m').execute();
+    promise = basicModel.pureAsync.meta('m').execute();
   });
 
   expect(result.current.pick('m')).toBeTruthy();

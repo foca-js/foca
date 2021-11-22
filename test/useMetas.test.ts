@@ -32,8 +32,8 @@ test('get meta from effect method', async () => {
   let promise2!: Promise<any>;
 
   act(() => {
-    promise1 = basicModel.hasError.metaId('x').execute('aaa');
-    promise2 = basicModel.hasError.metaId('y').execute('bbb');
+    promise1 = basicModel.hasError.meta('x').execute('aaa');
+    promise2 = basicModel.hasError.meta('y').execute('bbb');
   });
 
   expect(result1.current).toStrictEqual<MetaStateItem>({

@@ -14,19 +14,19 @@ import { metaManager } from '../reducers/MetaManger';
  */
 export function getLoadings(
   effect: PromiseEffect,
-  id: number | string,
+  category: number | string,
 ): boolean;
 
 export function getLoadings(effect: PromiseEffect): PickLoading;
 
 export function getLoadings(
   effect: PromiseEffect,
-  id?: number | string,
+  category?: number | string,
 ): boolean | PickLoading {
   const meta = metaManager.get(effect);
 
-  if (id !== void 0) {
-    return pickLoading.call(meta, id);
+  if (category !== void 0) {
+    return pickLoading.call(meta, category);
   }
 
   return assign(

@@ -14,7 +14,7 @@ test('Collect multiple loading status for effect method', async () => {
   expect(getLoadings(basicModel.bos, 'x')).toBeFalsy();
   expect(getLoadings(basicModel.bos).pick('x')).toBeFalsy();
 
-  const promise = basicModel.bos.metaId('x').execute();
+  const promise = basicModel.bos.meta('x').execute();
   expect(getLoadings(basicModel.bos, 'x')).toBeTruthy();
   expect(getLoadings(basicModel.bos).pick('x')).toBeTruthy();
   expect(getLoadings(basicModel.bos, 'y')).toBeFalsy();
@@ -30,8 +30,8 @@ test('Collect multiple error message for effect method', async () => {
   expect(getMetas(basicModel.hasError, 'a').message).toBeUndefined();
   expect(getMetas(basicModel.hasError, 'b').message).toBeUndefined();
 
-  const promise1 = basicModel.hasError.metaId('a').execute('msg-test1');
-  const promise2 = basicModel.hasError.metaId('b').execute('msg-test2');
+  const promise1 = basicModel.hasError.meta('a').execute('msg-test1');
+  const promise2 = basicModel.hasError.meta('b').execute('msg-test2');
   expect(getMetas(basicModel.hasError, 'a').message).toBeUndefined();
   expect(getMetas(basicModel.hasError, 'b').message).toBeUndefined();
 

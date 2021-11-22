@@ -15,19 +15,19 @@ import { metaManager } from '../reducers/MetaManger';
  */
 export function getMetas(
   effect: PromiseEffect,
-  id: number | string,
+  category: number | string,
 ): Partial<MetaStateItem>;
 
 export function getMetas(effect: PromiseEffect): PickMeta;
 
 export function getMetas(
   effect: PromiseEffect,
-  id?: number | string,
+  category?: number | string,
 ): Partial<MetaStateItem> | PickMeta {
   const meta = metaManager.get(effect);
 
-  if (id !== void 0) {
-    return pickMeta.call(meta, id);
+  if (category !== void 0) {
+    return pickMeta.call(meta, category);
   }
 
   return assign(

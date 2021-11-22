@@ -6,7 +6,7 @@ export interface Meta {
 
 export type MetaType = 'pending' | 'resolved' | 'rejected';
 
-export const META_DEFAULT_ID = '##' + Math.random();
+export const META_DEFAULT_CATEGORY = '##' + Math.random();
 
 export interface MetaStateItem extends Meta {
   type?: MetaType;
@@ -14,5 +14,5 @@ export interface MetaStateItem extends Meta {
 
 export interface MetaAction extends DispatchAction<object, MetaStateItem> {
   setMeta: true;
-  metaId: string | number;
+  category: string | number;
 }

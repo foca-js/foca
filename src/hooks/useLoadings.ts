@@ -16,23 +16,23 @@ import { useCustomSelector } from './useCustomSelector';
  */
 export function useLoadings(
   effect: PromiseEffect,
-  id: number | string,
+  category: number | string,
 ): boolean;
 
 export function useLoadings(effect: PromiseEffect): PickLoading;
 
 export function useLoadings(
   effect: PromiseEffect,
-  id?: number | string,
+  category?: number | string,
 ): boolean | PickLoading {
-  const hasId = id !== void 0;
+  const noPick = category !== void 0;
 
   return useCustomSelector(
     () => {
       const meta = metaManager.get(effect);
 
-      if (hasId) {
-        return pickLoading.call(meta, id);
+      if (noPick) {
+        return pickLoading.call(meta, category);
       }
 
       return assign(
@@ -42,6 +42,6 @@ export function useLoadings(
         meta,
       );
     },
-    hasId ? void 0 : shallowEqual,
+    noPick ? void 0 : shallowEqual,
   );
 }

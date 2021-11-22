@@ -1,6 +1,11 @@
 import assign from 'object-assign';
 import { store } from '../store/StoreAdvanced';
-import { Meta, MetaAction, MetaType, META_DEFAULT_ID } from '../actions/meta';
+import {
+  Meta,
+  MetaAction,
+  MetaType,
+  META_DEFAULT_CATEGORY,
+} from '../actions/meta';
 import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
 import { isPromise } from '../utils/isPromise';
@@ -11,7 +16,7 @@ export class EffectManager<State extends object> {
     protected ctx: EffectCtx<State>,
     protected methodName: string,
     protected fn: (...args: any[]) => any,
-    protected metaId: number | string = META_DEFAULT_ID,
+    protected metaCategory: number | string = META_DEFAULT_CATEGORY,
   ) {}
 
   execute(args: any[]) {
@@ -53,7 +58,7 @@ export class EffectManager<State extends object> {
       method: this.methodName,
       setMeta: true,
       payload: assign({ type }, meta),
-      metaId: this.metaId,
+      category: this.metaCategory,
     });
   }
 }
@@ -70,13 +75,13 @@ interface AsyncEffect<
     readonly effect: EffectManager<State>;
   };
   /**
-   * 根据id对执行状态进行分类以实现独立保存。
+   * 对同一effect函数的执行状态进行分类以实现独立保存。
    *
-   * 想获得分类后的meta，则需要使用方法，getMetas 或者 useMetas。
+   * 想获得分类后的meta，使用方法 getMetas 或者 useMetas。
    *
-   * 想获得分类后的loading，则需要使用方法 getLoadings 或者 useLoadings。
+   * 想获得分类后的loading，使用方法 getLoadings 或者 useLoadings。
    */
-  metaId(id: number | string): {
+  meta(category: number | string): {
     execute(...args: P): R;
   };
 }
@@ -113,8 +118,8 @@ export const wrapEffect = <State extends object>(
     effect: manager,
   };
 
-  fn.metaId = function (id: number | string) {
-    const innerManger = new EffectManager(ctx, key, effect, id);
+  fn.meta = function (category: number | string) {
+    const innerManger = new EffectManager(ctx, key, effect, category);
 
     return {
       execute() {

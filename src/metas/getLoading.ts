@@ -1,17 +1,17 @@
-import { MetaStateItem, META_DEFAULT_ID } from '../actions/meta';
+import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/EffectManager';
 import { metaManager } from '../reducers/MetaManger';
 import { pickMeta } from './getMeta';
 
 export interface PickLoading {
-  pick(metaId: number | string): boolean;
+  pick(category: number | string): boolean;
 }
 
 export const pickLoading: PickLoading['pick'] = function (
   this: Record<string, Partial<MetaStateItem> | undefined>,
-  id: number | string,
+  category: number | string,
 ) {
-  return pickMeta.call(this, id).type === 'pending';
+  return pickMeta.call(this, category).type === 'pending';
 };
 
 /**
@@ -32,7 +32,7 @@ export function getLoading(): boolean {
   for (let i = 0; i < arguments.length; ++i) {
     const meta = metaManager.get(arguments[i]);
 
-    if (pickLoading.call(meta, META_DEFAULT_ID)) {
+    if (pickLoading.call(meta, META_DEFAULT_CATEGORY)) {
       return true;
     }
   }

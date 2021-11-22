@@ -1,8 +1,8 @@
 import { getLoading, getMeta, store } from '../src';
-import { MetaStateItem, META_DEFAULT_ID } from '../src/actions/meta';
+import { MetaStateItem, META_DEFAULT_CATEGORY } from '../src/actions/meta';
 import { EffectError } from '../src/exceptions/EffectError';
 import { metaManager } from '../src/reducers/MetaManger';
-import { getMetaId } from '../src/utils/getMetaId';
+import { resolveMetaCategory } from '../src/utils/resolveMetaCategory';
 import { basicModel } from './models/basic-model';
 
 beforeEach(() => {
@@ -56,23 +56,25 @@ test.skip('Meta is unsupported for non-async effect method', () => {
 });
 
 const effectName = 'pureAsync';
-const getMetaFromStore = (id: number | string): MetaStateItem | undefined =>
+const getMetaFromStore = (
+  category: number | string,
+): MetaStateItem | undefined =>
   store.getState()[metaManager.name]?.[basicModel.name]?.[effectName]?.[
-    getMetaId(id)
+    resolveMetaCategory(category)
   ];
 
 test('meta from untracked to used', async () => {
-  expect(getMetaFromStore(META_DEFAULT_ID)).toBeUndefined();
+  expect(getMetaFromStore(META_DEFAULT_CATEGORY)).toBeUndefined();
   metaManager.get(basicModel[effectName]);
-  expect(getMetaFromStore(META_DEFAULT_ID)).toBeUndefined();
+  expect(getMetaFromStore(META_DEFAULT_CATEGORY)).toBeUndefined();
 
   const promise = basicModel[effectName]();
-  expect(getMetaFromStore(META_DEFAULT_ID)).toMatchObject<MetaStateItem>({
+  expect(getMetaFromStore(META_DEFAULT_CATEGORY)).toMatchObject<MetaStateItem>({
     type: 'pending',
   });
 
   await promise;
-  expect(getMetaFromStore(META_DEFAULT_ID)).toMatchObject<MetaStateItem>({
+  expect(getMetaFromStore(META_DEFAULT_CATEGORY)).toMatchObject<MetaStateItem>({
     type: 'resolved',
   });
 });

@@ -1,17 +1,17 @@
-import { MetaStateItem, META_DEFAULT_ID } from '../actions/meta';
+import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/EffectManager';
 import { metaManager } from '../reducers/MetaManger';
-import { getMetaId } from '../utils/getMetaId';
+import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 
 export interface PickMeta {
-  pick(id: number | string): Partial<MetaStateItem>;
+  pick(category: number | string): Partial<MetaStateItem>;
 }
 
 export const pickMeta: PickMeta['pick'] = function (
   this: Record<string, Partial<MetaStateItem> | undefined>,
-  id: number | string,
+  category: number | string,
 ) {
-  return this[getMetaId(id)] || {};
+  return this[resolveMetaCategory(category)] || {};
 };
 
 /**
@@ -22,5 +22,5 @@ export const pickMeta: PickMeta['pick'] = function (
  * ```
  */
 export const getMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
-  return pickMeta.call(metaManager.get(effect), META_DEFAULT_ID);
+  return pickMeta.call(metaManager.get(effect), META_DEFAULT_CATEGORY);
 };

@@ -3,7 +3,7 @@ import { store } from '../store/StoreAdvanced';
 import { customImmer, ReducerManager } from './ReducerManager';
 import { MetaAction, MetaStateItem } from '../actions/meta';
 import type { PromiseEffect } from '../model/EffectManager';
-import { getMetaId } from '../utils/getMetaId';
+import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 
 interface State {
   [model: string]: {
@@ -48,12 +48,13 @@ class MetaManager extends ReducerManager<State> {
     }
 
     if (this.isMeta(action)) {
-      const { model, method, payload, metaId } = action;
+      const { model, method, payload, category: metaCategory } = action;
 
       if (this.isActive(model, method)) {
         return customImmer.produce(state, (draft) => {
-          ((draft[model] ||= {})[method] ||= {})[getMetaId(metaId)] =
-            this.freeze(payload);
+          ((draft[model] ||= {})[method] ||= {})[
+            resolveMetaCategory(metaCategory)
+          ] = this.freeze(payload);
         });
       }
 

@@ -1,4 +1,4 @@
-import { META_DEFAULT_ID } from '../actions/meta';
+import { META_DEFAULT_CATEGORY } from '../actions/meta';
 import { pickLoading } from '../metas/getLoading';
 import { PromiseEffect } from '../model/EffectManager';
 import { metaManager } from '../reducers/MetaManger';
@@ -25,7 +25,7 @@ export function useLoading(): boolean {
     for (let i = 0; i < args.length; ++i) {
       const meta = metaManager.get(args[i]);
 
-      if (pickLoading.call(meta, META_DEFAULT_ID)) {
+      if (pickLoading.call(meta, META_DEFAULT_CATEGORY)) {
         return true;
       }
     }
