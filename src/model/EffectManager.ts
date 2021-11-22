@@ -1,5 +1,4 @@
 import assign from 'object-assign';
-import { store } from '../store/StoreAdvanced';
 import {
   Meta,
   MetaAction,
@@ -10,6 +9,7 @@ import type { EffectCtx } from './defineModel';
 import { EffectError } from '../exceptions/EffectError';
 import { isPromise } from '../utils/isPromise';
 import { toArgs } from '../utils/toArgs';
+import { metaStore } from '../store/metaStore';
 
 export class EffectManager<State extends object> {
   constructor(
@@ -52,13 +52,13 @@ export class EffectManager<State extends object> {
   }
 
   protected dispatchMeta(type: MetaType, meta?: Meta) {
-    store.dispatch<MetaAction>({
+    metaStore.dispatch<MetaAction>({
       type: this.ctx.name + '.' + this.methodName + ' ' + type,
+      setMeta: true,
       model: this.ctx.name,
       method: this.methodName,
-      setMeta: true,
-      payload: assign({ type }, meta),
       category: this.metaCategory,
+      payload: assign({ type }, meta),
     });
   }
 }

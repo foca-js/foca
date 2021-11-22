@@ -14,7 +14,7 @@ import { Topic } from 'topic';
 import { TYPE_PERSIST_HYDRATE, PersistHydrateAction } from '../actions/persist';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
-import { PersistOptions } from '../persist/PersistItem';
+import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
 import type { ReducerManager } from '../reducers/ReducerManager';
 import { isCrushed } from '../utils/isCrushed';
@@ -228,5 +228,3 @@ export class StoreAdvanced implements Store {
     store && !exists && store.replaceReducer(this.reducer);
   }
 }
-
-export const store = new StoreAdvanced();

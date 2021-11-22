@@ -1,6 +1,6 @@
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../reducers/MetaManger';
+import { metaManager } from '../store/metaStore';
 import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 
 export interface PickLoading {

@@ -2,8 +2,8 @@ import assign from 'object-assign';
 import { shallowEqual } from 'react-redux';
 import { PickLoading, pickLoading } from '../metas/getLoading';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../reducers/MetaManger';
-import { useCustomSelector } from './useCustomSelector';
+import { metaManager } from '../store/metaStore';
+import { useMetaSelector } from './useSelector';
 
 /**
  * 检测给定的effect方法中是否正在执行。
@@ -27,7 +27,7 @@ export function useLoadings(
 ): boolean | PickLoading {
   const noPick = category !== void 0;
 
-  return useCustomSelector(
+  return useMetaSelector(
     () => {
       const meta = metaManager.get(effect);
 

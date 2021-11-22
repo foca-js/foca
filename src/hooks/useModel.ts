@@ -2,7 +2,7 @@ import isEqual from 'lodash.isequal';
 import { shallowEqual } from 'react-redux';
 import { Model } from '../model/defineModel';
 import { toArgs } from '../utils/toArgs';
-import { useCustomSelector } from './useCustomSelector';
+import { useModelSelector } from './useSelector';
 
 /**
  * hooks新旧数据的对比方式：
@@ -218,7 +218,7 @@ export function useModel(): any {
     }
   }
 
-  return useCustomSelector((state: Record<string, object>) => {
+  return useModelSelector((state: Record<string, object>) => {
     if (selector) {
       const result: object[] = [];
       for (let i = 0; i < models.length; ++i) {

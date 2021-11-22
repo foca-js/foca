@@ -13,7 +13,7 @@ export {
 export { StorageEngine, engines } from './engines';
 export { Model, defineModel } from './model/defineModel';
 export { cloneModel } from './model/cloneModel';
-export { store, StoreAdvanced } from './store/StoreAdvanced';
+export { modelStore as store } from './store/modelStore';
 export { FocaProvider } from './react/FocaProvider';
 export { connect } from './react/connect';
 export { useModel } from './hooks/useModel';

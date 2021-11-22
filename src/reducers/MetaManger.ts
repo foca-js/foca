@@ -1,5 +1,4 @@
-import { AnyAction } from 'redux';
-import { store } from '../store/StoreAdvanced';
+import { AnyAction, Store } from 'redux';
 import { customImmer, ReducerManager } from './ReducerManager';
 import { MetaAction, MetaStateItem } from '../actions/meta';
 import type { PromiseEffect } from '../model/EffectManager';
@@ -13,16 +12,15 @@ interface State {
   };
 }
 
-class MetaManager extends ReducerManager<State> {
+export class MetaManager extends ReducerManager<State> {
   protected status: Record<string, boolean> = {};
 
-  constructor() {
+  constructor(protected readonly store: Store) {
     super({
       name: '_metas_',
       initialState: {},
       preventRefresh: false,
     });
-    store.appendReducer(this);
   }
 
   public get(effect: PromiseEffect): Partial<MetaStateItem> {
@@ -33,7 +31,7 @@ class MetaManager extends ReducerManager<State> {
     let meta: MetaStateItem | undefined;
 
     if (this.isActive(model, method)) {
-      const metas: State = store.getState()[this.name];
+      const metas: State = this.store.getState()[this.name];
       meta = metas && metas[model] && metas[model]![method];
     } else {
       this.activate(model, method);
@@ -48,12 +46,12 @@ class MetaManager extends ReducerManager<State> {
     }
 
     if (this.isMeta(action)) {
-      const { model, method, payload, category: metaCategory } = action;
+      const { model, method, payload, category } = action;
 
       if (this.isActive(model, method)) {
         return customImmer.produce(state, (draft) => {
           ((draft[model] ||= {})[method] ||= {})[
-            resolveMetaCategory(metaCategory)
+            resolveMetaCategory(category)
           ] = this.freeze(payload);
         });
       }
@@ -80,5 +78,3 @@ class MetaManager extends ReducerManager<State> {
     return (action as MetaAction).setMeta === true;
   }
 }
-
-export const metaManager = new MetaManager();

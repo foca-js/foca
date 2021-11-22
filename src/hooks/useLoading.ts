@@ -1,8 +1,8 @@
 import { META_DEFAULT_CATEGORY } from '../actions/meta';
 import { pickLoading } from '../metas/getLoading';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../reducers/MetaManger';
-import { useCustomSelector } from './useCustomSelector';
+import { metaManager } from '../store/metaStore';
+import { useMetaSelector } from './useSelector';
 
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。
@@ -21,7 +21,7 @@ export function useLoading(
 export function useLoading(): boolean {
   const args = arguments;
 
-  return useCustomSelector(() => {
+  return useMetaSelector(() => {
     for (let i = 0; i < args.length; ++i) {
       const meta = metaManager.get(args[i]);
 

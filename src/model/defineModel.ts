@@ -3,7 +3,7 @@ import cloneDeep from 'clone';
 import assign from 'object-assign';
 import { WrapAction, wrapAction } from './ActionManager';
 import { WrapEffect, wrapEffect } from './EffectManager';
-import { store } from '../store/StoreAdvanced';
+import { modelStore } from '../store/modelStore';
 import { ReducerManager } from '../reducers/ReducerManager';
 
 export interface GetName<Name extends string> {
@@ -202,7 +202,7 @@ export const defineModel = <
   const ctx: EffectCtx<State> = {
     name,
     get state() {
-      return store.getState()[name] as State;
+      return modelStore.getState()[name] as State;
     },
     get initialState() {
       return cloneDeep(initialState);
@@ -272,7 +272,7 @@ export const defineModel = <
     preventRefresh: !!keepStateFromRefresh,
   });
 
-  store.appendReducer(reducer);
+  modelStore.appendReducer(reducer);
 
   return model as unknown as Model<Name, State, Action, Effect>;
 };

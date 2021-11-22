@@ -1,5 +1,5 @@
 import { DispatchAction } from '../actions/dispatch';
-import { store } from '../store/StoreAdvanced';
+import { modelStore } from '../store/modelStore';
 import { toArgs } from '../utils/toArgs';
 import type { ActionCtx } from './defineModel';
 
@@ -15,7 +15,7 @@ export class ActionManager<State extends object> {
   }
 
   execute(args: any[]) {
-    return store.dispatch<DispatchAction<State, any[]>>({
+    return modelStore.dispatch<DispatchAction<State, any[]>>({
       model: this.ctx.name,
       method: this.actionName,
       type: this.actionType,

@@ -1,10 +1,12 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { FocaProvider, store, useMetas } from '../src';
 import { MetaStateItem } from '../src/actions/meta';
+import { metaStore } from '../src/store/metaStore';
 import { basicModel } from './models/basic-model';
 
 beforeEach(() => {
   store.init();
+  metaStore.refresh();
 });
 
 afterEach(() => {

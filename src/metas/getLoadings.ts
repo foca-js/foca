@@ -1,7 +1,7 @@
 import assign from 'object-assign';
 import { PickLoading, pickLoading } from '../metas/getLoading';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../reducers/MetaManger';
+import { metaManager } from '../store/metaStore';
 
 /**
  * 检测给定的effect方法中是否正在执行。

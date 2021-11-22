@@ -2,7 +2,7 @@ import assign from 'object-assign';
 import { MetaStateItem } from '../actions/meta';
 import { pickMeta, PickMeta } from '../metas/getMeta';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../reducers/MetaManger';
+import { metaManager } from '../store/metaStore';
 
 /**
  * 获取给定的effect方法的执行状态。

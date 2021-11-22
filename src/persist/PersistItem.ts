@@ -1,5 +1,5 @@
-import { StorageEngine } from '../engines';
-import { InternalModel, Model, ModelPersist } from '../model/defineModel';
+import type { StorageEngine } from '../engines';
+import type { InternalModel, Model, ModelPersist } from '../model/defineModel';
 import { jsonParseReciever, jsonStringifyReplacer } from '../utils/json';
 
 export interface PersistSchema {

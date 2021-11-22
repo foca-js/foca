@@ -1,12 +1,13 @@
 import { getLoading, getMeta, store } from '../src';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../src/actions/meta';
 import { EffectError } from '../src/exceptions/EffectError';
-import { metaManager } from '../src/reducers/MetaManger';
+import { metaStore, metaManager } from '../src/store/metaStore';
 import { resolveMetaCategory } from '../src/utils/resolveMetaCategory';
 import { basicModel } from './models/basic-model';
 
 beforeEach(() => {
   store.init();
+  metaStore.refresh();
 });
 
 afterEach(() => {
@@ -59,7 +60,7 @@ const effectName = 'pureAsync';
 const getMetaFromStore = (
   category: number | string,
 ): MetaStateItem | undefined =>
-  store.getState()[metaManager.name]?.[basicModel.name]?.[effectName]?.[
+  metaStore.getState()[metaManager.name]?.[basicModel.name]?.[effectName]?.[
     resolveMetaCategory(category)
   ];
 

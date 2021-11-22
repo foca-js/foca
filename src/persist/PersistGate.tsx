@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState, useEffect } from 'react';
-import { store } from '../store/StoreAdvanced';
+import { modelStore } from '../store/modelStore';
 import { isCrushed } from '../utils/isCrushed';
 
 export interface PersistGateProps {
@@ -12,7 +12,7 @@ export const PersistGate: FC<PersistGateProps> = (props) => {
   const isChildrenFunction = typeof children === 'function';
 
   useEffect(() => {
-    return store.onReady(() => {
+    return modelStore.onReady(() => {
       setIsReady(true);
     }).unsubscribe;
   }, []);
