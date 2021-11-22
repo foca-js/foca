@@ -41,7 +41,7 @@
     ]
   },
   "peerDependencies": {
-    "react": ">=16.8.0"
+    "react": "^16.8.3 || ^17"
   },
   "dependencies": {
     "clone": "^2.1.2",
