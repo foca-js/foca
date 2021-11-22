@@ -311,7 +311,7 @@
 
 "@commitlint/cli@^15.0.0":
   version "15.0.0"
-  resolved "https://registry.npmmirror.com/@commitlint/cli/download/@commitlint/cli-15.0.0.tgz#8e78e86ee2b6955c1a5d140e734a6c171ce367ee"
+  resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-15.0.0.tgz#8e78e86ee2b6955c1a5d140e734a6c171ce367ee"
   integrity sha512-Y5xmDCweytqzo4N4lOI2YRiuX35xTjcs8n5hUceBH8eyK0YbwtgWX50BJOH2XbkwEmII9blNhlBog6AdQsqicg==
   dependencies:
     "@commitlint/format" "^15.0.0"
@@ -1327,14 +1327,6 @@ combined-stream@^1.0.8:
   integrity sha1-w9RaizT9cwYxoRCoolIGgrMdWn8=
   dependencies:
     delayed-stream "~1.0.0"
-
-commitlint@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.npmmirror.com/commitlint/download/commitlint-15.0.0.tgz#51eb8bdaa04b780db12207fc56245c32a827a635"
-  integrity sha1-UeuL2qBLeA2xIgf8ViRcMqgnpjU=
-  dependencies:
-    "@commitlint/cli" "^15.0.0"
-    "@commitlint/types" "^15.0.0"
 
 compare-func@^2.0.0:
   version "2.0.0"
