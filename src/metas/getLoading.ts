@@ -1,7 +1,7 @@
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/EffectManager';
 import { metaManager } from '../reducers/MetaManger';
-import { pickMeta } from './getMeta';
+import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 
 export interface PickLoading {
   pick(category: number | string): boolean;
@@ -11,7 +11,7 @@ export const pickLoading: PickLoading['pick'] = function (
   this: Record<string, Partial<MetaStateItem> | undefined>,
   category: number | string,
 ) {
-  return pickMeta.call(this, category).type === 'pending';
+  return (this[resolveMetaCategory(category)] || {}).type === 'pending';
 };
 
 /**
