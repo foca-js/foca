@@ -1,49 +1,39 @@
-## [0.2.0](https://github.com/foca-js/foca/compare/v0.1.5...v0.2.0)
+## [0.2.1](https://github.com/foca-js/foca/compare/v0.2.0...v0.2.1)&nbsp;&nbsp;(2021-11-22)
 
-#### 2021-11-21
+- 异步函数中的`metaId()`重命名为`meta()`
+
+## [0.2.0](https://github.com/foca-js/foca/compare/v0.1.5...v0.2.0)&nbsp;&nbsp;(2021-11-21)
 
 - 增加及时状态方法：`getLoading`, `getLoadings`, `getMeta`, `getMetas`
 - 增加 hooks 方法：`useLoadings`, `useMetas`
 - meta 增加 type 字段，并由此检测 loading 状态
 
-## [0.1.5](https://github.com/foca-js/foca/compare/v0.1.4...v0.1.5)
-
-#### 2021-11-19
+## [0.1.5](https://github.com/foca-js/foca/compare/v0.1.4...v0.1.5)&nbsp;&nbsp;(2021-11-19)
 
 - useModel 可以手动传入对比算法，未传则由框架动态决策
 - 提升异步状态追踪性能
 - 提升数据合并性能
 
-## [0.1.4](https://github.com/foca-js/foca/compare/v0.1.3...v0.1.4)
-
-#### 2021-11-13
+## [0.1.4](https://github.com/foca-js/foca/compare/v0.1.3...v0.1.4)&nbsp;&nbsp;(2021-11-13)
 
 - 删除 tslib 依赖
 - 定义模型时的属性 state 重构为 initialState，防止和 actions 的 state 变量名重叠以及 eslint 规则报错。
 
-## [0.1.3](https://github.com/foca-js/foca/compare/v0.1.2...v0.1.3)
-
-#### 2021-11-02
+## [0.1.3](https://github.com/foca-js/foca/compare/v0.1.2...v0.1.3)&nbsp;&nbsp;(2021-11-02)
 
 - action 的返回类型更新为 AnyAction
 - 内部方法 dispatch 现支持**直接**传入完整的新 state。如果你只想更新 state 的某个值，则仍然使用回调。
 - 修改异步方法报错时 action.type 的文字
 
-## [0.1.2](https://github.com/foca-js/foca/compare/v0.1.1...v0.1.2)
-
-#### 2021-11-01
+## [0.1.2](https://github.com/foca-js/foca/compare/v0.1.1...v0.1.2)&nbsp;&nbsp;(2021-11-01)
 
 - 存储引擎可自定义 keyPrefix 参数
 
-## [0.1.1](https://github.com/foca-js/foca/compare/v0.1.0...v0.1.1)
-
-#### 2021-10-31
+## [0.1.1](https://github.com/foca-js/foca/compare/v0.1.0...v0.1.1)&nbsp;&nbsp;(2021-10-31)
 
 - 存储引擎放回当前库
 
-## [0.1.0](https://github.com/foca-js/foca/compare)
-
-#### 2021-10-31
+## [0.1.0](https://github.com/foca-js/foca/compare)&nbsp;&nbsp;(2021-10-31)
 
 - 模块化
 - 持久化
