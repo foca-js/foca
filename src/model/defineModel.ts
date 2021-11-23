@@ -272,7 +272,7 @@ export const defineModel = <
     preventRefresh: !!keepStateFromRefresh,
   });
 
-  modelStore.appendReducer(reducer);
+  modelStore.appendReducer(reducer.name, reducer.consumer.bind(reducer));
 
   return model as unknown as Model<Name, State, Action, Effect>;
 };

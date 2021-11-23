@@ -1,7 +1,7 @@
 import { META_DEFAULT_CATEGORY } from '../actions/meta';
 import { pickLoading } from '../metas/getLoading';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 import { useMetaSelector } from './useSelector';
 
 /**
@@ -23,7 +23,7 @@ export function useLoading(): boolean {
 
   return useMetaSelector(() => {
     for (let i = 0; i < args.length; ++i) {
-      const meta = metaManager.get(args[i]);
+      const meta = metaStore.helper.get(args[i]);
 
       if (pickLoading.call(meta, META_DEFAULT_CATEGORY)) {
         return true;

@@ -1,22 +1,7 @@
 import type { AnyAction } from 'redux';
-import { enableES5, enableMapSet, freeze, Immer } from 'immer';
-import isEqual from 'lodash.isequal';
-import { TYPE_REFRESH_STORE, RefreshAction } from '../actions/refresh';
-import { DispatchAction } from '../actions/dispatch';
-import { isCrushed } from '../utils/isCrushed';
-
-const DEV = !isCrushed();
-
-export const customImmer = new Immer({
-  autoFreeze: false,
-});
-
-/**
- * support for the fallback implementation has to be explicitly enabled
- * @link https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
- * @since immer 6.0
- */
-enableES5(), enableMapSet();
+import { PostModelAction } from '../actions/model';
+import { freezeState } from '../utils/freezeState';
+import { isRefreshAction } from '../utils/isRefreshAction';
 
 interface Options<State extends object> {
   readonly name: string;
@@ -31,7 +16,7 @@ export class ReducerManager<State extends object> {
 
   constructor(options: Options<State>) {
     this.name = options.name;
-    this.initialState = this.freeze(options.initialState);
+    this.initialState = freezeState(options.initialState);
     this.preventRefresh = options.preventRefresh;
   }
 
@@ -41,12 +26,10 @@ export class ReducerManager<State extends object> {
     }
 
     if (this.isSelfModel(action)) {
-      return action.consumer
-        ? this.execute(state, action, action.consumer)
-        : state;
+      return freezeState(action.state);
     }
 
-    if (this.isRefresh(action)) {
+    if (isRefreshAction(action)) {
       return action.payload.force || !this.preventRefresh
         ? this.initialState
         : state;
@@ -55,32 +38,8 @@ export class ReducerManager<State extends object> {
     return state;
   }
 
-  protected isSelfModel(action: AnyAction): action is DispatchAction<State> {
-    type CustomAction = DispatchAction<State>;
-
-    return (
-      (action as CustomAction).model === this.name &&
-      typeof (action as CustomAction).consumer === 'function'
-    );
-  }
-
-  protected isRefresh(action: AnyAction): action is RefreshAction {
-    return (action as RefreshAction).type === TYPE_REFRESH_STORE;
-  }
-
-  protected execute(
-    state: State,
-    action: DispatchAction<State>,
-    consumer: NonNullable<DispatchAction<State>['consumer']>,
-  ): State {
-    const next = customImmer.produce(state, (draft) => {
-      return consumer(draft as State, action) as typeof draft | void;
-    });
-
-    return isEqual(state, next) ? state : this.freeze(next);
-  }
-
-  protected freeze(state: any) {
-    return DEV ? freeze(state, true) : state;
+  protected isSelfModel(action: AnyAction): action is PostModelAction<State> {
+    const test = action as PostModelAction<State>;
+    return test.postModel === true && test.model === this.name && !!test.state;
   }
 }

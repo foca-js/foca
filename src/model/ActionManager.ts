@@ -1,4 +1,4 @@
-import { DispatchAction } from '../actions/dispatch';
+import { PreModelAction } from '../actions/model';
 import { modelStore } from '../store/modelStore';
 import { toArgs } from '../utils/toArgs';
 import type { ActionCtx } from './defineModel';
@@ -15,10 +15,10 @@ export class ActionManager<State extends object> {
   }
 
   execute(args: any[]) {
-    return modelStore.dispatch<DispatchAction<State, any[]>>({
-      model: this.ctx.name,
-      method: this.actionName,
+    return modelStore.dispatch<PreModelAction<State, any[]>>({
       type: this.actionType,
+      model: this.ctx.name,
+      preModel: true,
       payload: args,
       consumer: (state, action) => {
         return this.fn.apply(
@@ -31,7 +31,7 @@ export class ActionManager<State extends object> {
 }
 
 export interface WrapAction<State extends object> {
-  (payload: any): DispatchAction<State>;
+  (payload: any): PreModelAction<State>;
   _$action: ActionManager<State>;
 }
 

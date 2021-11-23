@@ -2,7 +2,7 @@ import assign from 'object-assign';
 import { shallowEqual } from 'react-redux';
 import { PickLoading, pickLoading } from '../metas/getLoading';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 import { useMetaSelector } from './useSelector';
 
 /**
@@ -29,7 +29,7 @@ export function useLoadings(
 
   return useMetaSelector(
     () => {
-      const meta = metaManager.get(effect);
+      const meta = metaStore.helper.get(effect);
 
       if (noPick) {
         return pickLoading.call(meta, category);

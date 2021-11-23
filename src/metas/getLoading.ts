@@ -1,6 +1,6 @@
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 
 export interface PickLoading {
@@ -30,7 +30,7 @@ export function getLoading(
 
 export function getLoading(): boolean {
   for (let i = 0; i < arguments.length; ++i) {
-    const meta = metaManager.get(arguments[i]);
+    const meta = metaStore.helper.get(arguments[i]);
 
     if (pickLoading.call(meta, META_DEFAULT_CATEGORY)) {
       return true;

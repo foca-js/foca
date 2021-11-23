@@ -1,4 +1,4 @@
-import { DispatchAction } from './dispatch';
+import { Action } from 'redux';
 
 export interface Meta {
   message?: string;
@@ -12,7 +12,10 @@ export interface MetaStateItem extends Meta {
   type?: MetaType;
 }
 
-export interface MetaAction extends DispatchAction<object, MetaStateItem> {
+export interface MetaAction extends Action<string> {
   setMeta: true;
+  model: string;
+  method: string;
+  payload: object;
   category: string | number;
 }

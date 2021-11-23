@@ -1,8 +1,89 @@
-import { MetaManager } from '../reducers/MetaManger';
-import { StoreAdvanced } from './StoreAdvanced';
+import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
+import type { PromiseEffect } from '../model/EffectManager';
+import { metaInterceptor } from '../middleware/metaInterceptor';
+import type { MetaAction, MetaStateItem } from '../actions/meta';
+import { isRefreshAction } from '../utils/isRefreshAction';
+import { freezeState } from '../utils/freezeState';
+import { resolveMetaCategory } from '../utils/resolveMetaCategory';
+import { getImmer } from '../utils/getImmer';
+import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 
-export const metaStore = new StoreAdvanced().init();
+export interface MetaState {
+  [model: string]: {
+    [method: string]: {
+      [id: string]: MetaStateItem;
+    };
+  };
+}
 
-export const metaManager = new MetaManager(metaStore);
+const immer = getImmer();
 
-metaStore.appendReducer(metaManager);
+const helper = {
+  status: <Record<string, boolean>>{},
+
+  get(effect: PromiseEffect) {
+    const {
+      _: { model, method },
+    } = effect;
+    let meta: MetaStateItem | undefined;
+
+    if (this.isActive(model, method)) {
+      const metas: MetaState = metaStore.getState();
+      meta = metas && metas[model] && metas[model]![method];
+    } else {
+      this.activate(model, method);
+    }
+
+    return meta || {};
+  },
+
+  isActive(model: string, method: string): boolean {
+    return this.status[model + '|' + method] === true;
+  },
+  activate(model: string, method: string) {
+    this.status[model + '|' + method] = true;
+  },
+
+  isMeta(action: AnyAction): action is MetaAction {
+    const test = action as MetaAction;
+
+    return (
+      test.setMeta === true && !!test.model && !!test.method && !!test.category
+    );
+  },
+
+  refresh() {
+    return metaStore.dispatch<RefreshAction>({
+      type: TYPE_REFRESH_STORE,
+      payload: {
+        force: true,
+      },
+    });
+  },
+};
+
+export const metaStore = createStore(
+  (state: MetaState | undefined, action: AnyAction) => {
+    if (state === void 0) {
+      return {};
+    }
+
+    if (helper.isMeta(action)) {
+      const { model, method, payload } = action;
+      const category = resolveMetaCategory(action.category);
+
+      return immer.produce(state, (draft) => {
+        ((draft[model] ||= {})[method] ||= {})[category] = freezeState(payload);
+      });
+    }
+
+    if (isRefreshAction(action)) {
+      return {};
+    }
+
+    return state;
+  },
+  applyMiddleware(metaInterceptor(helper)),
+) as Store & { helper: typeof helper };
+
+metaStore.helper = helper;

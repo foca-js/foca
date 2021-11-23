@@ -5,7 +5,7 @@ import { basicModel } from './models/basic-model';
 
 beforeEach(() => {
   store.init();
-  metaStore.refresh();
+  metaStore.helper.refresh();
 });
 
 afterEach(() => {

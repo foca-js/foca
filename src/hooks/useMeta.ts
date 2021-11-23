@@ -1,7 +1,7 @@
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { pickMeta } from '../metas/getMeta';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 import { useMetaSelector } from './useSelector';
 
 /**
@@ -13,6 +13,6 @@ import { useMetaSelector } from './useSelector';
  */
 export const useMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
   return useMetaSelector(() => {
-    return pickMeta.call(metaManager.get(effect), META_DEFAULT_CATEGORY);
+    return pickMeta.call(metaStore.helper.get(effect), META_DEFAULT_CATEGORY);
   });
 };

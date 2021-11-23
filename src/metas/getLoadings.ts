@@ -1,7 +1,7 @@
 import assign from 'object-assign';
 import { PickLoading, pickLoading } from '../metas/getLoading';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 
 /**
  * 检测给定的effect方法中是否正在执行。
@@ -23,7 +23,7 @@ export function getLoadings(
   effect: PromiseEffect,
   category?: number | string,
 ): boolean | PickLoading {
-  const meta = metaManager.get(effect);
+  const meta = metaStore.helper.get(effect);
 
   if (category !== void 0) {
     return pickLoading.call(meta, category);

@@ -3,7 +3,7 @@ import { shallowEqual } from 'react-redux';
 import { MetaStateItem } from '../actions/meta';
 import { pickMeta, PickMeta } from '../metas/getMeta';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 import { useMetaSelector } from './useSelector';
 
 /**
@@ -30,7 +30,7 @@ export function useMetas(
 
   return useMetaSelector(
     () => {
-      const meta = metaManager.get(effect);
+      const meta = metaStore.helper.get(effect);
 
       if (noPick) {
         return pickMeta.call(meta, category);

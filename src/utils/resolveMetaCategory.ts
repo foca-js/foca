@@ -1,2 +1,3 @@
-export const resolveMetaCategory = (category: number | string) =>
-  '_' + category;
+export const resolveMetaCategory = (category: number | string) => {
+  return '_#' + category;
+};

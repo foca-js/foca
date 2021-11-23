@@ -1,6 +1,6 @@
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 
 export interface PickMeta {
@@ -22,5 +22,5 @@ export const pickMeta: PickMeta['pick'] = function (
  * ```
  */
 export const getMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
-  return pickMeta.call(metaManager.get(effect), META_DEFAULT_CATEGORY);
+  return pickMeta.call(metaStore.helper.get(effect), META_DEFAULT_CATEGORY);
 };

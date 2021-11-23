@@ -2,7 +2,7 @@ import assign from 'object-assign';
 import { MetaStateItem } from '../actions/meta';
 import { pickMeta, PickMeta } from '../metas/getMeta';
 import { PromiseEffect } from '../model/EffectManager';
-import { metaManager } from '../store/metaStore';
+import { metaStore } from '../store/metaStore';
 
 /**
  * 获取给定的effect方法的执行状态。
@@ -24,7 +24,7 @@ export function getMetas(
   effect: PromiseEffect,
   category?: number | string,
 ): Partial<MetaStateItem> | PickMeta {
-  const meta = metaManager.get(effect);
+  const meta = metaStore.helper.get(effect);
 
   if (category !== void 0) {
     return pickMeta.call(meta, category);
