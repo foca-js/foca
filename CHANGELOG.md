@@ -1,3 +1,7 @@
+## [0.2.3](https://github.com/foca-js/foca/compare/v0.2.2...v0.2.3)&nbsp;&nbsp;(2021-11-23)
+
+- 对 action 进行拦截以避免无意义的状态更新和组件重渲染
+
 ## [0.2.2](https://github.com/foca-js/foca/compare/v0.2.1...v0.2.2)&nbsp;&nbsp;(2021-11-22)
 
 - meta 数据使用新的内部 store 存储
