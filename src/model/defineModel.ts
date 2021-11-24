@@ -173,11 +173,13 @@ export interface DefineModelOptions<
   effects?: Effect &
     ThisType<ModelAction<State, Action> & Effect & EffectCtx<State>>;
   /**
-   * 清空仓库所有数据时，是否保留该模型的数据，默认：false
+   * 是否阻止刷新数据时跳过当前模型，默认即不跳过。
    *
-   * @see store.refresh()
+   * 如果是强制刷新，则该参数无效。
+   *
+   * @see store.refresh(force: boolean = false)
    */
-  keepStateFromRefresh?: boolean;
+  skipRefresh?: boolean;
   /**
    * 定制持久化，请确保已经在初始化store的时候把当前模型加入persist配置，否则当前设置无效
    *
@@ -197,7 +199,7 @@ export const defineModel = <
   name: Name,
   options: DefineModelOptions<State, Action, Effect>,
 ): Model<Name, State, Action, Effect> => {
-  const { initialState, actions, effects, keepStateFromRefresh } = options;
+  const { initialState, actions, effects, skipRefresh } = options;
 
   const ctx: EffectCtx<State> = {
     name,
@@ -269,7 +271,7 @@ export const defineModel = <
   const reducer = createReducer({
     name,
     initialState: ctx.initialState,
-    allowRefresh: !keepStateFromRefresh,
+    allowRefresh: !skipRefresh,
   });
 
   modelStore.appendReducer(name, reducer);
