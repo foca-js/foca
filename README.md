@@ -24,6 +24,16 @@
 yarn add foca
 ```
 
+# 文档
+
+https://foca-js.github.io/foca/
+
+# 例子
+
+在线试玩：https://codesandbox.io/s/foca-demos-e8rh3
+<br />
+仓库项目：https://github.com/foca-js/foca-demos 本地体验更佳
+
 # 推荐搭配
 
 | 仓库                                                                  | 版本                                                                                                          | 描述                      | 平台      |
