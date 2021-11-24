@@ -36,7 +36,7 @@ https://foca-js.github.io/foca/
 
 # 推荐搭配
 
-| 仓库                                                                  | 版本                                                                                                          | 描述                      | 平台      |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------- | --------- |
-| [axios](https://github.com/axios/axios)                               | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                             | 当下最流行的请求库        | React, RN |
-| [foca-axios-enhancer](https://github.com/foca-js/foca-axios-enhancer) | [![npm](https://img.shields.io/npm/v/foca-axios-enhancer)](https://www.npmjs.com/package/foca-axios-enhancer) | 针对 axios 的增强型适配器 | React, RN |
+| 仓库                                                | 版本                                                                                        | 描述                      | 平台      |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------- | --------- |
+| [axios](https://github.com/axios/axios)             | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)           | 当下最流行的请求库        | React, RN |
+| [foca-axios](https://github.com/foca-js/foca-axios) | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios) | 针对 axios 的增强型适配器 | React, RN |
