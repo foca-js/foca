@@ -53,9 +53,13 @@ test('get metas', async () => {
       wrapper: FocaProvider,
     },
   );
+  const { result: result3 } = renderHook(() => useMetas(basicModel.hasError), {
+    wrapper: FocaProvider,
+  });
 
   expect(result1.current).toStrictEqual<MetaStateItem>({});
   expect(result2.current).toStrictEqual<MetaStateItem>({});
+  expect(result3.current.pick('x')).toStrictEqual<MetaStateItem>({});
 
   let promise1!: Promise<any>;
   let promise2!: Promise<any>;
@@ -71,6 +75,10 @@ test('get metas', async () => {
   expect(result2.current).toStrictEqual<MetaStateItem>({
     type: 'pending',
   });
+  expect(result3.current.pick('x')).toStrictEqual<MetaStateItem>({
+    type: 'pending',
+  });
+  expect(result3.current.pick('xyz')).toStrictEqual<MetaStateItem>({});
 
   await act(async () => {
     await expect(promise1).rejects.toThrowError();
@@ -85,6 +93,11 @@ test('get metas', async () => {
     type: 'rejected',
     message: 'bbb',
   });
+  expect(result3.current.pick('x')).toStrictEqual<MetaStateItem>({
+    type: 'rejected',
+    message: 'aaa',
+  });
+  expect(result3.current.pick('xyz')).toStrictEqual<MetaStateItem>({});
 });
 
 test.skip('type checking', () => {
