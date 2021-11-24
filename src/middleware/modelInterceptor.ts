@@ -27,14 +27,14 @@ export const modelInterceptor: Middleware =
       return action.consumer(draft, action) as typeof draft | void;
     });
 
-    if (!isEqual(prev, next)) {
-      return dispatch<PostModelAction>({
-        type: action.type,
-        model: action.model,
-        postModel: true,
-        next: freezeState(next),
-      });
+    if (isEqual(prev, next)) {
+      return;
     }
 
-    return;
+    return dispatch<PostModelAction>({
+      type: action.type,
+      model: action.model,
+      postModel: true,
+      next: freezeState(next),
+    });
   };

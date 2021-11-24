@@ -11,20 +11,18 @@ export const metaInterceptor = (
       return dispatch(action);
     }
 
-    const state = api.getState() as MetaState;
-    const { model, method, payload } = action;
+    const { model, method, payload, category } = action;
 
     if (!helper.isActive(model, method)) {
       return;
     }
 
-    const category = resolveMetaCategory(action.category);
+    const state = (api.getState() as MetaState)[model];
 
     if (
-      !state[model] ||
-      !state[model]![method] ||
-      !state[model]![method]![category] ||
-      !isEqual(state[model]![method]![category]!, payload)
+      !state ||
+      !state[method] ||
+      !isEqual(state[method]![resolveMetaCategory(category)], payload)
     ) {
       return dispatch(action);
     }
