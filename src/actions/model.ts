@@ -11,5 +11,5 @@ export interface PreModelAction<State extends object = object, Payload = object>
 export interface PostModelAction<State = object> extends Action<string> {
   model: string;
   postModel: true;
-  state: State;
+  next: State;
 }

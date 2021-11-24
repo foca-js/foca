@@ -1,6 +1,7 @@
 import isEqual from 'lodash.isequal';
 import { AnyAction, Middleware } from 'redux';
 import { PostModelAction, PreModelAction } from '../actions/model';
+import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
 
 const isPreModelAction = (action: AnyAction): action is PreModelAction => {
@@ -36,7 +37,7 @@ export const modelInterceptor: Middleware =
         type: action.type,
         model: action.model,
         postModel: true,
-        state: next,
+        next: freezeState(next),
       });
     }
 

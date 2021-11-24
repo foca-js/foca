@@ -25,21 +25,22 @@ export class ReducerManager<State extends object> {
       return this.initialState;
     }
 
-    if (this.isSelfModel(action)) {
-      return freezeState(action.state);
+    if (this.isPostModel(action)) {
+      return action.next;
     }
 
-    if (isRefreshAction(action)) {
-      return action.payload.force || !this.preventRefresh
-        ? this.initialState
-        : state;
+    if (
+      isRefreshAction(action) &&
+      (action.payload.force || !this.preventRefresh)
+    ) {
+      return this.initialState;
     }
 
     return state;
   }
 
-  protected isSelfModel(action: AnyAction): action is PostModelAction<State> {
+  protected isPostModel(action: AnyAction): action is PostModelAction<State> {
     const test = action as PostModelAction<State>;
-    return test.postModel === true && test.model === this.name && !!test.state;
+    return test.postModel === true && test.model === this.name && !!test.next;
   }
 }
