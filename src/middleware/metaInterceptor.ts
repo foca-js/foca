@@ -12,10 +12,6 @@ export const metaInterceptor = (
     }
 
     const state = api.getState() as MetaState;
-
-    if (state === void 0) {
-      return dispatch(action);
-    }
     const { model, method, payload } = action;
 
     if (!helper.isActive(model, method)) {

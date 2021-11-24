@@ -23,11 +23,6 @@ export const modelInterceptor: Middleware =
     }
 
     const prev = api.getState()[action.model] as object;
-
-    if (prev === void 0) {
-      return dispatch(action);
-    }
-
     const next = immer.produce(prev, (draft) => {
       return action.consumer(draft, action) as typeof draft | void;
     });
