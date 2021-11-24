@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { FocaProvider, store, useLoading } from '../src';
+import { FocaProvider, store, useLoading, useLoadings } from '../src';
 import { metaStore } from '../src/store/metaStore';
 import { basicModel } from './models/basic-model';
 
@@ -12,7 +12,7 @@ afterEach(() => {
   store.unmount();
 });
 
-test('Trace loading from effect method', async () => {
+test('Trace loading', async () => {
   const { result } = renderHook(() => useLoading(basicModel.pureAsync), {
     wrapper: FocaProvider,
   });
@@ -68,6 +68,53 @@ test('Compose the loadings', async () => {
   expect(result.current).toBeFalsy();
 });
 
+test('Trace loadings', async () => {
+  const { result } = renderHook(() => useLoadings(basicModel.pureAsync, 'x'), {
+    wrapper: FocaProvider,
+  });
+
+  expect(result.current).toBeFalsy();
+
+  let promise!: Promise<any>;
+
+  act(() => {
+    promise = basicModel.pureAsync.meta('x').execute();
+  });
+
+  expect(result.current).toBeTruthy();
+
+  await act(async () => {
+    await promise;
+  });
+
+  expect(result.current).toBeFalsy();
+});
+
+test('Pick loading from loadings', async () => {
+  const { result } = renderHook(() => useLoadings(basicModel.pureAsync), {
+    wrapper: FocaProvider,
+  });
+
+  expect(result.current.pick('m')).toBeFalsy();
+  expect(result.current.pick('n')).toBeFalsy();
+
+  let promise!: Promise<any>;
+
+  act(() => {
+    promise = basicModel.pureAsync.meta('m').execute();
+  });
+
+  expect(result.current.pick('m')).toBeTruthy();
+  expect(result.current.pick('n')).toBeFalsy();
+
+  await act(async () => {
+    await promise;
+  });
+
+  expect(result.current.pick('m')).toBeFalsy();
+  expect(result.current.pick('n')).toBeFalsy();
+});
+
 test.skip('type checking', () => {
   useLoading(basicModel.bar).valueOf();
   useLoading(basicModel.foo, basicModel.bar).valueOf();
@@ -77,4 +124,13 @@ test.skip('type checking', () => {
   useLoading(basicModel);
   // @ts-expect-error
   useLoading({});
+
+  useLoadings(basicModel.bar, 'x').valueOf();
+  useLoadings(basicModel.foo).pick('m').valueOf();
+  // @ts-expect-error
+  useLoadings(basicModel.minus);
+  // @ts-expect-error
+  useLoadings(basicModel);
+  // @ts-expect-error
+  useLoadings({});
 });

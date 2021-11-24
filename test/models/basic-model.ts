@@ -23,6 +23,9 @@ export const basicModel = defineModel('basic', {
       state.count += step;
       state.hello += ', ' + hello;
     },
+    set(state, count: number) {
+      state.count = count;
+    },
     reset() {
       return this.initialState;
     },

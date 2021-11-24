@@ -43,6 +43,9 @@ const helper = {
   activate(model: string, method: string) {
     this.status[model + '|' + method] = true;
   },
+  inactivate(model: string, method: string) {
+    this.status[model + '|' + method] = false;
+  },
 
   isMeta(action: AnyAction): action is MetaAction {
     const test = action as MetaAction;

@@ -11,7 +11,7 @@ export const metaInterceptor = (
       return dispatch(action);
     }
 
-    const state = api.getState()[action.model] as MetaState;
+    const state = api.getState() as MetaState;
 
     if (state === void 0) {
       return dispatch(action);
