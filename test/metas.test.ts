@@ -1,5 +1,4 @@
-import { getLoading, getMeta, getMetas, store } from '../src';
-import { getLoadings } from '../src/metas/getLoadings';
+import { getLoading, getLoadings, getMeta, getMetas, store } from '../src';
 import { metaStore } from '../src/store/metaStore';
 import { basicModel } from './models/basic-model';
 

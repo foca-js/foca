@@ -2,7 +2,7 @@ import isEqual from 'lodash.isequal';
 import { shallowEqual } from 'react-redux';
 import { Model } from '../model/defineModel';
 import { toArgs } from '../utils/toArgs';
-import { useModelSelector } from './useSelector';
+import { useModelSelector } from '../redux/useSelector';
 
 /**
  * hooks新旧数据的对比方式：
