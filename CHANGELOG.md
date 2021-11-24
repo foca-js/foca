@@ -1,3 +1,11 @@
+## [0.3.0](https://github.com/foca-js/foca/compare/v0.2.3...v0.3.0)&nbsp;&nbsp;(2021-11-24)
+
+- [Breaking] keepStateFromRefresh 重命名为 skipRefresh
+- 修复 dispatch meta 时未命中拦截条件
+- 重构拦截器
+- 重构 reducer 生成器
+- 完善测试用例
+
 ## [0.2.3](https://github.com/foca-js/foca/compare/v0.2.2...v0.2.3)&nbsp;&nbsp;(2021-11-23)
 
 - 对 action 进行拦截以避免无意义的状态更新和组件重渲染

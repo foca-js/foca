@@ -1,6 +1,6 @@
 {
   "name": "foca",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "repository": "git@github.com:foca-js/foca.git",
   "keywords": [
     "redux",
