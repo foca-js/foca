@@ -80,7 +80,7 @@ type ModelAction<State extends object, Action extends object> = {
     state: State,
     ...args: infer P
   ) => State | void
-    ? (...args: P) => AnyAction
+    ? (...args: P) => AnyAction | void
     : never;
 };
 
