@@ -3,7 +3,7 @@ import { engines, store } from '../src';
 import { StoreError } from '../src/exceptions/StoreError';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { jsonStringifyReplacer } from '../src/utils/json';
-import { basicModel } from './models/basic-model';
+import { basicModel, basicSkipRefreshModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
 import {
   hasDecodePersistModel,
@@ -112,4 +112,28 @@ test('Store can hydrate persist state', async () => {
     count: 123,
     hello: 'earth',
   });
+});
+
+test('refresh the whole state', () => {
+  store.init();
+
+  basicModel.plus(1);
+  basicSkipRefreshModel.plus(1);
+  expect(basicModel.state.count).toEqual(1);
+  expect(basicSkipRefreshModel.state.count).toEqual(1);
+
+  store.refresh();
+  expect(basicModel.state.count).toEqual(0);
+  expect(basicSkipRefreshModel.state.count).toEqual(1);
+
+  basicModel.plus(1);
+  basicSkipRefreshModel.plus(1);
+  expect(basicModel.state.count).toEqual(1);
+  expect(basicSkipRefreshModel.state.count).toEqual(2);
+
+  store.refresh(true);
+  expect(basicModel.state.count).toEqual(0);
+  expect(basicSkipRefreshModel.state.count).toEqual(0);
+
+  store.unmount();
 });

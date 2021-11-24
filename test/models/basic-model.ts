@@ -1,5 +1,5 @@
 import sleep from 'sleep-promise';
-import { defineModel } from '../../src';
+import { cloneModel, defineModel } from '../../src';
 import { EffectError } from '../../src/exceptions/EffectError';
 
 const initialState: {
@@ -75,3 +75,11 @@ export const basicModel = defineModel('basic', {
     },
   },
 });
+
+export const basicSkipRefreshModel = cloneModel(
+  'basicSkipRefresh',
+  basicModel,
+  {
+    skipRefresh: true,
+  },
+);
