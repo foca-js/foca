@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
-import { EmptyContext, ModelContext, MetaContext } from './Context';
+import { EmptyContext, ModelContext, MetaContext } from './contexts';
 import { modelStore } from '../store/modelStore';
 import { PersistGate, PersistGateProps } from '../persist/PersistGate';
 import { emptyStore } from '../store/emptyStore';

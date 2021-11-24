@@ -1,5 +1,5 @@
 import { createSelectorHook } from 'react-redux';
-import { ModelContext, MetaContext } from '../react/Context';
+import { ModelContext, MetaContext } from '../redux/contexts';
 
 export const useModelSelector = createSelectorHook(ModelContext);
 

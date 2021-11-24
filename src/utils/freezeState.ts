@@ -3,6 +3,6 @@ import { isCrushed } from './isCrushed';
 
 const DEV = !isCrushed();
 
-export const freezeState = (state: any) => {
+export const freezeState = <T = any>(state: T): T => {
   return DEV ? freeze(state, true) : state;
 };

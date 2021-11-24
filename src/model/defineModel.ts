@@ -4,7 +4,7 @@ import assign from 'object-assign';
 import { WrapAction, wrapAction } from './ActionManager';
 import { WrapEffect, wrapEffect } from './EffectManager';
 import { modelStore } from '../store/modelStore';
-import { ReducerManager } from '../reducers/ReducerManager';
+import { createReducer } from '../redux/createReducer';
 
 export interface GetName<Name extends string> {
   /**
@@ -266,13 +266,13 @@ export const defineModel = <
 
   assign(ctx, transformedActions, transformedEffects);
 
-  const reducer = new ReducerManager({
-    name: name,
+  const reducer = createReducer({
+    name,
     initialState: ctx.initialState,
-    preventRefresh: !!keepStateFromRefresh,
+    allowRefresh: !keepStateFromRefresh,
   });
 
-  modelStore.appendReducer(reducer.name, reducer.consumer.bind(reducer));
+  modelStore.appendReducer(name, reducer);
 
   return model as unknown as Model<Name, State, Action, Effect>;
 };
