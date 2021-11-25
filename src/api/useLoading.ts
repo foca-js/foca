@@ -2,7 +2,7 @@ import assign from 'object-assign';
 import { shallowEqual } from 'react-redux';
 import { META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PickLoading, pickLoading } from './getLoading';
-import { PromiseEffect } from '../model/EffectManager';
+import { PromiseEffect } from '../model/enhanceEffect';
 import { metaStore } from '../store/metaStore';
 import { useMetaSelector } from '../redux/useSelector';
 

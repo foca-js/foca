@@ -1,6 +1,6 @@
 import assign from 'object-assign';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
-import { PromiseEffect } from '../model/EffectManager';
+import { PromiseEffect } from '../model/enhanceEffect';
 import { metaStore } from '../store/metaStore';
 import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 

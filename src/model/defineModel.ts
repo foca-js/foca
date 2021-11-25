@@ -1,10 +1,13 @@
 import { AnyAction } from 'redux';
 import cloneDeep from 'clone';
 import assign from 'object-assign';
-import { WrapAction, wrapAction } from './ActionManager';
-import { WrapEffect, wrapEffect } from './EffectManager';
+import { EnhancedAction, enhanceAction } from './enhanceAction';
+import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
 import { modelStore } from '../store/modelStore';
 import { createReducer } from '../redux/createReducer';
+import { isCrushed } from '../utils/isCrushed';
+
+const DEV = !isCrushed();
 
 export interface GetName<Name extends string> {
   /**
@@ -84,9 +87,9 @@ type ModelAction<State extends object, Action extends object> = {
     : never;
 };
 
-type ModelEffect<State extends object, Effect extends object> = {
+type ModelEffect<Effect extends object> = {
   readonly [K in keyof Effect]: Effect[K] extends (...args: infer P) => infer R
-    ? WrapEffect<State, P, R>
+    ? EnhancedEffect<P, R>
     : never;
 };
 
@@ -95,9 +98,7 @@ export type Model<
   State extends object = object,
   Action extends object = object,
   Effect extends object = object,
-> = BaseModel<Name, State> &
-  ModelAction<State, Action> &
-  ModelEffect<State, Effect>;
+> = BaseModel<Name, State> & ModelAction<State, Action> & ModelEffect<Effect>;
 
 export type InternalModel<
   Name extends string = string,
@@ -188,8 +189,6 @@ export interface DefineModelOptions<
   persist?: ModelPersist<State>;
 }
 
-const noop = () => {};
-
 export const defineModel = <
   Name extends string,
   State extends object,
@@ -201,59 +200,86 @@ export const defineModel = <
 ): Model<Name, State, Action, Effect> => {
   const { initialState, actions, effects, skipRefresh } = options;
 
-  const ctx: EffectCtx<State> = {
-    name,
-    get state() {
-      return modelStore.getState()[name] as State;
+  const getState = (): State => modelStore.getState()[name];
+  const getInitialState = (): State => cloneDeep(initialState);
+
+  const actionCtx: ActionCtx<State> = {
+    get name() {
+      return name;
     },
     get initialState() {
-      return cloneDeep(initialState);
+      return getInitialState();
     },
-    // @ts-expect-error
-    dispatch: noop,
   };
 
-  const internalDispatcher = wrapAction(
-    ctx,
-    'dispatch',
-    (state: State, fn: (state: State) => State | void) => fn(state),
-  );
-
-  ctx.dispatch = (fn_or_state: State | ((state: State) => State | void)) => {
-    return internalDispatcher(
-      typeof fn_or_state === 'function' ? fn_or_state : () => fn_or_state,
+  const createEffectCtx = (methodName: string): EffectCtx<State> => {
+    const internalDispatcher = enhanceAction(
+      actionCtx,
+      methodName + '[dispatch]',
+      (state: State, fn: (state: State) => State | void) => fn(state),
     );
+
+    const ctx: EffectCtx<State> = {
+      get name() {
+        return name;
+      },
+      get initialState() {
+        return getInitialState();
+      },
+      get state() {
+        return getState();
+      },
+      dispatch(fn_or_state: State | ((state: State) => State | void)) {
+        return internalDispatcher(
+          typeof fn_or_state === 'function' ? fn_or_state : () => fn_or_state,
+        );
+      },
+    };
+
+    return ctx;
   };
 
-  const transformedActions: Record<string, WrapAction<State>> = {};
+  const enhancedActions: Record<string, EnhancedAction<State>> = {};
   if (actions) {
     const keys = Object.keys(actions);
     for (let i = 0; i < keys.length; ++i) {
       const actionName = keys[i]!;
-      transformedActions[actionName] = wrapAction(
-        ctx,
+      enhancedActions[actionName] = enhanceAction(
+        actionCtx,
         actionName,
         actions[actionName]!,
       );
     }
   }
 
-  const transformedEffects: Record<string, WrapEffect<State>> = {};
+  const enhancedEffects: Record<string, EnhancedEffect> = {};
   if (effects) {
+    const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
     const keys = Object.keys(effects);
+
     for (let i = 0; i < keys.length; ++i) {
       const effectName = keys[i]!;
       // @ts-expect-error
       const effect = effects[effectName];
-      transformedEffects[effectName] = wrapEffect(ctx, effectName, effect);
+      DEV && effectCtxs.push(createEffectCtx(effectName));
+
+      enhancedEffects[effectName] = enhanceEffect(
+        effectCtxs[effectCtxs.length - 1]!,
+        effectName,
+        effect,
+      );
+    }
+
+    for (let i = 0; i < effectCtxs.length; ++i) {
+      assign(effectCtxs[i], enhancedActions, enhancedEffects);
     }
   }
 
-  // 使用扩展操作符会直接触发getter
+  // 使用扩展操作符(rest/spread)会直接触发getter
   const model: InternalModel<Name, State, Action, Effect> = assign(
     {
       get state() {
-        return ctx.state;
+        return getState();
       },
       get name() {
         return name;
@@ -262,19 +288,17 @@ export const defineModel = <
         return options;
       },
     },
-    transformedActions,
-    transformedEffects,
+    enhancedActions,
+    enhancedEffects,
   );
-
-  assign(ctx, transformedActions, transformedEffects);
 
   const reducer = createReducer({
     name,
-    initialState: ctx.initialState,
+    initialState: getInitialState(),
     allowRefresh: !skipRefresh,
   });
 
   modelStore.appendReducer(name, reducer);
 
-  return model as unknown as Model<Name, State, Action, Effect>;
+  return model as any;
 };

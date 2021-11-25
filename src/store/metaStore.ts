@@ -1,5 +1,5 @@
 import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
-import type { PromiseEffect } from '../model/EffectManager';
+import type { PromiseEffect } from '../model/enhanceEffect';
 import { metaInterceptor } from '../middleware/metaInterceptor';
 import type { MetaAction, MetaStateItem } from '../actions/meta';
 import { isRefreshAction } from '../utils/isRefreshAction';
