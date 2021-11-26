@@ -3,12 +3,15 @@ const objectArray = '[object Array]';
 const mapPrefix = 'new Map(';
 const setPrefix = 'new Set(';
 
-const getMapSetValue = <T>(value: string): [T, boolean] => {
-  const arr = JSON.parse(value.slice(8, -1));
-  return [arr, toString.call(arr) === objectArray];
+export const parsePersist = (data: any) => {
+  return JSON.parse(data, jsonParseReciever);
 };
 
-export const jsonStringifyReplacer = (_: string, value: any) => {
+export const stringifyPersist = (data: any) => {
+  return JSON.stringify(data, jsonStringifyReplacer);
+};
+
+const jsonStringifyReplacer = (_: string, value: any) => {
   switch (toString.call(value).slice(8, -1)) {
     case 'Map':
       return `${mapPrefix}${JSON.stringify(
@@ -23,7 +26,7 @@ export const jsonStringifyReplacer = (_: string, value: any) => {
   }
 };
 
-export const jsonParseReciever = (_: string, value: any) => {
+const jsonParseReciever = (_: string, value: any) => {
   if (typeof value === 'string') {
     try {
       switch (value.slice(0, 8)) {
@@ -49,4 +52,9 @@ export const jsonParseReciever = (_: string, value: any) => {
   }
 
   return value;
+};
+
+const getMapSetValue = <T>(value: string): [T, boolean] => {
+  const arr = JSON.parse(value.slice(8, -1));
+  return [arr, toString.call(arr) === objectArray];
 };

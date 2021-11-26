@@ -1,5 +1,5 @@
 import isEqual from 'lodash.isequal';
-import { jsonParseReciever, jsonStringifyReplacer } from '../src/utils/json';
+import { parsePersist, stringifyPersist } from '../src/utils/json';
 
 test('json string and Map/Set can transform to each', () => {
   const map = new Map();
@@ -25,12 +25,12 @@ test('json string and Map/Set can transform to each', () => {
     test4: map,
   };
 
-  const str = JSON.stringify(obj, jsonStringifyReplacer);
+  const str = stringifyPersist(obj);
 
   expect(typeof str).toBe('string');
   expect(str).toMatchSnapshot('Map/Set string');
 
-  const nextObj = JSON.parse(str, jsonParseReciever);
+  const nextObj = parsePersist(str);
   expect(typeof nextObj).toBe('object');
   expect(nextObj).toMatchSnapshot('Map/Set object');
   expect(isEqual(obj, nextObj)).toBeTruthy();

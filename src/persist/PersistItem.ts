@@ -1,6 +1,6 @@
 import type { StorageEngine } from '../engines';
 import type { InternalModel, Model, ModelPersist } from '../model/defineModel';
-import { jsonParseReciever, jsonStringifyReplacer } from '../utils/json';
+import { parsePersist, stringifyPersist } from '../utils/json';
 
 export interface PersistSchema {
   /**
@@ -128,10 +128,7 @@ export class PersistItem {
 
           if (record) {
             if (this.validateSerialized(serialized, record.persist)) {
-              const state = JSON.parse(
-                serialized.d,
-                jsonParseReciever,
-              ) as object;
+              const state = parsePersist(serialized.d) as object;
 
               record.serialized = serialized;
               record.decodeState = record.persist.decode(state) || state;
@@ -185,7 +182,7 @@ export class PersistItem {
         const serialized: PersistSerialized = {
           t: now,
           v: version,
-          d: JSON.stringify(nextStateForKey, jsonStringifyReplacer),
+          d: stringifyPersist(nextStateForKey),
         };
 
         if (optionChanged || serialized.d !== record.serialized!.d) {

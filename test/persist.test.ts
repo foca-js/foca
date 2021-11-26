@@ -1,7 +1,7 @@
 import sleep from 'sleep-promise';
 import { engines, Model, store } from '../src';
 import { PersistItem, PersistSchema } from '../src/persist/PersistItem';
-import { jsonStringifyReplacer } from '../src/utils/json';
+import { stringifyPersist } from '../src/utils/json';
 import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
 import {
@@ -11,7 +11,7 @@ import {
 } from './models/persist-model';
 
 const stringifyState = (model: Model) => {
-  return JSON.stringify(JSON.stringify(model.state, jsonStringifyReplacer));
+  return JSON.stringify(stringifyPersist(model.state));
 };
 
 const createDefaultInstance = () => {
@@ -71,7 +71,7 @@ test('hydrate state from storage', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify({ counter: 15 }, jsonStringifyReplacer),
+          d: stringifyPersist({ counter: 15 }),
         },
       },
     }),
@@ -97,7 +97,7 @@ test('hydrate failed due to different persist version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(persistModel.state),
         },
       },
     }),
@@ -119,7 +119,7 @@ test('hydrate failed due to different model version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 17,
-          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(persistModel.state),
         },
       },
     }),
@@ -147,7 +147,7 @@ test('hydrate failed due to expired', async () => {
         [persistModel.name]: {
           t: Date.now() - 101,
           v: 0,
-          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(persistModel.state),
         },
       },
     }),
@@ -175,7 +175,7 @@ test('rehydrate due to time expired', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(persistModel.state),
         },
       },
     }),
@@ -214,7 +214,7 @@ test('hydrate failed due to invalid format', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state, jsonStringifyReplacer) + '$$$$',
+          d: stringifyPersist(persistModel.state) + '$$$$',
         },
       },
     }),
@@ -245,12 +245,12 @@ test('abandon unregisted model', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(persistModel.state),
         },
         [basicModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(basicModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(basicModel.state),
         },
       },
     }),
@@ -286,10 +286,7 @@ test('model can specific persist version', async () => {
         [hasVersionPersistModel.name]: {
           t: Date.now(),
           v: 10,
-          d: JSON.stringify(
-            hasVersionPersistModel.state,
-            jsonStringifyReplacer,
-          ),
+          d: stringifyPersist(hasVersionPersistModel.state),
         },
       },
     }),
@@ -318,7 +315,7 @@ test('model can specific persist decoder', async () => {
         [hasDecodePersistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(hasDecodePersistModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(hasDecodePersistModel.state),
         },
       },
     }),
@@ -352,7 +349,7 @@ test('Map/Set are allowed for persist', async () => {
         [complexModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(complexModel.state, jsonStringifyReplacer),
+          d: stringifyPersist(complexModel.state),
         },
       },
     }),
