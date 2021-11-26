@@ -6,6 +6,7 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/CI/master)](https://github.com/foca-js/foca/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca)](https://codecov.io/gh/foca-js/foca)
 [![npm](https://img.shields.io/npm/v/foca)](https://www.npmjs.com/package/foca)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/foca)](https://bundlephobia.com/package/foca)
 
 # 安装
 
