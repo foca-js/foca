@@ -5,7 +5,7 @@ import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 
 export const metaInterceptor = (
   helper: typeof metaStore['helper'],
-): Middleware => {
+): Middleware<{}, MetaState> => {
   return (api) => (dispatch) => (action: AnyAction) => {
     if (!helper.isMeta(action)) {
       return dispatch(action);
@@ -17,7 +17,7 @@ export const metaInterceptor = (
       return;
     }
 
-    const state = (api.getState() as MetaState)[model];
+    const state = api.getState()[model];
 
     if (
       !state ||

@@ -1,4 +1,10 @@
-import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
+import {
+  AnyAction,
+  applyMiddleware,
+  createStore,
+  DeepPartial,
+  Store,
+} from 'redux';
 import type { PromiseEffect } from '../model/enhanceEffect';
 import { metaInterceptor } from '../middleware/metaInterceptor';
 import type { MetaAction, MetaStateItem } from '../actions/meta';
@@ -8,13 +14,13 @@ import { resolveMetaCategory } from '../utils/resolveMetaCategory';
 import { getImmer } from '../utils/getImmer';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 
-export interface MetaState {
+export type MetaState = DeepPartial<{
   [model: string]: {
     [method: string]: {
-      [id: string]: MetaStateItem;
+      [category: string]: MetaStateItem;
     };
   };
-}
+}>;
 
 const immer = getImmer();
 
@@ -28,8 +34,8 @@ const helper = {
     let meta: MetaStateItem | undefined;
 
     if (this.isActive(model, method)) {
-      const metas: MetaState = metaStore.getState();
-      meta = metas && metas[model] && metas[model]![method];
+      const state = metaStore.getState()[model];
+      meta = state && state[method];
     } else {
       this.activate(model, method);
     }
@@ -87,6 +93,6 @@ export const metaStore = createStore(
     return state;
   },
   applyMiddleware(metaInterceptor(helper)),
-) as Store & { helper: typeof helper };
+) as Store<MetaState> & { helper: typeof helper };
 
 metaStore.helper = helper;

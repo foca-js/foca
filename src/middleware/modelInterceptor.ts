@@ -16,15 +16,15 @@ const isPreModelAction = (action: AnyAction): action is PreModelAction => {
 
 const immer = getImmer();
 
-export const modelInterceptor: Middleware =
+export const modelInterceptor: Middleware<{}, Record<string, object>> =
   (api) => (dispatch) => (action: AnyAction) => {
     if (!isPreModelAction(action)) {
       return dispatch(action);
     }
 
-    const prev = api.getState()[action.model] as object;
+    const prev = api.getState()[action.model]!;
     const next = immer.produce(prev, (draft) => {
-      return action.consumer(draft, action) as typeof draft | void;
+      return action.consumer(draft, action);
     });
 
     if (isEqual(prev, next)) {
