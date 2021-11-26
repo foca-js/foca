@@ -36,7 +36,9 @@ https://foca-js.github.io/foca/
 
 # 推荐搭配
 
-| 仓库                                                | 版本                                                                                        | 描述                      | 平台      |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------- | --------- |
-| [axios](https://github.com/axios/axios)             | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)           | 当下最流行的请求库        | React, RN |
-| [foca-axios](https://github.com/foca-js/foca-axios) | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios) | 针对 axios 的增强型适配器 | React, RN |
+| 仓库                                                                        | 版本                                                                                                                | 描述                      | 平台                                  |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------- |
+| [axios](https://github.com/axios/axios)                                     | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                                   | 当下最流行的请求库        | React, RN                             |
+| [foca-axios](https://github.com/foca-js/foca-axios)                         | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)                         | 针对 axios 的增强型适配器 | React, RN                             |
+| [foca-miniprogram-axios](https://github.com/foca-js/foca-miniprogram-axios) | [![npm](https://img.shields.io/npm/v/foca-miniprogram-axios)](https://www.npmjs.com/package/foca-miniprogram-axios) | 针对 axios 的增强型适配器 | 原生小程序<br> Taro, Remax 等跨端平台 |
+| [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)           | [![npm](https://img.shields.io/npm/v/foca-taro-storage)](https://www.npmjs.com/package/foca-taro-storage)           | Taro 持久化引擎           | Taro                                  |
