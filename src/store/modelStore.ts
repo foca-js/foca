@@ -8,7 +8,7 @@ import {
   Reducer,
   Store,
 } from 'redux';
-import observable from 'symbol-observable';
+import { $$observable } from '../utils/symbolObservable';
 import { Topic } from 'topic';
 import { TYPE_PERSIST_HYDRATE, PersistHydrateAction } from '../actions/persist';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
@@ -22,7 +22,7 @@ const assignStoreKeys: (keyof Store | symbol)[] = [
   'dispatch',
   'subscribe',
   'getState',
-  observable,
+  $$observable,
 ];
 
 interface CreateStoreOptions {

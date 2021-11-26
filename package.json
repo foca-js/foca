@@ -50,7 +50,6 @@
     "object-assign": "^4.1.1",
     "react-redux": "^7.2.5",
     "redux": "^4.1.2",
-    "symbol-observable": "^4.0.0",
     "topic": "^3.0.0"
   },
   "devDependencies": {
