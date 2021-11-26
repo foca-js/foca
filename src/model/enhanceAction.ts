@@ -12,7 +12,8 @@ export const enhanceAction = <State extends object>(
   actionName: string,
   consumer: (state: State, ...args: any[]) => any,
 ): EnhancedAction<State> => {
-  const actionType = ctx.name + '.' + actionName;
+  const modelName = ctx.name;
+  const actionType = modelName + '.' + actionName;
 
   const enhancedConsumer: PreModelAction<State, any[]>['consumer'] = (
     state,
@@ -27,7 +28,7 @@ export const enhanceAction = <State extends object>(
   const fn: EnhancedAction<State> = function () {
     return modelStore.dispatch<PreModelAction<State, any[]>>({
       type: actionType,
-      model: ctx.name,
+      model: modelName,
       preModel: true,
       payload: toArgs(arguments),
       consumer: enhancedConsumer,
