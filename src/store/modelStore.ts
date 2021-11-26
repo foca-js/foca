@@ -21,6 +21,7 @@ import { freezeState } from '../utils/freezeState';
 const assignStoreKeys: (keyof Store | symbol)[] = [
   'dispatch',
   'subscribe',
+  'getState',
   observable,
 ];
 
@@ -38,8 +39,6 @@ class StoreAdvanced implements Store {
 
   protected origin?: Store;
   protected consumers: Record<string, Reducer> = {};
-  protected state: object = {};
-  protected dispatching = false;
   protected reducerKeys: string[] = [];
   public /*protected*/ persistManager?: PersistManager;
 
@@ -52,6 +51,7 @@ class StoreAdvanced implements Store {
 
   declare dispatch: Store['dispatch'];
   declare subscribe: Store['subscribe'];
+  declare getState: Store<Record<string, any>>['getState'];
   declare [Symbol.observable]: Store[typeof Symbol.observable];
 
   constructor() {
@@ -65,10 +65,6 @@ class StoreAdvanced implements Store {
         );
       };
     });
-  }
-
-  getState(): ReturnType<Store<Record<string, any>>['getState']> {
-    return this.dispatching ? this.state : this.store.getState();
   }
 
   init(options: CreateStoreOptions = {}) {
@@ -110,10 +106,10 @@ class StoreAdvanced implements Store {
           type: TYPE_PERSIST_HYDRATE,
           payload: persist.collect(),
         });
-        this.topic.keep('storeReady', true);
+        this.setReady();
       });
     } else {
-      this.topic.keep('storeReady', true);
+      this.setReady();
     }
 
     return this;
@@ -132,6 +128,10 @@ class StoreAdvanced implements Store {
     return this.topic.subscribeOnce('storeReady', () => {
       callback();
     });
+  }
+
+  protected setReady() {
+    this.topic.keep('storeReady', true);
   }
 
   protected getCompose(
@@ -183,36 +183,25 @@ class StoreAdvanced implements Store {
         state = {};
       }
 
-      this.dispatching = true;
-      this.state = state;
-
       const reducerKeys = this.reducerKeys;
-      const keyAmount = reducerKeys.length;
+      const keyLength = reducerKeys.length;
       const nextState: Record<string, any> = {};
       let hasChanged = false;
 
-      for (let i = 0; i < keyAmount; ++i) {
+      for (let i = 0; i < keyLength; ++i) {
         const key = reducerKeys[i]!;
-        const consumer = this.consumers[key]!;
-        const prevStateForKey = state[key];
-        const nextStateForKey = consumer(prevStateForKey, action);
-
-        nextState[key] = nextStateForKey;
-        hasChanged = hasChanged || nextStateForKey !== prevStateForKey;
+        nextState[key] = this.consumers[key]!(state[key], action);
+        hasChanged = hasChanged || nextState[key] !== state[key];
       }
 
-      hasChanged = hasChanged || keyAmount !== Object.keys(state).length;
-
-      this.dispatching = false;
-      this.state = {};
-
-      return hasChanged ? nextState : state;
+      return hasChanged || keyLength !== Object.keys(state).length
+        ? nextState
+        : state;
     };
   }
 
   public /*protected*/ unmount(): this {
     this.origin = undefined;
-    this.state = {};
     this.persistManager = undefined;
     this.topic = new Topic();
     return this;
