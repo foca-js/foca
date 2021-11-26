@@ -1,3 +1,8 @@
+## [0.3.1](https://github.com/foca-js/foca/compare/v0.3.0...v0.3.1)&nbsp;&nbsp;(2021-11-26)
+
+- 升级 immer 版本
+- 重写 action 和 effect 增强函数
+
 ## [0.3.0](https://github.com/foca-js/foca/compare/v0.2.3...v0.3.0)&nbsp;&nbsp;(2021-11-24)
 
 - [Breaking] keepStateFromRefresh 重命名为 skipRefresh
