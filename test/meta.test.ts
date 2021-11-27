@@ -4,6 +4,7 @@ import { EffectError } from '../src/exceptions/EffectError';
 import { metaStore } from '../src/store/metaStore';
 import { resolveMetaCategory } from '../src/utils/resolveMetaCategory';
 import { basicModel } from './models/basic-model';
+import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
@@ -11,7 +12,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('Collect loading status for effect method', async () => {

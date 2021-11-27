@@ -4,6 +4,7 @@ import { act, create } from 'react-test-renderer';
 import { store, connect, FocaProvider, getLoading } from '../src';
 import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
+import { storeUnmount } from './utils/store';
 
 let App: FC<ReturnType<typeof mapStateToProps>> = ({ count, loading }) => {
   return (
@@ -36,7 +37,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('Get state from connect', async () => {

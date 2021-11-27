@@ -3,7 +3,7 @@ import { act, create } from 'react-test-renderer';
 import { engines, FocaProvider, store } from '../src';
 import { PersistGateProps } from '../src/persist/PersistGate';
 import { basicModel } from './models/basic-model';
-import { storeReady } from './utils/storeReady';
+import { storeReady, storeUnmount } from './utils/store';
 
 const Loading: FC = () => <div id="gateLoading">Yes</div>;
 
@@ -41,7 +41,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('PersistGate will inject to shadow dom', async () => {

@@ -1,6 +1,7 @@
 import { cloneModel, store } from '../src';
 import { DuplicateModelError } from '../src/exceptions/DuplicateModelError';
 import { basicModel } from './models/basic-model';
+import { storeUnmount } from './utils/store';
 
 let modelIndex = 0;
 
@@ -9,7 +10,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('Model can be cloned', async () => {

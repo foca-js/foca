@@ -1,5 +1,6 @@
 import assign from 'object-assign';
 import {
+  AnyAction,
   applyMiddleware,
   compose,
   createStore,
@@ -9,7 +10,7 @@ import {
   Store,
 } from 'redux';
 import { $$observable } from '../utils/symbolObservable';
-import { Topic } from 'topic';
+import { SubscribeToken, Topic } from 'topic';
 import { TYPE_PERSIST_HYDRATE, PersistHydrateAction } from '../actions/persist';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 import { StoreError } from '../exceptions/StoreError';
@@ -33,11 +34,10 @@ interface CreateStoreOptions {
 }
 
 class StoreAdvanced implements Store {
-  protected topic: Topic<{
+  public /*protected*/ topic: Topic<{
     storeReady: [];
   }> = new Topic();
-
-  protected origin?: Store;
+  public /*protected*/ origin?: Store;
   protected consumers: Record<string, Reducer> = {};
   protected reducerKeys: string[] = [];
   public /*protected*/ persistManager?: PersistManager;
@@ -124,7 +124,7 @@ class StoreAdvanced implements Store {
     });
   }
 
-  onReady(callback: Function) {
+  onReady(callback: Function): SubscribeToken {
     return this.topic.subscribeOnce('storeReady', () => {
       callback();
     });
@@ -146,7 +146,7 @@ class StoreAdvanced implements Store {
     );
   }
 
-  protected get store() {
+  protected get store(): Store<Record<string, object>, AnyAction> {
     if (!this.origin) {
       throw new StoreError(
         'Store is not defined, do you forget to initialize it?',
@@ -198,13 +198,6 @@ class StoreAdvanced implements Store {
         ? nextState
         : state;
     };
-  }
-
-  public /*protected*/ unmount(): this {
-    this.origin = undefined;
-    this.persistManager = undefined;
-    this.topic = new Topic();
-    return this;
   }
 
   public /*protected*/ appendReducer(key: string, consumer: Reducer) {

@@ -9,6 +9,7 @@ import {
   hasVersionPersistModel,
   persistModel,
 } from './models/persist-model';
+import { storeUnmount } from './utils/store';
 
 const stringifyState = (model: Model) => {
   return JSON.stringify(stringifyPersist(model.state));
@@ -28,7 +29,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  store.unmount();
+  storeUnmount();
   await engines.memoryStorage.clear();
 });
 

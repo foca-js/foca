@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { FocaProvider, store, useLoading, useLoadings } from '../src';
 import { metaStore } from '../src/store/metaStore';
 import { basicModel } from './models/basic-model';
+import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
@@ -9,7 +10,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('Trace loading', async () => {

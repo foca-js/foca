@@ -2,13 +2,14 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { FocaProvider, store, useModel } from '../src';
 import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
+import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('get state from one model', () => {

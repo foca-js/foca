@@ -10,10 +10,10 @@ import {
   hasVersionPersistModel,
   persistModel,
 } from './models/persist-model';
-import { storeReady } from './utils/storeReady';
+import { storeReady, storeUnmount } from './utils/store';
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 const initializeStoreWithPersist = () => {
@@ -132,5 +132,5 @@ test('refresh the whole state', () => {
   expect(basicModel.state.count).toEqual(0);
   expect(basicSkipRefreshModel.state.count).toEqual(0);
 
-  store.unmount();
+  storeUnmount();
 });

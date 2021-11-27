@@ -1,13 +1,14 @@
 import { store } from '../src';
 import { basicModel } from './models/basic-model';
 import { complexModel } from './models/complex-model';
+import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('Model name', () => {

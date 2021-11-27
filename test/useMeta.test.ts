@@ -3,6 +3,7 @@ import { FocaProvider, store, useMeta, useMetas } from '../src';
 import { MetaStateItem } from '../src/actions/meta';
 import { metaStore } from '../src/store/metaStore';
 import { basicModel } from './models/basic-model';
+import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
@@ -10,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  store.unmount();
+  storeUnmount();
 });
 
 test('get meta', async () => {
