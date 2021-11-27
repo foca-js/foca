@@ -2,7 +2,7 @@ import assign from 'object-assign';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
 import { metaStore } from '../store/metaStore';
-import { resolveMetaCategory } from '../utils/resolveMetaCategory';
+import { metaKey } from '../utils/metaKey';
 
 export interface PickMeta {
   pick(category: number | string): Partial<MetaStateItem>;
@@ -12,7 +12,7 @@ export const pickMeta: PickMeta['pick'] = function (
   this: Record<string, Partial<MetaStateItem> | undefined>,
   category: number | string,
 ) {
-  return this[resolveMetaCategory(category)] || {};
+  return this[metaKey(category)] || {};
 };
 
 /**
@@ -48,14 +48,12 @@ export function getMetas(
 ): Partial<MetaStateItem> | PickMeta {
   const meta = metaStore.helper.get(effect);
 
-  if (category !== void 0) {
-    return pickMeta.call(meta, category);
-  }
-
-  return assign(
-    {
-      pick: pickMeta,
-    },
-    meta,
-  );
+  return category === void 0
+    ? assign(
+        {
+          pick: pickMeta,
+        },
+        meta,
+      )
+    : pickMeta.call(meta, category);
 }

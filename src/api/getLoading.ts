@@ -2,7 +2,7 @@ import assign from 'object-assign';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
 import { metaStore } from '../store/metaStore';
-import { resolveMetaCategory } from '../utils/resolveMetaCategory';
+import { metaKey } from '../utils/metaKey';
 
 export interface PickLoading {
   pick(category: number | string): boolean;
@@ -12,7 +12,7 @@ export const pickLoading: PickLoading['pick'] = function (
   this: Record<string, Partial<MetaStateItem> | undefined>,
   category: number | string,
 ) {
-  return (this[resolveMetaCategory(category)] || {}).type === 'pending';
+  return (this[metaKey(category)] || {}).type === 'pending';
 };
 
 /**
@@ -62,14 +62,12 @@ export function getLoadings(
 ): boolean | PickLoading {
   const meta = metaStore.helper.get(effect);
 
-  if (category !== void 0) {
-    return pickLoading.call(meta, category);
-  }
-
-  return assign(
-    {
-      pick: pickLoading,
-    },
-    meta,
-  );
+  return category === void 0
+    ? assign(
+        {
+          pick: pickLoading,
+        },
+        meta,
+      )
+    : pickLoading.call(meta, category);
 }

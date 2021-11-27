@@ -1,7 +1,7 @@
 import isEqual from 'lodash.isequal';
 import type { AnyAction, Middleware } from 'redux';
 import type { metaStore, MetaState } from '../store/metaStore';
-import { resolveMetaCategory } from '../utils/resolveMetaCategory';
+import { metaKey } from '../utils/metaKey';
 
 export const metaInterceptor = (
   helper: typeof metaStore['helper'],
@@ -22,7 +22,7 @@ export const metaInterceptor = (
     if (
       !state ||
       !state[method] ||
-      !isEqual(state[method]![resolveMetaCategory(category)], payload)
+      !isEqual(state[method]![metaKey(category)], payload)
     ) {
       return dispatch(action);
     }

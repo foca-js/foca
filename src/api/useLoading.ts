@@ -61,16 +61,14 @@ export function useLoadings(
     () => {
       const meta = metaStore.helper.get(effect);
 
-      if (noPick) {
-        return pickLoading.call(meta, category);
-      }
-
-      return assign(
-        {
-          pick: pickLoading,
-        },
-        meta,
-      );
+      return noPick
+        ? pickLoading.call(meta, category)
+        : assign(
+            {
+              pick: pickLoading,
+            },
+            meta,
+          );
     },
     noPick ? void 0 : shallowEqual,
   );

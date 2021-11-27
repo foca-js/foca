@@ -45,16 +45,14 @@ export function useMetas(
     () => {
       const meta = metaStore.helper.get(effect);
 
-      if (noPick) {
-        return pickMeta.call(meta, category);
-      }
-
-      return assign(
-        {
-          pick: pickMeta,
-        },
-        meta,
-      );
+      return noPick
+        ? pickMeta.call(meta, category)
+        : assign(
+            {
+              pick: pickMeta,
+            },
+            meta,
+          );
     },
     noPick ? void 0 : shallowEqual,
   );

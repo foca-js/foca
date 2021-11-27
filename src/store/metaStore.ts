@@ -10,7 +10,7 @@ import { metaInterceptor } from '../middleware/metaInterceptor';
 import type { MetaAction, MetaStateItem } from '../actions/meta';
 import { isRefreshAction } from '../utils/isRefreshAction';
 import { freezeState } from '../utils/freezeState';
-import { resolveMetaCategory } from '../utils/resolveMetaCategory';
+import { metaKey } from '../utils/metaKey';
 import { getImmer } from '../utils/getImmer';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 
@@ -79,7 +79,7 @@ export const metaStore = createStore(
 
     if (helper.isMeta(action)) {
       const { model, method, payload } = action;
-      const category = resolveMetaCategory(action.category);
+      const category = metaKey(action.category);
 
       return immer.produce(state, (draft) => {
         ((draft[model] ||= {})[method] ||= {})[category] = freezeState(payload);
