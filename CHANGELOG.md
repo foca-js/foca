@@ -1,3 +1,8 @@
+## [0.3.2](https://github.com/foca-js/foca/compare/v0.3.1...v0.3.2)&nbsp;&nbsp;(2021-11-27)
+
+- 精简代码
+- 内置插件包 symbol-observable
+
 ## [0.3.1](https://github.com/foca-js/foca/compare/v0.3.0...v0.3.1)&nbsp;&nbsp;(2021-11-26)
 
 - 升级 immer 版本
