@@ -3,10 +3,8 @@ import { EmptyContext } from './contexts';
 import { toArgs } from '../utils/toArgs';
 
 export const connect: Connect = function () {
-  const [mapState, mapDispatch, mergeProps, options = {}] =
-    toArgs<Parameters<Connect>>(arguments);
+  const args = toArgs<Parameters<Connect>>(arguments);
+  (args[3] ||= {}).context = EmptyContext;
 
-  options.context ||= EmptyContext;
-
-  return originalConnect(mapState, mapDispatch, mergeProps, options);
+  return originalConnect.apply(null, args);
 };
