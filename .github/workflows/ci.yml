@@ -13,18 +13,20 @@ jobs:
       matrix:
         node-version: [12.x, 14.x, 16.x]
         ts-version: [4.4.x, 4.5.x]
+        react-version: ['16.9.0', 16.x, 17.x]
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }}
+      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
           yarn install
           yarn add typescript@${{ matrix.ts-version }} --dev
+          yarn add react@${{ matrix.react-version }} react-dom@${{ matrix.react-version }} --dev
       - run: yarn test
       - name: Upload Coverage
         uses: actions/upload-artifact@v2
