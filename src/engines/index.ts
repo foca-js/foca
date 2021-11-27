@@ -17,4 +17,4 @@ export const engines = {
    * 适用于浏览器的sessionStorage存储引擎
    */
   sessionStorage: session,
-};
+} as const;

@@ -1,21 +1,22 @@
+import { resolve } from '../utils/resolve';
 import { StorageEngine } from './StorageEngine';
 
 export const session: StorageEngine = {
   getItem(key) {
-    return Promise.resolve(sessionStorage.getItem(key));
+    return resolve(() => sessionStorage.getItem(key));
   },
   setItem(key, value) {
-    return Promise.resolve().then(() => {
+    return resolve(() => {
       sessionStorage.setItem(key, value);
     });
   },
   removeItem(key) {
-    return Promise.resolve().then(() => {
+    return resolve(() => {
       sessionStorage.removeItem(key);
     });
   },
   clear() {
-    return Promise.resolve(void 0).then(() => {
+    return resolve(() => {
       sessionStorage.clear();
     });
   },

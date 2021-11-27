@@ -1,23 +1,24 @@
+import { resolve } from '../utils/resolve';
 import { StorageEngine } from './StorageEngine';
 
 let cache: Partial<Record<string, string>> = {};
 
 export const memory: StorageEngine = {
   getItem(key) {
-    return Promise.resolve(cache[key] === undefined ? null : cache[key]!);
+    return resolve(() => (cache[key] === void 0 ? null : cache[key]!));
   },
   setItem(key, value) {
-    return Promise.resolve().then(() => {
+    return resolve(() => {
       cache[key] = value;
     });
   },
   removeItem(key) {
-    return Promise.resolve().then(() => {
-      cache[key] = undefined;
+    return resolve(() => {
+      cache[key] = void 0;
     });
   },
   clear() {
-    return Promise.resolve().then(() => {
+    return resolve(() => {
       cache = {};
     });
   },
