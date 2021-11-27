@@ -4,14 +4,14 @@ const mapPrefix = 'new Map(';
 const setPrefix = 'new Set(';
 
 export const parsePersist = (data: any) => {
-  return JSON.parse(data, jsonParseReciever);
+  return JSON.parse(data, reviver);
 };
 
 export const stringifyPersist = (data: any) => {
-  return JSON.stringify(data, jsonStringifyReplacer);
+  return JSON.stringify(data, replacer);
 };
 
-const jsonStringifyReplacer = (_: string, value: any) => {
+const replacer = (_: string, value: any) => {
   switch (toString.call(value).slice(8, -1)) {
     case 'Map':
       return `${mapPrefix}${JSON.stringify(
@@ -26,7 +26,7 @@ const jsonStringifyReplacer = (_: string, value: any) => {
   }
 };
 
-const jsonParseReciever = (_: string, value: any) => {
+const reviver = (_: string, value: any) => {
   if (typeof value === 'string') {
     try {
       switch (value.slice(0, 8)) {
