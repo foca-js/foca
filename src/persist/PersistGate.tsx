@@ -1,6 +1,5 @@
 import { FC, ReactNode, useState, useEffect } from 'react';
 import { modelStore } from '../store/modelStore';
-import { isCrushed } from '../utils/isCrushed';
 
 export interface PersistGateProps {
   loading?: ReactNode;
@@ -17,10 +16,12 @@ export const PersistGate: FC<PersistGateProps> = (props) => {
     }).unsubscribe;
   }, []);
 
-  if (!isCrushed() && loading && isChildrenFunction) {
-    console.error(
-      'PersistGate expects either a function child or loading prop. The loading prop will be ignored.',
-    );
+  if (process.env.NODE_ENV !== 'production') {
+    if (loading && isChildrenFunction) {
+      console.error(
+        'PersistGate expects either a function child or loading prop. The loading prop will be ignored.',
+      );
+    }
   }
 
   if (isChildrenFunction) {

@@ -5,9 +5,6 @@ import { EnhancedAction, enhanceAction } from './enhanceAction';
 import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
 import { modelStore } from '../store/modelStore';
 import { createReducer } from '../redux/createReducer';
-import { isCrushed } from '../utils/isCrushed';
-
-const DEV = !isCrushed();
 
 export interface GetName<Name extends string> {
   /**
@@ -240,39 +237,33 @@ export const defineModel = <
   };
 
   const enhancedActions: Record<string, EnhancedAction<State>> = {};
-  if (actions) {
-    const keys = Object.keys(actions);
-    for (let i = 0; i < keys.length; ++i) {
-      const actionName = keys[i]!;
+  actions &&
+    Object.keys(actions).forEach((actionName) => {
       enhancedActions[actionName] = enhanceAction(
         actionCtx,
         actionName,
         actions[actionName]!,
       );
-    }
-  }
+    });
 
   const enhancedEffects: Record<string, EnhancedEffect> = {};
   if (effects) {
     const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
-    const keys = Object.keys(effects);
 
-    for (let i = 0; i < keys.length; ++i) {
-      const effectName = keys[i]!;
-      // @ts-expect-error
-      const effect = effects[effectName];
-      DEV && effectCtxs.push(createEffectCtx(effectName));
-
+    Object.keys(effects).forEach((effectName) => {
+      process.env.NODE_ENV !== 'production' &&
+        effectCtxs.push(createEffectCtx(effectName));
       enhancedEffects[effectName] = enhanceEffect(
         effectCtxs[effectCtxs.length - 1]!,
         effectName,
-        effect,
+        // @ts-expect-error
+        effects[effectName],
       );
-    }
+    });
 
-    for (let i = 0; i < effectCtxs.length; ++i) {
-      assign(effectCtxs[i], enhancedActions, enhancedEffects);
-    }
+    effectCtxs.forEach((ctx) => {
+      assign(ctx, enhancedActions, enhancedEffects);
+    });
   }
 
   // 使用扩展操作符(rest/spread)会直接触发getter
