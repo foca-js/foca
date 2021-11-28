@@ -223,8 +223,7 @@ export const defineModel = <
       dispatch: enhanceAction(
         actionCtx,
         methodName + '[dispatch]',
-        (state, fn_or_state: State | ((state: State) => State | void)) =>
-          typeof fn_or_state === 'function' ? fn_or_state(state) : fn_or_state,
+        anonymousConsumer,
       ),
     };
 
@@ -287,4 +286,11 @@ export const defineModel = <
   modelStore.appendReducer(name, reducer);
 
   return model as any;
+};
+
+const anonymousConsumer = <State extends object>(
+  state: State,
+  fn_or_state: State | ((state: State) => State | void),
+) => {
+  return typeof fn_or_state === 'function' ? fn_or_state(state) : fn_or_state;
 };
