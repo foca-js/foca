@@ -1,8 +1,9 @@
-name: CI
+name: Test
 
 on:
   push:
-    branches:
+    tags-ignore:
+      - v*
   pull_request:
     branches:
 
@@ -20,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
@@ -34,6 +35,8 @@ jobs:
         with:
           name: coverage
           path: coverage
+          if-no-files-found: error
+          retention-days: 1
   coverage:
     if: github.ref == 'refs/heads/master'
     needs: test
@@ -45,17 +48,4 @@ jobs:
         with:
           name: coverage
           path: coverage
-      - uses: codecov/codecov-action@v1
-  publish:
-    if: "!contains(toJson(github.event.commits), '[skip ci]')"
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: yarn install
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+      - uses: codecov/codecov-action@v2
