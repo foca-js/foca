@@ -2,8 +2,10 @@ name: Test
 
 on:
   push:
+    branches:
+      - '*'
     tags-ignore:
-      - v*
+      - '*'
   pull_request:
     branches:
 
