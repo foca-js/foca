@@ -1,3 +1,9 @@
+## [0.3.3](https://github.com/foca-js/foca/compare/v0.3.2...v0.3.3)&nbsp;&nbsp;(2021-11-28)
+
+- react 最小依赖版本现在为 16.9.0
+- 优化 dispatch 性能
+- 引入 process.env.NODE_ENV 以减少生产环境的体积
+
 ## [0.3.2](https://github.com/foca-js/foca/compare/v0.3.1...v0.3.2)&nbsp;&nbsp;(2021-11-27)
 
 - 精简代码
