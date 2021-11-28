@@ -210,12 +210,6 @@ export const defineModel = <
   };
 
   const createEffectCtx = (methodName: string): EffectCtx<State> => {
-    const internalDispatcher = enhanceAction(
-      actionCtx,
-      methodName + '[dispatch]',
-      (state: State, fn: (state: State) => State | void) => fn(state),
-    );
-
     const ctx: EffectCtx<State> = {
       get name() {
         return name;
@@ -226,11 +220,12 @@ export const defineModel = <
       get state() {
         return getState();
       },
-      dispatch(fn_or_state: State | ((state: State) => State | void)) {
-        return internalDispatcher(
-          typeof fn_or_state === 'function' ? fn_or_state : () => fn_or_state,
-        );
-      },
+      dispatch: enhanceAction(
+        actionCtx,
+        methodName + '[dispatch]',
+        (state, fn_or_state: State | ((state: State) => State | void)) =>
+          typeof fn_or_state === 'function' ? fn_or_state(state) : fn_or_state,
+      ),
     };
 
     return ctx;
