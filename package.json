@@ -9,7 +9,7 @@
     "react-redux",
     "react-model"
   ],
-  "description": "基于redux的现代化react状态管理库",
+  "description": "流畅的react状态管理库",
   "author": "fwh1990",
   "license": "MIT",
   "main": "lib/index.js",

@@ -1,6 +1,6 @@
 # FOCA
 
-基于 redux 的现代化 react 状态管理库。简洁、极致、高效。
+流畅的 react 状态管理库，基于[redux](https://github.com/reduxjs/redux)和[react-redux](https://github.com/reduxjs/react-redux)。简洁、极致、高效。
 
 [![License](https://img.shields.io/github/license/foca-js/foca)](https://github.com/foca-js/foca/blob/master/LICENSE)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/CI/master)](https://github.com/foca-js/foca/actions)
@@ -17,7 +17,7 @@
 - 内置 immer 快速处理状态
 - 异步方法自动追踪状态
 - 可定制的多引擎数据持久化
-- 数据隔离，允许多个状态库并存
+- 数据隔离，允许同类状态库并存
 - 模型自动注册，拒绝繁琐
 
 # 安装

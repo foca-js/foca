@@ -1,6 +1,6 @@
 # FOCA
 
-基于 redux 的现代化 react 状态管理库。简洁、极致、高效。
+流畅的 react 状态管理库，基于[redux](https://github.com/reduxjs/redux)和[react-redux](https://github.com/reduxjs/react-redux)。简洁、极致、高效。
 
 [![License](https://img.shields.io/github/license/foca-js/foca)](https://github.com/foca-js/foca/blob/master/LICENSE)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/CI/master)](https://github.com/foca-js/foca/actions)
@@ -45,7 +45,7 @@ foca 提供 **100%** 的基础类型提示，你只需关注业务中的类型�
 
 某些数据在一个时间段内可能是一成不变的，比如 token。所以你想着先把数据存到本地，下次进来直接恢复到 foca 中。
 
-#### 数据隔离，允许多个状态库并存
+#### 数据隔离，允许同类状态库并存
 
 如果你的项目正在使用 redux 或者基于 redux 封装的第三方库，也不用当心冲突，foca 是独立存在的，不会破坏原有的数据，你可以毫无顾虑地使用它。
 
