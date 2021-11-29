@@ -27,3 +27,5 @@
  */
 const meta = getMeta(userModel.fetchUser);
 ```
+
+!> meta 和 loading 采用懒加载机制，不用则不记录，不存在性能问题。
