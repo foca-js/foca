@@ -26,6 +26,82 @@
 yarn add foca
 ```
 
+# 使用
+
+### 定义模型
+
+```typescript
+// File: counterModel.ts
+import { defineModel } from 'foca';
+
+const initialState: { count: number } = {
+  count: 0,
+};
+
+// 无须手动注册到store，直接导出到react组件中使用
+export const counterModel = defineModel('counter', {
+  initialState,
+  actions: {
+    // state可自动提示类型 { count: number }
+    plus(state, value: number, double: boolean = false) {
+      // 直接修改状态
+      state.count += value * (double ? 2 : 1);
+    },
+    minus(state, value: number) {
+      // 直接返回新状态
+      return { count: state.count - value };
+    },
+  },
+  effects: {
+    // 异步函数，自动追踪执行状态(meta, loading)
+    async doSomething() {
+      await Promise.resolve();
+      // 直接处理状态，对于网络请求的数据十分方便
+      this.dispatch({ count: 1 });
+      this.dispatch((state) => {
+        state.count += 1;
+      });
+      // 调用action函数处理状态
+      this.plus(1, true);
+
+      // 调用effect函数
+      return this.commonUtil(1);
+    },
+    // 同步函数
+    commonUtil(x: number) {
+      return x + 1;
+    },
+  },
+});
+```
+
+### 在组件中使用
+
+```typescript jsx
+import { FC, useEffect } from 'react';
+import { useModel, useLoading } from 'foca';
+import { counterModel } from './counterModel';
+
+const App: FC = () => {
+  // count类型自动提示 number
+  const { count } = useModel(counterModel);
+  // 仅effects的异步函数能作为参数传入，其他函数TS自动报错
+  const loading = useLoading(counterModel.doSomething);
+
+  useEffect(() => {
+    counterModel.doSomething();
+  }, []);
+
+  return (
+    <div onClick={() => counterModel.plus(1)}>
+      {count} {loading ? 'Loading...' : null}
+    </div>
+  );
+};
+
+export default App;
+```
+
 # 文档
 
 https://foca-js.github.io/foca/
