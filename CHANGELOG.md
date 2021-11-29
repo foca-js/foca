@@ -1,3 +1,8 @@
+## [0.3.4](https://github.com/foca-js/foca/compare/v0.3.3...v0.3.4)&nbsp;&nbsp;(2021-11-29)
+
+- 提升 useModel 在传递单个模型时的执行效率
+- useModel 没有传回调函数时，不再提供对比算法参数
+
 ## [0.3.3](https://github.com/foca-js/foca/compare/v0.3.2...v0.3.3)&nbsp;&nbsp;(2021-11-28)
 
 - react 最小依赖版本现在为 16.9.0
