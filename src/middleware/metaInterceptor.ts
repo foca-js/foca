@@ -27,6 +27,6 @@ export const metaInterceptor = (
       return dispatch(action);
     }
 
-    return;
+    return action;
   };
 };

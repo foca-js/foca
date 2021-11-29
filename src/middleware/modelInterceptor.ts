@@ -28,7 +28,7 @@ export const modelInterceptor: Middleware<{}, Record<string, object>> =
     });
 
     if (isEqual(prev, next)) {
-      return;
+      return action;
     }
 
     return dispatch<PostModelAction>({
