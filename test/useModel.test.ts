@@ -89,7 +89,16 @@ test('get multiple state with selector', () => {
 
 test('select compare algorithm', async () => {
   const hookA = renderHook(
-    () => useModel(basicModel, complexModel, 'strictEqual'),
+    () =>
+      useModel(
+        basicModel,
+        complexModel,
+        (a, b) => ({
+          a,
+          b,
+        }),
+        'strictEqual',
+      ),
     {
       wrapper: FocaProvider,
     },
@@ -101,7 +110,16 @@ test('select compare algorithm', async () => {
   expect(hookA.result.current !== prevValueA).toBeTruthy();
 
   const hookB = renderHook(
-    () => useModel(basicModel, complexModel, 'shallowEqual'),
+    () =>
+      useModel(
+        basicModel,
+        complexModel,
+        (a, b) => ({
+          a,
+          b,
+        }),
+        'shallowEqual',
+      ),
     {
       wrapper: FocaProvider,
     },
@@ -113,7 +131,16 @@ test('select compare algorithm', async () => {
   expect(hookB.result.current === prevValueB).toBeTruthy();
 
   const hookC = renderHook(
-    () => useModel(basicModel, complexModel, 'deepEqual'),
+    () =>
+      useModel(
+        basicModel,
+        complexModel,
+        (a, b) => ({
+          a,
+          b,
+        }),
+        'deepEqual',
+      ),
     {
       wrapper: FocaProvider,
     },

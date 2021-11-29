@@ -21,7 +21,6 @@ export type CompareAlgorithm = 'strictEqual' | 'shallowEqual' | 'deepEqual';
  */
 export function useModel<State extends object>(
   model: Model<string, State>,
-  compare?: CompareAlgorithm,
 ): State;
 export function useModel<State extends object, T>(
   model: Model<any, State>,
@@ -37,7 +36,6 @@ export function useModel<
 >(
   model1: Model<Name1, State1>,
   model2: Model<Name2, State2>,
-  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -67,7 +65,6 @@ export function useModel<
   model1: Model<Name1, State1>,
   model2: Model<Name2, State2>,
   model3: Model<Name3, State3>,
-  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -105,7 +102,6 @@ export function useModel<
   model2: Model<Name2, State2>,
   model3: Model<Name3, State3>,
   model4: Model<Name4, State4>,
-  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -156,7 +152,6 @@ export function useModel<
   model3: Model<Name3, State3>,
   model4: Model<Name4, State4>,
   model5: Model<Name5, State5>,
-  compare?: CompareAlgorithm,
 ): {
   [K in Name1]: State1;
 } & {
@@ -206,14 +201,16 @@ export function useModel(): any {
 
   if (!compareAlgorithm) {
     if (selector) {
-      // 返回子集或者计算过的内容，数据量相对较少。
+      // 返回子集或者计算过的内容。
+      // 如果只是从模型中获取数据且没有做转换，则大部分时间会降级为shallow或者strict。
+      // 如果对数据做了转换，则肯定需要使用深对比。
       compareAlgorithm = 'deepEqual';
     } else if (models.length > 1) {
       // { key => model } 集合。
+      // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
       compareAlgorithm = 'shallowEqual';
     } else {
       // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
-      // 所以使用时只需要全等判断。
       compareAlgorithm = 'strictEqual';
     }
   }
