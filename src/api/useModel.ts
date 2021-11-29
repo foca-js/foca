@@ -219,16 +219,17 @@ export function useModel(): any {
   }
 
   return useModelSelector((state: Record<string, object>) => {
+    if (models.length === 1) {
+      const modelState = state[models[0]!.name];
+      return selector ? selector(modelState) : modelState;
+    }
+
     if (selector) {
       const result: object[] = [];
       for (let i = 0; i < models.length; ++i) {
         result.push(state[models[i]!.name]!);
       }
       return selector.apply(null, result);
-    }
-
-    if (models.length === 1) {
-      return state[models[0]!.name];
     }
 
     const result: typeof state = {};
