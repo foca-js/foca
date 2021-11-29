@@ -158,11 +158,7 @@ class StoreAdvanced implements Store {
   protected combineReducerWithPersist(): Reducer<Record<string, object>> {
     const reducer = this.reducer;
 
-    return (state, action) => {
-      if (state === void 0) {
-        state = {};
-      }
-
+    return (state = {}, action) => {
       if ((action as PersistHydrateAction).type === TYPE_PERSIST_HYDRATE) {
         const next = assign(
           {},
@@ -178,11 +174,7 @@ class StoreAdvanced implements Store {
   }
 
   protected combineReducers(): Reducer<Record<string, object>> {
-    return (state, action) => {
-      if (state === void 0) {
-        state = {};
-      }
-
+    return (state = {}, action) => {
       const reducerKeys = this.reducerKeys;
       const keyLength = reducerKeys.length;
       const nextState: Record<string, any> = {};

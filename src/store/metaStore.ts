@@ -72,11 +72,7 @@ const helper = {
 };
 
 export const metaStore = createStore(
-  (state: MetaState | undefined, action: AnyAction) => {
-    if (state === void 0) {
-      return {};
-    }
-
+  (state: MetaState = {}, action: AnyAction) => {
     if (helper.isMeta(action)) {
       const { model, method, payload } = action;
       const category = metaKey(action.category);
