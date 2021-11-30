@@ -17,6 +17,8 @@
 模型异步函数的**当前**状态，通过`getMeta(model.effectX)`获取。
 
 本质上，loading 派生自 meta，meta 总是存储了异步函数的一些执行信息，比如是否正在执行，比如执行异常时的 message。
+<br/>
+可通过[进阶篇](/advanced?id=meta)学习如何扩展 meta。
 
 ```typescript
 /**

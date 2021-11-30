@@ -39,6 +39,7 @@ const userModel = defineModel('users', {
       try {
         const result = await http.get('/users');
       } catch (e) {
+        // 如果是axios请求库，则可以在拦截器中统一处理异常
         if (e.response) {
           throw new EffectError({
             message: e.message,
