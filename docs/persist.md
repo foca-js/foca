@@ -48,6 +48,7 @@ key 即为存储路径，最好采用`项目名-环境名`的形式组织。纯�
 
 - [localForage](https://www.npmjs.com/package/localforage)
 - [@react-native-async-storage/async-storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage)
+- [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)
 
 如果有必要，你也可以自己实现一个引擎：
 
