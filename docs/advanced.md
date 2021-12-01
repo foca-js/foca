@@ -127,3 +127,26 @@ export const userModel = defineModel('users', {
 
 // const count = userModel.getUsersAmount();
 ```
+
+# 同类状态库共存
+
+如果你的项目已经存在一个`redux系`的状态库，不方便改动，但又想用 foca 状态库。这确实很苦恼，改动就代码怕出 bug，不改又要继续煎熬。
+
+所幸 foca 支持共存方案，只需简单步骤：
+
+1. 正常初始化
+2. 检查项目中是否用到 connect() 高阶组件，如果有，则执行下面逻辑：
+
+```typescript
+import { store, combine } from 'foca';
+import { createStore } from 'my-package';
+
+// 你原来的store
+const legacyStore = createStore(...);
+
+store.init(...);
+// 绑定原来的store以驱动 connect()
+combine(legacyStore);
+```
+
+共存后，你就可以慢慢地把旧的 reducer 迁移到 foca 了。（反过来操作也行！）

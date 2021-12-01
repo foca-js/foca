@@ -23,3 +23,4 @@ export { getMeta, getMetas } from './api/getMeta';
 export { useMeta, useMetas } from './api/useMeta';
 export { Meta } from './actions/meta';
 export { EffectError } from './exceptions/EffectError';
+export { combine } from './store/emptyStore';
