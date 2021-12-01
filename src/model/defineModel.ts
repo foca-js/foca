@@ -221,7 +221,7 @@ export const defineModel = <
       },
       dispatch: enhanceAction(
         actionCtx,
-        methodName + '[dispatch]',
+        `dispatch [${methodName}]`,
         anonymousConsumer,
       ),
     };
