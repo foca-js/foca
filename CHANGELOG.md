@@ -1,3 +1,8 @@
+## [0.3.5](https://github.com/foca-js/foca/compare/v0.3.4...v0.3.5)&nbsp;&nbsp;(2021-12-01)
+
+- 使用 Object.assign 代替插件包 object-assign
+- 增加 combine() 函数以覆盖状态库共存时使用 connect() 高阶组件的场景
+
 ## [0.3.4](https://github.com/foca-js/foca/compare/v0.3.3...v0.3.4)&nbsp;&nbsp;(2021-11-29)
 
 - 提升 useModel 在传递单个模型时的执行效率
