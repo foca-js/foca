@@ -1,4 +1,3 @@
-import assign from 'object-assign';
 import {
   Meta,
   MetaAction,
@@ -80,7 +79,7 @@ const dispatchMeta = (
     model: modelName,
     method: methodName,
     category,
-    payload: assign({ type }, meta),
+    payload: Object.assign({ type }, meta),
   });
 };
 
@@ -111,7 +110,7 @@ const execute = <State extends object>(
         'rejected',
         category,
         e instanceof EffectError
-          ? assign({}, e.meta)
+          ? Object.assign({}, e.meta)
           : {
               message:
                 e instanceof Error

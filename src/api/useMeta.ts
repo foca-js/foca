@@ -1,4 +1,3 @@
-import assign from 'object-assign';
 import { shallowEqual } from 'react-redux';
 import { pickMeta, PickMeta } from './getMeta';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
@@ -47,7 +46,7 @@ export function useMetas(
 
       return noPick
         ? pickMeta.call(meta, category)
-        : assign(
+        : Object.assign(
             {
               pick: pickMeta,
             },

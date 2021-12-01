@@ -1,5 +1,4 @@
 import { PersistItem, PersistOptions } from './PersistItem';
-import assign from 'object-assign';
 
 export class PersistManager {
   protected readonly list: PersistItem[] = [];
@@ -30,7 +29,7 @@ export class PersistManager {
     const stateMaps: Record<string, object> = {};
 
     this.list.forEach((item) => {
-      assign(stateMaps, item.collect());
+      Object.assign(stateMaps, item.collect());
     });
 
     return stateMaps;

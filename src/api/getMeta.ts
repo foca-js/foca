@@ -1,4 +1,3 @@
-import assign from 'object-assign';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
 import { metaStore } from '../store/metaStore';
@@ -49,7 +48,7 @@ export function getMetas(
   const meta = metaStore.helper.get(effect);
 
   return category === void 0
-    ? assign(
+    ? Object.assign(
         {
           pick: pickMeta,
         },

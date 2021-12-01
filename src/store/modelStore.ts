@@ -1,4 +1,3 @@
-import assign from 'object-assign';
 import {
   AnyAction,
   applyMiddleware,
@@ -160,7 +159,7 @@ class StoreAdvanced implements Store {
 
     return (state = {}, action) => {
       if ((action as PersistHydrateAction).type === TYPE_PERSIST_HYDRATE) {
-        const next = assign(
+        const next = Object.assign(
           {},
           state,
           (action as PersistHydrateAction).payload,

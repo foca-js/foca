@@ -1,5 +1,4 @@
 import cloneDeep from 'clone';
-import assign from 'object-assign';
 import { DuplicateModelError } from '../exceptions/DuplicateModelError';
 import {
   defineModel,
@@ -37,7 +36,7 @@ export const cloneModel = <
   >;
   const originalOptions = cloneDeep(realModel._$opts, false);
 
-  options && assign(originalOptions, options);
+  options && Object.assign(originalOptions, options);
 
   return defineModel(name, originalOptions);
 };

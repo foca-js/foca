@@ -1,6 +1,5 @@
 import { AnyAction } from 'redux';
 import cloneDeep from 'clone';
-import assign from 'object-assign';
 import { EnhancedAction, enhanceAction } from './enhanceAction';
 import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
 import { modelStore } from '../store/modelStore';
@@ -256,12 +255,12 @@ export const defineModel = <
     });
 
     effectCtxs.forEach((ctx) => {
-      assign(ctx, enhancedActions, enhancedEffects);
+      Object.assign(ctx, enhancedActions, enhancedEffects);
     });
   }
 
   // 使用扩展操作符(rest/spread)会直接触发getter
-  const model: InternalModel<Name, State, Action, Effect> = assign(
+  const model: InternalModel<Name, State, Action, Effect> = Object.assign(
     {
       get state() {
         return getState();

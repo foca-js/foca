@@ -1,4 +1,3 @@
-import assign from 'object-assign';
 import { shallowEqual } from 'react-redux';
 import { META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PickLoading, pickLoading } from './getLoading';
@@ -63,7 +62,7 @@ export function useLoadings(
 
       return noPick
         ? pickLoading.call(meta, category)
-        : assign(
+        : Object.assign(
             {
               pick: pickLoading,
             },
