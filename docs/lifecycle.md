@@ -1,8 +1,8 @@
 #
 
-# onReady
+# onInit
 
-当 store 初始化完成 并且持久化（如果有）数据已经恢复时，onReady 就会被自动触发，你可以调用 effects 或者 actions 做一些额外操作。
+当 store 初始化完成 并且持久化（如果有）数据已经恢复时，onInit 就会被自动触发，你可以调用 effects 或者 actions 做一些额外操作。
 
 ```typescript
 import { defineModel } from 'foca';
@@ -24,7 +24,7 @@ export const myModel = defineModel('my', {
     },
   },
   hooks: {
-    onReady() {
+    onInit() {
       this.add(10);
       this.requestApi();
     },

@@ -112,11 +112,11 @@ export type InternalAction<State extends object> = {
 
 export interface Hook {
   /**
-   * reducer已经挂载到store，并且持久化也已经恢复。
+   * store初始化完成，并且持久化（如果有）的数据也已经恢复。
    *
-   * 上下文 **this** 附上了actions和effects，可以直接调用。
+   * 上下文 **this** 可以直接调用actions和effects的函数。
    */
-  onReady?: () => void;
+  onInit?: () => void;
 }
 
 export interface HookCtx<State extends object>
@@ -304,15 +304,15 @@ export const defineModel = <
   );
 
   if (hooks && Object.keys(hooks).length) {
-    const { onReady } = hooks;
+    const { onInit } = hooks;
     const hookCtx: HookCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
       enhancedMethods,
     );
 
-    if (onReady) {
+    if (onInit) {
       modelStore.onReady(() => {
-        onReady.call(hookCtx);
+        onInit.call(hookCtx);
       });
     }
   }

@@ -18,7 +18,7 @@ const createModel = () => {
       },
     },
     hooks: {
-      onReady() {
+      onInit() {
         this.invokeByReadyHook();
       },
     },
