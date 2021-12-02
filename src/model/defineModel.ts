@@ -110,6 +110,19 @@ export type InternalAction<State extends object> = {
   [key: string]: (state: State, ...args: any[]) => State | void;
 };
 
+export interface Hook {
+  /**
+   * reducer已经挂载到store，并且持久化也已经恢复。
+   *
+   * 上下文 **this** 附上了actions和effects，可以直接调用。
+   */
+  onReady?: () => void;
+}
+
+export interface HookCtx<State extends object>
+  extends GetName<string>,
+    GetState<State> {}
+
 export interface DefineModelOptions<
   State extends object,
   Action extends object,
@@ -184,6 +197,10 @@ export interface DefineModelOptions<
    * @see store.init()
    */
   persist?: ModelPersist<State>;
+  /**
+   * 模型钩子
+   */
+  hooks?: Hook & ThisType<ModelAction<State, Action> & Effect & HookCtx<State>>;
 }
 
 export const defineModel = <
@@ -195,7 +212,7 @@ export const defineModel = <
   name: Name,
   options: DefineModelOptions<State, Action, Effect>,
 ): Model<Name, State, Action, Effect> => {
-  const { initialState, actions, effects, skipRefresh } = options;
+  const { initialState, actions, effects, skipRefresh, hooks } = options;
 
   const getName = <T extends object>(obj: T): T & GetName<Name> => {
     return defineGetter(obj, 'name', () => name);
@@ -285,6 +302,20 @@ export const defineModel = <
       allowRefresh: !skipRefresh,
     }),
   );
+
+  if (hooks && Object.keys(hooks).length) {
+    const { onReady } = hooks;
+    const hookCtx: HookCtx<State> = Object.assign(
+      composeGetter({}, getName, getState),
+      enhancedMethods,
+    );
+
+    if (onReady) {
+      modelStore.onReady(() => {
+        onReady.call(hookCtx);
+      });
+    }
+  }
 
   return model as any;
 };
