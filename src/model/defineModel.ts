@@ -286,7 +286,9 @@ export const defineModel = <
   const model: InternalModel<Name, State, Action, Effect> = Object.assign(
     composeGetter(
       {
-        _$opts: options,
+        get _$opts() {
+          return cloneDeep(options, false);
+        },
       },
       getName,
       getState,
