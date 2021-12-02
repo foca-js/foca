@@ -4,6 +4,7 @@ import { EnhancedAction, enhanceAction } from './enhanceAction';
 import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
 import { modelStore } from '../store/modelStore';
 import { createReducer } from '../redux/createReducer';
+import { composeGetter, defineGetter } from '../utils/getter';
 
 export interface GetName<Name extends string> {
   /**
@@ -196,57 +197,62 @@ export const defineModel = <
 ): Model<Name, State, Action, Effect> => {
   const { initialState, actions, effects, skipRefresh } = options;
 
-  const getState = (): State => modelStore.getState()[name];
-  const getInitialState = (): State => cloneDeep(initialState);
-
-  const actionCtx: ActionCtx<State> = {
-    get name() {
-      return name;
-    },
-    get initialState() {
-      return getInitialState();
-    },
+  const getName = <T extends object>(obj: T): T & GetName<Name> => {
+    return defineGetter(obj, 'name', () => name);
   };
+
+  const getState = <T extends object>(obj: T): T & GetState<State> => {
+    return defineGetter(obj, 'state', () => modelStore.getState()[name]);
+  };
+
+  const getInitialState = <T extends object>(
+    obj: T,
+  ): T & GetInitialState<State> => {
+    return defineGetter(obj, 'initialState', () => cloneDeep(initialState));
+  };
+
+  const actionCtx: ActionCtx<State> = composeGetter(
+    {},
+    getName,
+    getState,
+    getInitialState,
+  );
 
   const createEffectCtx = (methodName: string): EffectCtx<State> => {
-    const ctx: EffectCtx<State> = {
-      get name() {
-        return name;
-      },
-      get initialState() {
-        return getInitialState();
-      },
-      get state() {
-        return getState();
-      },
+    const obj: Pick<EffectCtx<State>, 'dispatch'> = {
       dispatch: enhanceAction(
         actionCtx,
-        `dispatch [${methodName}]`,
-        anonymousConsumer,
+        `${methodName}.dispatch`,
+        (state: State, fn_state: State | ((state: State) => State | void)) => {
+          return typeof fn_state === 'function' ? fn_state(state) : fn_state;
+        },
       ),
     };
-
-    return ctx;
+    return composeGetter(obj, getName, getState, getInitialState);
   };
 
-  const enhancedActions: Record<string, EnhancedAction<State>> = {};
-  actions &&
+  const enhancedMethods: Record<
+    string,
+    EnhancedAction<State> | EnhancedEffect
+  > = {};
+
+  if (actions) {
     Object.keys(actions).forEach((actionName) => {
-      enhancedActions[actionName] = enhanceAction(
+      enhancedMethods[actionName] = enhanceAction(
         actionCtx,
         actionName,
         actions[actionName]!,
       );
     });
+  }
 
-  const enhancedEffects: Record<string, EnhancedEffect> = {};
   if (effects) {
     const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
 
     Object.keys(effects).forEach((effectName) => {
       process.env.NODE_ENV !== 'production' &&
         effectCtxs.push(createEffectCtx(effectName));
-      enhancedEffects[effectName] = enhanceEffect(
+      enhancedMethods[effectName] = enhanceEffect(
         effectCtxs[effectCtxs.length - 1]!,
         effectName,
         // @ts-expect-error
@@ -255,41 +261,30 @@ export const defineModel = <
     });
 
     effectCtxs.forEach((ctx) => {
-      Object.assign(ctx, enhancedActions, enhancedEffects);
+      Object.assign(ctx, enhancedMethods);
     });
   }
 
   // 使用扩展操作符(rest/spread)会直接触发getter
   const model: InternalModel<Name, State, Action, Effect> = Object.assign(
-    {
-      get state() {
-        return getState();
+    composeGetter(
+      {
+        _$opts: options,
       },
-      get name() {
-        return name;
-      },
-      get _$opts() {
-        return options;
-      },
-    },
-    enhancedActions,
-    enhancedEffects,
+      getName,
+      getState,
+    ),
+    enhancedMethods,
   );
 
-  const reducer = createReducer({
+  modelStore.appendReducer(
     name,
-    initialState: getInitialState(),
-    allowRefresh: !skipRefresh,
-  });
-
-  modelStore.appendReducer(name, reducer);
+    createReducer({
+      name,
+      initialState: cloneDeep(initialState),
+      allowRefresh: !skipRefresh,
+    }),
+  );
 
   return model as any;
-};
-
-const anonymousConsumer = <State extends object>(
-  state: State,
-  fn_or_state: State | ((state: State) => State | void),
-) => {
-  return typeof fn_or_state === 'function' ? fn_or_state(state) : fn_or_state;
 };
