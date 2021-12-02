@@ -1,3 +1,7 @@
+## [0.3.6](https://github.com/foca-js/foca/compare/v0.3.5...v0.3.6)&nbsp;&nbsp;(2021-12-??)
+
+- 模型增加钩子函数 onReady
+
 ## [0.3.5](https://github.com/foca-js/foca/compare/v0.3.4...v0.3.5)&nbsp;&nbsp;(2021-12-01)
 
 - 使用 Object.assign 代替插件包 object-assign
