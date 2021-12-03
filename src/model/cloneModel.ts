@@ -1,4 +1,4 @@
-import { DuplicateModelError } from '../exceptions/DuplicateModelError';
+import { ModelError } from '../exceptions/ModelError';
 import {
   defineModel,
   Model,
@@ -22,9 +22,7 @@ export const cloneModel = <
   >,
 ): Model<Name, State, Action, Effect> => {
   if (name === model.name) {
-    throw new DuplicateModelError(
-      `Stop cloning model with the same name ${name}`,
-    );
+    throw new ModelError(`Stop cloning model with the same name ${name}`);
   }
 
   const realModel = model as unknown as InternalModel<
