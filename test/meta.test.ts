@@ -61,7 +61,8 @@ const effectName = 'pureAsync';
 const getMetaFromStore = (
   category: number | string,
 ): MetaStateItem | undefined =>
-  metaStore.getState()[basicModel.name]?.[effectName]?.[metaKey(category)];
+  metaStore.getState()[metaStore.helper.key(basicModel.name, effectName)]?.metas
+    .data?.[metaKey(category)];
 
 test('meta from untracked to used', async () => {
   expect(getMetaFromStore(META_DEFAULT_CATEGORY)).toBeUndefined();

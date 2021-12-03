@@ -1,18 +1,6 @@
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
-import { metaStore } from '../store/metaStore';
-import { metaKey } from '../utils/metaKey';
-
-export interface PickMeta {
-  pick(category: number | string): Partial<MetaStateItem>;
-}
-
-export const pickMeta: PickMeta['pick'] = function (
-  this: Record<string, Partial<MetaStateItem> | undefined>,
-  category: number | string,
-) {
-  return this[metaKey(category)] || {};
-};
+import { metaStore, PickMeta } from '../store/metaStore';
 
 /**
  * 获取给定的effect方法的执行状态。
@@ -22,7 +10,7 @@ export const pickMeta: PickMeta['pick'] = function (
  * ```
  */
 export const getMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
-  return pickMeta.call(metaStore.helper.get(effect), META_DEFAULT_CATEGORY);
+  return metaStore.helper.get(effect).metas.pick(META_DEFAULT_CATEGORY);
 };
 
 /**
@@ -45,14 +33,6 @@ export function getMetas(
   effect: PromiseEffect,
   category?: number | string,
 ): Partial<MetaStateItem> | PickMeta {
-  const meta = metaStore.helper.get(effect);
-
-  return category === void 0
-    ? Object.assign(
-        {
-          pick: pickMeta,
-        },
-        meta,
-      )
-    : pickMeta.call(meta, category);
+  const metas = metaStore.helper.get(effect).metas;
+  return category === void 0 ? metas : metas.pick(category);
 }

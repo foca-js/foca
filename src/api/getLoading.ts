@@ -1,18 +1,6 @@
-import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
+import { META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
-import { metaStore } from '../store/metaStore';
-import { metaKey } from '../utils/metaKey';
-
-export interface PickLoading {
-  pick(category: number | string): boolean;
-}
-
-export const pickLoading: PickLoading['pick'] = function (
-  this: Record<string, Partial<MetaStateItem> | undefined>,
-  category: number | string,
-) {
-  return (this[metaKey(category)] || {}).type === 'pending';
-};
+import { metaStore, PickLoading } from '../store/metaStore';
 
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。
@@ -30,9 +18,9 @@ export function getLoading(
 
 export function getLoading(): boolean {
   for (let i = 0; i < arguments.length; ++i) {
-    const meta = metaStore.helper.get(arguments[i]);
-
-    if (pickLoading.call(meta, META_DEFAULT_CATEGORY)) {
+    if (
+      metaStore.helper.get(arguments[i]).loadings.pick(META_DEFAULT_CATEGORY)
+    ) {
       return true;
     }
   }
@@ -59,14 +47,7 @@ export function getLoadings(
   effect: PromiseEffect,
   category?: number | string,
 ): boolean | PickLoading {
-  const meta = metaStore.helper.get(effect);
+  const loadings = metaStore.helper.get(effect).loadings;
 
-  return category === void 0
-    ? Object.assign(
-        {
-          pick: pickLoading,
-        },
-        meta,
-      )
-    : pickLoading.call(meta, category);
+  return category === void 0 ? loadings : loadings.pick(category);
 }

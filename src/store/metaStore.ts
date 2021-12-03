@@ -1,10 +1,4 @@
-import {
-  AnyAction,
-  applyMiddleware,
-  createStore,
-  DeepPartial,
-  Store,
-} from 'redux';
+import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import type { PromiseEffect } from '../model/enhanceEffect';
 import { metaInterceptor } from '../middleware/metaInterceptor';
 import type { MetaAction, MetaStateItem } from '../actions/meta';
@@ -14,43 +8,90 @@ import { metaKey } from '../utils/metaKey';
 import { getImmer } from '../utils/getImmer';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 
-export type MetaState = DeepPartial<{
-  [model: string]: {
-    [method: string]: {
-      [category: string]: MetaStateItem;
-    };
-  };
-}>;
+export interface PickMeta {
+  pick(category: number | string): Partial<MetaStateItem>;
+}
 
-const immer = getImmer();
+export interface PickLoading {
+  pick(category: number | string): boolean;
+}
+
+interface MetaState extends PickMeta {
+  data: {
+    [category: string]: MetaStateItem;
+  };
+}
+
+interface LoadingState extends PickLoading {
+  data: {
+    [category: string]: boolean;
+  };
+}
+
+interface MetaStoreStateItem {
+  metas: MetaState;
+  loadings: LoadingState;
+}
+
+export type MetaStoreState = {
+  [model_method: string]: MetaStoreStateItem;
+};
+
+const pickMeta: PickMeta['pick'] = function (
+  this: MetaState,
+  category: number | string,
+) {
+  return this.data[metaKey(category)] || {};
+};
+
+const pickLoading: PickLoading['pick'] = function (
+  this: LoadingState,
+  category: number | string,
+) {
+  return !!this.data[metaKey(category)];
+};
+
+const createDefaultRecord = (): MetaStoreStateItem => {
+  return {
+    metas: {
+      pick: pickMeta,
+      data: {},
+    },
+    loadings: {
+      pick: pickLoading,
+      data: {},
+    },
+  };
+};
+
+const defaultRecord = freezeState(createDefaultRecord());
 
 const helper = {
   status: <Record<string, boolean>>{},
 
-  get(effect: PromiseEffect) {
+  get(effect: PromiseEffect): MetaStoreStateItem {
     const {
       _: { model, method },
     } = effect;
-    let meta: MetaStateItem | undefined;
+    let record: MetaStoreStateItem | undefined;
 
     if (this.isActive(model, method)) {
-      const state = metaStore.getState()[model];
-      meta = state && state[method];
+      record = metaStore.getState()[this.key(model, method)];
     } else {
       this.activate(model, method);
     }
 
-    return meta || {};
+    return record || defaultRecord;
   },
 
   isActive(model: string, method: string): boolean {
-    return this.status[model + '|' + method] === true;
+    return this.status[this.key(model, method)] === true;
   },
   activate(model: string, method: string) {
-    this.status[model + '|' + method] = true;
+    this.status[this.key(model, method)] = true;
   },
   inactivate(model: string, method: string) {
-    this.status[model + '|' + method] = false;
+    this.status[this.key(model, method)] = false;
   },
 
   isMeta(action: AnyAction): action is MetaAction {
@@ -69,16 +110,26 @@ const helper = {
       },
     });
   },
+
+  key(model: string, method: string) {
+    return model + '|' + method;
+  },
 };
 
+const immer = getImmer();
+
 export const metaStore = createStore(
-  (state: MetaState = {}, action: AnyAction) => {
+  (state: MetaStoreState = {}, action: AnyAction): MetaStoreState => {
     if (helper.isMeta(action)) {
       const { model, method, payload } = action;
       const category = metaKey(action.category);
 
       return immer.produce(state, (draft) => {
-        ((draft[model] ||= {})[method] ||= {})[category] = freezeState(payload);
+        const { metas, loadings } = (draft[helper.key(model, method)] ||=
+          createDefaultRecord());
+
+        metas.data[category] = freezeState(payload);
+        loadings.data[category] = payload.type === 'pending';
       });
     }
 
@@ -89,6 +140,6 @@ export const metaStore = createStore(
     return state;
   },
   applyMiddleware(metaInterceptor(helper)),
-) as Store<MetaState> & { helper: typeof helper };
+) as Store<MetaStoreState> & { helper: typeof helper };
 
 metaStore.helper = helper;

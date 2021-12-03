@@ -1,8 +1,6 @@
-import { shallowEqual } from 'react-redux';
-import { pickMeta, PickMeta } from './getMeta';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
-import { metaStore } from '../store/metaStore';
+import { metaStore, PickMeta } from '../store/metaStore';
 import { useMetaSelector } from '../redux/useSelector';
 
 /**
@@ -14,7 +12,7 @@ import { useMetaSelector } from '../redux/useSelector';
  */
 export const useMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
   return useMetaSelector(() => {
-    return pickMeta.call(metaStore.helper.get(effect), META_DEFAULT_CATEGORY);
+    return metaStore.helper.get(effect).metas.pick(META_DEFAULT_CATEGORY);
   });
 };
 
@@ -38,21 +36,8 @@ export function useMetas(
   effect: PromiseEffect,
   category?: number | string,
 ): Partial<MetaStateItem> | PickMeta {
-  const noPick = category !== void 0;
-
-  return useMetaSelector(
-    () => {
-      const meta = metaStore.helper.get(effect);
-
-      return noPick
-        ? pickMeta.call(meta, category)
-        : Object.assign(
-            {
-              pick: pickMeta,
-            },
-            meta,
-          );
-    },
-    noPick ? void 0 : shallowEqual,
-  );
+  return useMetaSelector(() => {
+    const metas = metaStore.helper.get(effect).metas;
+    return category === void 0 ? metas : metas.pick(category);
+  });
 }

@@ -1,8 +1,6 @@
-import { shallowEqual } from 'react-redux';
 import { META_DEFAULT_CATEGORY } from '../actions/meta';
-import { PickLoading, pickLoading } from './getLoading';
 import { PromiseEffect } from '../model/enhanceEffect';
-import { metaStore } from '../store/metaStore';
+import { metaStore, PickLoading } from '../store/metaStore';
 import { useMetaSelector } from '../redux/useSelector';
 
 /**
@@ -24,9 +22,7 @@ export function useLoading(): boolean {
 
   return useMetaSelector(() => {
     for (let i = 0; i < args.length; ++i) {
-      const meta = metaStore.helper.get(args[i]);
-
-      if (pickLoading.call(meta, META_DEFAULT_CATEGORY)) {
+      if (metaStore.helper.get(args[i]).loadings.pick(META_DEFAULT_CATEGORY)) {
         return true;
       }
     }
@@ -54,21 +50,8 @@ export function useLoadings(
   effect: PromiseEffect,
   category?: number | string,
 ): boolean | PickLoading {
-  const noPick = category !== void 0;
-
-  return useMetaSelector(
-    () => {
-      const meta = metaStore.helper.get(effect);
-
-      return noPick
-        ? pickLoading.call(meta, category)
-        : Object.assign(
-            {
-              pick: pickLoading,
-            },
-            meta,
-          );
-    },
-    noPick ? void 0 : shallowEqual,
-  );
+  return useMetaSelector(() => {
+    const loadings = metaStore.helper.get(effect).loadings;
+    return category === void 0 ? loadings : loadings.pick(category);
+  });
 }

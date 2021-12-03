@@ -16,6 +16,6 @@ export interface MetaAction extends Action<string> {
   setMeta: true;
   model: string;
   method: string;
-  payload: object;
+  payload: MetaStateItem;
   category: string | number;
 }
