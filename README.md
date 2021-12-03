@@ -75,9 +75,9 @@ export const counterModel = defineModel('counter', {
 });
 ```
 
-### 在组件中使用
+### 在函数组件中使用
 
-```typescript jsx
+```tsx
 import { FC, useEffect } from 'react';
 import { useModel, useLoading } from 'foca';
 import { counterModel } from './counterModel';
@@ -100,6 +100,41 @@ const App: FC = () => {
 };
 
 export default App;
+```
+
+### 在类组件中使用
+
+```tsx
+import { Component } from 'react';
+import { connect, getLoading } from 'foca';
+import { counterModel } from './counterModel';
+
+type Props = ReturnType<typeof mapStateToProps>;
+
+class App extends Component<Props> {
+  componentDidMount() {
+    counterModel.doSomething();
+  }
+
+  render() {
+    const { count, loading } = this.props;
+
+    return (
+      <div onClick={() => counterModel.plus(1)}>
+        {count} {loading ? 'Loading...' : null}
+      </div>
+    );
+  }
+};
+
+const mapStateToProps = () => {
+  return {
+    count: counterModel.state.count,
+    loading: getLoading(counterModel.doSomething);
+  };
+}
+
+export default connect(mapStateToProps)(App);
 ```
 
 # 文档
