@@ -11,7 +11,7 @@ import { useModelSelector } from '../redux/useSelector';
  * - `shallowEqual`  浅对比，只比较对象第一层。传递多个模型但没有selector时默认使用。
  * - `strictEqual`   全等（===）对比。只传一个模型但没有selector时默认使用。
  */
-export type CompareAlgorithm = 'strictEqual' | 'shallowEqual' | 'deepEqual';
+export type Algorithm = 'strictEqual' | 'shallowEqual' | 'deepEqual';
 
 /**
  * * 获取模型的状态数据。
@@ -25,7 +25,7 @@ export function useModel<State extends object>(
 export function useModel<State extends object, T>(
   model: Model<any, State>,
   selector: (state: State) => T,
-  compare?: CompareAlgorithm,
+  algorithm?: Algorithm,
 ): T;
 
 export function useModel<
@@ -51,7 +51,7 @@ export function useModel<
   model1: Model<Name1, State1>,
   model2: Model<Name2, State2>,
   selector: (state1: State1, state2: State2) => T,
-  compare?: CompareAlgorithm,
+  algorithm?: Algorithm,
 ): T;
 
 export function useModel<
@@ -85,7 +85,7 @@ export function useModel<
   model2: Model<Name2, State2>,
   model3: Model<Name3, State3>,
   selector: (state1: State1, state2: State2, state3: State3) => T,
-  compare?: CompareAlgorithm,
+  algorithm?: Algorithm,
 ): T;
 
 export function useModel<
@@ -132,7 +132,7 @@ export function useModel<
     state3: State3,
     state4: State4,
   ) => T,
-  compare?: CompareAlgorithm,
+  algorithm?: Algorithm,
 ): T;
 
 export function useModel<
@@ -188,58 +188,59 @@ export function useModel<
     state4: State4,
     state5: State5,
   ) => T,
-  compare?: CompareAlgorithm,
+  algorithm?: Algorithm,
 ): T;
 
 export function useModel(): any {
   const args = toArgs(arguments);
-  let compareAlgorithm: CompareAlgorithm | false =
+  let algorithm: Algorithm | false =
     getLastElementType(args) === 'string' && args.pop();
   const selector: Function | false =
     getLastElementType(args) === 'function' && args.pop();
-  const models: Model<any, any>[] = args;
+  const models: Model[] = args;
+  const modelsLength = models.length;
 
-  if (!compareAlgorithm) {
+  if (!algorithm) {
     if (selector) {
       // 返回子集或者计算过的内容。
       // 如果只是从模型中获取数据且没有做转换，则大部分时间会降级为shallow或者strict。
       // 如果对数据做了转换，则肯定需要使用深对比。
-      compareAlgorithm = 'deepEqual';
-    } else if (models.length > 1) {
+      algorithm = 'deepEqual';
+    } else if (modelsLength > 1) {
       // { key => model } 集合。
       // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
-      compareAlgorithm = 'shallowEqual';
+      algorithm = 'shallowEqual';
     } else {
       // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
-      compareAlgorithm = 'strictEqual';
+      algorithm = 'strictEqual';
     }
   }
 
   return useModelSelector((state: Record<string, object>) => {
-    if (models.length === 1) {
+    if (modelsLength === 1) {
       const modelState = state[models[0]!.name];
       return selector ? selector(modelState) : modelState;
     }
 
     if (selector) {
-      const result: object[] = [];
-      for (let i = 0; i < models.length; ++i) {
-        result.push(state[models[i]!.name]!);
+      const stateList: object[] = [];
+      for (let i = 0; i < modelsLength; ++i) {
+        stateList.push(state[models[i]!.name]!);
       }
-      return selector.apply(null, result);
+      return selector.apply(null, stateList);
     }
 
-    const result: typeof state = {};
-    for (let i = 0; i < models.length; ++i) {
+    const stateMap: typeof state = {};
+    for (let i = 0; i < modelsLength; ++i) {
       const reducerName = models[i]!.name;
-      result[reducerName] = state[reducerName]!;
+      stateMap[reducerName] = state[reducerName]!;
     }
-    return result;
-  }, compareFn[compareAlgorithm]);
+    return stateMap;
+  }, compareFn[algorithm]);
 }
 
 const compareFn: Record<
-  CompareAlgorithm,
+  Algorithm,
   undefined | ((previous: any, next: any) => boolean)
 > = {
   deepEqual: isEqual,
