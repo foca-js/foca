@@ -2,7 +2,6 @@ import { getLoading, getLoadings, getMeta, getMetas, store } from '../src';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../src/actions/meta';
 import { EffectError } from '../src/exceptions/EffectError';
 import { metaStore } from '../src/store/metaStore';
-import { metaKey } from '../src/utils/metaKey';
 import { basicModel } from './models/basic-model';
 import { storeUnmount } from './utils/store';
 
@@ -61,8 +60,8 @@ const effectName = 'pureAsync';
 const getMetaFromStore = (
   category: number | string,
 ): MetaStateItem | undefined =>
-  metaStore.getState()[metaStore.helper.key(basicModel.name, effectName)]?.metas
-    .data?.[metaKey(category)];
+  metaStore.getState()[metaStore.helper.keyOf(basicModel.name, effectName)]
+    ?.metas.data?.[category];
 
 test('meta from untracked to used', async () => {
   expect(getMetaFromStore(META_DEFAULT_CATEGORY)).toBeUndefined();

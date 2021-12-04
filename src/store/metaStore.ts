@@ -4,7 +4,6 @@ import { metaInterceptor } from '../middleware/metaInterceptor';
 import type { MetaAction, MetaStateItem } from '../actions/meta';
 import { isRefreshAction } from '../utils/isRefreshAction';
 import { freezeState } from '../utils/freezeState';
-import { metaKey } from '../utils/metaKey';
 import { getImmer } from '../utils/getImmer';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 
@@ -37,18 +36,15 @@ export type MetaStoreState = {
   [model_method: string]: MetaStoreStateItem;
 };
 
-const pickMeta: PickMeta['pick'] = function (
-  this: MetaState,
-  category: number | string,
-) {
-  return this.data[metaKey(category)] || {};
+const pickMeta: PickMeta['pick'] = function (this: MetaState, category) {
+  return this.data[category] || {};
 };
 
 const pickLoading: PickLoading['pick'] = function (
   this: LoadingState,
-  category: number | string,
+  category,
 ) {
-  return !!this.data[metaKey(category)];
+  return !!this.data[category];
 };
 
 const createDefaultRecord = (): MetaStoreStateItem => {
@@ -74,24 +70,25 @@ const helper = {
       _: { model, method },
     } = effect;
     let record: MetaStoreStateItem | undefined;
+    const combineKey = this.keyOf(model, method);
 
-    if (this.isActive(model, method)) {
-      record = metaStore.getState()[this.key(model, method)];
+    if (this.isActive(combineKey)) {
+      record = metaStore.getState()[combineKey];
     } else {
-      this.activate(model, method);
+      this.activate(combineKey);
     }
 
     return record || defaultRecord;
   },
 
-  isActive(model: string, method: string): boolean {
-    return this.status[this.key(model, method)] === true;
+  isActive(key: string): boolean {
+    return this.status[key] === true;
   },
-  activate(model: string, method: string) {
-    this.status[this.key(model, method)] = true;
+  activate(key: string) {
+    this.status[key] = true;
   },
-  inactivate(model: string, method: string) {
-    this.status[this.key(model, method)] = false;
+  inactivate(key: string) {
+    this.status[key] = false;
   },
 
   isMeta(action: AnyAction): action is MetaAction {
@@ -111,8 +108,8 @@ const helper = {
     });
   },
 
-  key(model: string, method: string) {
-    return model + '|' + method;
+  keyOf(model: string, method: string) {
+    return model + '.' + method;
   },
 };
 
@@ -121,11 +118,10 @@ const immer = getImmer();
 export const metaStore = createStore(
   (state: MetaStoreState = {}, action: AnyAction): MetaStoreState => {
     if (helper.isMeta(action)) {
-      const { model, method, payload } = action;
-      const category = metaKey(action.category);
+      const { model, method, payload, category } = action;
 
       return immer.produce(state, (draft) => {
-        const { metas, loadings } = (draft[helper.key(model, method)] ||=
+        const { metas, loadings } = (draft[helper.keyOf(model, method)] ||=
           createDefaultRecord());
 
         metas.data[category] = freezeState(payload);

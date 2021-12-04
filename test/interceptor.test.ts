@@ -33,14 +33,18 @@ test('dispatch the same meta should be intercepted', async () => {
   const fn = jest.fn();
   const unsubscribe = metaStore.subscribe(fn);
 
-  metaStore.helper.inactivate(basicModel.name, 'pureAsync');
+  metaStore.helper.inactivate(
+    metaStore.helper.keyOf(basicModel.name, 'pureAsync'),
+  );
 
   expect(fn).toHaveBeenCalledTimes(0);
   await basicModel.pureAsync();
   await basicModel.pureAsync();
   expect(fn).toHaveBeenCalledTimes(0);
 
-  metaStore.helper.activate(basicModel.name, 'pureAsync');
+  metaStore.helper.activate(
+    metaStore.helper.keyOf(basicModel.name, 'pureAsync'),
+  );
 
   await basicModel.pureAsync();
   expect(fn).toHaveBeenCalledTimes(2);
