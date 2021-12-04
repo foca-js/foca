@@ -1,6 +1,7 @@
-## [0.3.6](https://github.com/foca-js/foca/compare/v0.3.5...v0.3.6)&nbsp;&nbsp;(2021-12-??)
+## [0.3.6](https://github.com/foca-js/foca/compare/v0.3.5...v0.3.6)&nbsp;&nbsp;(2021-12-04)
 
 - 模型增加钩子函数 onInit
+- 修复 getLoadings 和 useLoadings 始终返回新对象的问题
 
 ## [0.3.5](https://github.com/foca-js/foca/compare/v0.3.4...v0.3.5)&nbsp;&nbsp;(2021-12-01)
 
