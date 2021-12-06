@@ -27,7 +27,7 @@ export const FocaProvider: FC<OwnProps> = ({ children, loading }) => {
     <Provider context={EmptyContext} store={emptyStore}>
       <Provider context={MetaContext} store={metaStore}>
         <Provider context={ModelContext} store={modelStore}>
-          {modelStore.persistManager ? (
+          {modelStore.persistor ? (
             <PersistGate loading={loading} children={children} />
           ) : (
             children

@@ -62,7 +62,7 @@ test('Store can define persist with different engine', async () => {
 
   await storeReady();
 
-  expect(JSON.stringify(store.persistManager?.collect())).toBe('{}');
+  expect(JSON.stringify(store.persistor?.collect())).toBe('{}');
 
   const spy = jest.spyOn(globalThis, 'clearTimeout');
   expect(spy).toHaveBeenCalledTimes(0);
@@ -75,7 +75,7 @@ test('Store can define persist with different engine', async () => {
   spy.mockRestore();
 
   await sleep(50);
-  expect(store.persistManager?.collect()).toMatchObject({
+  expect(store.persistor?.collect()).toMatchObject({
     [basicModel.name]: basicModel.state,
     [persistModel.name]: persistModel.state,
     [hasVersionPersistModel.name]: hasVersionPersistModel.state,

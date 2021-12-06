@@ -9,6 +9,6 @@ export const storeReady = () => {
 
 export const storeUnmount = () => {
   store.origin = void 0;
-  store.persistManager = void 0;
+  store.persistor = void 0;
   store.topic = new Topic();
 };
