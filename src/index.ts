@@ -1,8 +1,6 @@
 export {
   Action,
   AnyAction,
-  applyMiddleware,
-  compose,
   Dispatch,
   MiddlewareAPI,
   Middleware,
