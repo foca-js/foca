@@ -22,7 +22,7 @@ export const createReducer = <State extends object>(
     }
 
     if (isPostModel<State>(action) && action.model === reducerName) {
-      return action.next;
+      return freezeState(action.next);
     }
 
     if (isRefreshAction(action) && (allowRefresh || action.payload.force)) {
