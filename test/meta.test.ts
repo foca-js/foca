@@ -127,3 +127,22 @@ test('The meta with undeclared category should always be same', () => {
   expect(getMeta(basicModel.foo)).toBe(getMeta(basicModel.foo));
   expect(Object.isFrozen(getMeta(basicModel.foo))).toBeTruthy();
 });
+
+test('metas and loadings are frozen', async () => {
+  const combineKey = metaStore.helper.keyOf(basicModel.name, 'pureAsync');
+  metaStore.helper.activate(combineKey);
+
+  const promise = basicModel.pureAsync();
+  expect(Object.isFrozen(getMeta(basicModel.pureAsync))).toBeTruthy();
+  expect(Object.isFrozen(getMeta(basicModel.pureAsync, 'pick'))).toBeTruthy();
+  expect(
+    Object.isFrozen(getLoading(basicModel.pureAsync, 'pick')),
+  ).toBeTruthy();
+
+  await promise;
+  expect(Object.isFrozen(getMeta(basicModel.pureAsync))).toBeTruthy();
+  expect(Object.isFrozen(getMeta(basicModel.pureAsync, 'pick'))).toBeTruthy();
+  expect(
+    Object.isFrozen(getLoading(basicModel.pureAsync, 'pick')),
+  ).toBeTruthy();
+});

@@ -121,14 +121,18 @@ export const metaStore = createStore(
   (state: MetaStoreState = {}, action: AnyAction): MetaStoreState => {
     if (helper.isMeta(action)) {
       const { model, method, payload, category } = action;
-
-      return immer.produce(state, (draft) => {
-        const { metas, loadings } = (draft[helper.keyOf(model, method)] ||=
+      const combineKey = helper.keyOf(model, method);
+      const next = immer.produce(state, (draft) => {
+        const { metas, loadings } = (draft[combineKey] ||=
           createDefaultRecord());
 
-        metas.data[category] = freezeState(payload);
+        metas.data[category] = payload;
         loadings.data[category] = payload.type === 'pending';
       });
+
+      freezeState(next[combineKey]!.metas);
+      freezeState(next[combineKey]!.loadings);
+      return next;
     }
 
     if (isRefreshAction(action)) {
