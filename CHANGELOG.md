@@ -1,6 +1,6 @@
 ## [0.4.0](https://github.com/foca-js/foca/compare/v0.3.6...v0.4.0)&nbsp;&nbsp;(2021-12-08)
 
-- 删除 api `useLoadings`, `useMetas`, `getLoadings`, `getMetas`
+- [Breaking] 删除重复且难以理解的 api `useLoadings`, `useMetas`, `getLoadings`, `getMetas`
 
 ## [0.3.6](https://github.com/foca-js/foca/compare/v0.3.5...v0.3.6)&nbsp;&nbsp;(2021-12-04)
 
