@@ -1,3 +1,7 @@
+## [0.4.1](https://github.com/foca-js/foca/compare/v0.4.0...v0.4.1)&nbsp;&nbsp;(2021-12-08)
+
+- 修复循环引用问题
+
 ## [0.4.0](https://github.com/foca-js/foca/compare/v0.3.6...v0.4.0)&nbsp;&nbsp;(2021-12-08)
 
 - [Breaking] 删除重复且难以理解的 api `useLoadings`, `useMetas`, `getLoadings`, `getMetas`
