@@ -36,8 +36,10 @@ export type MetaStoreState = {
   [model_method: string]: MetaStoreStateItem;
 };
 
+const undeclaredMeta = {};
+
 const pickMeta: PickMeta['pick'] = function (this: MetaState, category) {
-  return this.data[category] || {};
+  return this.data[category] || undeclaredMeta;
 };
 
 const pickLoading: PickLoading['pick'] = function (

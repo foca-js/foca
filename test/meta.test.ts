@@ -122,3 +122,7 @@ test('Trace metas', async () => {
 
   expect(getMeta(basicModel.hasError).message).toBeUndefined();
 });
+
+test('The meta with undeclared category should always be same', () => {
+  expect(getMeta(basicModel.foo)).toBe(getMeta(basicModel.foo));
+});
