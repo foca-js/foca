@@ -1,7 +1,7 @@
 import { PromiseEffect } from '../model/enhanceEffect';
 import { PickLoading } from '../store/metaStore';
 import { useMetaSelector } from '../redux/useSelector';
-import { getLoading } from '..';
+import { getLoading } from './getLoading';
 
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。

@@ -2,7 +2,7 @@ import { MetaStateItem } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
 import { PickMeta } from '../store/metaStore';
 import { useMetaSelector } from '../redux/useSelector';
-import { getMeta } from '..';
+import { getMeta } from './getMeta';
 
 /**
  * 获取给定的effect方法的执行状态。
