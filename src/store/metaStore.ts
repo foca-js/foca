@@ -36,7 +36,7 @@ export type MetaStoreState = {
   [model_method: string]: MetaStoreStateItem;
 };
 
-const undeclaredMeta = {};
+const undeclaredMeta = freezeState({});
 
 const pickMeta: PickMeta['pick'] = function (this: MetaState, category) {
   return this.data[category] || undeclaredMeta;
