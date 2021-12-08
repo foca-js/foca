@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { FocaProvider, store, useLoading, useLoadings } from '../src';
+import { FocaProvider, store, useLoading } from '../src';
 import { metaStore } from '../src/store/metaStore';
 import { basicModel } from './models/basic-model';
 import { storeUnmount } from './utils/store';
@@ -70,9 +70,12 @@ test('Compose the loadings', async () => {
 });
 
 test('Trace loadings', async () => {
-  const { result } = renderHook(() => useLoadings(basicModel.pureAsync, 'x'), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(
+    () => useLoading(basicModel.pureAsync, 'pick', 'x'),
+    {
+      wrapper: FocaProvider,
+    },
+  );
 
   expect(result.current).toBeFalsy();
 
@@ -92,9 +95,12 @@ test('Trace loadings', async () => {
 });
 
 test('Pick loading from loadings', async () => {
-  const { result } = renderHook(() => useLoadings(basicModel.pureAsync), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(
+    () => useLoading(basicModel.pureAsync, 'pick'),
+    {
+      wrapper: FocaProvider,
+    },
+  );
 
   expect(result.current.pick('m')).toBeFalsy();
   expect(result.current.pick('n')).toBeFalsy();
@@ -126,12 +132,8 @@ test.skip('type checking', () => {
   // @ts-expect-error
   useLoading({});
 
-  useLoadings(basicModel.bar, 'x').valueOf();
-  useLoadings(basicModel.foo).pick('m').valueOf();
+  useLoading(basicModel.bar, 'pick', 'x').valueOf();
+  useLoading(basicModel.foo, 'pick').pick('m').valueOf();
   // @ts-expect-error
-  useLoadings(basicModel.minus);
-  // @ts-expect-error
-  useLoadings(basicModel);
-  // @ts-expect-error
-  useLoadings({});
+  useLoading(basicModel.minus, 'pick');
 });

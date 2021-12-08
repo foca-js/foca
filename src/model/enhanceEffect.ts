@@ -19,9 +19,7 @@ interface AsyncEffect<P extends any[] = any[], R = Promise<any>> {
   /**
    * 对同一effect函数的执行状态进行分类以实现独立保存。
    *
-   * 想获得分类后的meta，使用方法 getMetas 或者 useMetas。
-   *
-   * 想获得分类后的loading，使用方法 getLoadings 或者 useLoadings。
+   * 想获得分类后的meta和loading，需要使用pick模式。
    */
   meta(category: number | string): {
     execute(...args: P): R;

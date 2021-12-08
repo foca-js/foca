@@ -2,12 +2,14 @@ import { META_DEFAULT_CATEGORY } from '../actions/meta';
 import { PromiseEffect } from '../model/enhanceEffect';
 import { metaStore, PickLoading } from '../store/metaStore';
 
+const helper = metaStore.helper;
+
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。
  *
  * ```typescript
- * loading = getLoading(model.effect1);
- * loading = getLoading(model.effect1, model.effect2, ...);
+ * loading = getLoading(effect);
+ * loading = getLoading(effect1, effect2, ...);
  * ```
  *
  */
@@ -16,38 +18,44 @@ export function getLoading(
   ...more: PromiseEffect[]
 ): boolean;
 
-export function getLoading(): boolean {
-  for (let i = 0; i < arguments.length; ++i) {
-    if (
-      metaStore.helper.get(arguments[i]).loadings.pick(META_DEFAULT_CATEGORY)
-    ) {
+/**
+ * 检测给定的effect方法是否正在执行。
+ *
+ * ```typescript
+ * loadings = getLoading(effect, 'pick');
+ * loading = loadings.pick(CATEGORY)
+ * ```
+ */
+export function getLoading(
+  effect: PromiseEffect,
+  pickLoading: 'pick',
+): PickLoading;
+
+/**
+ * 检测给定的effect方法是否正在执行。
+ *
+ * ```typescript
+ * loading = getLoading(effect, 'pick', CATEGORY);
+ * ```
+ */
+export function getLoading(
+  effect: PromiseEffect,
+  pick: 'pick',
+  category: string | number,
+): boolean;
+
+export function getLoading(): boolean | PickLoading {
+  const args = arguments;
+
+  if (args[1] === 'pick') {
+    const loadings = helper.get(args[0]).loadings;
+    return args.length === 2 ? loadings : loadings.pick(args[2]);
+  }
+
+  for (let i = 0; i < args.length; ++i) {
+    if (helper.get(args[i]).loadings.pick(META_DEFAULT_CATEGORY)) {
       return true;
     }
   }
   return false;
-}
-
-/**
- * 检测给定的effect方法中是否正在执行。
- *
- * ```typescript
- * loading = getLoadings(model.effectX, id);
- * loadings = getLoadings(model.effectX).pick(id)
- * ```
- *
- */
-export function getLoadings(
-  effect: PromiseEffect,
-  category: number | string,
-): boolean;
-
-export function getLoadings(effect: PromiseEffect): PickLoading;
-
-export function getLoadings(
-  effect: PromiseEffect,
-  category?: number | string,
-): boolean | PickLoading {
-  const loadings = metaStore.helper.get(effect).loadings;
-
-  return category === void 0 ? loadings : loadings.pick(category);
 }

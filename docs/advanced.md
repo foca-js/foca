@@ -75,13 +75,13 @@ const user2Model = cloneModel('users2', userModel);
 
 共享方法但状态是独立的，这是个不错的主意，你只要维护一份代码就行了。
 
-# useLoadings | useMetas
+# pick
 
 默认地，effect 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.effectX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数是拥有多个状态互不干扰。
 
 ```tsx
 const App: FC = () => {
-  const loadings = useLoadings(model.myMethod);
+  const loadings = useLoading(model.myMethod, 'pick');
 
   const handleClick = (id: number) => {
     model.myMethod.meta(id).execute(id);
@@ -104,6 +104,15 @@ const App: FC = () => {
 ```
 
 这种场景也常出现在一些表格里，每一行通常都带有切换（switch UI）控件，点击后该控件需要被禁用或者出现 loading 图标，提前是你得知道是谁。
+
+如果你能确定 pick 的参数，那么也可以直接传递：
+
+```typescript
+const loading = useLoading(model.myMethod, 'pick', 100); // boolean
+
+// 等效于
+const loading = useLoading(model.myMethod, 'pick').pick(100);
+```
 
 # sync effect
 

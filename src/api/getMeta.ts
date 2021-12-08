@@ -6,33 +6,46 @@ import { metaStore, PickMeta } from '../store/metaStore';
  * 获取给定的effect方法的执行状态。
  *
  * ```typescript
- * const meta = getMeta(model.effect1);
+ * const meta = getMeta(effect);
  * ```
  */
-export const getMeta = (effect: PromiseEffect): Partial<MetaStateItem> => {
-  return metaStore.helper.get(effect).metas.pick(META_DEFAULT_CATEGORY);
-};
+export function getMeta(effect: PromiseEffect): Partial<MetaStateItem>;
 
 /**
  * 获取给定的effect方法的执行状态。
  *
  * ```typescript
- * meta = getMetas(model.effectX, id);
- * metas = getMetas(model.effectX).pick(id)
+ * const metas = getMeta(effect, 'pick')
+ * const meta = metas.pick(CATEGORY)
  * ```
  *
  */
-export function getMetas(
+export function getMeta(effect: PromiseEffect, pickMeta: 'pick'): PickMeta;
+
+/**
+ * 获取给定的effect方法的执行状态。
+ *
+ * ```typescript
+ * const meta = getMeta(effect, 'pick', CATEGORY);
+ * ```
+ *
+ */
+export function getMeta(
   effect: PromiseEffect,
+  pick: 'pick',
   category: number | string,
 ): Partial<MetaStateItem>;
 
-export function getMetas(effect: PromiseEffect): PickMeta;
-
-export function getMetas(
+export function getMeta(
   effect: PromiseEffect,
-  category?: number | string,
+  pick?: 'pick',
+  category?: string | number,
 ): Partial<MetaStateItem> | PickMeta {
   const metas = metaStore.helper.get(effect).metas;
-  return category === void 0 ? metas : metas.pick(category);
+
+  if (pick === 'pick') {
+    return category === void 0 ? metas : metas.pick(category);
+  }
+
+  return metas.pick(META_DEFAULT_CATEGORY);
 }

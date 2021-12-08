@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { FocaProvider, store, useMeta, useMetas } from '../src';
+import { FocaProvider, store, useMeta } from '../src';
 import { MetaStateItem } from '../src/actions/meta';
 import { metaStore } from '../src/store/metaStore';
 import { basicModel } from './models/basic-model';
@@ -43,20 +43,23 @@ test('get meta', async () => {
 
 test('get metas', async () => {
   const { result: result1 } = renderHook(
-    () => useMetas(basicModel.hasError, 'x'),
+    () => useMeta(basicModel.hasError, 'pick', 'x'),
     {
       wrapper: FocaProvider,
     },
   );
   const { result: result2 } = renderHook(
-    () => useMetas(basicModel.hasError, 'y'),
+    () => useMeta(basicModel.hasError, 'pick', 'y'),
     {
       wrapper: FocaProvider,
     },
   );
-  const { result: result3 } = renderHook(() => useMetas(basicModel.hasError), {
-    wrapper: FocaProvider,
-  });
+  const { result: result3 } = renderHook(
+    () => useMeta(basicModel.hasError, 'pick'),
+    {
+      wrapper: FocaProvider,
+    },
+  );
 
   expect(result1.current).toStrictEqual<MetaStateItem>({});
   expect(result2.current).toStrictEqual<MetaStateItem>({});
@@ -111,13 +114,10 @@ test.skip('type checking', () => {
   // @ts-expect-error
   useMeta(basicModel.plus);
 
-  useMetas(basicModel.bar, 'xyz').message?.trim();
-  const meta2 = useMetas(basicModel.bar).pick('m');
+  useMeta(basicModel.bar, 'pick', 'xyz').message?.trim();
+  const meta2 = useMeta(basicModel.bar, 'pick').pick('m');
   meta2.message?.trim();
   meta2.type?.valueOf();
   // @ts-expect-error
   meta2.message?.toFixed();
-
-  // @ts-expect-error
-  useMetas(basicModel.plus);
 });
