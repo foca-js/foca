@@ -29,34 +29,18 @@ export const userModel = defineModel('users', {
 
 # State
 
-foca 基于 redux 深度定制，所以理论上 state 必须是个纯对象。但因为第三方库 immer 的加入，state 允许使用 Map/Set 来处理数据了。
+foca 基于 redux 深度定制，所以 state 必须是个纯对象或者数组。
 
 ```typescript
 // 1
-cosnt initialState = new Map<string, string>();
-defineModel('model-map', {
+cosnt initialState: { [K: string]: string } = {};
+defineModel('model-object', {
   initialState,
 });
 
 // 2
-cosnt initialState = new Set<string>();
-defineModel('model-set', {
-  initialState,
-});
-
-// 3
-cosnt initialState: {
-  data1: Set<string>;
-  data2: Map<string, string>;
-  data3: number;
-  data4: { [k: string]: string };
-} = {
-    data1: new Set(),
-    data2: new Map(),
-    data3: 1,
-    data4: {},
-};
-defineModel('model-map-set', {
+cosnt initialState: number[] = [];
+defineModel('model-array', {
   initialState,
 });
 ```

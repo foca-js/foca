@@ -1,4 +1,4 @@
-import { Immer, enableES5, enableMapSet } from 'immer';
+import { Immer, enableES5 } from 'immer';
 
 const immer = new Immer({
   autoFreeze: false,
@@ -9,6 +9,6 @@ const immer = new Immer({
  * @link https://immerjs.github.io/immer/docs/installation#pick-your-immer-version
  * @since immer 6.0
  */
-enableES5(), enableMapSet();
+enableES5();
 
 export const getImmer = () => immer;

@@ -1,4 +1,4 @@
-import isEqual from 'lodash.isequal';
+import deepEqual from 'fast-deep-equal';
 import type { AnyAction, Middleware } from 'redux';
 import type { metaStore, MetaStoreState } from '../store/metaStore';
 
@@ -19,7 +19,7 @@ export const metaInterceptor = (
 
     const state = api.getState()[combineKey];
 
-    if (!state || !isEqual(state.metas.data[category], payload)) {
+    if (!state || !deepEqual(state.metas.data[category], payload)) {
       return dispatch(action);
     }
 

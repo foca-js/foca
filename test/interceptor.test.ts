@@ -1,6 +1,7 @@
 import { store } from '../src';
 import { metaStore } from '../src/store/metaStore';
-import { basicModel } from './models/basic-model';
+import { basicModel } from './models/basicModel';
+import { complexModel } from './models/complexModel';
 import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
@@ -24,6 +25,17 @@ test('dispatch the same state should be intercepted', () => {
   expect(fn).toHaveBeenCalledTimes(1);
   basicModel.set(101);
   expect(fn).toHaveBeenCalledTimes(2);
+
+  complexModel.deleteUser(30);
+  complexModel.deleteUser(34);
+  expect(fn).toHaveBeenCalledTimes(2);
+
+  complexModel.addUser(5, 'L');
+  expect(fn).toHaveBeenCalledTimes(3);
+  complexModel.addUser(5, 'L');
+  expect(fn).toHaveBeenCalledTimes(3);
+  complexModel.addUser(5, 'LT');
+  expect(fn).toHaveBeenCalledTimes(4);
 
   unsubscribe();
   fn.mockRestore();

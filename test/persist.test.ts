@@ -1,18 +1,16 @@
 import sleep from 'sleep-promise';
 import { engines, Model, store } from '../src';
 import { PersistItem, PersistSchema } from '../src/persist/PersistItem';
-import { stringifyPersist } from '../src/utils/json';
-import { basicModel } from './models/basic-model';
-import { complexModel } from './models/complex-model';
+import { basicModel } from './models/basicModel';
 import {
   hasDecodePersistModel,
   hasVersionPersistModel,
   persistModel,
-} from './models/persist-model';
+} from './models/persistModel';
 import { storeUnmount } from './utils/store';
 
 const stringifyState = (model: Model) => {
-  return JSON.stringify(stringifyPersist(model.state));
+  return JSON.stringify(JSON.stringify(model.state));
 };
 
 const createDefaultInstance = () => {
@@ -72,7 +70,7 @@ test('hydrate state from storage', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist({ counter: 15 }),
+          d: JSON.stringify({ counter: 15 }),
         },
       },
     }),
@@ -98,7 +96,7 @@ test('hydrate failed due to different persist version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist(persistModel.state),
+          d: JSON.stringify(persistModel.state),
         },
       },
     }),
@@ -120,7 +118,7 @@ test('hydrate failed due to different model version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 17,
-          d: stringifyPersist(persistModel.state),
+          d: JSON.stringify(persistModel.state),
         },
       },
     }),
@@ -148,7 +146,7 @@ test('hydrate failed due to expired', async () => {
         [persistModel.name]: {
           t: Date.now() - 101,
           v: 0,
-          d: stringifyPersist(persistModel.state),
+          d: JSON.stringify(persistModel.state),
         },
       },
     }),
@@ -176,7 +174,7 @@ test('rehydrate due to time expired', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist(persistModel.state),
+          d: JSON.stringify(persistModel.state),
         },
       },
     }),
@@ -215,7 +213,7 @@ test('hydrate failed due to invalid format', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist(persistModel.state) + '$$$$',
+          d: JSON.stringify(persistModel.state) + '$$$$',
         },
       },
     }),
@@ -246,12 +244,12 @@ test('abandon unregisted model', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist(persistModel.state),
+          d: JSON.stringify(persistModel.state),
         },
         [basicModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist(basicModel.state),
+          d: JSON.stringify(basicModel.state),
         },
       },
     }),
@@ -287,7 +285,7 @@ test('model can specific persist version', async () => {
         [hasVersionPersistModel.name]: {
           t: Date.now(),
           v: 10,
-          d: stringifyPersist(hasVersionPersistModel.state),
+          d: JSON.stringify(hasVersionPersistModel.state),
         },
       },
     }),
@@ -316,7 +314,7 @@ test('model can specific persist decoder', async () => {
         [hasDecodePersistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist(hasDecodePersistModel.state),
+          d: JSON.stringify(hasDecodePersistModel.state),
         },
       },
     }),
@@ -329,40 +327,4 @@ test('model can specific persist decoder', async () => {
       counter: 57,
     },
   });
-});
-
-test('Map/Set are allowed for persist', async () => {
-  const persist = new PersistItem({
-    version: 1,
-    key: 'test1',
-    engine: engines.memoryStorage,
-    models: [complexModel],
-  });
-
-  complexModel.addUser(15, 'Lucifer');
-  expect(complexModel.state.users.get(15)).toBe('Lucifer');
-
-  await engines.memoryStorage.setItem(
-    persist.key,
-    JSON.stringify(<PersistSchema>{
-      v: 1,
-      d: {
-        [complexModel.name]: {
-          t: Date.now(),
-          v: 0,
-          d: stringifyPersist(complexModel.state),
-        },
-      },
-    }),
-  );
-
-  await persist.init();
-
-  expect(persist.collect()).toMatchObject({
-    [complexModel.name]: complexModel.state,
-  });
-
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toContain(
-    stringifyState(complexModel),
-  );
 });

@@ -1,6 +1,6 @@
 import { cloneModel, store } from '../src';
 import { ModelError } from '../src/exceptions/ModelError';
-import { basicModel } from './models/basic-model';
+import { basicModel } from './models/basicModel';
 import { storeUnmount } from './utils/store';
 
 let modelIndex = 0;

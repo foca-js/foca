@@ -1,6 +1,5 @@
 import { cloneModel, defineModel, engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
-import { stringifyPersist } from '../src/utils/json';
 import { storeReady, storeUnmount } from './utils/store';
 
 afterEach(() => {
@@ -48,7 +47,7 @@ test('trigger ready hooks on store and persist ready', async () => {
         [hookModel.name]: {
           t: Date.now(),
           v: 0,
-          d: stringifyPersist({ count: 20 }),
+          d: JSON.stringify({ count: 20 }),
         },
       },
     }),

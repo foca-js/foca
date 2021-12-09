@@ -2,14 +2,13 @@ import sleep from 'sleep-promise';
 import { engines, store } from '../src';
 import { StoreError } from '../src/exceptions/StoreError';
 import { PersistSchema } from '../src/persist/PersistItem';
-import { stringifyPersist } from '../src/utils/json';
-import { basicModel, basicSkipRefreshModel } from './models/basic-model';
-import { complexModel } from './models/complex-model';
+import { basicModel, basicSkipRefreshModel } from './models/basicModel';
+import { complexModel } from './models/complexModel';
 import {
   hasDecodePersistModel,
   hasVersionPersistModel,
   persistModel,
-} from './models/persist-model';
+} from './models/persistModel';
 import { storeReady, storeUnmount } from './utils/store';
 
 afterEach(() => {
@@ -92,7 +91,7 @@ test('Store can hydrate persist state', async () => {
         [basicModel.name]: {
           v: 0,
           t: Date.now(),
-          d: stringifyPersist({
+          d: JSON.stringify({
             count: 123,
             hello: 'earth',
           }),

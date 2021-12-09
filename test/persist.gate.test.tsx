@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { act, create } from 'react-test-renderer';
 import { engines, FocaProvider, store } from '../src';
 import { PersistGateProps } from '../src/persist/PersistGate';
-import { basicModel } from './models/basic-model';
+import { basicModel } from './models/basicModel';
 import { storeReady, storeUnmount } from './utils/store';
 
 const Loading: FC = () => <div id="gateLoading">Yes</div>;

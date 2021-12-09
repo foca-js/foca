@@ -1,26 +1,26 @@
 import { defineModel } from '../../src';
 
 const initialState: {
-  users: Map<number, string>;
-  ids: Set<number>;
+  users: Record<number, string>;
+  ids: Array<number>;
 } = {
-  users: new Map(),
-  ids: new Set(),
+  users: {},
+  ids: [],
 };
 
 export const complexModel = defineModel('complex', {
   initialState,
   actions: {
     addUser(state, id: number, name: string) {
-      state.users.set(id, name);
-      state.ids.add(id);
+      state.users[id] = name;
+      !state.ids.includes(id) && state.ids.push(id);
     },
     deleteUser(state, id: number) {
-      state.users.delete(id);
-      state.ids.delete(id);
+      delete state.users[id];
+      state.ids = state.ids.filter((item) => item !== id);
     },
     updateUser(staet, id: number, name: string) {
-      staet.users.set(id, name);
+      staet.users[id] = name;
     },
   },
 });

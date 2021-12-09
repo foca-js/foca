@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { FocaProvider, store, useMeta } from '../src';
 import { MetaStateItem } from '../src/actions/meta';
 import { metaStore } from '../src/store/metaStore';
-import { basicModel } from './models/basic-model';
+import { basicModel } from './models/basicModel';
 import { storeUnmount } from './utils/store';
 
 beforeEach(() => {

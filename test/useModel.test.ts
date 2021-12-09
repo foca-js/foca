@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { FocaProvider, store, useModel } from '../src';
-import { basicModel } from './models/basic-model';
-import { complexModel } from './models/complex-model';
+import { basicModel } from './models/basicModel';
+import { complexModel } from './models/complexModel';
 import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
@@ -42,7 +42,7 @@ test('get state from multiple models', () => {
   });
 
   expect(result.current.basic.count).toEqual(1);
-  expect(result.current.complex.users.get(10)).toEqual('Lucifer');
+  expect(result.current.complex.users[10]).toEqual('Lucifer');
 });
 
 test('get state with selector', () => {
@@ -70,7 +70,7 @@ test('get state with selector', () => {
 
 test('get multiple state with selector', () => {
   const { result } = renderHook(
-    () => useModel(basicModel, complexModel, (a, b) => a.count + b.ids.size),
+    () => useModel(basicModel, complexModel, (a, b) => a.count + b.ids.length),
     {
       wrapper: FocaProvider,
     },
@@ -173,7 +173,7 @@ test.skip('type checking', () => {
   const hello = useModel(
     basicModel,
     complexModel,
-    (basic, complex) => basic.hello + complex.ids.size,
+    (basic, complex) => basic.hello + complex.ids.length,
   );
 
   hello.trim();

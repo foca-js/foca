@@ -1,4 +1,4 @@
-import isEqual from 'lodash.isequal';
+import deepEqual from 'fast-deep-equal';
 import { AnyAction, Middleware } from 'redux';
 import { PostModelAction, PreModelAction } from '../actions/model';
 import { getImmer } from '../utils/getImmer';
@@ -26,7 +26,7 @@ export const modelInterceptor: Middleware<{}, Record<string, object>> =
       return action.consumer(draft, action);
     });
 
-    if (isEqual(prev, next)) {
+    if (deepEqual(prev, next)) {
       return action;
     }
 

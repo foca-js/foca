@@ -2,7 +2,7 @@ import { getLoading, getMeta, store } from '../src';
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../src/actions/meta';
 import { EffectError } from '../src/exceptions/EffectError';
 import { metaStore } from '../src/store/metaStore';
-import { basicModel } from './models/basic-model';
+import { basicModel } from './models/basicModel';
 import { storeUnmount } from './utils/store';
 
 beforeEach(() => {

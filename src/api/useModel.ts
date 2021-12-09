@@ -1,4 +1,4 @@
-import isEqual from 'lodash.isequal';
+import deepEqual from 'fast-deep-equal';
 import { shallowEqual } from 'react-redux';
 import { Model } from '../model/defineModel';
 import { toArgs } from '../utils/toArgs';
@@ -243,7 +243,7 @@ const compareFn: Record<
   Algorithm,
   undefined | ((previous: any, next: any) => boolean)
 > = {
-  deepEqual: isEqual,
+  deepEqual: deepEqual,
   shallowEqual: shallowEqual,
   strictEqual: void 0,
 };

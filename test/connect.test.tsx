@@ -2,8 +2,8 @@ import React from 'react';
 import { FC } from 'react';
 import { act, create } from 'react-test-renderer';
 import { store, connect, FocaProvider, getLoading } from '../src';
-import { basicModel } from './models/basic-model';
-import { complexModel } from './models/complex-model';
+import { basicModel } from './models/basicModel';
+import { complexModel } from './models/complexModel';
 import { storeUnmount } from './utils/store';
 
 let App: FC<ReturnType<typeof mapStateToProps>> = ({ count, loading }) => {
@@ -17,7 +17,7 @@ let App: FC<ReturnType<typeof mapStateToProps>> = ({ count, loading }) => {
 
 const mapStateToProps = () => {
   return {
-    count: basicModel.state.count + complexModel.state.ids.size,
+    count: basicModel.state.count + complexModel.state.ids.length,
     loading: getLoading(basicModel.pureAsync),
   };
 };
