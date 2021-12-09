@@ -57,7 +57,7 @@ const userModel = defineModel('users', {
 
 foca 会检测抛出的异常是否为`EffectError`，这也是增强 meta 的唯一方式。
 
-# clone model
+# 克隆模型
 
 虽然比较不常用，但有时候为了同一个页面的不同模块能独立使用模型数据，你就得需要复制这个模型，并把名字改掉。其实也不用这么麻烦，foca 给你来个惊喜：
 
@@ -75,28 +75,30 @@ const user2Model = cloneModel('users2', userModel);
 
 共享方法但状态是独立的，这是个不错的主意，你只要维护一份代码就行了。
 
-# pick
+# 执行状态隔离
 
 默认地，effect 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.effectX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数是拥有多个状态互不干扰。
 
 ```tsx
+import { useLoading } from 'foca';
+
 const App: FC = () => {
-  const loadings = useLoading(model.myMethod, 'pick');
+  const loadings = useLoading(model.myMethod.assign);
 
   const handleClick = (id: number) => {
-    model.myMethod.meta(id).execute(id);
+    model.myMethod.assign(id).execute(id);
   };
 
   return (
     <div>
       <button onClick={() => handleClick(1)}>
-        A {loadings.pick(1) ? 'Loading...' : ''}
+        A {loadings.find(1) ? 'Loading...' : ''}
       </button>
       <button onClick={() => handleClick(2)}>
-        B {loadings.pick(2) ? 'Loading...' : ''}
+        B {loadings.find(2) ? 'Loading...' : ''}
       </button>
       <button onClick={() => handleClick(3)}>
-        C {loadings.pick(3) ? 'Loading...' : ''}
+        C {loadings.find(3) ? 'Loading...' : ''}
       </button>
     </div>
   );
@@ -105,16 +107,16 @@ const App: FC = () => {
 
 这种场景也常出现在一些表格里，每一行通常都带有切换（switch UI）控件，点击后该控件需要被禁用或者出现 loading 图标，提前是你得知道是谁。
 
-如果你能确定 pick 的参数，那么也可以直接传递：
+如果你能确定 find 的参数，那么也可以直接传递：
 
 ```typescript
-const loading = useLoading(model.myMethod, 'pick', 100); // boolean
+const loading = useLoading(model.myMethod.assign, 100); // boolean
 
 // 等效于
-const loading = useLoading(model.myMethod, 'pick').pick(100);
+const loading = useLoading(model.myMethod.assign).find(100);
 ```
 
-# sync effect
+# 同步函数
 
 没有人规定 effects 里的方法就必须是异步的，你可以随意写，只要是函数就行了。比如有时候一个模型里重复代码太多，提取通用的部分代码到 effects 里就很合适。或者组件里经常需要大量操作才能获得 state 里的一个数据，那么也建议放到 effects 里节省工作量。
 

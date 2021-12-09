@@ -54,6 +54,28 @@ test.skip('Meta is unsupported for non-async effect method', () => {
   getLoading(basicModel.foo).valueOf();
   getMeta(basicModel.foo).message?.trim();
   getMeta(basicModel.foo).type?.valueOf();
+
+  getMeta(basicModel.foo.assign).find('xx');
+  getMeta(basicModel.foo.assign, 'xx').message?.trim();
+  // @ts-expect-error
+  getMeta(basicModel.foo.assign, basicModel.foo);
+  // @ts-expect-error
+  getMeta(basicModel.foo.assign, true);
+  // @ts-expect-error
+  getMeta(basicModel.foo.assign, false);
+  // @ts-expect-error
+  getMeta(basicModel.normalMethod.assign);
+
+  getLoading(basicModel.foo.assign).find('xx');
+  getLoading(basicModel.foo.assign, 'xx').valueOf();
+  // @ts-expect-error
+  getLoading(basicModel.foo.assign, basicModel.foo);
+  // @ts-expect-error
+  getLoading(basicModel.foo.assign, true);
+  // @ts-expect-error
+  getLoading(basicModel.foo.assign, false);
+  // @ts-expect-error
+  getLoading(basicModel.normalMethod.assign);
 });
 
 const effectName = 'pureAsync';
@@ -80,43 +102,39 @@ test('meta from untracked to used', async () => {
 });
 
 test('Trace loadings', async () => {
-  expect(getLoading(basicModel.bos, 'pick', 'x')).toBeFalsy();
-  expect(getLoading(basicModel.bos, 'pick').pick('x')).toBeFalsy();
+  expect(getLoading(basicModel.bos.assign, 'x')).toBeFalsy();
+  expect(getLoading(basicModel.bos.assign).find('x')).toBeFalsy();
 
-  const promise = basicModel.bos.meta('x').execute();
-  expect(getLoading(basicModel.bos, 'pick', 'x')).toBeTruthy();
-  expect(getLoading(basicModel.bos, 'pick').pick('x')).toBeTruthy();
-  expect(getLoading(basicModel.bos, 'pick', 'y')).toBeFalsy();
-  expect(getLoading(basicModel.bos, 'pick').pick('y')).toBeFalsy();
+  const promise = basicModel.bos.assign('x').execute();
+  expect(getLoading(basicModel.bos.assign, 'x')).toBeTruthy();
+  expect(getLoading(basicModel.bos.assign).find('x')).toBeTruthy();
+  expect(getLoading(basicModel.bos.assign, 'y')).toBeFalsy();
+  expect(getLoading(basicModel.bos.assign).find('y')).toBeFalsy();
   expect(getLoading(basicModel.bos)).toBeFalsy();
 
   await promise;
-  expect(getLoading(basicModel.bos, 'pick', 'x')).toBeFalsy();
-  expect(getLoading(basicModel.bos, 'pick').pick('x')).toBeFalsy();
+  expect(getLoading(basicModel.bos.assign, 'x')).toBeFalsy();
+  expect(getLoading(basicModel.bos.assign).find('x')).toBeFalsy();
 });
 
 test('Trace metas', async () => {
-  expect(getMeta(basicModel.hasError, 'pick', 'a').message).toBeUndefined();
-  expect(getMeta(basicModel.hasError, 'pick', 'b').message).toBeUndefined();
+  expect(getMeta(basicModel.hasError.assign, 'a').message).toBeUndefined();
+  expect(getMeta(basicModel.hasError.assign, 'b').message).toBeUndefined();
 
-  const promise1 = basicModel.hasError.meta('a').execute('msg-test1');
-  const promise2 = basicModel.hasError.meta('b').execute('msg-test2');
-  expect(getMeta(basicModel.hasError, 'pick', 'a').message).toBeUndefined();
-  expect(getMeta(basicModel.hasError, 'pick', 'b').message).toBeUndefined();
+  const promise1 = basicModel.hasError.assign('a').execute('msg-test1');
+  const promise2 = basicModel.hasError.assign('b').execute('msg-test2');
+  expect(getMeta(basicModel.hasError.assign, 'a').message).toBeUndefined();
+  expect(getMeta(basicModel.hasError.assign, 'b').message).toBeUndefined();
 
   await expect(promise1).rejects.toThrowError('msg-test1');
   await expect(promise2).rejects.toThrowError('msg-test2');
 
-  expect(getMeta(basicModel.hasError, 'pick', 'a').message).toEqual(
+  expect(getMeta(basicModel.hasError.assign, 'a').message).toEqual('msg-test1');
+  expect(getMeta(basicModel.hasError.assign, 'b').message).toEqual('msg-test2');
+  expect(getMeta(basicModel.hasError.assign).find('a').message).toEqual(
     'msg-test1',
   );
-  expect(getMeta(basicModel.hasError, 'pick', 'b').message).toEqual(
-    'msg-test2',
-  );
-  expect(getMeta(basicModel.hasError, 'pick').pick('a').message).toEqual(
-    'msg-test1',
-  );
-  expect(getMeta(basicModel.hasError, 'pick').pick('b').message).toEqual(
+  expect(getMeta(basicModel.hasError.assign).find('b').message).toEqual(
     'msg-test2',
   );
 
@@ -134,15 +152,11 @@ test('metas and loadings are frozen', async () => {
 
   const promise = basicModel.pureAsync();
   expect(Object.isFrozen(getMeta(basicModel.pureAsync))).toBeTruthy();
-  expect(Object.isFrozen(getMeta(basicModel.pureAsync, 'pick'))).toBeTruthy();
-  expect(
-    Object.isFrozen(getLoading(basicModel.pureAsync, 'pick')),
-  ).toBeTruthy();
+  expect(Object.isFrozen(getMeta(basicModel.pureAsync.assign))).toBeTruthy();
+  expect(Object.isFrozen(getLoading(basicModel.pureAsync.assign))).toBeTruthy();
 
   await promise;
   expect(Object.isFrozen(getMeta(basicModel.pureAsync))).toBeTruthy();
-  expect(Object.isFrozen(getMeta(basicModel.pureAsync, 'pick'))).toBeTruthy();
-  expect(
-    Object.isFrozen(getLoading(basicModel.pureAsync, 'pick')),
-  ).toBeTruthy();
+  expect(Object.isFrozen(getMeta(basicModel.pureAsync.assign))).toBeTruthy();
+  expect(Object.isFrozen(getLoading(basicModel.pureAsync.assign))).toBeTruthy();
 });

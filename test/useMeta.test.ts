@@ -43,19 +43,19 @@ test('get meta', async () => {
 
 test('get metas', async () => {
   const { result: result1 } = renderHook(
-    () => useMeta(basicModel.hasError, 'pick', 'x'),
+    () => useMeta(basicModel.hasError.assign, 'x'),
     {
       wrapper: FocaProvider,
     },
   );
   const { result: result2 } = renderHook(
-    () => useMeta(basicModel.hasError, 'pick', 'y'),
+    () => useMeta(basicModel.hasError.assign, 'y'),
     {
       wrapper: FocaProvider,
     },
   );
   const { result: result3 } = renderHook(
-    () => useMeta(basicModel.hasError, 'pick'),
+    () => useMeta(basicModel.hasError.assign),
     {
       wrapper: FocaProvider,
     },
@@ -63,14 +63,14 @@ test('get metas', async () => {
 
   expect(result1.current).toStrictEqual<MetaStateItem>({});
   expect(result2.current).toStrictEqual<MetaStateItem>({});
-  expect(result3.current.pick('x')).toStrictEqual<MetaStateItem>({});
+  expect(result3.current.find('x')).toStrictEqual<MetaStateItem>({});
 
   let promise1!: Promise<any>;
   let promise2!: Promise<any>;
 
   act(() => {
-    promise1 = basicModel.hasError.meta('x').execute('aaa');
-    promise2 = basicModel.hasError.meta('y').execute('bbb');
+    promise1 = basicModel.hasError.assign('x').execute('aaa');
+    promise2 = basicModel.hasError.assign('y').execute('bbb');
   });
 
   expect(result1.current).toStrictEqual<MetaStateItem>({
@@ -79,10 +79,10 @@ test('get metas', async () => {
   expect(result2.current).toStrictEqual<MetaStateItem>({
     type: 'pending',
   });
-  expect(result3.current.pick('x')).toStrictEqual<MetaStateItem>({
+  expect(result3.current.find('x')).toStrictEqual<MetaStateItem>({
     type: 'pending',
   });
-  expect(result3.current.pick('xyz')).toStrictEqual<MetaStateItem>({});
+  expect(result3.current.find('xyz')).toStrictEqual<MetaStateItem>({});
 
   await act(async () => {
     await expect(promise1).rejects.toThrowError();
@@ -97,11 +97,11 @@ test('get metas', async () => {
     type: 'rejected',
     message: 'bbb',
   });
-  expect(result3.current.pick('x')).toStrictEqual<MetaStateItem>({
+  expect(result3.current.find('x')).toStrictEqual<MetaStateItem>({
     type: 'rejected',
     message: 'aaa',
   });
-  expect(result3.current.pick('xyz')).toStrictEqual<MetaStateItem>({});
+  expect(result3.current.find('xyz')).toStrictEqual<MetaStateItem>({});
 });
 
 test.skip('type checking', () => {
@@ -114,10 +114,21 @@ test.skip('type checking', () => {
   // @ts-expect-error
   useMeta(basicModel.plus);
 
-  useMeta(basicModel.bar, 'pick', 'xyz').message?.trim();
-  const meta2 = useMeta(basicModel.bar, 'pick').pick('m');
+  useMeta(basicModel.bar.assign, 'xyz').message?.trim();
+  const meta2 = useMeta(basicModel.bar.assign).find('m');
   meta2.message?.trim();
   meta2.type?.valueOf();
   // @ts-expect-error
   meta2.message?.toFixed();
+
+  useMeta(basicModel.foo.assign).find('xx');
+  useMeta(basicModel.foo.assign, 'xx').message?.trim();
+  // @ts-expect-error
+  useMeta(basicModel.foo.assign, basicModel.foo);
+  // @ts-expect-error
+  useMeta(basicModel.foo.assign, true);
+  // @ts-expect-error
+  useMeta(basicModel.foo.assign, false);
+  // @ts-expect-error
+  useMeta(basicModel.normalMethod.assign);
 });

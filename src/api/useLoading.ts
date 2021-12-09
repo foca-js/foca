@@ -1,5 +1,5 @@
-import { PromiseEffect } from '../model/enhanceEffect';
-import { PickLoading } from '../store/metaStore';
+import { PromiseAssignEffect, PromiseEffect } from '../model/enhanceEffect';
+import { FindLoading } from '../store/metaStore';
 import { useMetaSelector } from '../redux/useSelector';
 import { getLoading } from './getLoading';
 
@@ -21,29 +21,25 @@ export function useLoading(
  * 检测给定的effect方法是否正在执行。
  *
  * ```typescript
- * loadings = useLoading(effect, 'pick');
- * loading = loadings.pick(CATEGORY)
+ * loadings = useLoading(effect.assign);
+ * loading = loadings.find(CATEGORY)
  * ```
  */
-export function useLoading(
-  effect: PromiseEffect,
-  pickLoading: 'pick',
-): PickLoading;
+export function useLoading(effect: PromiseAssignEffect): FindLoading;
 
 /**
  * 检测给定的effect方法是否正在执行。
  *
  * ```typescript
- * loading = useLoading(effect, 'pick', CATEGORY);
+ * loading = useLoading(effect.assign, CATEGORY);
  * ```
  */
 export function useLoading(
-  effect: PromiseEffect,
-  pick: 'pick',
+  effect: PromiseAssignEffect,
   category: string | number,
 ): boolean;
 
-export function useLoading(): boolean | PickLoading {
+export function useLoading(): boolean | FindLoading {
   const args = arguments as unknown as Parameters<typeof getLoading>;
 
   return useMetaSelector(() => {

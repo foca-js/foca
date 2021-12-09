@@ -1,5 +1,8 @@
 import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
-import type { PromiseEffect } from '../model/enhanceEffect';
+import type {
+  PromiseAssignEffect,
+  PromiseEffect,
+} from '../model/enhanceEffect';
 import { metaInterceptor } from '../middleware/metaInterceptor';
 import type { MetaAction, MetaStateItem } from '../actions/meta';
 import { isRefreshAction } from '../utils/isRefreshAction';
@@ -7,21 +10,21 @@ import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
 
-export interface PickMeta {
-  pick(category: number | string): Partial<MetaStateItem>;
+export interface FindMeta {
+  find(category: number | string): Partial<MetaStateItem>;
 }
 
-export interface PickLoading {
-  pick(category: number | string): boolean;
+export interface FindLoading {
+  find(category: number | string): boolean;
 }
 
-interface MetaState extends PickMeta {
+interface MetaState extends FindMeta {
   data: {
     [category: string]: MetaStateItem;
   };
 }
 
-interface LoadingState extends PickLoading {
+interface LoadingState extends FindLoading {
   data: {
     [category: string]: boolean;
   };
@@ -38,11 +41,11 @@ export type MetaStoreState = {
 
 const undeclaredMeta = freezeState({});
 
-const pickMeta: PickMeta['pick'] = function (this: MetaState, category) {
+const findMeta: FindMeta['find'] = function (this: MetaState, category) {
   return this.data[category] || undeclaredMeta;
 };
 
-const pickLoading: PickLoading['pick'] = function (
+const findLoading: FindLoading['find'] = function (
   this: LoadingState,
   category,
 ) {
@@ -52,11 +55,11 @@ const pickLoading: PickLoading['pick'] = function (
 const createDefaultRecord = (): MetaStoreStateItem => {
   return {
     metas: {
-      pick: pickMeta,
+      find: findMeta,
       data: {},
     },
     loadings: {
-      pick: pickLoading,
+      find: findLoading,
       data: {},
     },
   };
@@ -67,7 +70,7 @@ const defaultRecord = freezeState(createDefaultRecord());
 const helper = {
   status: <Record<string, boolean>>{},
 
-  get(effect: PromiseEffect): MetaStoreStateItem {
+  get(effect: PromiseEffect | PromiseAssignEffect): MetaStoreStateItem {
     const {
       _: { model, method },
     } = effect;

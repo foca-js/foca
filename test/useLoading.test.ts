@@ -71,7 +71,7 @@ test('Compose the loadings', async () => {
 
 test('Trace loadings', async () => {
   const { result } = renderHook(
-    () => useLoading(basicModel.pureAsync, 'pick', 'x'),
+    () => useLoading(basicModel.pureAsync.assign, 'x'),
     {
       wrapper: FocaProvider,
     },
@@ -82,7 +82,7 @@ test('Trace loadings', async () => {
   let promise!: Promise<any>;
 
   act(() => {
-    promise = basicModel.pureAsync.meta('x').execute();
+    promise = basicModel.pureAsync.assign('x').execute();
   });
 
   expect(result.current).toBeTruthy();
@@ -95,31 +95,28 @@ test('Trace loadings', async () => {
 });
 
 test('Pick loading from loadings', async () => {
-  const { result } = renderHook(
-    () => useLoading(basicModel.pureAsync, 'pick'),
-    {
-      wrapper: FocaProvider,
-    },
-  );
+  const { result } = renderHook(() => useLoading(basicModel.pureAsync.assign), {
+    wrapper: FocaProvider,
+  });
 
-  expect(result.current.pick('m')).toBeFalsy();
-  expect(result.current.pick('n')).toBeFalsy();
+  expect(result.current.find('m')).toBeFalsy();
+  expect(result.current.find('n')).toBeFalsy();
 
   let promise!: Promise<any>;
 
   act(() => {
-    promise = basicModel.pureAsync.meta('m').execute();
+    promise = basicModel.pureAsync.assign('m').execute();
   });
 
-  expect(result.current.pick('m')).toBeTruthy();
-  expect(result.current.pick('n')).toBeFalsy();
+  expect(result.current.find('m')).toBeTruthy();
+  expect(result.current.find('n')).toBeFalsy();
 
   await act(async () => {
     await promise;
   });
 
-  expect(result.current.pick('m')).toBeFalsy();
-  expect(result.current.pick('n')).toBeFalsy();
+  expect(result.current.find('m')).toBeFalsy();
+  expect(result.current.find('n')).toBeFalsy();
 });
 
 test.skip('type checking', () => {
@@ -132,8 +129,16 @@ test.skip('type checking', () => {
   // @ts-expect-error
   useLoading({});
 
-  useLoading(basicModel.bar, 'pick', 'x').valueOf();
-  useLoading(basicModel.foo, 'pick').pick('m').valueOf();
+  useLoading(basicModel.foo.assign).find('xx');
+  useLoading(basicModel.foo.assign, 'xx').valueOf();
   // @ts-expect-error
-  useLoading(basicModel.minus, 'pick');
+  useLoading(basicModel.foo.assign, basicModel.foo);
+  // @ts-expect-error
+  useLoading(basicModel.foo.assign, true);
+  // @ts-expect-error
+  useLoading(basicModel.foo.assign, false);
+  // @ts-expect-error
+  useLoading(basicModel.normalMethod.assign);
+  // @ts-expect-error
+  useLoading(basicModel.minus.assign);
 });

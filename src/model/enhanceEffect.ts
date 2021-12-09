@@ -10,32 +10,59 @@ import { isPromise } from '../utils/isPromise';
 import { toArgs } from '../utils/toArgs';
 import { metaStore } from '../store/metaStore';
 
-interface AsyncEffect<P extends any[] = any[], R = Promise<any>> {
-  (...args: P): R;
-  readonly _: {
-    readonly model: string;
-    readonly method: string;
-  };
-  /**
-   * 对同一effect函数的执行状态进行分类以实现独立保存。
-   *
-   * 想获得分类后的meta和loading，需要使用pick模式。
-   */
-  meta(category: number | string): {
+interface AssignFunc<P extends any[] = any[], R = Promise<any>> {
+  (category: number | string): {
     execute(...args: P): R;
   };
 }
 
-export type PromiseEffect = AsyncEffect;
+interface AsyncAssignEffect<P extends any[] = any[], R = Promise<any>>
+  extends AssignFunc<P, R> {
+  readonly _: {
+    readonly model: string;
+    readonly method: string;
+    readonly assign: true;
+  };
+}
 
-interface SyncEffect<P extends any[] = any[], R = Promise<any>> {
+interface AsyncEffect<P extends any[] = any[], R = Promise<any>>
+  extends EffectFunc<P, R> {
+  readonly _: {
+    readonly model: string;
+    readonly method: string;
+    readonly assign: '';
+  };
+  /**
+   * 对同一effect函数的执行状态进行分类以实现独立保存。好处有：
+   *
+   * 1. 并发请求同一个请求时不会互相覆盖执行状态。
+   * <br>
+   * 2. 可以精确地判断业务中是哪个控件或者逻辑正在执行。
+   *
+   * ```typescript
+   * model.effect.assign(CATEGORY).execute(...);
+   * ```
+   *
+   * @see useLoading(effect.assign)
+   * @see getLoading(effect.assign)
+   * @see useMeta(effect.assign)
+   * @see getMeta(effect.assign)
+   *
+   */
+  readonly assign: AsyncAssignEffect<P, R>;
+}
+
+export type PromiseEffect = AsyncEffect;
+export type PromiseAssignEffect = AsyncAssignEffect;
+
+interface EffectFunc<P extends any[] = any[], R = Promise<any>> {
   (...args: P): R;
 }
 
 export type EnhancedEffect<
   P extends any[] = any[],
   R = Promise<any>,
-> = R extends Promise<any> ? AsyncEffect<P, R> : SyncEffect<P, R>;
+> = R extends Promise<any> ? AsyncEffect<P, R> : EffectFunc<P, R>;
 
 type NonReadonly<T extends object> = {
   -readonly [K in keyof T]: T[K];
@@ -46,20 +73,29 @@ export const enhanceEffect = <State extends object>(
   methodName: string,
   effect: (...args: any[]) => any,
 ): EnhancedEffect => {
-  const fn: NonReadonly<EnhancedEffect> & SyncEffect = function () {
+  const fn: NonReadonly<EnhancedEffect> & EffectFunc = function () {
     return execute(ctx, methodName, effect, toArgs(arguments));
   };
 
-  fn.meta = (category: number | string) => ({
+  fn._ = {
+    model: ctx.name,
+    method: methodName,
+    assign: '',
+  };
+
+  const assign: NonReadonly<AsyncAssignEffect> & AssignFunc = (
+    category: number | string,
+  ) => ({
     execute() {
       return execute(ctx, methodName, effect, toArgs(arguments), category);
     },
   });
 
-  fn._ = {
-    model: ctx.name,
-    method: methodName,
-  };
+  assign._ = Object.assign({}, fn._, {
+    assign: true as const,
+  });
+
+  fn.assign = assign;
 
   return fn;
 };

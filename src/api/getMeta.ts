@@ -1,6 +1,6 @@
 import { MetaStateItem, META_DEFAULT_CATEGORY } from '../actions/meta';
-import { PromiseEffect } from '../model/enhanceEffect';
-import { metaStore, PickMeta } from '../store/metaStore';
+import { PromiseAssignEffect, PromiseEffect } from '../model/enhanceEffect';
+import { metaStore, FindMeta } from '../store/metaStore';
 
 /**
  * 获取给定的effect方法的执行状态。
@@ -15,37 +15,35 @@ export function getMeta(effect: PromiseEffect): Partial<MetaStateItem>;
  * 获取给定的effect方法的执行状态。
  *
  * ```typescript
- * const metas = getMeta(effect, 'pick')
- * const meta = metas.pick(CATEGORY)
+ * const metas = getMeta(effect.assign)
+ * const meta = metas.find(CATEGORY)
  * ```
  *
  */
-export function getMeta(effect: PromiseEffect, pickMeta: 'pick'): PickMeta;
+export function getMeta(effect: PromiseAssignEffect): FindMeta;
 
 /**
  * 获取给定的effect方法的执行状态。
  *
  * ```typescript
- * const meta = getMeta(effect, 'pick', CATEGORY);
+ * const meta = getMeta(effect.assign, CATEGORY);
  * ```
  *
  */
 export function getMeta(
-  effect: PromiseEffect,
-  pick: 'pick',
+  effect: PromiseAssignEffect,
   category: number | string,
 ): Partial<MetaStateItem>;
 
 export function getMeta(
-  effect: PromiseEffect,
-  pick?: 'pick',
+  effect: PromiseEffect | PromiseAssignEffect,
   category?: string | number,
-): Partial<MetaStateItem> | PickMeta {
+): Partial<MetaStateItem> | FindMeta {
   const metas = metaStore.helper.get(effect).metas;
 
-  if (pick === 'pick') {
-    return category === void 0 ? metas : metas.pick(category);
+  if (effect._.assign) {
+    return category === void 0 ? metas : metas.find(category);
   }
 
-  return metas.pick(META_DEFAULT_CATEGORY);
+  return metas.find(META_DEFAULT_CATEGORY);
 }
