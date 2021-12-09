@@ -1,3 +1,25 @@
+## [0.5.0](https://github.com/foca-js/foca/compare/v0.4.1...v0.5.0)&nbsp;&nbsp;(2021-12-09)
+
+- [Breaking] effect.meta() 重命名为 effect.assign()
+
+```diff
+- model.effect.meta(ID).execute(...);
++ model.effect.assign(ID).execute(...);
+```
+
+- [Breaking] {get|use}Meta 和 {get|use}Loading 的 pick() 重命名为 find()
+
+```diff
+- useLoading(model.effect, 'pick').pick(ID)
++ useLoading(model.effect.assign).find(ID)
+
+- useLoading(model.effect, 'pick', ID)
++ useLoading(model.effect.assign, ID)
+```
+
+- 取消导出部分 redux 模块
+- 增加 metas 和 loadings 在开发环境下的不可变特性
+
 ## [0.4.1](https://github.com/foca-js/foca/compare/v0.4.0...v0.4.1)&nbsp;&nbsp;(2021-12-08)
 
 - 修复循环引用问题
