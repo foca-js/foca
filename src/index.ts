@@ -1,4 +1,24 @@
-export {
+// Basic
+export { defineModel } from './model/defineModel';
+export { useModel } from './api/useModel';
+export { useLoading } from './api/useLoading';
+export { getLoading } from './api/getLoading';
+export { connect } from './redux/connect';
+
+// Init
+export { modelStore as store } from './store/modelStore';
+export { FocaProvider } from './redux/FocaProvider';
+export { engines } from './engines';
+
+// Advanced
+export { useMeta } from './api/useMeta';
+export { getMeta } from './api/getMeta';
+export { combine } from './store/emptyStore';
+export { cloneModel } from './model/cloneModel';
+export { EffectError } from './exceptions/EffectError';
+
+// Types
+export type {
   Action,
   AnyAction,
   Dispatch,
@@ -8,17 +28,6 @@ export {
   StoreEnhancer,
   Unsubscribe,
 } from 'redux';
-export { StorageEngine, engines } from './engines';
-export { Model, defineModel } from './model/defineModel';
-export { cloneModel } from './model/cloneModel';
-export { modelStore as store } from './store/modelStore';
-export { FocaProvider } from './redux/FocaProvider';
-export { connect } from './redux/connect';
-export { useModel } from './api/useModel';
-export { getLoading } from './api/getLoading';
-export { useLoading } from './api/useLoading';
-export { getMeta } from './api/getMeta';
-export { useMeta } from './api/useMeta';
-export { Meta } from './actions/meta';
-export { EffectError } from './exceptions/EffectError';
-export { combine } from './store/emptyStore';
+export type { Meta } from './actions/meta';
+export type { Model } from './model/defineModel';
+export type { StorageEngine } from './engines';
