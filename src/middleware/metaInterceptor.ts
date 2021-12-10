@@ -1,5 +1,5 @@
-import deepEqual from 'fast-deep-equal';
 import type { AnyAction, Middleware } from 'redux';
+import { deepEqual } from '../utils/deepEqual';
 import type { metaStore, MetaStoreState } from '../store/metaStore';
 
 export const metaInterceptor = (

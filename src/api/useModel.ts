@@ -1,5 +1,5 @@
-import deepEqual from 'fast-deep-equal';
 import { shallowEqual } from 'react-redux';
+import { deepEqual } from '../utils/deepEqual';
 import { Model } from '../model/defineModel';
 import { toArgs } from '../utils/toArgs';
 import { useModelSelector } from '../redux/useSelector';

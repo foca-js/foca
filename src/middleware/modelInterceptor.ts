@@ -1,5 +1,5 @@
-import deepEqual from 'fast-deep-equal';
 import { AnyAction, Middleware } from 'redux';
+import { deepEqual } from '../utils/deepEqual';
 import { PostModelAction, PreModelAction } from '../actions/model';
 import { getImmer } from '../utils/getImmer';
 
