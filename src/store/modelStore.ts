@@ -15,6 +15,7 @@ import { StoreError } from '../exceptions/StoreError';
 import { modelInterceptor } from '../middleware/modelInterceptor';
 import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
+import { combine } from './emptyStore';
 
 const assignStoreKeys: (keyof Store | symbol)[] = [
   'dispatch',
@@ -84,6 +85,8 @@ class StoreAdvanced implements Store {
         ),
       ),
     ));
+
+    combine(store);
 
     assignStoreKeys.forEach((key) => {
       // @ts-expect-error

@@ -9,6 +9,7 @@ import { isRefreshAction } from '../utils/isRefreshAction';
 import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
+import { combine } from './emptyStore';
 
 export interface FindMeta {
   find(category: number | string): Partial<MetaStateItem>;
@@ -146,5 +147,7 @@ export const metaStore = createStore(
   },
   applyMiddleware(metaInterceptor(helper)),
 ) as Store<MetaStoreState> & { helper: typeof helper };
+
+combine(metaStore);
 
 metaStore.helper = helper;
