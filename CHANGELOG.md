@@ -1,3 +1,8 @@
+## [0.6.0](https://github.com/foca-js/foca/compare/v0.5.0...v0.6.0)&nbsp;&nbsp;(2021-12-10)
+
+- [Breaking] 删除 Map/Set 特性
+- 内置并简化深对比函数
+
 ## [0.5.0](https://github.com/foca-js/foca/compare/v0.4.1...v0.5.0)&nbsp;&nbsp;(2021-12-09)
 
 - [Breaking] effect.meta() 重命名为 effect.assign()
