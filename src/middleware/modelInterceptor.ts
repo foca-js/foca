@@ -1,17 +1,7 @@
 import { AnyAction, Middleware } from 'redux';
 import { deepEqual } from '../utils/deepEqual';
-import { PostModelAction, PreModelAction } from '../actions/model';
+import { isPreModelAction, PostModelAction } from '../actions/model';
 import { getImmer } from '../utils/getImmer';
-
-const isPreModelAction = (action: AnyAction): action is PreModelAction => {
-  const test = action as PreModelAction;
-
-  return (
-    test.preModel === true &&
-    !!test.model &&
-    typeof test.consumer === 'function'
-  );
-};
 
 const immer = getImmer();
 

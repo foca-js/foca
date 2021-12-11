@@ -1,12 +1,13 @@
 import type { AnyAction, Middleware } from 'redux';
 import { deepEqual } from '../utils/deepEqual';
 import type { metaStore, MetaStoreState } from '../store/metaStore';
+import { isMetaAction } from '../actions/meta';
 
 export const metaInterceptor = (
   helper: typeof metaStore['helper'],
 ): Middleware<{}, MetaStoreState> => {
   return (api) => (dispatch) => (action: AnyAction) => {
-    if (!helper.isMeta(action)) {
+    if (!isMetaAction(action)) {
       return dispatch(action);
     }
 

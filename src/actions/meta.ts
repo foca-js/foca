@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { Action, AnyAction } from 'redux';
 
 export interface Meta {
   message?: string;
@@ -19,3 +19,10 @@ export interface MetaAction extends Action<string> {
   payload: MetaStateItem;
   category: string | number;
 }
+
+export const isMetaAction = (action: AnyAction): action is MetaAction => {
+  const test = action as MetaAction;
+  return (
+    test.setMeta === true && !!test.model && !!test.method && !!test.category
+  );
+};

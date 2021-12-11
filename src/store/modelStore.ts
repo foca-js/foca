@@ -10,7 +10,7 @@ import {
 } from 'redux';
 import { $$observable } from '../utils/symbolObservable';
 import { SubscribeToken, Topic } from 'topic';
-import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
+import { actionRefresh, RefreshAction } from '../actions/refresh';
 import { modelInterceptor } from '../middleware/modelInterceptor';
 import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
@@ -102,12 +102,7 @@ class StoreAdvanced implements Store {
   }
 
   refresh(force: boolean = false): RefreshAction {
-    return this.dispatch<RefreshAction>({
-      type: TYPE_REFRESH_STORE,
-      payload: {
-        force,
-      },
-    });
+    return this.dispatch(actionRefresh(force));
   }
 
   onReady(callback: Function): SubscribeToken {

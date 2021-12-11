@@ -1,5 +1,5 @@
 import { Reducer, Store } from 'redux';
-import { PersistHydrateAction, TYPE_PERSIST_HYDRATE } from '../actions/persist';
+import { actionHydrate, isHydrateAction } from '../actions/persist';
 import { freezeState } from '../utils/freezeState';
 import { PersistItem, PersistOptions } from './PersistItem';
 
@@ -21,10 +21,7 @@ export class PersistManager {
         return item.init();
       }),
     ).then(() => {
-      store.dispatch<PersistHydrateAction>({
-        type: TYPE_PERSIST_HYDRATE,
-        payload: this.collect(),
-      });
+      store.dispatch(actionHydrate(this.collect()));
     });
   }
 
@@ -36,12 +33,8 @@ export class PersistManager {
 
   combineReducer(original: Reducer): Reducer<Record<string, object>> {
     return (state = {}, action) => {
-      if ((action as PersistHydrateAction).type === TYPE_PERSIST_HYDRATE) {
-        return Object.assign(
-          {},
-          state,
-          freezeState((action as PersistHydrateAction).payload),
-        );
+      if (isHydrateAction(action)) {
+        return Object.assign({}, state, freezeState(action.payload));
       }
 
       return original(state, action);

@@ -4,11 +4,10 @@ import type {
   PromiseEffect,
 } from '../model/enhanceEffect';
 import { metaInterceptor } from '../middleware/metaInterceptor';
-import type { MetaAction, MetaStateItem } from '../actions/meta';
-import { isRefreshAction } from '../utils/isRefreshAction';
+import { isMetaAction, MetaStateItem } from '../actions/meta';
 import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
-import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
+import { actionRefresh, isRefreshAction } from '../actions/refresh';
 import { combine } from './emptyStore';
 
 export interface FindMeta {
@@ -97,21 +96,8 @@ const helper = {
     this.status[key] = false;
   },
 
-  isMeta(action: AnyAction): action is MetaAction {
-    const test = action as MetaAction;
-
-    return (
-      test.setMeta === true && !!test.model && !!test.method && !!test.category
-    );
-  },
-
   refresh() {
-    return metaStore.dispatch<RefreshAction>({
-      type: TYPE_REFRESH_STORE,
-      payload: {
-        force: true,
-      },
-    });
+    return metaStore.dispatch(actionRefresh(true));
   },
 
   keyOf(model: string, method: string) {
@@ -123,7 +109,7 @@ const immer = getImmer();
 
 export const metaStore = createStore(
   (state: MetaStoreState = {}, action: AnyAction): MetaStoreState => {
-    if (helper.isMeta(action)) {
+    if (isMetaAction(action)) {
       const { model, method, payload, category } = action;
       const combineKey = helper.keyOf(model, method);
       const next = immer.produce(state, (draft) => {

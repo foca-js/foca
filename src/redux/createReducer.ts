@@ -1,7 +1,7 @@
-import type { AnyAction, Reducer } from 'redux';
-import { PostModelAction } from '../actions/model';
+import type { Reducer } from 'redux';
+import { isPostModel } from '../actions/model';
+import { isRefreshAction } from '../actions/refresh';
 import { freezeState } from '../utils/freezeState';
-import { isRefreshAction } from '../utils/isRefreshAction';
 
 interface Options<State extends object> {
   readonly name: string;
@@ -31,11 +31,4 @@ export const createReducer = <State extends object>(
 
     return state;
   };
-};
-
-const isPostModel = <State extends object>(
-  action: AnyAction,
-): action is PostModelAction<State> => {
-  const test = action as PostModelAction<State>;
-  return test.postModel === true && !!test.next;
 };
