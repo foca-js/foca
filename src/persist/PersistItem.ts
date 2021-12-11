@@ -174,18 +174,23 @@ export class PersistItem {
 
     Object.keys(this.records).forEach((key) => {
       const record = this.records[key]!;
-      const { model, prev, opts } = record;
+      const { model, prev, opts, schema } = record;
       const nextStateForKey = nextState[model.name];
 
       // 状态不变的情况下，即使过期了也无所谓，下次初始化时会自动剔除。
+      // 版本号改动的话一定会触发页面刷新。
       if (nextStateForKey !== prev) {
         record.prev = nextStateForKey;
-        record.schema = {
+        const nextSchema = {
           t: now,
           v: opts.version,
           d: JSON.stringify(nextStateForKey),
         };
-        changed ||= true;
+
+        if (!schema || nextSchema.d !== schema.d) {
+          record.schema = nextSchema;
+          changed ||= true;
+        }
       }
     });
 

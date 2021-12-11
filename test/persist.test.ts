@@ -184,6 +184,7 @@ test('never rehydrate even time expired', async () => {
   const currentValue = await engines.memoryStorage.getItem(persist.key);
   expect(currentValue).toContain(stringifyState(persistModel));
 
+  await sleep(1);
   persist.update({
     [persistModel.name]: persistModel.state,
   });
