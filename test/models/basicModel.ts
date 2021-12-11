@@ -34,15 +34,15 @@ export const basicModel = defineModel('basic', {
     async foo(hello: string, step: number) {
       await sleep(20);
 
-      this.dispatch((state) => {
+      this.setState((state) => {
         state.count += step;
         state.hello = hello;
       });
 
       return 'OK';
     },
-    dispatchWithoutFunction(step: number) {
-      this.dispatch({
+    setWithoutFn(step: number) {
+      this.setState({
         count: step,
         hello: 'earth',
       });

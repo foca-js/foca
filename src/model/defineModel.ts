@@ -54,21 +54,19 @@ export interface EffectCtx<State extends object>
    * 立即更改状态，支持**immer**操作
    *
    * ```typescript
-   * this.dispatch((state) => {
+   * this.setState((state) => {
    *   state.count += 1;
    * });
    * ```
    *
-   * 如果你是要替换**全部状态**，可以直接传给dispatch
+   * 如果你是要替换**全部状态**，可以直接传给setState
    *
    * ```typescript
-   * this.dispatch({
-   *   count: 10,
-   * });
+   * this.setState({ count: 10 });
    * ```
    */
-  dispatch(state: State): AnyAction;
-  dispatch(fn: (state: State) => State | void): AnyAction;
+  setState(state: State): AnyAction;
+  setState(fn: (state: State) => State | void): AnyAction;
 }
 
 export interface BaseModel<Name extends string, State extends object>
@@ -236,10 +234,10 @@ export const defineModel = <
   );
 
   const createEffectCtx = (methodName: string): EffectCtx<State> => {
-    const obj: Pick<EffectCtx<State>, 'dispatch'> = {
-      dispatch: enhanceAction(
+    const obj: Pick<EffectCtx<State>, 'setState'> = {
+      setState: enhanceAction(
         actionCtx,
-        `${methodName}.dispatch`,
+        `${methodName}.setState`,
         (state: State, fn_state: State | ((state: State) => State | void)) => {
           return typeof fn_state === 'function' ? fn_state(state) : fn_state;
         },

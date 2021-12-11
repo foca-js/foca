@@ -11,7 +11,7 @@ const createModel = () => {
     initialState: { count: 0 },
     effects: {
       invokeByReadyHook() {
-        this.dispatch((state) => {
+        this.setState((state) => {
           state.count += 101;
         });
       },

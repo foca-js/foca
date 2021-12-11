@@ -56,15 +56,15 @@ test('Set state in effect method', async () => {
   expect(basicModel.state.hello).toBe('earth');
 });
 
-test('Dispatch without function callback in effect method', () => {
+test('Set state without function callback in effect method', () => {
   expect(basicModel.state.count).toBe(0);
 
-  basicModel.dispatchWithoutFunction(15);
+  basicModel.setWithoutFn(15);
   expect(basicModel.state.count).toBe(15);
 
-  basicModel.dispatchWithoutFunction(26);
+  basicModel.setWithoutFn(26);
   expect(basicModel.state.count).toBe(26);
 
-  basicModel.dispatchWithoutFunction(54.3);
+  basicModel.setWithoutFn(54.3);
   expect(basicModel.state.count).toBe(54.3);
 });

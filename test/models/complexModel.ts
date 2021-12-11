@@ -19,8 +19,8 @@ export const complexModel = defineModel('complex', {
       delete state.users[id];
       state.ids = state.ids.filter((item) => item !== id);
     },
-    updateUser(staet, id: number, name: string) {
-      staet.users[id] = name;
+    updateUser(state, id: number, name: string) {
+      state.users[id] = name;
     },
   },
 });

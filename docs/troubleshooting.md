@@ -6,7 +6,7 @@
 
 # 能用在哪些环境
 
-只要和 react 挂钩的基本都没问题，下面列出常用环境：
+只要是 react 系列的基本都没问题，下面列出常用环境：
 
 - React Web
 - React Native
@@ -17,9 +17,9 @@
 
 内置在入口组件 `FocaProvider` 里了，初始化 store 的时候如果配置了 persist 属性，守卫会自动开启。
 
-# this.dispatch 和 actions 的区别
+# effects.setState 和 actions 的区别
 
-互补关系。this.dispatch 是专门为网络请求和一些组合业务设置的快捷操作（直接传入 state 或者回调）。相对于一些不需要复用的 action 函数，用 dispatch 反而能让模型对外暴露更少的接口，组件里用起来就会更舒服一些。
+互补关系。effects.setState 是专门为网络请求和一些组合业务设置的快捷操作（直接传入 state 或者回调）。相对于一些不需要复用的 action 函数，用 setState 反而能让模型对外暴露更少的接口，组件里用起来就会更舒服一些。
 
 # 追踪 effect 的执行状态有性能问题吗
 

@@ -55,9 +55,9 @@ export const counterModel = defineModel('counter', {
     // 异步函数，自动追踪执行状态(meta, loading)
     async doSomething() {
       await Promise.resolve();
-      // 直接处理状态，对于网络请求的数据十分方便
-      this.dispatch({ count: 1 });
-      this.dispatch((state) => {
+      // 快速处理状态，对于网络请求的数据十分方便
+      this.setState({ count: 1 });
+      this.setState((state) => {
         state.count += 1;
       });
       // 调用action函数处理状态

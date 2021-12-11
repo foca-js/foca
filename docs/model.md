@@ -93,11 +93,11 @@ const userModel = defineModel('users', {
   effects: {
     async get() {
       const users = await http.get<UserItem[]>('/users');
-      this.dispatch(users);
+      this.setState(users);
     },
     async retrieve(id: number) {
       const user = await http.get<UserItem>(`/users/${id}`);
-      this.dispatch((state) => {
+      this.setState((state) => {
         state.push(user);
       });
     },
@@ -105,15 +105,15 @@ const userModel = defineModel('users', {
 });
 ```
 
-瞧见没，你可以在 effects 里自由地使用 async/await 方案，然后通过`this.dispatch`快速更新 state。
+瞧见没，你可以在 effects 里自由地使用 async/await 方案，然后通过`this.setState`快速更新 state。
 
-你是否注意到 dispatch 的三种调用方式：
+现在你需要知道 setState 有三种调用方式：
 
 1. 直接传递新的且完整的 state。
-2. 通过回调匿名函数更新 state 的部分数据。
-3. 通过回调匿名函数返回新的且完整的 state。
+2. 通过回调函数更新 state 的部分数据，而且不用返回。
+3. 通过回调函数返回新的且完整的 state。
 
-如果你压根就不想用`this.dispatch`，你觉得这样看起来很混乱？OK，你突然想起可以使用 actions 去改变 state 不是吗？
+但是你压根就不想用`setState`，你觉得这样看起来很混乱？OK，你突然想起可以使用 actions 去改变 state 不是吗？
 
 ```typescript
 const userModel = defineModel('users', {
@@ -126,10 +126,11 @@ const userModel = defineModel('users', {
   effects: {
     async retrieve(id: number) {
       const user = await http.get<UserItem>(`/users/${id}`);
+      // 调用actions里的函数
       this.addUser(user);
     },
   },
 });
 ```
 
-是的，这样看起来更纯粹一些，代价就是要委屈你多写几行代码了。
+好吧，这样看起来更纯粹一些，代价就是要委屈你多写几行代码了。
