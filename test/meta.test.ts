@@ -7,7 +7,6 @@ import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
-  metaStore.helper.refresh();
 });
 
 afterEach(() => {

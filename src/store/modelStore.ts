@@ -15,6 +15,7 @@ import { modelInterceptor } from '../middleware/modelInterceptor';
 import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
 import { combine } from './emptyStore';
+import { metaStore } from './metaStore';
 
 const assignStoreKeys: (keyof Store | symbol)[] = [
   'dispatch',
@@ -102,7 +103,7 @@ class StoreAdvanced implements Store {
   }
 
   refresh(force: boolean = false): RefreshAction {
-    return this.dispatch(actionRefresh(force));
+    return this.dispatch(metaStore.dispatch(actionRefresh(force)));
   }
 
   onReady(callback: Function): SubscribeToken {

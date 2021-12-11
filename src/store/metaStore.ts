@@ -7,7 +7,7 @@ import { metaInterceptor } from '../middleware/metaInterceptor';
 import { isMetaAction, MetaStateItem } from '../actions/meta';
 import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
-import { actionRefresh, isRefreshAction } from '../actions/refresh';
+import { isRefreshAction } from '../actions/refresh';
 import { combine } from './emptyStore';
 
 export interface FindMeta {
@@ -94,10 +94,6 @@ const helper = {
   },
   inactivate(key: string) {
     this.status[key] = false;
-  },
-
-  refresh() {
-    return metaStore.dispatch(actionRefresh(true));
   },
 
   keyOf(model: string, method: string) {
