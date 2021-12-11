@@ -30,8 +30,8 @@ export const hasVersionPersistModel = cloneModel('persit1', persistModel, {
 
 export const hasDecodePersistModel = cloneModel('persist2', persistModel, {
   persist: {
-    decode(persist) {
-      persist.counter = 57;
+    decode(state) {
+      state.counter = 57;
     },
   },
 });

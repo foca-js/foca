@@ -38,9 +38,9 @@ export interface ModelPersist<State extends object> {
   maxAge?: number;
   /**
    * 持久化数据恢复到模型时的过滤函数，此时可修改数据以满足业务需求。
-   *
+   * 如果数据结构变化，则建议直接更新版本号。
    */
-  decode?: (this: void, persist: State) => State | void;
+  decode?: (state: State) => State | void;
 }
 
 export interface ActionCtx<State extends object>
@@ -194,7 +194,7 @@ export interface DefineModelOptions<
    *
    * @see store.init()
    */
-  persist?: ModelPersist<State>;
+  persist?: ModelPersist<State> & ThisType<null>;
   /**
    * 模型钩子
    */

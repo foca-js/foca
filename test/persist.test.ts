@@ -157,7 +157,7 @@ test('hydrate failed due to expired', async () => {
   expect(JSON.stringify(persist.collect())).toBe('{}');
 });
 
-test('rehydrate due to time expired', async () => {
+test('never rehydrate even time expired', async () => {
   const persist = new PersistItem({
     version: 1,
     key: 'test1',
@@ -197,7 +197,7 @@ test('rehydrate due to time expired', async () => {
     [persistModel.name]: persistModel.state,
   });
   await sleep(1);
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.not.toBe(
+  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBe(
     currentValue,
   );
 });
@@ -219,13 +219,8 @@ test('hydrate failed due to invalid format', async () => {
     }),
   );
 
-  const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-  await persist.init();
-  expect(spy).toHaveBeenCalledTimes(1);
-  spy.mockRestore();
-
-  expect(JSON.stringify(persist.collect())).toBe('{}');
+  await expect(persist.init()).rejects.toThrowError();
+  expect(persist.collect()).toStrictEqual({});
 });
 
 test('abandon unregisted model', async () => {

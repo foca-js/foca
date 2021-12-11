@@ -10,11 +10,11 @@ export interface PersistSchema {
    * 数据
    */
   d: {
-    [key: string]: PersistSerialized;
+    [key: string]: PersistItemSchema;
   };
 }
 
-export interface PersistSerialized {
+export interface PersistItemSchema {
   /**
    * 版本
    */
@@ -56,9 +56,9 @@ export interface PersistOptions {
   models: Model[];
 }
 
-type CustomModelPersist = Required<ModelPersist<object>>;
+type CustomModelPersistOptions = Required<ModelPersist<object>>;
 
-const noop = (value: any) => value;
+const defaultDecodeFn = (value: any) => value;
 
 export class PersistItem {
   readonly key: string;
@@ -70,37 +70,43 @@ export class PersistItem {
       /**
        * 模型的persist参数
        */
-      persist: CustomModelPersist;
+      opts: CustomModelPersistOptions;
       /**
        * 已经存储的模型内容，data是字符串。
        * 存储时，如果各项属性符合条件，则会当作最终值，从而省去了系列化的过程。
        */
-      serialized?: PersistSerialized;
+      schema?: PersistItemSchema;
       /**
        * 已经存储的模型内容，data是对象。
        * 主要用于和store变化后的state对比。
        */
-      decodeState?: object;
+      prev?: object;
     }
   > = {};
 
   constructor(protected readonly options: PersistOptions) {
-    this.key = (options.keyPrefix || '@@foca.persist:') + options.key;
+    const {
+      models,
+      keyPrefix = '@@foca.persist:',
+      key,
+      maxAge = Infinity,
+    } = options;
 
-    options.models.forEach((model) => {
-      const persist = (model as unknown as InternalModel)._$opts.persist || {};
+    this.key = keyPrefix + key;
+
+    models.forEach((model) => {
+      const {
+        decode = defaultDecodeFn,
+        maxAge: customMaxAge = maxAge,
+        version: customVersion = 0,
+      } = (model as unknown as InternalModel)._$opts.persist || {};
 
       this.records[model.name] = {
         model,
-        persist: {
-          version: persist.version !== void 0 ? persist.version : 0,
-          maxAge:
-            persist.maxAge !== void 0
-              ? persist.maxAge
-              : options.maxAge !== void 0
-              ? options.maxAge
-              : Infinity,
-          decode: persist.decode || noop,
+        opts: {
+          version: customVersion,
+          maxAge: customMaxAge,
+          decode,
         },
       };
     });
@@ -112,39 +118,41 @@ export class PersistItem {
         return void this.dump();
       }
 
+      let schema: PersistSchema;
+
       try {
-        const schema = JSON.parse(data) as PersistSchema;
+        schema = JSON.parse(data) as PersistSchema;
+      } catch {
+        console.error('[persist] Unable to parse persist data from storage');
+        return void this.dump();
+      }
 
-        if (!this.validateSchema(schema)) {
-          return void this.dump();
-        }
+      if (!this.validateSchema(schema)) {
+        return void this.dump();
+      }
 
-        let changed: boolean = false;
+      let changed: boolean = false;
 
-        Object.keys(schema.d).forEach((key) => {
-          const serialized = schema.d[key]!;
-          const record = this.records[key];
+      Object.keys(schema.d).forEach((key) => {
+        const record = this.records[key];
 
-          if (record) {
-            if (this.validateSerialized(serialized, record.persist)) {
-              const state = JSON.parse(serialized.d) as object;
+        if (record) {
+          const itemSchema = schema.d[key]!;
 
-              record.serialized = serialized;
-              record.decodeState = record.persist.decode(state) || state;
-            } else {
-              changed ||= true;
-            }
+          if (this.validateItemSchema(itemSchema, record.opts)) {
+            const state: object = JSON.parse(itemSchema.d);
+            const decodedState = record.opts.decode.call(null, state);
+            record.schema = itemSchema;
+            record.prev = decodedState === void 0 ? state : decodedState;
           } else {
             changed ||= true;
           }
-        });
+        } else {
+          changed ||= true;
+        }
+      });
 
-        changed && this.dump();
-      } catch {
-        this.dump();
-        console.error('Unable to parse persist data from storage');
-      }
-
+      changed && this.dump();
       return;
     });
   }
@@ -153,7 +161,7 @@ export class PersistItem {
     const stateMaps: Record<string, object> = {};
 
     Object.keys(this.records).forEach((key) => {
-      const state = this.records[key]!.decodeState;
+      const state = this.records[key]!.prev;
       state && (stateMaps[key] = state);
     });
 
@@ -161,35 +169,23 @@ export class PersistItem {
   }
 
   update(nextState: Record<string, object>) {
-    let changed: boolean = false;
+    const now = Date.now();
+    let changed = false;
 
     Object.keys(this.records).forEach((key) => {
       const record = this.records[key]!;
-      const nextStateForKey = nextState[record.model.name];
-      const { version, maxAge } = record.persist;
-      const now = Date.now();
-      const optionChanged =
-        !record.serialized ||
-        version !== record.serialized.v ||
-        record.serialized.t + maxAge < now;
+      const { model, prev, opts } = record;
+      const nextStateForKey = nextState[model.name];
 
-      if (
-        optionChanged ||
-        !record.decodeState ||
-        nextStateForKey !== record.decodeState
-      ) {
-        const serialized: PersistSerialized = {
+      // 状态不变的情况下，即使过期了也无所谓，下次初始化时会自动剔除。
+      if (nextStateForKey !== prev) {
+        record.prev = nextStateForKey;
+        record.schema = {
           t: now,
-          v: version,
+          v: opts.version,
           d: JSON.stringify(nextStateForKey),
         };
-
-        if (optionChanged || serialized.d !== record.serialized!.d) {
-          record.serialized = serialized;
-          changed ||= true;
-        }
-
-        record.decodeState = nextStateForKey;
+        changed ||= true;
       }
     });
 
@@ -197,8 +193,7 @@ export class PersistItem {
   }
 
   protected dump() {
-    const schema = JSON.stringify(this.toJSON());
-    this.options.engine.setItem(this.key, schema);
+    this.options.engine.setItem(this.key, JSON.stringify(this.toJSON()));
   }
 
   protected validateSchema(schema: PersistSchema) {
@@ -211,14 +206,15 @@ export class PersistItem {
     );
   }
 
-  protected validateSerialized(
-    serialized: PersistSerialized,
-    modelPersist: CustomModelPersist,
+  protected validateItemSchema(
+    schema: PersistItemSchema | undefined,
+    options: CustomModelPersistOptions,
   ) {
     return (
-      serialized.v === modelPersist.version &&
-      typeof serialized.d === 'string' &&
-      serialized.t + modelPersist.maxAge >= Date.now()
+      schema &&
+      schema.v === options.version &&
+      typeof schema.d === 'string' &&
+      schema.t + options.maxAge >= Date.now()
     );
   }
 
@@ -226,8 +222,8 @@ export class PersistItem {
     const states: PersistSchema['d'] = {};
 
     Object.keys(this.records).forEach((key) => {
-      const serialized = this.records[key]!.serialized;
-      serialized && (states[key] = serialized);
+      const schema = this.records[key]!.schema;
+      schema && (states[key] = schema);
     });
 
     return { v: this.options.version, d: states };
