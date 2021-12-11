@@ -1,6 +1,5 @@
 import sleep from 'sleep-promise';
 import { engines, store } from '../src';
-import { StoreError } from '../src/exceptions/StoreError';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
@@ -44,16 +43,16 @@ const initializeStoreWithPersist = () => {
 };
 
 test('Store will throw error before initialize', () => {
-  expect(() => store.getState()).toThrow(StoreError);
+  expect(() => store.getState()).toThrowError();
 });
 
 test('Method replaceReducer is deprecated', () => {
-  expect(() => store.replaceReducer()).toThrow(StoreError);
+  expect(() => store.replaceReducer()).toThrowError();
 });
 
 test('Store can only initialize once', () => {
   store.init();
-  expect(() => store.init()).toThrow(StoreError);
+  expect(() => store.init()).toThrowError();
 });
 
 test('Store can define persist with different engine', async () => {

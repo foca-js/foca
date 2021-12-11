@@ -11,7 +11,6 @@ import {
 import { $$observable } from '../utils/symbolObservable';
 import { SubscribeToken, Topic } from 'topic';
 import { RefreshAction, TYPE_REFRESH_STORE } from '../actions/refresh';
-import { StoreError } from '../exceptions/StoreError';
 import { modelInterceptor } from '../middleware/modelInterceptor';
 import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
@@ -44,7 +43,7 @@ class StoreAdvanced implements Store {
 
   /** @deprecated */
   replaceReducer(): never {
-    throw new StoreError('store.replaceReducer() had been deprecated.');
+    throw new Error('[store] replaceReducer() had been deprecated.');
   }
 
   declare dispatch: Store['dispatch'];
@@ -58,16 +57,14 @@ class StoreAdvanced implements Store {
     assignStoreKeys.forEach((key) => {
       // @ts-expect-error
       this[key] = () => {
-        throw new StoreError(
-          `Call method ${key.toString()} before initialize store.`,
-        );
+        throw new Error(`[store] Call method ${key.toString()} before init().`);
       };
     });
   }
 
   init(options: CreateStoreOptions = {}) {
     if (this.origin) {
-      throw new StoreError('Call store.init() multiple times.');
+      throw new Error('[store] Call init() multiple times.');
     }
 
     if (options.persist && options.persist.length) {
@@ -137,9 +134,7 @@ class StoreAdvanced implements Store {
 
   protected get store(): Store<Record<string, object>, AnyAction> {
     if (!this.origin) {
-      throw new StoreError(
-        'Store is not defined, do you forget to initialize it?',
-      );
+      throw new Error('Store is not defined, do you forget to initialize it?');
     }
     return this.origin;
   }

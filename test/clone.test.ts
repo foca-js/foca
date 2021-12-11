@@ -1,5 +1,4 @@
 import { cloneModel, store } from '../src';
-import { ModelError } from '../src/exceptions/ModelError';
 import { basicModel } from './models/basicModel';
 import { storeUnmount } from './utils/store';
 
@@ -33,7 +32,7 @@ test('Cloned model name', () => {
 });
 
 test('Clone model with same name is invalid', () => {
-  expect(() => cloneModel(basicModel.name, basicModel)).toThrow(ModelError);
+  expect(() => cloneModel(basicModel.name, basicModel)).toThrowError();
 });
 
 test('Reset cloned model state', () => {
