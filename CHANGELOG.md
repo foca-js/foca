@@ -1,3 +1,21 @@
+## 0.7.0(https://github.com/foca-js/foca/compare/v0.6.0...v0.7.0)&nbsp;&nbsp;(2021-12-12)
+
+- [Breaking] ctx.dispatch 重命名为 ctx.setState
+
+```diff
+difineModel('name', {
+  effects: {
+    foo() {
+-     this.dispatch({ count: 1 });
++     this.setState({ count: 1 });
+    }
+  }
+})
+```
+
+- 删除部分继承的 Error 类，直接使用原生 Error
+- 过期的持久化数据不再自动重新生成
+
 ## [0.6.0](https://github.com/foca-js/foca/compare/v0.5.0...v0.6.0)&nbsp;&nbsp;(2021-12-10)
 
 - [Breaking] 删除 Map/Set 特性

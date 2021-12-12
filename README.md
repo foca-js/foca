@@ -66,7 +66,7 @@ export const counterModel = defineModel('counter', {
       // 调用effect函数
       return this.commonUtil(1);
     },
-    // 同步函数
+    // 普通函数
     commonUtil(x: number) {
       return x + 1;
     },
