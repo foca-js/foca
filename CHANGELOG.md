@@ -1,3 +1,7 @@
+## [0.7.1](https://github.com/foca-js/foca/compare/v0.7.0...v0.7.1)&nbsp;&nbsp;(2021-12-13)
+
+- 通过缓存提升 useModel 的性能
+
 ## [0.7.0](https://github.com/foca-js/foca/compare/v0.6.0...v0.7.0)&nbsp;&nbsp;(2021-12-12)
 
 - [Breaking] ctx.dispatch 重命名为 ctx.setState
