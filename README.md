@@ -138,7 +138,7 @@ export default connect(mapStateToProps)(App);
 
 # 文档
 
-https://foca-js.github.io/foca/
+https://foca.js.org
 
 # 例子
 
