@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { FocaProvider, store, useModel } from '../src';
-import { basicModel } from './models/basicModel';
+import { basicModel, basicSkipRefreshModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
 import { storeUnmount } from './utils/store';
 
@@ -150,6 +150,84 @@ test('select compare algorithm', async () => {
     hookC.rerender();
   });
   expect(hookC.result.current === prevValueC).toBeTruthy();
+});
+
+test('Memoize the selector result', () => {
+  const fn1 = jest.fn();
+  const fn2 = jest.fn();
+
+  const { result: result1 } = renderHook(
+    () => {
+      return useModel(basicModel, (state) => {
+        fn1();
+        return state.count;
+      });
+    },
+    {
+      wrapper: FocaProvider,
+    },
+  );
+
+  const { result: result2 } = renderHook(
+    () => {
+      return useModel(basicModel, basicSkipRefreshModel, (state1, state2) => {
+        fn2();
+        return state1.count + state2.count;
+      });
+    },
+    {
+      wrapper: FocaProvider,
+    },
+  );
+
+  expect(fn1).toBeCalledTimes(1);
+  expect(fn2).toBeCalledTimes(1);
+
+  act(() => {
+    basicModel.plus(6);
+  });
+
+  expect(result1.current).toBe(6);
+  expect(result2.current).toBe(6);
+  expect(fn1).toBeCalledTimes(3);
+  expect(fn2).toBeCalledTimes(3);
+
+  act(() => {
+    // Sure not basicModel, we need trigger subscriptions
+    complexModel.addUser(1, '');
+  });
+  expect(result1.current).toBe(6);
+  expect(result2.current).toBe(6);
+  expect(fn1).toBeCalledTimes(3);
+  expect(fn2).toBeCalledTimes(3);
+
+  act(() => {
+    // Sure not basicModel, we need trigger subscriptions
+    complexModel.addUser(2, 'L');
+  });
+  expect(result1.current).toBe(6);
+  expect(result2.current).toBe(6);
+  expect(fn1).toBeCalledTimes(3);
+  expect(fn2).toBeCalledTimes(3);
+
+  act(() => {
+    basicModel.plus(1);
+  });
+  expect(result1.current).toBe(7);
+  expect(result2.current).toBe(7);
+  expect(fn1).toBeCalledTimes(5);
+  expect(fn2).toBeCalledTimes(5);
+
+  act(() => {
+    basicSkipRefreshModel.plus(1);
+  });
+  expect(result1.current).toBe(7);
+  expect(result2.current).toBe(8);
+  expect(fn1).toBeCalledTimes(5);
+  expect(fn2).toBeCalledTimes(7);
+
+  fn1.mockRestore();
+  fn2.mockRestore();
 });
 
 test.skip('type checking', () => {

@@ -216,26 +216,62 @@ export function useModel(): any {
     }
   }
 
+  // 储存了结果说明是state状态变化导致的对比计算。
+  // 因为存在闭包，除模型外的所有参数都是旧的，
+  // 所以我们只需要保证用到的模型数据不变即可，这样可以减少无意义的计算。
+  let memoResult: any = null;
+  let memoStates: object[],
+    currentStates: object[],
+    i: number,
+    changed: boolean;
+
+  const reducerNames: string[] = [];
+  for (i = 0; i < modelsLength; ++i) {
+    reducerNames.push(models[i]!.name);
+  }
+
   return useModelSelector((state: Record<string, object>) => {
+    currentStates = [];
+    for (i = 0; i < modelsLength; ++i) {
+      currentStates.push(state[reducerNames[i]!]!);
+    }
+
+    if (memoResult !== null) {
+      if (modelsLength === 1) {
+        if (currentStates[0] === memoStates[0]) {
+          return memoResult;
+        }
+      } else {
+        for (i = 0, changed = false; i < modelsLength; ++i) {
+          if (currentStates[i] !== memoStates[i]) {
+            changed = true;
+            break;
+          }
+        }
+
+        if (!changed) {
+          return memoResult;
+        }
+      }
+    }
+
+    memoStates = currentStates;
+
     if (modelsLength === 1) {
-      const modelState = state[models[0]!.name];
-      return selector ? selector(modelState) : modelState;
+      return (memoResult = selector
+        ? selector(currentStates[0])
+        : currentStates[0]);
     }
 
     if (selector) {
-      const stateList: object[] = [];
-      for (let i = 0; i < modelsLength; ++i) {
-        stateList.push(state[models[i]!.name]!);
-      }
-      return selector.apply(null, stateList);
+      return (memoResult = selector.apply(null, currentStates));
     }
 
-    const stateMap: typeof state = {};
-    for (let i = 0; i < modelsLength; ++i) {
-      const reducerName = models[i]!.name;
-      stateMap[reducerName] = state[reducerName]!;
+    memoResult = {};
+    for (i = 0; i < modelsLength; ++i) {
+      memoResult[reducerNames[i]!] = currentStates[i]!;
     }
-    return stateMap;
+    return memoResult;
   }, compareFn[algorithm]);
 }
 
