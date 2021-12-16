@@ -1,3 +1,7 @@
+## [0.8.0](https://github.com/foca-js/foca/compare/v0.7.0...v0.7.1)&nbsp;&nbsp;(2021-12-17)
+
+- 支持私有方法，在模型外部使用会触发 TS 报错（属性不存在）
+
 ## [0.7.1](https://github.com/foca-js/foca/compare/v0.7.0...v0.7.1)&nbsp;&nbsp;(2021-12-13)
 
 - 通过缓存提升 useModel 的性能
