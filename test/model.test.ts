@@ -68,3 +68,17 @@ test('Set state without function callback in effect method', () => {
   basicModel.setWithoutFn(54.3);
   expect(basicModel.state.count).toBe(54.3);
 });
+
+test.skip('private action and effect', () => {
+  // @ts-expect-error
+  basicModel._actionIsPrivate;
+  // @ts-expect-error
+  basicModel._effectIsPrivate;
+  // @ts-expect-error
+  basicModel.____alsoPrivateAction;
+  // @ts-expect-error
+  basicModel.____alsoPrivateEffect;
+
+  basicModel.plus(1);
+  basicModel.pureAsync();
+});

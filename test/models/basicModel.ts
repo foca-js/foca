@@ -29,6 +29,8 @@ export const basicModel = defineModel('basic', {
     reset() {
       return this.initialState;
     },
+    _actionIsPrivate() {},
+    ____alsoPrivateAction() {},
   },
   effects: {
     async foo(hello: string, step: number) {
@@ -72,6 +74,12 @@ export const basicModel = defineModel('basic', {
     },
     normalMethod() {
       return 'YES';
+    },
+    async _effectIsPrivate() {},
+    ____alsoPrivateEffect() {
+      this._effectIsPrivate;
+      this._actionIsPrivate;
+      this.____alsoPrivateAction;
     },
   },
 });

@@ -16,6 +16,7 @@
 - 模型自动注册，导出即可使用
 - 内置 immer 快速处理数据
 - 智能追踪异步函数的执行状态
+- 支持私有方法
 - 可定制的多引擎数据持久化
 - 数据隔离，允许同类状态库并存
 
@@ -50,6 +51,10 @@ export const counterModel = defineModel('counter', {
       // 直接返回新状态
       return { count: state.count - value };
     },
+    // 私有方法，只能在模型内部被effect方法调用，外部调用则TS报错（属性不存在）
+    _clear(state) {
+      return this.initialState;
+    },
   },
   effects: {
     // 异步函数，自动追踪执行状态(meta, loading)
@@ -63,12 +68,20 @@ export const counterModel = defineModel('counter', {
       // 调用action函数处理状态
       this.plus(1, true);
 
+      // 私有方法，只能在内部使用
+      this._clear();
+      this._callMe();
+
       // 调用effect函数
       return this.commonUtil(1);
     },
     // 普通函数
     commonUtil(x: number) {
       return x + 1;
+    },
+    // 私有方法，只能在模型内部使用，外部调用则TS报错（属性不存在）
+    _callMe() {
+      return 'I am private method';
     },
   },
 });

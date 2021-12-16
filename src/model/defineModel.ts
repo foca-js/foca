@@ -73,17 +73,28 @@ export interface BaseModel<Name extends string, State extends object>
   extends GetState<State>,
     GetName<Name> {}
 
+type ModelActionItem<
+  State extends object,
+  Action extends object,
+  K extends keyof Action,
+> = Action[K] extends (state: State, ...args: infer P) => State | void
+  ? (...args: P) => AnyAction
+  : never;
+
 type ModelAction<State extends object, Action extends object> = {
-  readonly [K in keyof Action]: Action[K] extends (
-    state: State,
-    ...args: infer P
-  ) => State | void
-    ? (...args: P) => AnyAction
-    : never;
+  readonly [K in keyof Action]: ModelActionItem<State, Action, K>;
 };
 
-type ModelEffect<Effect extends object> = {
-  readonly [K in keyof Effect]: Effect[K] extends (...args: infer P) => infer R
+type ModelActionWithoutPrivate<State extends object, Action extends object> = {
+  readonly [K in keyof Action as K extends `_${string}`
+    ? never
+    : K]: ModelActionItem<State, Action, K>;
+};
+
+type ModelEffectWithoutPrivate<Effect extends object> = {
+  readonly [K in keyof Effect as K extends `_${string}`
+    ? never
+    : K]: Effect[K] extends (...args: infer P) => infer R
     ? EnhancedEffect<P, R>
     : never;
 };
@@ -93,7 +104,9 @@ export type Model<
   State extends object = object,
   Action extends object = object,
   Effect extends object = object,
-> = BaseModel<Name, State> & ModelAction<State, Action> & ModelEffect<Effect>;
+> = BaseModel<Name, State> &
+  ModelActionWithoutPrivate<State, Action> &
+  ModelEffectWithoutPrivate<Effect>;
 
 export type InternalModel<
   Name extends string = string,
