@@ -57,7 +57,7 @@ export const counterModel = defineModel('counter', {
     },
   },
   effects: {
-    // 异步函数，自动追踪执行状态(meta, loading)
+    // 异步函数，自动追踪执行状态(loading)
     async doSomething() {
       // 调用私有方法
       await this._sleep(100);

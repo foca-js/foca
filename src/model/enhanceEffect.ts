@@ -1,14 +1,12 @@
 import {
-  Meta,
-  MetaAction,
-  MetaType,
-  META_DEFAULT_CATEGORY,
-} from '../actions/meta';
+  LoadingAction,
+  LOADING_CATEGORY,
+  TYPE_SET_LOADING,
+} from '../actions/loading';
 import type { EffectCtx } from './defineModel';
-import { EffectError } from '../exceptions/EffectError';
 import { isPromise } from '../utils/isPromise';
 import { toArgs } from '../utils/toArgs';
-import { metaStore } from '../store/metaStore';
+import { loadingStore } from '../store/loadingStore';
 
 interface AssignFunc<P extends any[] = any[], R = Promise<any>> {
   (category: number | string): {
@@ -45,8 +43,6 @@ interface AsyncEffect<P extends any[] = any[], R = Promise<any>>
    *
    * @see useLoading(effect.assign)
    * @see getLoading(effect.assign)
-   * @see useMeta(effect.assign)
-   * @see getMeta(effect.assign)
    *
    */
   readonly assign: AsyncAssignEffect<P, R>;
@@ -100,20 +96,17 @@ export const enhanceEffect = <State extends object>(
   return fn;
 };
 
-const dispatchMeta = (
+const dispatchLoading = (
   modelName: string,
   methodName: string,
-  type: MetaType,
-  category: number | string = META_DEFAULT_CATEGORY,
-  meta?: Meta,
+  loading: boolean,
+  category: number | string = LOADING_CATEGORY,
 ) => {
-  metaStore.dispatch<MetaAction>({
-    type: modelName + '.' + methodName + ' ' + type,
-    setMeta: true,
+  loadingStore.dispatch<LoadingAction>({
+    type: TYPE_SET_LOADING,
     model: modelName,
     method: methodName,
-    category,
-    payload: Object.assign({ type }, meta),
+    payload: { category, loading },
   });
 };
 
@@ -131,30 +124,14 @@ const execute = <State extends object>(
     return resultOrPromise;
   }
 
-  dispatchMeta(modelName, methodName, 'pending', category);
+  dispatchLoading(modelName, methodName, true, category);
 
   return resultOrPromise
     .then((result) => {
-      return dispatchMeta(modelName, methodName, 'resolved', category), result;
+      return dispatchLoading(modelName, methodName, false, category), result;
     })
     .catch((e: unknown) => {
-      dispatchMeta(
-        modelName,
-        methodName,
-        'rejected',
-        category,
-        e instanceof EffectError
-          ? Object.assign({}, e.meta)
-          : {
-              message:
-                e instanceof Error
-                  ? e.message
-                  : typeof e === 'string'
-                  ? e
-                  : void 0,
-            },
-      );
-
+      dispatchLoading(modelName, methodName, false, category);
       throw e;
     });
 };

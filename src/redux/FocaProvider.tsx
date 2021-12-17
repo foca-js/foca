@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
-import { EmptyContext, ModelContext, MetaContext } from './contexts';
+import { EmptyContext, ModelContext, LoadingContext } from './contexts';
 import { modelStore } from '../store/modelStore';
 import { PersistGate, PersistGateProps } from '../persist/PersistGate';
 import { emptyStore } from '../store/emptyStore';
-import { metaStore } from '../store/metaStore';
+import { loadingStore } from '../store/loadingStore';
 
 interface OwnProps extends PersistGateProps {}
 
@@ -25,7 +25,7 @@ interface OwnProps extends PersistGateProps {}
 export const FocaProvider: FC<OwnProps> = ({ children, loading }) => {
   return (
     <Provider context={EmptyContext} store={emptyStore}>
-      <Provider context={MetaContext} store={metaStore}>
+      <Provider context={LoadingContext} store={loadingStore}>
         <Provider context={ModelContext} store={modelStore}>
           {modelStore.persistor ? (
             <PersistGate loading={loading} children={children} />

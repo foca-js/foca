@@ -1,6 +1,6 @@
 import { PromiseAssignEffect, PromiseEffect } from '../model/enhanceEffect';
-import { FindLoading } from '../store/metaStore';
-import { useMetaSelector } from '../redux/useSelector';
+import { FindLoading } from '../store/loadingStore';
+import { useLoadingSelector } from '../redux/useSelector';
 import { getLoading } from './getLoading';
 
 /**
@@ -42,7 +42,7 @@ export function useLoading(
 export function useLoading(): boolean | FindLoading {
   const args = arguments as unknown as Parameters<typeof getLoading>;
 
-  return useMetaSelector(() => {
+  return useLoadingSelector(() => {
     return getLoading.apply(null, args);
   });
 }

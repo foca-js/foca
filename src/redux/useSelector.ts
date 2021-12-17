@@ -1,6 +1,6 @@
 import { createSelectorHook } from 'react-redux';
-import { ModelContext, MetaContext } from './contexts';
+import { ModelContext, LoadingContext } from './contexts';
 
 export const useModelSelector = createSelectorHook(ModelContext);
 
-export const useMetaSelector = createSelectorHook(MetaContext);
+export const useLoadingSelector = createSelectorHook(LoadingContext);

@@ -1,5 +1,5 @@
 import { store } from '../src';
-import { metaStore } from '../src/store/metaStore';
+import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
 import { storeUnmount } from './utils/store';
@@ -40,12 +40,12 @@ test('dispatch the same state should be intercepted', () => {
   fn.mockRestore();
 });
 
-test('dispatch the same meta should be intercepted', async () => {
+test('dispatch the same loading should be intercepted', async () => {
   const fn = jest.fn();
-  const unsubscribe = metaStore.subscribe(fn);
+  const unsubscribe = loadingStore.subscribe(fn);
 
-  metaStore.helper.inactivate(
-    metaStore.helper.keyOf(basicModel.name, 'pureAsync'),
+  loadingStore.helper.inactivate(
+    loadingStore.helper.keyOf(basicModel.name, 'pureAsync'),
   );
 
   expect(fn).toHaveBeenCalledTimes(0);
@@ -53,8 +53,8 @@ test('dispatch the same meta should be intercepted', async () => {
   await basicModel.pureAsync();
   expect(fn).toHaveBeenCalledTimes(0);
 
-  metaStore.helper.activate(
-    metaStore.helper.keyOf(basicModel.name, 'pureAsync'),
+  loadingStore.helper.activate(
+    loadingStore.helper.keyOf(basicModel.name, 'pureAsync'),
   );
 
   await basicModel.pureAsync();

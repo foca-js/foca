@@ -9,14 +9,10 @@ type Props = ReturnType<typeof mapStateToProps>;
 
 class App extends PureComponent<Props> {
   render() {
-    const { users, meta, loading } = this.props;
+    const { users, loading } = this.props;
 
     if (loading) {
       return <p>Loading...</p>;
-    }
-
-    if (meta.message) {
-      return <p style="color: red">Oops, {meta.message}</p>;
     }
 
     return <p>Hello, {users.length} people</p>;
@@ -27,7 +23,6 @@ const mapStateToProps = () => {
   return {
     users: userModel.state,
     loading: getLoading(userModel.fetchUser),
-    meta: getMeta(userModel.fetchUser),
   };
 };
 

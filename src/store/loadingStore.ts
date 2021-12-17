@@ -3,25 +3,15 @@ import type {
   PromiseAssignEffect,
   PromiseEffect,
 } from '../model/enhanceEffect';
-import { metaInterceptor } from '../middleware/metaInterceptor';
-import { isMetaAction, MetaStateItem } from '../actions/meta';
+import { loadingInterceptor } from '../middleware/loadingInterceptor';
+import { isLoadingAction } from '../actions/loading';
 import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
 import { isRefreshAction } from '../actions/refresh';
 import { combine } from './emptyStore';
 
-export interface FindMeta {
-  find(category: number | string): Partial<MetaStateItem>;
-}
-
 export interface FindLoading {
   find(category: number | string): boolean;
-}
-
-interface MetaState extends FindMeta {
-  data: {
-    [category: string]: MetaStateItem;
-  };
 }
 
 interface LoadingState extends FindLoading {
@@ -30,19 +20,12 @@ interface LoadingState extends FindLoading {
   };
 }
 
-interface MetaStoreStateItem {
-  metas: MetaState;
+interface LoadingStoreStateItem {
   loadings: LoadingState;
 }
 
-export type MetaStoreState = {
-  [model_method: string]: MetaStoreStateItem;
-};
-
-const undeclaredMeta = freezeState({});
-
-const findMeta: FindMeta['find'] = function (this: MetaState, category) {
-  return this.data[category] || undeclaredMeta;
+export type LoadingStoreState = {
+  [model_method: string]: LoadingStoreStateItem;
 };
 
 const findLoading: FindLoading['find'] = function (
@@ -52,12 +35,8 @@ const findLoading: FindLoading['find'] = function (
   return !!this.data[category];
 };
 
-const createDefaultRecord = (): MetaStoreStateItem => {
+const createDefaultRecord = (): LoadingStoreStateItem => {
   return {
-    metas: {
-      find: findMeta,
-      data: {},
-    },
     loadings: {
       find: findLoading,
       data: {},
@@ -70,15 +49,15 @@ const defaultRecord = freezeState(createDefaultRecord());
 const helper = {
   status: <Record<string, boolean>>{},
 
-  get(effect: PromiseEffect | PromiseAssignEffect): MetaStoreStateItem {
+  get(effect: PromiseEffect | PromiseAssignEffect): LoadingStoreStateItem {
     const {
       _: { model, method },
     } = effect;
-    let record: MetaStoreStateItem | undefined;
+    let record: LoadingStoreStateItem | undefined;
     const combineKey = this.keyOf(model, method);
 
     if (this.isActive(combineKey)) {
-      record = metaStore.getState()[combineKey];
+      record = loadingStore.getState()[combineKey];
     } else {
       this.activate(combineKey);
     }
@@ -103,20 +82,20 @@ const helper = {
 
 const immer = getImmer();
 
-export const metaStore = createStore(
-  (state: MetaStoreState = {}, action: AnyAction): MetaStoreState => {
-    if (isMetaAction(action)) {
-      const { model, method, payload, category } = action;
+export const loadingStore = createStore(
+  (state: LoadingStoreState = {}, action: AnyAction): LoadingStoreState => {
+    if (isLoadingAction(action)) {
+      const {
+        model,
+        method,
+        payload: { category, loading },
+      } = action;
       const combineKey = helper.keyOf(model, method);
       const next = immer.produce(state, (draft) => {
-        const { metas, loadings } = (draft[combineKey] ||=
-          createDefaultRecord());
-
-        metas.data[category] = payload;
-        loadings.data[category] = payload.type === 'pending';
+        const { loadings } = (draft[combineKey] ||= createDefaultRecord());
+        loadings.data[category] = loading;
       });
 
-      freezeState(next[combineKey]!.metas);
       freezeState(next[combineKey]!.loadings);
       return next;
     }
@@ -127,9 +106,9 @@ export const metaStore = createStore(
 
     return state;
   },
-  applyMiddleware(metaInterceptor(helper)),
-) as Store<MetaStoreState> & { helper: typeof helper };
+  applyMiddleware(loadingInterceptor(helper)),
+) as Store<LoadingStoreState> & { helper: typeof helper };
 
-combine(metaStore);
+combine(loadingStore);
 
-metaStore.helper = helper;
+loadingStore.helper = helper;

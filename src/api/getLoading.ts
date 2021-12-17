@@ -1,8 +1,8 @@
-import { META_DEFAULT_CATEGORY } from '../actions/meta';
+import { LOADING_CATEGORY } from '../actions/loading';
 import { PromiseAssignEffect, PromiseEffect } from '../model/enhanceEffect';
-import { metaStore, FindLoading } from '../store/metaStore';
+import { loadingStore, FindLoading } from '../store/loadingStore';
 
-const helper = metaStore.helper;
+const helper = loadingStore.helper;
 
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。
@@ -52,7 +52,7 @@ export function getLoading(
   }
 
   for (let i = args.length; i-- > 0; ) {
-    if (helper.get(args[i]).loadings.find(META_DEFAULT_CATEGORY)) {
+    if (helper.get(args[i]).loadings.find(LOADING_CATEGORY)) {
       return true;
     }
   }

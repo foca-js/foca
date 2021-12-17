@@ -189,8 +189,7 @@ export interface DefineModelOptions<
    *   },
    * });
    *
-   * useMeta(model.foo); // TYPE: undefined | { loading: boolean; message?: string }
-   * useLoading(model.foo); // TYPE: boolean
+   * useLoading(model.foo); // 返回值类型: boolean
    * ```
    */
   effects?: Effect &

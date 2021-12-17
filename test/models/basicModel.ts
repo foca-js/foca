@@ -1,6 +1,5 @@
 import sleep from 'sleep-promise';
 import { cloneModel, defineModel } from '../../src';
-import { EffectError } from '../../src/exceptions/EffectError';
 
 const initialState: {
   count: number;
@@ -57,16 +56,6 @@ export const basicModel = defineModel('basic', {
     },
     async hasError(msg: string = 'my-test') {
       throw new Error(msg);
-    },
-    async hasEffectError() {
-      throw new EffectError(
-        Object.assign(
-          { message: 'next-test' },
-          {
-            hello: 'world',
-          },
-        ),
-      );
     },
     async pureAsync() {
       await sleep(300);

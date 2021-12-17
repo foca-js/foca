@@ -89,19 +89,3 @@ const App: FC = () => {
 ```typescript
 const loading = useLoading(userModel.create, userModel.update, ...);
 ```
-
-# useMeta
-
-模型异步函数的**当前**状态。本质上，loading 派生自 meta。
-<br/>
-可通过[进阶篇](/advanced?id=meta)学习如何扩展 meta。
-
-```typescript
-/**
- * {
- *   type?: 'pending' | 'resolved' | 'rejected';
- *   message?: string;
- * }
- */
-const meta = useMeta(userModel.meta);
-```

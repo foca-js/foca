@@ -11,11 +11,8 @@ export { FocaProvider } from './redux/FocaProvider';
 export { engines } from './engines';
 
 // Advanced
-export { useMeta } from './api/useMeta';
-export { getMeta } from './api/getMeta';
 export { combine } from './store/emptyStore';
 export { cloneModel } from './model/cloneModel';
-export { EffectError } from './exceptions/EffectError';
 
 // Types
 export type {
@@ -28,6 +25,5 @@ export type {
   StoreEnhancer,
   Unsubscribe,
 } from 'redux';
-export type { Meta } from './actions/meta';
 export type { Model } from './model/defineModel';
 export type { StorageEngine } from './engines';

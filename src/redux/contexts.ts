@@ -6,7 +6,7 @@ export const ModelContext = createContext<ReactReduxContextValue>(
   null,
 );
 
-export const MetaContext = createContext<ReactReduxContextValue>(
+export const LoadingContext = createContext<ReactReduxContextValue>(
   // @ts-expect-error
   null,
 );
