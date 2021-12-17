@@ -1,3 +1,8 @@
+## [0.9.0](https://github.com/foca-js/foca/compare/v0.8.1...v0.9.0)&nbsp;&nbsp;(2021-12-17)
+
+- [Breaking] 删除 `useMeta()`, `getMeta()` 接口，移除 meta 概念
+- 修复 IDE 中 React 组件调用的模型方法无法点击跳转回模型的问题
+
 ## [0.8.1](https://github.com/foca-js/foca/compare/v0.8.0...v0.8.1)&nbsp;&nbsp;(2021-12-17)
 
 - 私有方法在运行时也不该被导出
