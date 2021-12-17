@@ -261,13 +261,13 @@ export const defineModel = <
   };
 
   const enhancedMethods: {
-    [key in 'visible' | 'hidden']: Record<
+    [key in 'external' | 'internal']: Record<
       string,
       EnhancedAction<State> | EnhancedEffect
     >;
   } = {
-    visible: {},
-    hidden: {},
+    external: {},
+    internal: {},
   };
 
   if (actions) {
@@ -293,7 +293,7 @@ export const defineModel = <
     });
 
     effectCtxs.forEach((ctx) => {
-      Object.assign(ctx, enhancedMethods.visible, enhancedMethods.hidden);
+      Object.assign(ctx, enhancedMethods.external, enhancedMethods.internal);
     });
   }
 
@@ -308,7 +308,7 @@ export const defineModel = <
       getName,
       getState,
     ),
-    enhancedMethods.visible,
+    enhancedMethods.external,
   );
 
   modelStore.appendReducer(
@@ -324,8 +324,8 @@ export const defineModel = <
     const { onInit } = hooks;
     const hookCtx: HookCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
-      enhancedMethods.visible,
-      enhancedMethods.hidden,
+      enhancedMethods.external,
+      enhancedMethods.internal,
     );
 
     if (onInit) {
