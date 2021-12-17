@@ -1,4 +1,8 @@
-## [0.8.0](https://github.com/foca-js/foca/compare/v0.7.0...v0.7.1)&nbsp;&nbsp;(2021-12-17)
+## [0.8.1](https://github.com/foca-js/foca/compare/v0.8.0...v0.8.1)&nbsp;&nbsp;(2021-12-17)
+
+- 私有方法在运行时也不该被导出
+
+## [0.8.0](https://github.com/foca-js/foca/compare/v0.7.1...v0.8.0)&nbsp;&nbsp;(2021-12-17)
 
 - 支持私有方法，在模型外部使用会触发 TS 报错（属性不存在）
 
