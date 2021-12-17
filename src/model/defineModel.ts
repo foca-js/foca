@@ -238,6 +238,18 @@ export const defineModel = <
     return defineGetter(obj, 'initialState', () => cloneDeep(initialState));
   };
 
+  if (process.env.NODE_ENV !== 'production') {
+    if (actions && effects) {
+      Object.keys(actions).forEach((key) => {
+        if (effects.hasOwnProperty(key)) {
+          throw new Error(
+            `[${name}] You have defined method "${key}" in both actions and effects`,
+          );
+        }
+      });
+    }
+  }
+
   const actionCtx: ActionCtx<State> = composeGetter(
     {},
     getName,

@@ -1,4 +1,4 @@
-import { store } from '../src';
+import { defineModel, store } from '../src';
 import { basicModel } from './models/basicModel';
 import { storeUnmount } from './utils/store';
 
@@ -92,4 +92,19 @@ test('private action and effect', () => {
 
   expect(basicModel.plus).toBeInstanceOf(Function);
   expect(basicModel.pureAsync).toBeInstanceOf(Function);
+});
+
+test('define same method key will throw error', () => {
+  expect(() =>
+    defineModel('x' + Math.random(), {
+      initialState: {},
+      actions: {
+        test1() {},
+      },
+      effects: {
+        test1() {},
+        test2() {},
+      },
+    }),
+  ).toThrowError('test1');
 });
