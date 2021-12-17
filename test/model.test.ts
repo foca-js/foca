@@ -69,16 +69,27 @@ test('Set state without function callback in effect method', () => {
   expect(basicModel.state.count).toBe(54.3);
 });
 
-test.skip('private action and effect', () => {
-  // @ts-expect-error
-  basicModel._actionIsPrivate;
-  // @ts-expect-error
-  basicModel._effectIsPrivate;
-  // @ts-expect-error
-  basicModel.____alsoPrivateAction;
-  // @ts-expect-error
-  basicModel.____alsoPrivateEffect;
+test('private action and effect', () => {
+  expect(
+    // @ts-expect-error
+    basicModel._actionIsPrivate,
+  ).toBeUndefined();
 
-  basicModel.plus(1);
-  basicModel.pureAsync();
+  expect(
+    // @ts-expect-error
+    basicModel._effectIsPrivate,
+  ).toBeUndefined();
+
+  expect(
+    // @ts-expect-error
+    basicModel.____alsoPrivateAction,
+  ).toBeUndefined();
+
+  expect(
+    // @ts-expect-error
+    basicModel.____alsoPrivateEffect,
+  ).toBeUndefined();
+
+  expect(basicModel.plus).toBeInstanceOf(Function);
+  expect(basicModel.pureAsync).toBeInstanceOf(Function);
 });

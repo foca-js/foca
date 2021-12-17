@@ -5,6 +5,7 @@ import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
 import { modelStore } from '../store/modelStore';
 import { createReducer } from '../redux/createReducer';
 import { composeGetter, defineGetter } from '../utils/getter';
+import { getMethodCategory } from '../utils/getMethodCategory';
 
 export interface GetName<Name extends string> {
   /**
@@ -259,18 +260,20 @@ export const defineModel = <
     return composeGetter(obj, getName, getState, getInitialState);
   };
 
-  const enhancedMethods: Record<
-    string,
-    EnhancedAction<State> | EnhancedEffect
-  > = {};
+  const enhancedMethods: {
+    [key in 'visible' | 'hidden']: Record<
+      string,
+      EnhancedAction<State> | EnhancedEffect
+    >;
+  } = {
+    visible: {},
+    hidden: {},
+  };
 
   if (actions) {
     Object.keys(actions).forEach((actionName) => {
-      enhancedMethods[actionName] = enhanceAction(
-        actionCtx,
-        actionName,
-        actions[actionName]!,
-      );
+      enhancedMethods[getMethodCategory(actionName)][actionName] =
+        enhanceAction(actionCtx, actionName, actions[actionName]!);
     });
   }
 
@@ -280,16 +283,17 @@ export const defineModel = <
     Object.keys(effects).forEach((effectName) => {
       process.env.NODE_ENV !== 'production' &&
         effectCtxs.push(createEffectCtx(effectName));
-      enhancedMethods[effectName] = enhanceEffect(
-        effectCtxs[effectCtxs.length - 1]!,
-        effectName,
-        // @ts-expect-error
-        effects[effectName],
-      );
+      enhancedMethods[getMethodCategory(effectName)][effectName] =
+        enhanceEffect(
+          effectCtxs[effectCtxs.length - 1]!,
+          effectName,
+          // @ts-expect-error
+          effects[effectName],
+        );
     });
 
     effectCtxs.forEach((ctx) => {
-      Object.assign(ctx, enhancedMethods);
+      Object.assign(ctx, enhancedMethods.visible, enhancedMethods.hidden);
     });
   }
 
@@ -304,7 +308,7 @@ export const defineModel = <
       getName,
       getState,
     ),
-    enhancedMethods,
+    enhancedMethods.visible,
   );
 
   modelStore.appendReducer(
@@ -320,7 +324,8 @@ export const defineModel = <
     const { onInit } = hooks;
     const hookCtx: HookCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
-      enhancedMethods,
+      enhancedMethods.visible,
+      enhancedMethods.hidden,
     );
 
     if (onInit) {
