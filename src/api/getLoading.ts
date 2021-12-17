@@ -51,7 +51,7 @@ export function getLoading(
     return category === void 0 ? loadings : loadings.find(category);
   }
 
-  for (let i = 0; i < args.length; ++i) {
+  for (let i = args.length; i-- > 0; ) {
     if (helper.get(args[i]).loadings.find(META_DEFAULT_CATEGORY)) {
       return true;
     }

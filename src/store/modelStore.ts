@@ -141,8 +141,9 @@ class StoreAdvanced implements Store {
       const keyLength = reducerKeys.length;
       const nextState: Record<string, any> = {};
       let hasChanged = false;
+      let i = keyLength;
 
-      for (let i = 0; i < keyLength; ++i) {
+      while (i-- > 0) {
         const key = reducerKeys[i]!;
         nextState[key] = this.consumers[key]!(state[key], action);
         hasChanged ||= nextState[key] !== state[key];
