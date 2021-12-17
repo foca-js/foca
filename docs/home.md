@@ -57,7 +57,14 @@ foca 提供 **100%** 的基础类型提示，你只需关注业务中的类型�
 
 # 例子
 
-[Github 官方案例集合](https://github.com/foca-js/foca-demos)
+React 案例仓库：https://github.com/foca-js/foca-demo-web
+<br>
+RN 案例仓库：https://github.com/foca-js/foca-demo-react-native
+<br>
+Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
+<br>
+
+# 在线试玩
 
 <iframe src="https://codesandbox.io/embed/foca-demos-e8rh3?fontsize=14&hidenavigation=1&theme=dark&view=preview"
      style="width:100%; height:600px; border:0; border-radius: 4px; overflow:hidden;"

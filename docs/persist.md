@@ -42,11 +42,11 @@ key 即为存储路径，最好采用`项目名-环境名`的形式组织。纯�
 - sessionStorage
 - memoryStorage
 
-如果内置引擎无法满足，那么下面列举的第三方库也可以直接引入当作存储引擎：
+如果内置引擎无法满足，那么下面列举的第三方库也可以**直接当作**存储引擎：
 
-- [localForage](https://www.npmjs.com/package/localforage)
-- [@react-native-async-storage/async-storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage)
-- [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)
+- 浏览器：[localForage](https://www.npmjs.com/package/localforage)
+- TaroJs：[foca-taro-storage](https://github.com/foca-js/foca-taro-storage)
+- React-Native：[@react-native-async-storage/async-storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage)
 
 如果有必要，你也可以自己实现一个引擎：
 
