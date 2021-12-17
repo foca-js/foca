@@ -86,16 +86,12 @@ type ModelAction<State extends object, Action extends object> = {
   readonly [K in keyof Action]: ModelActionItem<State, Action, K>;
 };
 
-type ModelActionWithoutPrivate<State extends object, Action extends object> = {
-  readonly [K in keyof Action as K extends `_${string}`
-    ? never
-    : K]: ModelActionItem<State, Action, K>;
-};
+type GetInternalMethodKeys<Method extends object> = {
+  [K in keyof Method]: K extends `_${string}` ? K : never;
+}[keyof Method];
 
-type ModelEffectWithoutPrivate<Effect extends object> = {
-  readonly [K in keyof Effect as K extends `_${string}`
-    ? never
-    : K]: Effect[K] extends (...args: infer P) => infer R
+type ModelEffect<Effect extends object> = {
+  readonly [K in keyof Effect]: Effect[K] extends (...args: infer P) => infer R
     ? EnhancedEffect<P, R>
     : never;
 };
@@ -106,8 +102,11 @@ export type Model<
   Action extends object = object,
   Effect extends object = object,
 > = BaseModel<Name, State> &
-  ModelActionWithoutPrivate<State, Action> &
-  ModelEffectWithoutPrivate<Effect>;
+  // [K in keyof Action as K extends `_${string}` ? never : K]
+  // 上面这种看起来简洁，业务代码提示也正常，但是业务代码那边无法点击跳转进模型了。
+  // 所以需要先转换所有的属性，再把私有属性去除。
+  Omit<ModelAction<State, Action>, GetInternalMethodKeys<Action>> &
+  Omit<ModelEffect<Effect>, GetInternalMethodKeys<Effect>>;
 
 export type InternalModel<
   Name extends string = string,
