@@ -20,8 +20,10 @@ export const cloneModel = <
     >
   >,
 ): Model<Name, State, Action, Effect> => {
-  if (name === model.name) {
-    throw new Error(`[model] Stop cloning model with the same name ${name}`);
+  if (process.env.NODE_ENV !== 'production') {
+    if (name === model.name) {
+      throw new Error(`[model] Stop cloning model with same name ${name}`);
+    }
   }
 
   const realModel = model as unknown as InternalModel<
