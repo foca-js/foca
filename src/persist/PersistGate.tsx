@@ -11,9 +11,9 @@ export const PersistGate: FC<PersistGateProps> = (props) => {
   const isChildrenFunction = typeof children === 'function';
 
   useEffect(() => {
-    return modelStore.onReady(() => {
+    modelStore.onInitialized().then(() => {
       setIsReady(true);
-    }).unsubscribe;
+    });
   }, []);
 
   if (process.env.NODE_ENV !== 'production') {

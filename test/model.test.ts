@@ -1,13 +1,12 @@
 import { defineModel, store } from '../src';
 import { basicModel } from './models/basicModel';
-import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
 });
 
 afterEach(() => {
-  storeUnmount();
+  store.unmount();
 });
 
 test('Model name', () => {

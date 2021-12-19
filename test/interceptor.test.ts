@@ -2,14 +2,13 @@ import { store } from '../src';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
-import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
 });
 
 afterEach(() => {
-  storeUnmount();
+  store.unmount();
 });
 
 test('dispatch the same state should be intercepted', () => {

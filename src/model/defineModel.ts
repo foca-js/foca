@@ -339,7 +339,7 @@ export const defineModel = <
     );
 
     if (onInit) {
-      modelStore.onReady(() => {
+      modelStore.onInitialized().then(() => {
         onInit.call(hookCtx);
       });
     }

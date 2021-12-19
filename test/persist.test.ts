@@ -7,7 +7,6 @@ import {
   hasVersionPersistModel,
   persistModel,
 } from './models/persistModel';
-import { storeUnmount } from './utils/store';
 
 const stringifyState = (model: Model) => {
   return JSON.stringify(JSON.stringify(model.state));
@@ -27,7 +26,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  storeUnmount();
+  store.unmount();
   await engines.memoryStorage.clear();
 });
 

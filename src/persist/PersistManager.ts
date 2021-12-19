@@ -11,17 +11,16 @@ export class PersistManager {
     this.list = options.map((option) => new PersistItem(option));
   }
 
-  init(store: Store) {
-    store.subscribe(() => {
-      this.update(store.getState());
-    });
-
+  init(store: Store, hydrate: boolean) {
     return Promise.all(
       this.list.map((item) => {
         return item.init();
       }),
     ).then(() => {
-      store.dispatch(actionHydrate(this.collect()));
+      store.subscribe(() => {
+        this.update(store.getState());
+      });
+      hydrate && store.dispatch(actionHydrate(this.collect()));
     });
   }
 

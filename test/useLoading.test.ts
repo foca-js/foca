@@ -1,14 +1,14 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { FocaProvider, store, useLoading } from '../src';
 import { basicModel } from './models/basicModel';
-import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
 });
 
 afterEach(() => {
-  storeUnmount();
+  store.refresh();
+  store.unmount();
 });
 
 test('Trace loading', async () => {

@@ -1,6 +1,7 @@
 import sleep from 'sleep-promise';
 import { engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
+import { PersistManager } from '../src/persist/PersistManager';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
 import {
@@ -8,10 +9,9 @@ import {
   hasVersionPersistModel,
   persistModel,
 } from './models/persistModel';
-import { storeReady, storeUnmount } from './utils/store';
 
 afterEach(() => {
-  storeUnmount();
+  store.unmount();
 });
 
 const initializeStoreWithPersist = () => {
@@ -50,15 +50,21 @@ test('Method replaceReducer is deprecated', () => {
   expect(() => store.replaceReducer()).toThrowError();
 });
 
-test('Store can only initialize once', () => {
+test('Store can initialize many times except production env', () => {
   store.init();
+  store.init();
+  expect(() => store.init()).not.toThrowError();
+
+  const oldEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
   expect(() => store.init()).toThrowError();
+  process.env.NODE_ENV = oldEnv;
 });
 
 test('Store can define persist with different engine', async () => {
   initializeStoreWithPersist();
 
-  await storeReady();
+  await store.onInitialized();
 
   expect(JSON.stringify(store.persistor?.collect())).toBe('{}');
 
@@ -101,7 +107,7 @@ test('Store can hydrate persist state', async () => {
 
   initializeStoreWithPersist();
 
-  await storeReady();
+  await store.onInitialized();
 
   expect(basicModel.state).toMatchObject({
     count: 123,
@@ -109,7 +115,7 @@ test('Store can hydrate persist state', async () => {
   });
 });
 
-test('refresh the whole state', () => {
+test('refresh the total state', () => {
   store.init();
 
   basicModel.plus(1);
@@ -129,6 +135,71 @@ test('refresh the whole state', () => {
   store.refresh(true);
   expect(basicModel.state.count).toEqual(0);
   expect(basicSkipRefreshModel.state.count).toEqual(0);
+});
 
-  storeUnmount();
+test('duplicate init() will keep state', () => {
+  store.init();
+
+  expect(basicModel.state.count).toEqual(0);
+  basicModel.plus(1);
+  expect(basicModel.state.count).toEqual(1);
+
+  store.init();
+  expect(basicModel.state.count).toEqual(1);
+});
+
+test('duplicate init() will replace persistor', async () => {
+  store.init();
+  await store.onInitialized();
+  await sleep(100);
+  expect(store.persistor).toBeUndefined();
+
+  store.init({
+    persist: [
+      {
+        key: 'test',
+        version: 2,
+        engine: engines.memoryStorage,
+        models: [],
+      },
+    ],
+  });
+  await store.onInitialized();
+  basicModel.plus(1);
+  await sleep(100);
+  expect(store.persistor).toBeInstanceOf(PersistManager);
+  expect(store.persistor!.collect()).toStrictEqual({});
+
+  store.init({
+    persist: [
+      {
+        key: 'test',
+        version: 2,
+        engine: engines.memoryStorage,
+        models: [basicModel],
+      },
+    ],
+  });
+  await store.onInitialized();
+  basicModel.plus(1);
+  await sleep(100);
+  expect(store.persistor!.collect()).toStrictEqual({
+    [basicModel.name]: {
+      count: 2,
+      hello: 'world',
+    },
+  });
+
+  store.init({
+    persist: [
+      {
+        key: 'test',
+        version: 2,
+        engine: engines.memoryStorage,
+        models: [],
+      },
+    ],
+  });
+  await store.onInitialized();
+  expect(store.persistor!.collect()).toStrictEqual({});
 });

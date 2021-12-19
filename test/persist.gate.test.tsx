@@ -3,7 +3,6 @@ import { act, create } from 'react-test-renderer';
 import { engines, FocaProvider, store } from '../src';
 import { PersistGateProps } from '../src/persist/PersistGate';
 import { basicModel } from './models/basicModel';
-import { storeReady, storeUnmount } from './utils/store';
 
 const Loading: FC = () => <div id="gateLoading">Yes</div>;
 
@@ -41,7 +40,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  storeUnmount();
+  store.unmount();
 });
 
 test('PersistGate will inject to shadow dom', async () => {
@@ -51,7 +50,7 @@ test('PersistGate will inject to shadow dom', async () => {
   );
 
   await act(async () => {
-    await storeReady();
+    await store.onInitialized();
     dom.update(<Root />);
   });
   expect(dom.root.findByProps({ id: 'inner' })).toBeInstanceOf(Object);
@@ -64,7 +63,7 @@ test('PersistGate allows function children', async () => {
   expect(dom.root.findByProps({ id: 'isReady' }).children[0]).toBe('false');
 
   await act(async () => {
-    await storeReady();
+    await store.onInitialized();
     dom.update(<Root useFunction />);
   });
   expect(dom.root.findByProps({ id: 'isReady' }).children[0]).toBe('true');
@@ -80,7 +79,7 @@ test('PersistGate allows loading children', async () => {
   expect(dom.root.findByProps({ id: 'gateLoading' }).children[0]).toBe('Yes');
 
   await act(async () => {
-    await storeReady();
+    await store.onInitialized();
     dom.update(<Root loading={<Loading />} />);
   });
 

@@ -1,9 +1,8 @@
 import { cloneModel, defineModel, engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
-import { storeReady, storeUnmount } from './utils/store';
 
 afterEach(() => {
-  storeUnmount();
+  store.unmount();
 });
 
 const createModel = () => {
@@ -24,12 +23,14 @@ const createModel = () => {
   });
 };
 
-test('trigger ready hooks on store ready', () => {
+test('trigger ready hooks on store ready', async () => {
   const hookModel = createModel();
   store.init();
 
   const hook2Model = createModel();
   const clonedModel = cloneModel('hooks' + Math.random(), hookModel);
+
+  await Promise.resolve();
 
   expect(hookModel.state.count).toBe(101);
   expect(hook2Model.state.count).toBe(101);
@@ -72,7 +73,7 @@ test('trigger ready hooks on store and persist ready', async () => {
   expect(hook2Model.state.count).toBe(0);
   expect(clonedModel.state.count).toBe(0);
 
-  await storeReady();
+  await store.onInitialized();
 
   expect(hookModel.state.count).toBe(101 + 20);
   expect(hook2Model.state.count).toBe(101);

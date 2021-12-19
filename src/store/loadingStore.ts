@@ -7,7 +7,7 @@ import { loadingInterceptor } from '../middleware/loadingInterceptor';
 import { isLoadingAction } from '../actions/loading';
 import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
-import { isRefreshAction } from '../actions/refresh';
+import { actionRefresh, isRefreshAction } from '../actions/refresh';
 import { combine } from './emptyStore';
 
 export interface FindLoading {
@@ -77,6 +77,10 @@ const helper = {
 
   keyOf(model: string, method: string) {
     return model + '.' + method;
+  },
+
+  refresh() {
+    return loadingStore.dispatch(actionRefresh(true));
   },
 };
 

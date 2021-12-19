@@ -2,14 +2,14 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { FocaProvider, store, useModel } from '../src';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
-import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
 });
 
 afterEach(() => {
-  storeUnmount();
+  store.refresh();
+  store.unmount();
 });
 
 test('get state from one model', () => {

@@ -1,6 +1,5 @@
 import { cloneModel, store } from '../src';
 import { basicModel } from './models/basicModel';
-import { storeUnmount } from './utils/store';
 
 let modelIndex = 0;
 
@@ -9,7 +8,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  storeUnmount();
+  store.unmount();
 });
 
 test('Model can be cloned', async () => {

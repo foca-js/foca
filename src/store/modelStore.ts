@@ -1,5 +1,4 @@
 import {
-  AnyAction,
   applyMiddleware,
   compose,
   createStore,
@@ -9,7 +8,7 @@ import {
   Store,
 } from 'redux';
 import { $$observable } from '../utils/symbolObservable';
-import { SubscribeToken, Topic } from 'topic';
+import { KeepToken, Topic } from 'topic';
 import { actionRefresh, RefreshAction } from '../actions/refresh';
 import { modelInterceptor } from '../middleware/modelInterceptor';
 import type { PersistOptions } from '../persist/PersistItem';
@@ -32,15 +31,18 @@ interface CreateStoreOptions {
 }
 
 class StoreAdvanced implements Store {
-  public /*protected*/ topic: Topic<{
+  protected topic: Topic<{
     storeReady: [];
   }> = new Topic();
-  public /*protected*/ origin?: Store;
+  protected readonly keepToken: KeepToken;
+  protected isReady: boolean = false;
+
+  protected origin?: Store;
   protected consumers: Record<string, Reducer> = {};
   protected reducerKeys: string[] = [];
   public /*protected*/ persistor?: PersistManager;
 
-  protected reducer: Reducer;
+  protected reducer!: Reducer;
 
   /** @deprecated */
   replaceReducer(): never {
@@ -53,7 +55,7 @@ class StoreAdvanced implements Store {
   declare [Symbol.observable]: Store[typeof Symbol.observable];
 
   constructor() {
-    this.reducer = this.combineReducers();
+    this.keepToken = this.topic.keep('storeReady', () => this.isReady);
 
     assignStoreKeys.forEach((key) => {
       // @ts-expect-error
@@ -64,18 +66,27 @@ class StoreAdvanced implements Store {
   }
 
   init(options: CreateStoreOptions = {}) {
-    if (this.origin) {
-      throw new Error('[store] Call init() multiple times.');
+    const firstInitialize = !this.origin;
+
+    if (!firstInitialize) {
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('[store] Call init() multiple times.');
+      }
     }
+
+    this.isReady = false;
+    this.reducer = this.combineReducers();
 
     if (options.persist && options.persist.length) {
       this.persistor = new PersistManager(options.persist);
       this.reducer = this.persistor.combineReducer(this.reducer);
+    } else {
+      this.persistor = void 0;
     }
 
     const store = (this.origin = createStore(
       this.reducer,
-      options.preloadedState,
+      firstInitialize ? options.preloadedState : this.getState(),
       this.getCompose(options.compose)(
         applyMiddleware.apply(
           null,
@@ -92,28 +103,38 @@ class StoreAdvanced implements Store {
     });
 
     if (this.persistor) {
-      this.persistor.init(store).then(() => {
-        this.setReady();
+      this.persistor.init(store, firstInitialize).then(() => {
+        this.ready();
       });
     } else {
-      this.setReady();
+      this.ready();
     }
 
     return this;
   }
 
   refresh(force: boolean = false): RefreshAction {
-    return this.dispatch(loadingStore.dispatch(actionRefresh(force)));
+    return loadingStore.helper.refresh(), this.dispatch(actionRefresh(force));
   }
 
-  onReady(callback: Function): SubscribeToken {
-    return this.topic.subscribeOnce('storeReady', () => {
-      callback();
+  onInitialized(): Promise<void> {
+    return new Promise((resolve) => {
+      if (this.isReady) {
+        resolve();
+      } else {
+        this.topic.subscribeOnce('storeReady', resolve);
+      }
     });
   }
 
-  protected setReady() {
-    this.topic.keep('storeReady', true);
+  protected ready() {
+    this.topic.publish('storeReady');
+    this.isReady = true;
+  }
+
+  unmount() {
+    this.origin = void 0;
+    this.isReady = false;
   }
 
   protected getCompose(
@@ -126,13 +147,6 @@ class StoreAdvanced implements Store {
           window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
         : customCompose) || compose
     );
-  }
-
-  protected get store(): Store<Record<string, object>, AnyAction> {
-    if (!this.origin) {
-      throw new Error('Store is not defined, do you forget to initialize it?');
-    }
-    return this.origin;
   }
 
   protected combineReducers(): Reducer<Record<string, object>> {

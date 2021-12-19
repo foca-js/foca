@@ -1,14 +1,13 @@
 import { getLoading, store } from '../src';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
-import { storeUnmount } from './utils/store';
 
 beforeEach(() => {
   store.init();
 });
 
 afterEach(() => {
-  storeUnmount();
+  store.unmount();
 });
 
 test('Collect loading status for effect method', async () => {
