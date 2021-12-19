@@ -40,6 +40,7 @@ const initialState: { count: number } = {
 
 // 无须手动注册到store，直接导出到react组件中使用
 export const counterModel = defineModel('counter', {
+  // 初始值，必填属性，其他属性均可选
   initialState,
   actions: {
     // state可自动提示类型 { count: number }
@@ -82,6 +83,13 @@ export const counterModel = defineModel('counter', {
       return new Promise((resolve) => {
         setTimeout(resolve, duration);
       });
+    },
+  },
+  hooks: {
+    // store初始化完成后触发onInit钩子
+    onInit() {
+      this.plus(1);
+      console.log(this.state);
     },
   },
 });
