@@ -1,3 +1,8 @@
+## [0.9.1](https://github.com/foca-js/foca/compare/v0.9.0...v0.9.1)&nbsp;&nbsp;(2021-12-20)
+
+- 在开发环境下允许多次执行`store.init()`以适应热重载
+- 持久化解析失败时一律抛出异常
+
 ## [0.9.0](https://github.com/foca-js/foca/compare/v0.8.1...v0.9.0)&nbsp;&nbsp;(2021-12-17)
 
 - [Breaking] 删除 `useMeta()`, `getMeta()` 接口，移除 meta 概念
