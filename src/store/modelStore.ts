@@ -1,4 +1,5 @@
 import {
+  AnyAction,
   applyMiddleware,
   compose,
   createStore,
@@ -15,13 +16,6 @@ import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
 import { combine } from './emptyStore';
 import { loadingStore } from './loadingStore';
-
-const assignStoreKeys: (keyof Store | symbol)[] = [
-  'dispatch',
-  'subscribe',
-  'getState',
-  $$observable,
-];
 
 interface CreateStoreOptions {
   preloadedState?: PreloadedState<any>;
@@ -44,25 +38,8 @@ class StoreAdvanced implements Store {
 
   protected reducer!: Reducer;
 
-  /** @deprecated */
-  replaceReducer(): never {
-    throw new Error('[store] replaceReducer() had been deprecated.');
-  }
-
-  declare dispatch: Store['dispatch'];
-  declare subscribe: Store['subscribe'];
-  declare getState: Store<Record<string, any>>['getState'];
-  declare [Symbol.observable]: Store[typeof Symbol.observable];
-
   constructor() {
     this.keepToken = this.topic.keep('storeReady', () => this.isReady);
-
-    assignStoreKeys.forEach((key) => {
-      // @ts-expect-error
-      this[key] = () => {
-        throw new Error(`[store] Call method ${key.toString()} before init().`);
-      };
-    });
   }
 
   init(options: CreateStoreOptions = {}) {
@@ -97,11 +74,6 @@ class StoreAdvanced implements Store {
 
     combine(store);
 
-    assignStoreKeys.forEach((key) => {
-      // @ts-expect-error
-      this[key] = store[key];
-    });
-
     if (this.persistor) {
       this.persistor.init(store, firstInitialize).then(() => {
         this.ready();
@@ -113,8 +85,34 @@ class StoreAdvanced implements Store {
     return this;
   }
 
+  /** @deprecated */
+  replaceReducer(): never {
+    throw new Error('[store] replaceReducer() had been deprecated.');
+  }
+
+  dispatch: Store['dispatch'] = (action) => {
+    return this.store.dispatch(action);
+  };
+
+  getState: Store<Record<string, any>>['getState'] = () => {
+    return this.store.getState();
+  };
+
+  subscribe: Store['subscribe'] = (listener) => {
+    return this.store.subscribe(listener);
+  };
+
+  [$$observable]: Store[typeof $$observable] = () => {
+    return this.store[$$observable]();
+  };
+
   refresh(force: boolean = false): RefreshAction {
     return loadingStore.helper.refresh(), this.dispatch(actionRefresh(force));
+  }
+
+  unmount() {
+    this.origin = void 0;
+    this.isReady = false;
   }
 
   onInitialized(): Promise<void> {
@@ -132,9 +130,11 @@ class StoreAdvanced implements Store {
     this.isReady = true;
   }
 
-  unmount() {
-    this.origin = void 0;
-    this.isReady = false;
+  protected get store(): Store<Record<string, object>, AnyAction> {
+    if (!this.origin) {
+      throw new Error('[store] did you forgt to call init()?');
+    }
+    return this.origin;
   }
 
   protected getCompose(
