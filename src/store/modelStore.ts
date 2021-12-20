@@ -53,6 +53,7 @@ class StoreAdvanced implements Store {
 
     this.isReady = false;
     this.reducer = this.combineReducers();
+    this.persistor && this.persistor.destroy();
 
     if (options.persist && options.persist.length) {
       this.persistor = new PersistManager(options.persist);
@@ -61,18 +62,26 @@ class StoreAdvanced implements Store {
       this.persistor = void 0;
     }
 
-    const store = (this.origin = createStore(
-      this.reducer,
-      firstInitialize ? options.preloadedState : this.getState(),
-      this.getCompose(options.compose)(
-        applyMiddleware.apply(
-          null,
-          (options.middleware || []).concat(modelInterceptor),
-        ),
-      ),
-    ));
+    let store: Store;
 
-    combine(store);
+    if (firstInitialize) {
+      store = this.origin = createStore(
+        this.reducer,
+        options.preloadedState,
+        this.getCompose(options.compose)(
+          applyMiddleware.apply(
+            null,
+            (options.middleware || []).concat(modelInterceptor),
+          ),
+        ),
+      );
+
+      combine(store);
+    } else {
+      // 重新创建store会导致组件里的subscription都失效
+      store = this.origin!;
+      store.replaceReducer(this.reducer);
+    }
 
     if (this.persistor) {
       this.persistor.init(store, firstInitialize).then(() => {

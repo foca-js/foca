@@ -230,6 +230,22 @@ test('Memoize the selector result', () => {
   fn2.mockRestore();
 });
 
+test('Hooks keep working after hot reload', async () => {
+  const { result } = renderHook(() => useModel(basicModel), {
+    wrapper: FocaProvider,
+  });
+
+  expect(result.current.count).toEqual(0);
+
+  store.init();
+
+  act(() => {
+    basicModel.plus(1);
+  });
+
+  expect(result.current.count).toEqual(1);
+});
+
 test.skip('type checking', () => {
   const basic = useModel(basicModel);
   basic.count.toFixed();

@@ -1,4 +1,4 @@
-import { Reducer, Store } from 'redux';
+import { Reducer, Store, Unsubscribe } from 'redux';
 import { actionHydrate, isHydrateAction } from '../actions/persist';
 import { freezeState } from '../utils/freezeState';
 import { PersistItem, PersistOptions } from './PersistItem';
@@ -6,22 +6,24 @@ import { PersistItem, PersistOptions } from './PersistItem';
 export class PersistManager {
   protected readonly list: PersistItem[] = [];
   protected timer?: NodeJS.Timeout;
+  protected unsubscrbeStore!: Unsubscribe;
 
   constructor(options: PersistOptions[]) {
     this.list = options.map((option) => new PersistItem(option));
   }
 
   init(store: Store, hydrate: boolean) {
-    return Promise.all(
-      this.list.map((item) => {
-        return item.init();
-      }),
-    ).then(() => {
-      store.subscribe(() => {
-        this.update(store.getState());
-      });
+    this.unsubscrbeStore = store.subscribe(() => {
+      this.update(store.getState());
+    });
+
+    return Promise.all(this.list.map((item) => item.init())).then(() => {
       hydrate && store.dispatch(actionHydrate(this.collect()));
     });
+  }
+
+  destroy() {
+    this.unsubscrbeStore();
   }
 
   collect(): Record<string, object> {

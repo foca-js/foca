@@ -50,7 +50,7 @@ test('Method replaceReducer is deprecated', () => {
   expect(() => store.replaceReducer()).toThrowError();
 });
 
-test('Store can initialize many times except production env', () => {
+test('Store can initialize many times except production env', async () => {
   store.init();
   store.init();
   expect(() => store.init()).not.toThrowError();
@@ -59,6 +59,8 @@ test('Store can initialize many times except production env', () => {
   process.env.NODE_ENV = 'production';
   expect(() => store.init()).toThrowError();
   process.env.NODE_ENV = oldEnv;
+
+  await store.onInitialized();
 });
 
 test('Store can define persist with different engine', async () => {
@@ -151,7 +153,6 @@ test('duplicate init() will keep state', () => {
 test('duplicate init() will replace persistor', async () => {
   store.init();
   await store.onInitialized();
-  await sleep(100);
   expect(store.persistor).toBeUndefined();
 
   store.init({
@@ -164,10 +165,10 @@ test('duplicate init() will replace persistor', async () => {
       },
     ],
   });
+  expect(store.persistor).toBeInstanceOf(PersistManager);
   await store.onInitialized();
   basicModel.plus(1);
   await sleep(100);
-  expect(store.persistor).toBeInstanceOf(PersistManager);
   expect(store.persistor!.collect()).toStrictEqual({});
 
   store.init({
