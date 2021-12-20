@@ -1,6 +1,6 @@
 import React from 'react';
 import { FC } from 'react';
-import { act, create } from 'react-test-renderer';
+import { act, render, screen } from '@testing-library/react';
 import { store, connect, FocaProvider, getLoading } from '../src';
 import { basicModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
@@ -8,8 +8,8 @@ import { complexModel } from './models/complexModel';
 let App: FC<ReturnType<typeof mapStateToProps>> = ({ count, loading }) => {
   return (
     <>
-      <div id="count">{count}</div>
-      <div id="loading">{loading.toString()}</div>
+      <div data-testid="count">{count}</div>
+      <div data-testid="loading">{loading.toString()}</div>
     </>
   );
 };
@@ -40,44 +40,42 @@ afterEach(() => {
 });
 
 test('Get state from connect', async () => {
-  const dom = create(<Root />);
-  const $count = dom.root.findByProps({ id: 'count' });
-  const $loading = dom.root.findByProps({ id: 'loading' });
+  render(<Root />);
+  const $count = screen.queryByTestId('count')!;
+  const $loading = screen.queryByTestId('loading')!;
 
-  expect($count.children[0]).toBe('0');
-  expect($loading.children[0]).toBe('false');
+  expect($count.innerHTML).toBe('0');
+  expect($loading.innerHTML).toBe('false');
 
   act(() => {
     basicModel.plus(0);
   });
-  expect($count.children[0]).toBe('0');
+  expect($count.innerHTML).toBe('0');
 
   act(() => {
     basicModel.plus(1);
   });
-  expect($count.children[0]).toBe('1');
+  expect($count.innerHTML).toBe('1');
 
   act(() => {
     basicModel.plus(20.5);
   });
-  expect($count.children[0]).toBe('21.5');
+  expect($count.innerHTML).toBe('21.5');
 
   act(() => {
     complexModel.addUser(40, '');
   });
-  expect($count.children[0]).toBe('22.5');
+  expect($count.innerHTML).toBe('22.5');
 
   let promise!: Promise<any>;
 
   act(() => {
     promise = basicModel.pureAsync();
   });
-  expect($loading.children[0]).toBe('true');
+  expect($loading.innerHTML).toBe('true');
 
   await act(async () => {
     await promise;
   });
-  expect($loading.children[0]).toBe('false');
-
-  dom.unmount();
+  expect($loading.innerHTML).toBe('false');
 });

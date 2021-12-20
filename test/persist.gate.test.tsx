@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { act, create } from 'react-test-renderer';
+import { act, render, screen } from '@testing-library/react';
 import { engines, FocaProvider, store } from '../src';
 import { PersistGateProps } from '../src/persist/PersistGate';
 import { basicModel } from './models/basicModel';
 
-const Loading: FC = () => <div id="gateLoading">Yes</div>;
+const Loading: FC = () => <div data-testid="gateLoading">Yes</div>;
 
 const Root: FC<PersistGateProps & { useFunction?: boolean }> = ({
   loading,
@@ -15,12 +15,12 @@ const Root: FC<PersistGateProps & { useFunction?: boolean }> = ({
       {useFunction ? (
         (isReady: boolean) => (
           <>
-            <div id="isReady">{String(isReady)}</div>
-            <div id="inner" />
+            <div data-testid="isReady">{String(isReady)}</div>
+            <div data-testid="inner" />
           </>
         )
       ) : (
-        <div id="inner" />
+        <div data-testid="inner" />
       )}
     </FocaProvider>
   );
@@ -44,58 +44,46 @@ afterEach(() => {
 });
 
 test('PersistGate will inject to shadow dom', async () => {
-  const dom = create(<Root />);
-  expect(() => dom.root.findByProps({ id: 'inner' })).toThrowError(
-    'No instances found',
-  );
+  render(<Root />);
+  expect(screen.queryByTestId('inner')).toBeNull();
 
   await act(async () => {
     await store.onInitialized();
-    dom.update(<Root />);
   });
-  expect(dom.root.findByProps({ id: 'inner' })).toBeInstanceOf(Object);
-
-  dom.unmount();
+  expect(screen.queryByTestId('inner')).not.toBeNull();
 });
 
 test('PersistGate allows function children', async () => {
-  const dom = create(<Root useFunction />);
-  expect(dom.root.findByProps({ id: 'isReady' }).children[0]).toBe('false');
+  render(<Root useFunction />);
+  expect(screen.queryByTestId('isReady')!.innerHTML).toBe('false');
 
   await act(async () => {
     await store.onInitialized();
-    dom.update(<Root useFunction />);
   });
-  expect(dom.root.findByProps({ id: 'isReady' }).children[0]).toBe('true');
-
-  dom.unmount();
+  expect(screen.queryByTestId('isReady')!.innerHTML).toBe('true');
 });
 
 test('PersistGate allows loading children', async () => {
-  const dom = create(<Root loading={<Loading />} />);
-  expect(() => dom.root.findByProps({ id: 'inner' })).toThrowError(
-    'No instances found',
-  );
-  expect(dom.root.findByProps({ id: 'gateLoading' }).children[0]).toBe('Yes');
+  render(<Root loading={<Loading />} />);
+  expect(screen.queryByTestId('inner')).toBeNull();
+  expect(screen.queryByTestId('gateLoading')!.innerHTML).toBe('Yes');
 
   await act(async () => {
     await store.onInitialized();
-    dom.update(<Root loading={<Loading />} />);
   });
 
-  expect(dom.root.findByProps({ id: 'inner' })).toBeInstanceOf(Object);
-  expect(() => dom.root.findByProps({ id: 'gateLoading' })).toThrowError(
-    'No instances found',
-  );
-
-  dom.unmount();
+  expect(screen.queryByTestId('inner')).not.toBeNull();
+  expect(screen.queryByTestId('gateLoading')).toBeNull();
 });
 
 test('PersistGate will warning for both function children and loading children', async () => {
   const spy = jest.spyOn(console, 'error').mockImplementation();
-  const dom = create(<Root useFunction loading={<Loading />} />);
-  expect(spy).toHaveBeenCalledTimes(1);
-  spy.mockRestore();
 
-  dom.unmount();
+  render(<Root useFunction loading={<Loading />} />);
+  expect(spy).toHaveBeenCalledTimes(1);
+
+  await act(() => store.onInitialized());
+  expect(spy).toHaveBeenCalledTimes(2);
+
+  spy.mockRestore();
 });
