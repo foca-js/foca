@@ -19,8 +19,7 @@ store.init();
 
 ```tsx
 // File: index.tsx
-// 别忘了这行
-import './store';
+import './store'; // 别忘了这行！
 
 import ReactDOM from 'react-dom';
 import { FocaProvider } from 'foca';
@@ -33,6 +32,47 @@ ReactDom.render(
   document.getElementById('root'),
 );
 ```
+
+# 热更新
+
+<small>如果是 React-Native，你可以跳过这一节。</small>
+
+因为 store.ts 需要被入口文件引入，而 store.ts 又引入了部分 model，所以如果相应的 model 做了修改操作时，会导致浏览器页面全量刷新而非热更新。如果你正在使用当前流行的打包工具，建议加上`hot.accept`手动处理模块更新。
+
+<!-- tabs:start -->
+
+#### ** Vite **
+
+```typescript
+// File: store.ts
+
+store.init(...);
+
+// https://cn.vitejs.dev/guide/api-hmr.html#hot-acceptcb
+if (import.meta.hot) {
+  import.meta.hot.accept(() => {
+    console.log('Hot updated: store');
+  });
+}
+```
+
+#### ** Webpack **
+
+```typescript
+// File: store.ts
+
+store.init(...);
+
+// 如果是ESM项目，亦可尝试：import.meta.webpackHot
+// https://webpack.docschina.org/api/hot-module-replacement/
+if (module.hot) {
+  module.hot.accept(() => {
+    console.log('Hot updated: store');
+  });
+}
+```
+
+<!-- tabs:end -->
 
 # 日志
 
