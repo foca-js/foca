@@ -203,8 +203,7 @@ test('never rehydrate even time expired', async () => {
 });
 
 test('hydrate failed due to invalid format', async () => {
-  const persist = createDefaultInstance();
-
+  let persist = createDefaultInstance();
   await engines.memoryStorage.setItem(
     persist.key,
     JSON.stringify(<PersistSchema>{
@@ -218,8 +217,34 @@ test('hydrate failed due to invalid format', async () => {
       },
     }),
   );
-
   await expect(persist.init()).rejects.toThrowError();
+  expect(persist.collect()).toStrictEqual({});
+
+  await Promise.resolve();
+  persist = createDefaultInstance();
+  await expect(persist.init()).resolves.toBeUndefined();
+  expect(persist.collect()).toStrictEqual({});
+
+  persist = createDefaultInstance();
+  await engines.memoryStorage.setItem(
+    persist.key,
+    JSON.stringify(<PersistSchema>{
+      v: 1,
+      d: {
+        [persistModel.name]: {
+          t: Date.now(),
+          v: 0,
+          d: JSON.stringify(persistModel.state) + '$$$$',
+        },
+      },
+    }) + '$$$$',
+  );
+  await expect(persist.init()).rejects.toThrowError();
+  expect(persist.collect()).toStrictEqual({});
+
+  await Promise.resolve();
+  persist = createDefaultInstance();
+  await expect(persist.init()).resolves.toBeUndefined();
   expect(persist.collect()).toStrictEqual({});
 });
 

@@ -112,48 +112,46 @@ export class PersistItem {
     });
   }
 
-  init() {
+  init(): Promise<void> {
     return this.options.engine.getItem(this.key).then((data) => {
       if (!data) {
-        return void this.dump();
+        return this.dump();
       }
-
-      let schema: PersistSchema;
 
       try {
-        schema = JSON.parse(data) as PersistSchema;
-      } catch {
-        console.error('[persist] Unable to parse persist data from storage');
-        return void this.dump();
-      }
+        const schema: PersistSchema = JSON.parse(data);
 
-      if (!this.validateSchema(schema)) {
-        return void this.dump();
-      }
+        if (!this.validateSchema(schema)) {
+          return this.dump();
+        }
 
-      let changed: boolean = false;
+        let changed: boolean = false;
 
-      Object.keys(schema.d).forEach((key) => {
-        const record = this.records[key];
+        Object.keys(schema.d).forEach((key) => {
+          const record = this.records[key];
 
-        if (record) {
-          const itemSchema = schema.d[key]!;
+          if (record) {
+            const itemSchema = schema.d[key]!;
 
-          if (this.validateItemSchema(itemSchema, record.opts)) {
-            const state: object = JSON.parse(itemSchema.d);
-            const decodedState = record.opts.decode.call(null, state);
-            record.schema = itemSchema;
-            record.prev = decodedState === void 0 ? state : decodedState;
+            if (this.validateItemSchema(itemSchema, record.opts)) {
+              const state: object = JSON.parse(itemSchema.d);
+              const decodedState = record.opts.decode.call(null, state);
+              record.schema = itemSchema;
+              record.prev = decodedState === void 0 ? state : decodedState;
+            } else {
+              changed ||= true;
+            }
           } else {
             changed ||= true;
           }
-        } else {
-          changed ||= true;
-        }
-      });
+        });
 
-      changed && this.dump();
-      return;
+        changed && this.dump();
+        return;
+      } catch {
+        this.dump();
+        throw new Error('[persist] Unable to parse persist data from storage');
+      }
     });
   }
 
