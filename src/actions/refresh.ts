@@ -1,4 +1,4 @@
-import { AnyAction } from 'redux';
+import type { AnyAction } from 'redux';
 
 const TYPE_REFRESH_STORE = '@@store/refresh';
 

@@ -1,4 +1,4 @@
-import { AnyAction, Middleware } from 'redux';
+import type { AnyAction, Middleware } from 'redux';
 import { deepEqual } from '../utils/deepEqual';
 import { isPreModelAction, PostModelAction } from '../actions/model';
 import { getImmer } from '../utils/getImmer';

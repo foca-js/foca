@@ -1,5 +1,5 @@
 import { resolve } from '../utils/resolve';
-import { StorageEngine } from './StorageEngine';
+import type { StorageEngine } from './StorageEngine';
 
 export const session: StorageEngine = {
   getItem(key) {

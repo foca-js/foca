@@ -2,7 +2,7 @@ import { local } from './local';
 import { memory } from './memory';
 import { session } from './session';
 
-export { StorageEngine } from './StorageEngine';
+export type { StorageEngine } from './StorageEngine';
 
 export const engines = {
   /**

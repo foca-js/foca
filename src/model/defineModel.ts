@@ -1,4 +1,4 @@
-import { AnyAction } from 'redux';
+import type { AnyAction } from 'redux';
 import cloneDeep from 'clone';
 import { EnhancedAction, enhanceAction } from './enhanceAction';
 import { EnhancedEffect, enhanceEffect } from './enhanceEffect';

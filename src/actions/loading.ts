@@ -1,4 +1,4 @@
-import { Action, AnyAction } from 'redux';
+import type { Action, AnyAction } from 'redux';
 
 export const TYPE_SET_LOADING = '@@store/loading';
 

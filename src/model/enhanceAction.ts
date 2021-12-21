@@ -1,4 +1,4 @@
-import { PreModelAction } from '../actions/model';
+import type { PreModelAction } from '../actions/model';
 import { modelStore } from '../store/modelStore';
 import { toArgs } from '../utils/toArgs';
 import type { ActionCtx } from './defineModel';

@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { ReactReduxContextValue } from 'react-redux';
+import type { ReactReduxContextValue } from 'react-redux';
 
 export const ModelContext = createContext<ReactReduxContextValue>(
   // @ts-expect-error

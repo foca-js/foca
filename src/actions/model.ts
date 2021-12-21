@@ -1,4 +1,4 @@
-import { Action, AnyAction } from 'redux';
+import type { Action, AnyAction } from 'redux';
 
 export interface PreModelAction<State extends object = object, Payload = object>
   extends Action<string> {

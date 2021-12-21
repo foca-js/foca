@@ -1,4 +1,4 @@
-import { Reducer, Store, Unsubscribe } from 'redux';
+import type { Reducer, Store, Unsubscribe } from 'redux';
 import { actionHydrate, isHydrateAction } from '../actions/persist';
 import { freezeState } from '../utils/freezeState';
 import { PersistItem, PersistOptions } from './PersistItem';

@@ -1,5 +1,5 @@
 import { resolve } from '../utils/resolve';
-import { StorageEngine } from './StorageEngine';
+import type { StorageEngine } from './StorageEngine';
 
 let cache: Partial<Record<string, string>> = {};
 
