@@ -307,30 +307,7 @@ export const defineModel = <
     });
   }
 
-  // 使用扩展操作符(rest/spread)会直接触发getter
-  const model: InternalModel<Name, State, Action, Effect> = Object.assign(
-    composeGetter(
-      {
-        get _$opts() {
-          return cloneDeep(options, false);
-        },
-      },
-      getName,
-      getState,
-    ),
-    enhancedMethods.external,
-  );
-
-  modelStore.appendReducer(
-    name,
-    createReducer({
-      name,
-      initialState: cloneDeep(initialState),
-      allowRefresh: !skipRefresh,
-    }),
-  );
-
-  if (hooks && Object.keys(hooks).length) {
+  if (hooks) {
     const { onInit } = hooks;
     const hookCtx: HookCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
@@ -344,6 +321,28 @@ export const defineModel = <
       });
     }
   }
+
+  modelStore.appendReducer(
+    name,
+    createReducer({
+      name,
+      initialState: cloneDeep(initialState),
+      allowRefresh: !skipRefresh,
+    }),
+  );
+
+  const model: InternalModel<Name, State, Action, Effect> = Object.assign(
+    composeGetter(
+      {
+        get _$opts() {
+          return cloneDeep(options, false);
+        },
+      },
+      getName,
+      getState,
+    ),
+    enhancedMethods.external,
+  );
 
   return model as any;
 };
