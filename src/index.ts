@@ -3,7 +3,7 @@ export { defineModel } from './model/defineModel';
 export { useModel } from './api/useModel';
 export { useLoading } from './api/useLoading';
 export { getLoading } from './api/getLoading';
-export { connect } from './redux/connect';
+export { connect } from './api/connect';
 
 // Init
 export { modelStore as store } from './store/modelStore';

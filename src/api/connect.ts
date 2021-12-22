@@ -1,5 +1,5 @@
 import { Connect, connect as originalConnect } from 'react-redux';
-import { EmptyContext } from './contexts';
+import { EmptyContext } from '../redux/contexts';
 import { toArgs } from '../utils/toArgs';
 
 export const connect: Connect = function () {
