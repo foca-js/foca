@@ -238,20 +238,16 @@ export function useModel(): any {
 
     if (memoResult !== null) {
       if (modelsLength === 1) {
-        if (currentStates[0] === memoStates[0]) {
-          return memoResult;
-        }
+        if (currentStates[0] === memoStates[0]) return memoResult;
       } else {
-        for (i = 0, changed = false; i < modelsLength; ++i) {
+        for (i = modelsLength, changed = false; i-- > 0; ) {
           if (currentStates[i] !== memoStates[i]) {
             changed = true;
             break;
           }
         }
 
-        if (!changed) {
-          return memoResult;
-        }
+        if (!changed) return memoResult;
       }
     }
 
@@ -268,7 +264,7 @@ export function useModel(): any {
     }
 
     memoResult = {};
-    for (i = 0; i < modelsLength; ++i) {
+    for (i = modelsLength; i-- > 0; ) {
       memoResult[reducerNames[i]!] = currentStates[i]!;
     }
     return memoResult;
