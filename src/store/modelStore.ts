@@ -7,6 +7,7 @@ import {
   PreloadedState,
   Reducer,
   Store,
+  StoreEnhancer,
 } from 'redux';
 import { $$observable } from '../utils/symbolObservable';
 import { KeepToken, Topic } from 'topic';
@@ -17,9 +18,11 @@ import { PersistManager } from '../persist/PersistManager';
 import { combine } from './proxyStore';
 import { loadingStore } from './loadingStore';
 
+type Compose = typeof compose | ((enhancer: StoreEnhancer) => StoreEnhancer);
+
 interface CreateStoreOptions {
   preloadedState?: PreloadedState<any>;
-  compose?: 'redux-devtools' | typeof compose;
+  compose?: 'redux-devtools' | Compose;
   middleware?: Middleware[];
   persist?: PersistOptions[];
 }
@@ -65,15 +68,15 @@ class StoreAdvanced implements Store {
     let store: Store;
 
     if (firstInitialize) {
+      const enhancer = applyMiddleware.apply(
+        null,
+        (options.middleware || []).concat(modelInterceptor),
+      );
+
       store = this.origin = createStore(
         this.reducer,
         options.preloadedState,
-        this.getCompose(options.compose)(
-          applyMiddleware.apply(
-            null,
-            (options.middleware || []).concat(modelInterceptor),
-          ),
-        ),
+        this.getCompose(options.compose)(enhancer),
       );
 
       combine(store);
@@ -146,16 +149,23 @@ class StoreAdvanced implements Store {
     return this.origin;
   }
 
-  protected getCompose(
-    customCompose: CreateStoreOptions['compose'],
-  ): typeof compose {
-    return (
-      (customCompose === 'redux-devtools'
-        ? typeof window === 'object' &&
-          // @ts-expect-error
-          window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        : customCompose) || compose
-    );
+  protected getCompose(customCompose: CreateStoreOptions['compose']): Compose {
+    if (customCompose === 'redux-devtools') {
+      if (process.env.NODE_ENV !== 'production') {
+        return (
+          /** @ts-expect-error */
+          (typeof window === 'object'
+            ? window
+            : typeof global === 'object'
+            ? global
+            : {})['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
+        );
+      }
+
+      return compose;
+    }
+
+    return customCompose || compose;
   }
 
   protected combineReducers(): Reducer<Record<string, object>> {

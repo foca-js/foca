@@ -76,20 +76,28 @@ if (module.hot) {
 
 # 日志
 
-如果你已经安装了 Chrome 浏览器的 [redux-devtools](https://github.com/zalmoxisus/redux-devtools-extension) 扩展，那么可以直接在初始化 store 时指定。
+- 对于 Browser 项目，需要安装 Chrome 的 [redux-devtools](https://github.com/zalmoxisus/redux-devtools-extension) 扩展，然后打开控制台查看。
+- 对于 React-Native 项目，则是需要安装并启动软件 [react-native-debugger](https://github.com/jhen0409/react-native-debugger)，然后点击 App 里的按钮 `Debug with Chrome`。
+
+接着，我们在 store 里注入增强函数：
 
 ```typescript
 store.init({
-  compose: process.env.NODE_ENV === 'production' ? void 0 : 'redux-devtools',
+  // 字符串 redux-devtools 即 window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 的缩写
+  // 设置 redux-devtools 在生产环境(production)下会自动关闭
+  // 你也可以安装等效的插件包 redux-devtools-extension 自由控制
+  compose: 'redux-devtools',
 });
 ```
 
 !> 对于 process 对象，你需要安装@types/node 包才能得到提示。
 
-如果你没有安装扩展，也不需要气馁，控制台也可以实现相同的效果，只需安装下面的包就行了：
+---
+
+如果你不想安装扩展，控制台日志也可以实现相同的效果，只需安装下面的包就行了：
 
 ```bash
-yarn add @types/redux-logger redux-logger --dev
+yarn add redux-logger @types/redux-logger --dev
 ```
 
 接着我们把这个包注入 store：

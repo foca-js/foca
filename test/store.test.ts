@@ -1,3 +1,4 @@
+import { compose, StoreEnhancer } from 'redux';
 import sleep from 'sleep-promise';
 import { engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
@@ -203,4 +204,28 @@ test('duplicate init() will replace persistor', async () => {
   });
   await store.onInitialized();
   expect(store.persistor!.collect()).toStrictEqual({});
+});
+
+test('Get custom compose', () => {
+  // @ts-expect-error
+  const get: typeof store.getCompose = store.getCompose.bind(store);
+
+  expect(get(void 0)).toBe(compose);
+  expect(get(compose)).toBe(compose);
+
+  const customCompose = (): StoreEnhancer => {
+    return '' as any;
+  };
+  expect(get(customCompose)).toBe(customCompose);
+
+  expect(get('redux-devtools')).toBe(compose);
+
+  // @ts-expect-error
+  globalThis['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] = customCompose;
+  expect(get('redux-devtools')).toBe(customCompose);
+
+  const prevEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
+  expect(get('redux-devtools')).toBe(compose);
+  process.env.NODE_ENV = prevEnv;
 });
