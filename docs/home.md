@@ -9,6 +9,10 @@
 [![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/foca?label=bundle+size)](https://bundlephobia.com/package/foca@latest)
 [![npm peer dependency version](https://img.shields.io/npm/dependency-version/foca/peer/react)](https://github.com/facebook/react)
 
+<br>
+
+![mind map](./mindMap.svg)
+
 # 安装
 
 ```bash
