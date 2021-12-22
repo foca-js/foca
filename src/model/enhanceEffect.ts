@@ -126,12 +126,13 @@ const execute = <State extends object>(
 
   dispatchLoading(modelName, methodName, true, category);
 
-  return resultOrPromise
-    .then((result) => {
+  return resultOrPromise.then(
+    (result) => {
       return dispatchLoading(modelName, methodName, false, category), result;
-    })
-    .catch((e: unknown) => {
+    },
+    (e: unknown) => {
       dispatchLoading(modelName, methodName, false, category);
       throw e;
-    });
+    },
+  );
 };

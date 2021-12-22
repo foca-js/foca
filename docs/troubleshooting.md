@@ -34,8 +34,6 @@
 - Object.assign
 - Promise.resolve
 - Promise.all
-- Promise->then
-- Promise->catch
 
 这些 es6 语法在现代浏览器（chrome 45+，firefox 34+，edge 12+，safari 9+，opera 32+）的早期(2015 年)版本就已经实现，完全不需要担心兼容性问题。
 
