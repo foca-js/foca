@@ -1,9 +1,9 @@
 import { createStore, Store } from 'redux';
 
-export const emptyStore = createStore(() => ({}));
+export const proxyStore = createStore(() => ({}));
 
 const dispatch = () => {
-  emptyStore.dispatch({
+  proxyStore.dispatch({
     type: '-',
   });
 };

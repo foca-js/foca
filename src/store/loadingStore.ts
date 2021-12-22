@@ -8,7 +8,7 @@ import { isLoadingAction } from '../actions/loading';
 import { freezeState } from '../utils/freezeState';
 import { getImmer } from '../utils/getImmer';
 import { actionRefresh, isRefreshAction } from '../actions/refresh';
-import { combine } from './emptyStore';
+import { combine } from './proxyStore';
 
 export interface FindLoading {
   find(category: number | string): boolean;

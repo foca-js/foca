@@ -14,7 +14,7 @@ import { actionRefresh, RefreshAction } from '../actions/refresh';
 import { modelInterceptor } from '../middleware/modelInterceptor';
 import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
-import { combine } from './emptyStore';
+import { combine } from './proxyStore';
 import { loadingStore } from './loadingStore';
 
 interface CreateStoreOptions {

@@ -11,7 +11,7 @@ export { FocaProvider } from './redux/FocaProvider';
 export { engines } from './engines';
 
 // Advanced
-export { combine } from './store/emptyStore';
+export { combine } from './store/proxyStore';
 export { cloneModel } from './model/cloneModel';
 
 // Types
