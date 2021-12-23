@@ -1,3 +1,7 @@
+## [0.10.0](https://github.com/foca-js/foca/compare/v0.9.3...v0.10.0)&nbsp;&nbsp;(2022-04-14)
+
+- 支持 react 18
+
 ## [0.9.3](https://github.com/foca-js/foca/compare/v0.9.2...v0.9.3)&nbsp;&nbsp;(2022-04-14)
 
 - 持久化数据有可能被初始值覆盖

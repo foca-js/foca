@@ -68,7 +68,7 @@ class StoreAdvanced implements Store {
     let store: Store;
 
     if (firstInitialize) {
-      const enhancer = applyMiddleware.apply(
+      const enhancer: StoreEnhancer<any> = applyMiddleware.apply(
         null,
         (options.middleware || []).concat(modelInterceptor),
       );
