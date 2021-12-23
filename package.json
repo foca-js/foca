@@ -14,6 +14,7 @@
   "license": "MIT",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "sideEffects": false,
   "scripts": {
     "test": "jest",
     "prepublishOnly": "ts-prepublish",
