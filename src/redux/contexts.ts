@@ -11,7 +11,7 @@ export const LoadingContext = createContext<ReactReduxContextValue>(
   null,
 );
 
-export const EmptyContext = createContext<ReactReduxContextValue>(
+export const ProxyContext = createContext<ReactReduxContextValue>(
   // @ts-expect-error
   null,
 );
