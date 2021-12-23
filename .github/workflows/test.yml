@@ -10,25 +10,77 @@ on:
     branches:
 
 jobs:
-  test:
+  type-checking:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
-        ts-version: [4.4.x, 4.5.x]
-        react-version: ['16.9.0', 16.x, 17.x]
-
+        ts-version: [4.4.x, 4.5.x, 4.6.x]
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
+      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
           yarn install
           yarn add typescript@${{ matrix.ts-version }} --dev
+      - run: yarn tsc
+
+  react-16-17:
+    if: "!contains(toJson(github.event.commits), '[skip ci]')"
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        react-version: ['16.9.0', 16.x, 17.x]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: |
+          yarn install
+          yarn add --dev \
+            react@${{ matrix.react-version }} \
+            react-dom@${{ matrix.react-version }} \
+            react-test-renderer@${{ matrix.react-version }} \
+            @testing-library/react@12
+      - run: yarn test  --coverage=false
+
+  react-18-react-redux-7:
+    if: "!contains(toJson(github.event.commits), '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use React 18 & react-redux 7
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - run: |
+          yarn install
+          yarn add react-redux@7.x
+      - name: Set env
+        run: echo "REDUX_VERSION=7.x" >> $GITHUB_ENV
+      - run: yarn test test/concurrent.test.tsx --coverage=false
+
+  react-18:
+    if: "!contains(toJson(github.event.commits), '[skip ci]')"
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        react-version: [18.x]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: |
+          yarn install
           yarn add --dev \
             react@${{ matrix.react-version }} \
             react-dom@${{ matrix.react-version }} \
@@ -42,9 +94,10 @@ jobs:
           path: coverage
           if-no-files-found: error
           retention-days: 1
+
   coverage:
     if: github.ref == 'refs/heads/master'
-    needs: test
+    needs: react-18
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

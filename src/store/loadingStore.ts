@@ -111,7 +111,7 @@ export const loadingStore = createStore(
     return state;
   },
   applyMiddleware(loadingInterceptor(helper)),
-) as Store<LoadingStoreState> & { helper: typeof helper };
+) as unknown as Store<LoadingStoreState> & { helper: typeof helper };
 
 combine(loadingStore);
 

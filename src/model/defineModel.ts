@@ -266,7 +266,10 @@ export const defineModel = <
         actionCtx,
         `${methodName}.setState`,
         (state: State, fn_state: State | ((state: State) => State | void)) => {
-          return typeof fn_state === 'function' ? fn_state(state) : fn_state;
+          return typeof fn_state === 'function'
+            ? // FIXME: 函数类型无法自动推导 typescript@4.6
+              (fn_state as Function)(state)
+            : fn_state;
         },
       ),
     };
