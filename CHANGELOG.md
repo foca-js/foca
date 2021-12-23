@@ -1,3 +1,8 @@
+## [0.9.2](https://github.com/foca-js/foca/compare/v0.9.1...v0.9.2)&nbsp;&nbsp;(2021-12-23)
+
+- 增强初始化时的 compose 类型
+- 设置 sideEffects 以适配 tree-shaking
+
 ## [0.9.1](https://github.com/foca-js/foca/compare/v0.9.0...v0.9.1)&nbsp;&nbsp;(2021-12-20)
 
 - 在开发环境下允许多次执行`store.init()`以适应热重载
