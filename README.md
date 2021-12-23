@@ -149,14 +149,14 @@ class App extends Component<Props> {
       </div>
     );
   }
-};
+}
 
 const mapStateToProps = () => {
   return {
     count: counterModel.state.count,
-    loading: getLoading(counterModel.doSomething);
+    loading: getLoading(counterModel.doSomething),
   };
-}
+};
 
 export default connect(mapStateToProps)(App);
 ```
