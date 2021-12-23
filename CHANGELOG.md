@@ -2,6 +2,7 @@
 
 - 增强初始化时的 compose 类型
 - 设置 sideEffects 以适配 tree-shaking
+- 日志字符串 `redux-devtools` 现在只在非生产环境生效
 
 ## [0.9.1](https://github.com/foca-js/foca/compare/v0.9.0...v0.9.1)&nbsp;&nbsp;(2021-12-20)
 
