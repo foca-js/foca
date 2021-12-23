@@ -1,4 +1,5 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
+import { renderHook } from './helpers/renderHook';
 import { FocaProvider, store, useModel } from '../src';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';

@@ -199,6 +199,7 @@ export function useModel(): any {
     getLastElementType(args) === 'function' && args.pop();
   const models: Model[] = args;
   const modelsLength = models.length;
+  const onlyOneModel = modelsLength === 1;
 
   if (!algorithm) {
     if (selector) {
@@ -206,21 +207,22 @@ export function useModel(): any {
       // 如果只是从模型中获取数据且没有做转换，则大部分时间会降级为shallow或者strict。
       // 如果对数据做了转换，则肯定需要使用深对比。
       algorithm = 'deepEqual';
-    } else if (modelsLength > 1) {
+    } else if (onlyOneModel) {
+      // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
+      algorithm = 'strictEqual';
+    } else {
       // { key => model } 集合。
       // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
       algorithm = 'shallowEqual';
-    } else {
-      // 一个model属于一个reducer，reducer已经使用了深对比来判断是否变化，
-      algorithm = 'strictEqual';
     }
   }
 
   // 储存了结果说明是state状态变化导致的对比计算。
   // 因为存在闭包，除模型外的所有参数都是旧的，
   // 所以我们只需要保证用到的模型数据不变即可，这样可以减少无意义的计算。
-  let memoResult: any = null;
-  let memoStates: object[],
+  let hasMemo = false,
+    memoSnapshot: any,
+    memoStates: object[],
     currentStates: object[],
     i: number,
     changed: boolean;
@@ -236,9 +238,10 @@ export function useModel(): any {
       currentStates.push(state[reducerNames[i]!]!);
     }
 
-    if (memoResult !== null) {
-      if (modelsLength === 1) {
-        if (currentStates[0] === memoStates[0]) return memoResult;
+    if (hasMemo) {
+      // 大部分业务场景，用户只会传入一个模型（符合直觉），所以值得额外的快速对比
+      if (onlyOneModel) {
+        if (currentStates[0] === memoStates[0]) return memoSnapshot;
       } else {
         for (i = modelsLength, changed = false; i-- > 0; ) {
           if (currentStates[i] !== memoStates[i]) {
@@ -247,27 +250,28 @@ export function useModel(): any {
           }
         }
 
-        if (!changed) return memoResult;
+        if (!changed) return memoSnapshot;
       }
     }
 
+    hasMemo = true;
     memoStates = currentStates;
 
-    if (modelsLength === 1) {
-      return (memoResult = selector
+    if (onlyOneModel) {
+      return (memoSnapshot = selector
         ? selector(currentStates[0])
         : currentStates[0]);
     }
 
     if (selector) {
-      return (memoResult = selector.apply(null, currentStates));
+      return (memoSnapshot = selector.apply(null, currentStates));
     }
 
-    memoResult = {};
+    memoSnapshot = {};
     for (i = modelsLength; i-- > 0; ) {
-      memoResult[reducerNames[i]!] = currentStates[i]!;
+      memoSnapshot[reducerNames[i]!] = currentStates[i]!;
     }
-    return memoResult;
+    return memoSnapshot;
   }, compareFn[algorithm]);
 }
 
