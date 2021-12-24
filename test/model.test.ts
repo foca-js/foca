@@ -1,5 +1,6 @@
 import { defineModel, store } from '../src';
 import { basicModel } from './models/basicModel';
+import { complexModel } from './models/complexModel';
 
 beforeEach(() => {
   store.init();
@@ -106,4 +107,34 @@ test('define same method key will throw error', () => {
       },
     }),
   ).toThrowError('test1');
+});
+
+test('Support generator function', async () => {
+  const promise = complexModel.generatorFn(15);
+
+  expect(complexModel.state.ids).toHaveLength(0);
+  await expect(promise).resolves.toBe('generator fn');
+  expect(complexModel.state.ids).toHaveLength(1);
+  expect(complexModel.state.ids[0]).toBe(15);
+});
+
+test('Support async generator function', async () => {
+  const promise = complexModel.asyncGeneratorFn(17);
+
+  expect(complexModel.state.ids).toHaveLength(0);
+  await expect(promise).resolves.toBe('async generator fn');
+  expect(complexModel.state.ids).toHaveLength(1);
+  expect(complexModel.state.ids[0]).toBe(17);
+});
+
+test.skip('type checking', () => {
+  complexModel
+    .generatorFn(1)
+    .then((value) => value.trim())
+    .catch();
+
+  complexModel
+    .asyncGeneratorFn(1)
+    .then((value) => value.trim())
+    .catch();
 });

@@ -192,7 +192,9 @@ export interface DefineModelOptions<
    * ```
    */
   effects?: Effect &
-    ThisType<ModelAction<State, Action> & Effect & EffectCtx<State>>;
+    ThisType<
+      ModelAction<State, Action> & ModelEffect<Effect> & EffectCtx<State>
+    >;
   /**
    * 是否阻止刷新数据时跳过当前模型，默认即不跳过。
    *
@@ -210,7 +212,8 @@ export interface DefineModelOptions<
   /**
    * 模型钩子
    */
-  hooks?: Hook & ThisType<ModelAction<State, Action> & Effect & HookCtx<State>>;
+  hooks?: Hook &
+    ThisType<ModelAction<State, Action> & ModelEffect<Effect> & HookCtx<State>>;
 }
 
 export const defineModel = <
@@ -291,8 +294,10 @@ export const defineModel = <
     const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
 
     Object.keys(effects).forEach((effectName) => {
-      process.env.NODE_ENV !== 'production' &&
+      if (process.env.NODE_ENV !== 'production') {
         effectCtxs.push(createEffectCtx(effectName));
+      }
+
       enhancedMethods[getMethodCategory(effectName)][effectName] =
         enhanceEffect(
           effectCtxs[effectCtxs.length - 1]!,
