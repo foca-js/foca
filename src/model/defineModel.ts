@@ -86,7 +86,7 @@ type ModelAction<State extends object, Action extends object> = {
   readonly [K in keyof Action]: ModelActionItem<State, Action, K>;
 };
 
-type GetInternalMethodKeys<Method extends object> = {
+type GetPrivateMethodKeys<Method extends object> = {
   [K in keyof Method]: K extends `_${string}` ? K : never;
 }[keyof Method];
 
@@ -105,8 +105,8 @@ export type Model<
   // [K in keyof Action as K extends `_${string}` ? never : K]
   // 上面这种看起来简洁，业务代码提示也正常，但是业务代码那边无法点击跳转进模型了。
   // 所以需要先转换所有的属性，再把私有属性去除。
-  Omit<ModelAction<State, Action>, GetInternalMethodKeys<Action>> &
-  Omit<ModelEffect<Effect>, GetInternalMethodKeys<Effect>>;
+  Omit<ModelAction<State, Action>, GetPrivateMethodKeys<Action>> &
+  Omit<ModelEffect<Effect>, GetPrivateMethodKeys<Effect>>;
 
 export type InternalModel<
   Name extends string = string,
