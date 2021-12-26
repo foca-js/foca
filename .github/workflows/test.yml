@@ -29,7 +29,10 @@ jobs:
       - run: |
           yarn install
           yarn add typescript@${{ matrix.ts-version }} --dev
-          yarn add react@${{ matrix.react-version }} react-dom@${{ matrix.react-version }} --dev
+          yarn add --dev \
+            react@${{ matrix.react-version }} \
+            react-dom@${{ matrix.react-version }} \
+            react-test-renderer@${{ matrix.react-version }}
       - run: yarn test
       - name: Upload Coverage
         uses: actions/upload-artifact@v2
