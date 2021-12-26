@@ -7,6 +7,7 @@
 [![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca)](https://codecov.io/gh/foca-js/foca)
 [![npm](https://img.shields.io/npm/v/foca)](https://www.npmjs.com/package/foca)
 [![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/foca?label=bundle+size)](https://bundlephobia.com/package/foca@latest)
+![GitHub top language](https://img.shields.io/github/languages/top/foca-js/foca)
 [![npm peer dependency version](https://img.shields.io/npm/dependency-version/foca/peer/react)](https://github.com/facebook/react)
 
 <br>
