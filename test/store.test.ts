@@ -1,5 +1,6 @@
 import { compose, StoreEnhancer } from 'redux';
 import sleep from 'sleep-promise';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import { engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { PersistManager } from '../src/persist/PersistManager';
@@ -213,10 +214,14 @@ test('Get custom compose', () => {
   expect(get(void 0)).toBe(compose);
   expect(get(compose)).toBe(compose);
 
-  const customCompose = (): StoreEnhancer => {
-    return '' as any;
-  };
+  const customCompose = (): StoreEnhancer => '' as any;
   expect(get(customCompose)).toBe(customCompose);
+
+  const devtoolsComposer = composeWithDevTools({
+    name: 'x',
+  });
+  expect(get(devtoolsComposer)).toBe(devtoolsComposer);
+  expect(get(composeWithDevTools)).toBe(composeWithDevTools);
 
   expect(get('redux-devtools')).toBe(compose);
 
