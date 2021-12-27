@@ -83,14 +83,28 @@ if (module.hot) {
 
 ```typescript
 store.init({
+  middleware: [...],
   // 字符串 redux-devtools 即 window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 的缩写
-  // 设置 redux-devtools 在生产环境(production)下会自动关闭
+  // 设置 redux-devtools 在生产环境(process.env.NODE_ENV === 'production')下会自动关闭
   // 你也可以安装等效的插件包 redux-devtools-extension 自由控制
   compose: 'redux-devtools',
 });
 ```
 
-!> 对于 process 对象，你需要安装@types/node 包才能得到提示。
+compose 也支持回调形式，目的是为了注入更多插件。
+
+```typescript
+import { composeWithDevTools as compose } from 'redux-devtools-extension';
+// 或者使用原生的compose
+// import { compose } from 'foca';
+
+store.init({
+  middleware: [...],
+  compose(enhancer) {
+    return compose(enhancer, ...more[]);
+  },
+});
+```
 
 ---
 

@@ -9,6 +9,7 @@ export { connect } from './api/connect';
 export { modelStore as store } from './store/modelStore';
 export { FocaProvider } from './redux/FocaProvider';
 export { engines } from './engines';
+export { compose } from 'redux';
 
 // Advanced
 export { combine } from './store/proxyStore';
