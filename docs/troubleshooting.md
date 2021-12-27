@@ -4,11 +4,17 @@
 
 需要在文件 **tsconfig.json** 中开启`"strict": true`或者`"noImplicitThis": true`。
 
+# 为什么要用 this
+
+1. 可调用额外的内部属性和方法；
+2. 可调用自定义的私有方法；
+3. 方便克隆(cloneModel)，this 作为 context 是可变的。
+
 # 没找到持久化守卫组件
 
 内置在入口组件 `FocaProvider` 里了，初始化 store 的时候如果配置了 persist 属性，守卫会自动开启。
 
-# effects.setState 和 actions 的区别
+# effect.setState 和 actions 的区别
 
 互补关系。effects.setState 是专门为网络请求和一些组合业务设置的快捷操作（直接传入 state 或者回调）。相对于一些不需要复用的 action 函数，用 setState 反而能让模型对外暴露更少的接口，组件里用起来就会更舒服一些。
 
