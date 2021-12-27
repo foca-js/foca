@@ -82,6 +82,44 @@ export const userModel = defineModel('users', {
 // const count = userModel.getUsersAmount();
 ```
 
+# 私有方法
+
+我们总是会想抽出一些逻辑作为独立的方法调用，但又不想暴露给模型外部使用，而且方法一多，调用方法时 TS 会提示长长的一串方法列表，显得十分混乱。是时候声明一些私有方法了，foca 使用约定俗称的`前置下划线(_)`来代表私有方法
+
+```typescript
+const userModel = defineModel('users', {
+  initialState,
+  actions: {
+    addUser(state, user: UserItem) {
+      state.push(user);
+    },
+    _deleteUser(state, userId: number) {
+      return state.filter((user) => user.id !== userId);
+    },
+  },
+  effects: {
+    async retrieve(id: number) {
+      const user = await http.get<UserItem>(`/users/${id}`);
+      this.addUser(user);
+
+      // 私有action方法
+      this._deleteUser(15);
+      // 私有effect方法
+      this._myLogic();
+    },
+    async _myLogic() {
+      // ...
+    },
+  },
+});
+
+userModel.retrieve; // OK
+userModel._deleteUser; // 报错了，找不到属性 _deleteUser
+userModel._myLogic; // 报错了，找不到属性 _myLogic
+```
+
+对外接口变得十分清爽，减少出错概率的同时，也提升了数据的安全性。
+
 # 同类状态库共存
 
 如果你的项目已经存在一个`redux系`的状态库，不方便改动，但又想用 foca 状态库。这确实很苦恼，改动就代码怕出 bug，不改又要继续煎熬。
