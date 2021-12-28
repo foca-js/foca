@@ -271,7 +271,7 @@ export const defineModel = <
   };
 
   const enhancedMethods: {
-    [key in 'external' | 'internal']: Record<
+    [key in ReturnType<typeof getMethodCategory>]: Record<
       string,
       EnhancedAction<State> | EnhancedEffect
     >;
