@@ -1,4 +1,5 @@
-import { cloneModel, store } from '../src';
+import { defineModel, cloneModel, store } from '../src';
+import { InternalModel } from '../src/model/defineModel';
 import { basicModel } from './models/basicModel';
 
 let modelIndex = 0;
@@ -31,22 +32,53 @@ test('Cloned model name', () => {
 });
 
 test('Clone model with same name is invalid', () => {
-  expect(() => cloneModel(basicModel.name, basicModel)).toThrowError();
+  const model = defineModel(Date.now().toString(), { initialState: {} });
+  expect(() => cloneModel(model.name, model)).toThrowError();
 });
 
-test('Reset cloned model state', () => {
+test('Override state', () => {
   const model = cloneModel('model' + ++modelIndex, basicModel, {
     initialState: {
       count: 20,
       hello: 'cat',
     },
+  }) as unknown as InternalModel;
+
+  expect(model._$opts.initialState).toStrictEqual({
+    count: 20,
+    hello: 'cat',
+  });
+});
+
+test('Override persist', () => {
+  const model1 = defineModel('model' + ++modelIndex, {
+    initialState: {},
+    persist: {
+      maxAge: 20,
+      decode: (state) => state,
+    },
+    effects: {
+      cc() {
+        return 3;
+      },
+    },
   });
 
-  model.moreParams(3, 'earth');
-  expect(model.state.count).toBe(23);
-  expect(model.state.hello).toBe('cat, earth');
+  const model2 = cloneModel('model' + ++modelIndex, model1, {
+    persist: {},
+  }) as unknown as InternalModel;
 
-  model.reset();
-  expect(model.state.count).toBe(20);
-  expect(model.state.hello).toBe('cat');
+  expect(model2._$opts.persist).not.toHaveProperty('maxAge');
+
+  const model3 = cloneModel('model' + ++modelIndex, model1, (prev) => {
+    return {
+      persist: {
+        ...prev.persist,
+        maxAge: 30,
+      },
+    };
+  }) as unknown as InternalModel;
+
+  expect(model3._$opts.persist).toHaveProperty('maxAge');
+  expect(model3._$opts.persist).toHaveProperty('decode');
 });

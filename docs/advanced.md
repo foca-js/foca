@@ -18,6 +18,25 @@ const user2Model = cloneModel('users2', userModel);
 
 共享方法但状态是独立的，这是个不错的主意，你只要维护一份代码就行了。
 
+克隆时也支持修改除 actions 和 effects 之外的其他属性
+
+```typescript
+const user3Model = cloneModel('users3', userModel, {
+  initialState: {...},
+  ...
+});
+
+const user3Model = cloneModel('users3', userModel, (prev) => {
+  return {
+    initialState: {
+      ...prev.initialState,
+      customData: 'xyz',
+    },
+    ...
+  }
+});
+```
+
 # 执行状态隔离
 
 默认地，effect 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.effectX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数是拥有多个状态互不干扰。

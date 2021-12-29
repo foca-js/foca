@@ -6,6 +6,7 @@ import { modelStore } from '../store/modelStore';
 import { createReducer } from '../redux/createReducer';
 import { composeGetter, defineGetter } from '../utils/getter';
 import { getMethodCategory } from '../utils/getMethodCategory';
+import { guard } from './guard';
 
 export interface GetName<Name extends string> {
   /**
@@ -114,7 +115,7 @@ export type InternalModel<
   Action extends object = object,
   Effect extends object = object,
 > = BaseModel<Name, State> & {
-  _$opts: DefineModelOptions<State, Action, Effect>;
+  readonly _$opts: DefineModelOptions<State, Action, Effect>;
 };
 
 export type InternalAction<State extends object> = {
@@ -219,17 +220,17 @@ export const defineModel = <
   Action extends object,
   Effect extends object,
 >(
-  name: Name,
+  uniqueName: Name,
   options: DefineModelOptions<State, Action, Effect>,
 ): Model<Name, State, Action, Effect> => {
   const { initialState, actions, effects, skipRefresh, hooks } = options;
 
   const getName = <T extends object>(obj: T): T & GetName<Name> => {
-    return defineGetter(obj, 'name', () => name);
+    return defineGetter(obj, 'name', () => uniqueName);
   };
 
   const getState = <T extends object>(obj: T): T & GetState<State> => {
-    return defineGetter(obj, 'state', () => modelStore.getState()[name]);
+    return defineGetter(obj, 'state', () => modelStore.getState()[uniqueName]);
   };
 
   const getInitialState = <T extends object>(
@@ -238,12 +239,14 @@ export const defineModel = <
     return defineGetter(obj, 'initialState', () => cloneDeep(initialState));
   };
 
+  guard(uniqueName);
+
   if (process.env.NODE_ENV !== 'production') {
     if (actions && effects) {
       Object.keys(actions).forEach((key) => {
         if (effects.hasOwnProperty(key)) {
           throw new Error(
-            `[${name}] You have defined method "${key}" in both actions and effects`,
+            `[model:${uniqueName}] You have defined method "${key}" in both actions and effects`,
           );
         }
       });
@@ -323,9 +326,9 @@ export const defineModel = <
   }
 
   modelStore.appendReducer(
-    name,
+    uniqueName,
     createReducer({
-      name,
+      name: uniqueName,
       initialState: cloneDeep(initialState),
       allowRefresh: !skipRefresh,
     }),
@@ -334,9 +337,7 @@ export const defineModel = <
   const model: InternalModel<Name, State, Action, Effect> = Object.assign(
     composeGetter(
       {
-        get _$opts() {
-          return cloneDeep(options, false);
-        },
+        _$opts: options,
       },
       getName,
       getState,
