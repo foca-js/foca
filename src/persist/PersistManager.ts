@@ -4,6 +4,7 @@ import { freezeState } from '../utils/freezeState';
 import { PersistItem, PersistOptions } from './PersistItem';
 
 export class PersistManager {
+  protected initialized: boolean = false;
   protected readonly list: PersistItem[] = [];
   protected timer?: NodeJS.Timeout;
   protected unsubscrbeStore!: Unsubscribe;
@@ -14,16 +15,18 @@ export class PersistManager {
 
   init(store: Store, hydrate: boolean) {
     this.unsubscrbeStore = store.subscribe(() => {
-      this.update(store.getState());
+      this.initialized && this.update(store.getState());
     });
 
     return Promise.all(this.list.map((item) => item.init())).then(() => {
       hydrate && store.dispatch(actionHydrate(this.collect()));
+      this.initialized = true;
     });
   }
 
   destroy() {
     this.unsubscrbeStore();
+    this.initialized = false;
   }
 
   collect(): Record<string, object> {

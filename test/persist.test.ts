@@ -1,6 +1,7 @@
 import sleep from 'sleep-promise';
-import { engines, Model, store } from '../src';
+import { engines, Model, StorageEngine, store } from '../src';
 import { PersistItem, PersistSchema } from '../src/persist/PersistItem';
+import { resolve } from '../src/utils/resolve';
 import { basicModel } from './models/basicModel';
 import {
   hasDecodePersistModel,
@@ -40,9 +41,9 @@ test('rehydrate state to storage', async () => {
   await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBe(
     JSON.stringify(persist),
   );
-  expect(engines.memoryStorage.getItem(persist.key)).not.toContain(
-    stringifyState(persistModel),
-  );
+  await expect(
+    engines.memoryStorage.getItem(persist.key),
+  ).resolves.not.toContain(stringifyState(persistModel));
 
   persistModel.plus(15);
   expect(persistModel.state.counter).toBe(15);
@@ -347,4 +348,79 @@ test('model can specific persist decoder', async () => {
       counter: 57,
     },
   });
+});
+
+test('stop restoring before hydrate (slow engine)', async () => {
+  let cache: Partial<Record<string, string>> = {};
+  const engine: StorageEngine = {
+    async getItem(key) {
+      const result = cache[key] === void 0 ? null : cache[key]!;
+      await sleep(200);
+      return result;
+    },
+    async setItem(key, value) {
+      return resolve(() => {
+        cache[key] = value;
+      });
+    },
+    async removeItem(key) {
+      return resolve(() => {
+        cache[key] = void 0;
+      });
+    },
+    async clear() {
+      return resolve(() => {
+        cache = {};
+      });
+    },
+  };
+
+  await engine.setItem(
+    '@test1',
+    JSON.stringify(<PersistSchema>{
+      v: 1,
+      d: {
+        [persistModel.name]: {
+          t: Date.now(),
+          v: 0,
+          d: JSON.stringify(persistModel.state),
+        },
+      },
+    }),
+  );
+
+  store.init({
+    persist: [
+      {
+        version: 1,
+        keyPrefix: '@',
+        key: 'test1',
+        engine: engine,
+        models: [persistModel],
+      },
+    ],
+  });
+
+  const persistManager = store.persistor!;
+
+  const promise = persistManager.init(store, true);
+  persistModel.plus(6);
+  await promise;
+
+  expect(persistModel.state.counter).toBe(0);
+  await expect(engine.getItem('@test1')).resolves.toContain(
+    stringifyState(persistModel),
+  );
+
+  await sleep(100);
+
+  expect(persistModel.state.counter).toBe(0);
+  await expect(engine.getItem('@test1')).resolves.toContain(
+    stringifyState(persistModel),
+  );
+  expect(persistManager.collect()).toMatchObject({
+    [persistModel.name]: persistModel.state,
+  });
+
+  store.unmount();
 });

@@ -75,11 +75,11 @@ test('Store can define persist with different engine', async () => {
   const spy = jest.spyOn(globalThis, 'clearTimeout');
   expect(spy).toHaveBeenCalledTimes(0);
   basicModel.plus(1);
-  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenCalledTimes(0);
   basicModel.plus(20);
-  expect(spy).toHaveBeenCalledTimes(2);
+  expect(spy).toHaveBeenCalledTimes(1);
   basicModel.plus(1);
-  expect(spy).toHaveBeenCalledTimes(3);
+  expect(spy).toHaveBeenCalledTimes(2);
   spy.mockRestore();
 
   await sleep(50);
