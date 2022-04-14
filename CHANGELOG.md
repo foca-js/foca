@@ -1,3 +1,8 @@
+## [0.9.3](https://github.com/foca-js/foca/compare/v0.9.2...v0.9.3)&nbsp;&nbsp;(2022-04-14)
+
+- 持久化数据有可能被初始值覆盖
+- 开发环境下，增加模型名称唯一性检测
+
 ## [0.9.2](https://github.com/foca-js/foca/compare/v0.9.1...v0.9.2)&nbsp;&nbsp;(2021-12-23)
 
 - 增强初始化时的 compose 类型

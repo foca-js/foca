@@ -1,6 +1,6 @@
 {
   "name": "foca",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "repository": "git@github.com:foca-js/foca.git",
   "keywords": [
     "redux",
@@ -10,7 +10,7 @@
     "react-model"
   ],
   "description": "流畅的react状态管理库",
-  "author": "fwh1990",
+  "author": "geekact",
   "license": "MIT",
   "main": "lib/index.js",
   "module": "es/index.js",
