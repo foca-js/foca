@@ -36,7 +36,7 @@ if (IS_REACT_18) {
             basicModel.plus(1);
           });
         }
-      }, [counter]);
+      });
 
       return (
         <>
