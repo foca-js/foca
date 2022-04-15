@@ -261,14 +261,20 @@ export const defineModel = <
   );
 
   const createEffectCtx = (methodName: string): EffectCtx<State> => {
+    type StateCallback = (state: State) => State | void;
+
     const obj: Pick<EffectCtx<State>, 'setState'> = {
       setState: enhanceAction(
         actionCtx,
         `${methodName}.setState`,
-        (state: State, fn_state: State | ((state: State) => State | void)) => {
+        (state: State, fn_state: State | StateCallback) => {
+          /**
+           * 函数类型有时候会推导失败，需要强制指定
+           * @since typescript@4.6
+           * @link https://github.com/microsoft/TypeScript/issues/48118
+           */
           return typeof fn_state === 'function'
-            ? // FIXME: 函数类型无法自动推导 typescript@4.6
-              (fn_state as Function)(state)
+            ? (fn_state as StateCallback)(state)
             : fn_state;
         },
       ),
