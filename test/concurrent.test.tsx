@@ -4,7 +4,7 @@ import { basicModel } from './models/basicModel';
 import React, { FC, useEffect, useState } from 'react';
 
 const IS_REACT_18 = React.version.startsWith('18');
-const IS_REACT_REDUX_7 = process.env['REACT_REDUX_VERSION'] == '7.x';
+const IS_REACT_REDUX_7 = process.env['REACT_REDUX_VERSION'] === '7.x';
 
 if (IS_REACT_18) {
   beforeEach(() => {
@@ -62,7 +62,7 @@ if (IS_REACT_18) {
       IS_REACT_REDUX_7 ? '1' : '2',
     );
     expect(screen.queryByTestId('normalValue')!.innerHTML).toBe('2');
-  });
+  }, 10000);
 } else {
   test('no concurrent when react < 18', () => {});
 }
