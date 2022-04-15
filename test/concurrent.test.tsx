@@ -4,7 +4,7 @@ import { basicModel } from './models/basicModel';
 import React, { FC, useEffect, useState } from 'react';
 
 const IS_REACT_18 = React.version.startsWith('18');
-const IS_REDUX_7 = process.env['REDUX_VERSION'] == '7.x';
+const IS_REACT_REDUX_7 = process.env['REACT_REDUX_VERSION'] == '7.x';
 
 if (IS_REACT_18) {
   beforeEach(() => {
@@ -59,7 +59,7 @@ if (IS_REACT_18) {
 
     // react-redux v7 doesn't support concurrent mode.
     expect(screen.queryByTestId('defferedValue')!.innerHTML).toBe(
-      IS_REDUX_7 ? '1' : '2',
+      IS_REACT_REDUX_7 ? '1' : '2',
     );
     expect(screen.queryByTestId('normalValue')!.innerHTML).toBe('2');
   });

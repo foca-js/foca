@@ -63,7 +63,7 @@ jobs:
           yarn install
           yarn add react-redux@7.x
       - name: Set env
-        run: echo "REDUX_VERSION=7.x" >> $GITHUB_ENV
+        run: echo "REACT_REDUX_VERSION=7.x" >> $GITHUB_ENV
       - run: yarn test test/concurrent.test.tsx --coverage=false
 
   react-18:
