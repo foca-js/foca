@@ -16,7 +16,6 @@ if (IS_REACT_18) {
   });
 
   test('Support concurrent rendering for react 18', async () => {
-    const arr = Array(40000).fill('');
     let counter = 0;
 
     const ConcurrentComp: FC = () => {
@@ -41,9 +40,6 @@ if (IS_REACT_18) {
       return (
         <>
           <span data-testid="defferedValue">{defferedValue}</span>
-          {arr.map((_, i) => (
-            <span key={i}>{value}</span>
-          ))}
           <span data-testid="normalValue">{value}</span>
         </>
       );
@@ -62,7 +58,7 @@ if (IS_REACT_18) {
       IS_REACT_REDUX_7 ? '1' : '2',
     );
     expect(screen.queryByTestId('normalValue')!.innerHTML).toBe('2');
-  }, 10000);
+  });
 } else {
   test('no concurrent when react < 18', () => {});
 }
