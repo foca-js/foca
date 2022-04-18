@@ -236,7 +236,9 @@ export const defineModel = <
   const getInitialState = <T extends object>(
     obj: T,
   ): T & GetInitialState<State> => {
-    return defineGetter(obj, 'initialState', () => cloneDeep(initialState));
+    return defineGetter(obj, 'initialState', () =>
+      cloneDeep(initialState, false),
+    );
   };
 
   guard(uniqueName);
@@ -338,7 +340,7 @@ export const defineModel = <
     uniqueName,
     createReducer({
       name: uniqueName,
-      initialState: cloneDeep(initialState),
+      initialState: cloneDeep(initialState, false),
       allowRefresh: !skipRefresh,
     }),
   );
