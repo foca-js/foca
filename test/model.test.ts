@@ -123,7 +123,7 @@ test('private action and effect', () => {
   expect(basicModel.pureAsync).toBeInstanceOf(Function);
 });
 
-test('define same method key will throw error', () => {
+test('define duplicated method keys will throw error', () => {
   expect(() =>
     defineModel('x' + Math.random(), {
       initialState: {},
@@ -136,4 +136,30 @@ test('define same method key will throw error', () => {
       },
     }),
   ).toThrowError('test1');
+
+  expect(() =>
+    defineModel('x' + Math.random(), {
+      initialState: {},
+      actions: {
+        test2() {},
+      },
+      computed: {
+        test1() {},
+        test2() {},
+      },
+    }),
+  ).toThrowError('test2');
+
+  expect(() =>
+    defineModel('x' + Math.random(), {
+      initialState: {},
+      effects: {
+        test2() {},
+      },
+      computed: {
+        test1() {},
+        test2() {},
+      },
+    }),
+  ).toThrowError('test2');
 });

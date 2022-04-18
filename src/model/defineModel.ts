@@ -8,6 +8,10 @@ import { createReducer } from '../redux/createReducer';
 import { composeGetter, defineGetter } from '../utils/getter';
 import { getMethodCategory } from '../utils/getMethodCategory';
 import { guard } from './guard';
+import { ComputedValue } from '../computed/ComputedValue';
+import { depsCollector } from '../computed/depsCollector';
+import { ObjectProxy } from '../computed/ObjectProxy';
+import { ComputedRef } from '../computed/types';
 
 export interface GetName<Name extends string> {
   /**
@@ -72,6 +76,10 @@ export interface EffectCtx<State extends object>
   setState(fn: (state: State) => State | void): AnyAction;
 }
 
+export interface ComputedCtx<State extends object>
+  extends GetName<string>,
+    GetState<State> {}
+
 export interface BaseModel<Name extends string, State extends object>
   extends GetState<State>,
     GetName<Name> {}
@@ -98,25 +106,34 @@ type ModelEffect<Effect extends object> = {
     : never;
 };
 
+type ModelComputed<Computed extends object> = {
+  readonly [K in keyof Computed]: Computed[K] extends () => infer R
+    ? ComputedRef<R>
+    : never;
+};
+
 export type Model<
   Name extends string = string,
   State extends object = object,
   Action extends object = object,
   Effect extends object = object,
+  Computed extends object = object,
 > = BaseModel<Name, State> &
   // [K in keyof Action as K extends `_${string}` ? never : K]
   // 上面这种看起来简洁，业务代码提示也正常，但是业务代码那边无法点击跳转进模型了。
   // 所以需要先转换所有的属性，再把私有属性去除。
   Omit<ModelAction<State, Action>, GetPrivateMethodKeys<Action>> &
-  Omit<ModelEffect<Effect>, GetPrivateMethodKeys<Effect>>;
+  Omit<ModelEffect<Effect>, GetPrivateMethodKeys<Effect>> &
+  Omit<ModelComputed<Computed>, GetPrivateMethodKeys<Computed>>;
 
 export type InternalModel<
   Name extends string = string,
   State extends object = object,
   Action extends object = object,
   Effect extends object = object,
+  Computed extends object = object,
 > = BaseModel<Name, State> & {
-  readonly _$opts: DefineModelOptions<State, Action, Effect>;
+  readonly _$opts: DefineModelOptions<State, Action, Effect, Computed>;
 };
 
 export type InternalAction<State extends object> = {
@@ -148,6 +165,7 @@ export interface DefineModelOptions<
   State extends object,
   Action extends object,
   Effect extends object,
+  Computed extends object,
 > {
   /**
    * 初始状态
@@ -192,7 +210,8 @@ export interface DefineModelOptions<
    *   initialState,
    *   effects: {
    *     async foo(p1: string, p2: number) {
-   *       await Promise.resolve();
+   *       const result = await Promise.resolve();
+   *       this.setState({ x: result });
    *       return 'OK';
    *     }
    *   },
@@ -202,7 +221,44 @@ export interface DefineModelOptions<
    * ```
    */
   effects?: Effect &
-    ThisType<ModelAction<State, Action> & Effect & EffectCtx<State>>;
+    ThisType<
+      ModelAction<State, Action> &
+        Effect &
+        ModelComputed<Computed> &
+        EffectCtx<State>
+    >;
+  /**
+   * 定义计算属性。针对需要复杂的计算才能得出结果的场景而设计。如果只是简单的返回，建议使用`effects`
+   *
+   * ```typescript
+   * const initialState = { firstName: 'tick', lastName: 'tock' };
+   *
+   * const model = defineModel('model1', {
+   *   initialState,
+   *   computed: {
+   *     fullname() {
+   *       return this.state.firstName + '.' + this.state.lastName;
+   *     },
+   *     names() {
+   *       return this.fullName.value.split('').map((item) => `[${item}]`);
+   *     }
+   *   },
+   * });
+   * ```
+   *
+   * 可以单独使用：
+   * ```typescript
+   * model.fullname; // ComputedRef<string>;
+   * model.fullname.value; // string;
+   * ```
+   *
+   * 可以配合react hooks使用：
+   *
+   * ```typescript
+   * const fullname = useComputed(model.fullname); // string
+   * ```
+   */
+  computed?: Computed & ThisType<ModelComputed<Computed> & ComputedCtx<State>>;
   /**
    * 是否阻止刷新数据时跳过当前模型，默认即不跳过。
    *
@@ -221,7 +277,12 @@ export interface DefineModelOptions<
    * 模型钩子
    */
   hooks?: Hook<State> &
-    ThisType<ModelAction<State, Action> & Effect & HookCtx<State>>;
+    ThisType<
+      ModelAction<State, Action> &
+        ModelComputed<Computed> &
+        Effect &
+        HookCtx<State>
+    >;
 }
 
 export const defineModel = <
@@ -229,11 +290,12 @@ export const defineModel = <
   State extends object,
   Action extends object,
   Effect extends object,
+  Computed extends object,
 >(
   uniqueName: Name,
-  options: DefineModelOptions<State, Action, Effect>,
-): Model<Name, State, Action, Effect> => {
-  const { actions, effects, skipRefresh, hooks } = options;
+  options: DefineModelOptions<State, Action, Effect, Computed>,
+): Model<Name, State, Action, Effect, Computed> => {
+  const { actions, effects, computed, skipRefresh, hooks } = options;
   const initialState = cloneDeep(options.initialState);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -249,7 +311,12 @@ export const defineModel = <
   };
 
   const getState = <T extends object>(obj: T): T & GetState<State> => {
-    return defineGetter(obj, 'state', () => modelStore.getState()[uniqueName]);
+    return defineGetter(obj, 'state', () => {
+      const state = modelStore.getState()[uniqueName];
+      return depsCollector.collecting
+        ? new ObjectProxy(uniqueName, modelStore).start(state)
+        : state;
+    });
   };
 
   const getInitialState = <T extends object>(
@@ -261,15 +328,27 @@ export const defineModel = <
   guard(uniqueName);
 
   if (process.env.NODE_ENV !== 'production') {
-    if (actions && effects) {
-      Object.keys(actions).forEach((key) => {
-        if (effects.hasOwnProperty(key)) {
-          throw new Error(
-            `[model:${uniqueName}] You have defined method "${key}" in both actions and effects`,
-          );
-        }
-      });
-    }
+    const items = [
+      { name: 'actions', value: actions },
+      { name: 'effects', value: effects },
+      { name: 'computed', value: computed },
+    ];
+    const validateUniqueMethod = (index1: number, index2: number) => {
+      const item1 = items[index1]!;
+      const item2 = items[index2]!;
+      if (item1.value && item2.value) {
+        Object.keys(item1.value).forEach((key) => {
+          if (item2.value!.hasOwnProperty(key)) {
+            throw new Error(
+              `[model:${uniqueName}] You have defined method "${key}" in both ${item1.name} and ${item2.name}`,
+            );
+          }
+        });
+      }
+    };
+    validateUniqueMethod(0, 1);
+    validateUniqueMethod(0, 2);
+    validateUniqueMethod(1, 2);
   }
 
   const actionCtx: ActionCtx<State> = composeGetter(
@@ -304,7 +383,7 @@ export const defineModel = <
   const enhancedMethods: {
     [key in ReturnType<typeof getMethodCategory>]: Record<
       string,
-      EnhancedAction<State> | EnhancedEffect
+      EnhancedAction<State> | EnhancedEffect | ComputedValue
     >;
   } = {
     external: {},
@@ -316,6 +395,29 @@ export const defineModel = <
       enhancedMethods[getMethodCategory(actionName)][actionName] =
         enhanceAction(actionCtx, actionName, actions[actionName]!);
     });
+  }
+
+  if (computed) {
+    const computedCtx: ComputedCtx<State> = composeGetter(
+      {},
+      getName,
+      getState,
+    );
+
+    const computedMethods: Record<string, ComputedValue> = {};
+
+    Object.keys(computed).forEach((computedName) => {
+      computedMethods[computedName] = enhancedMethods[
+        getMethodCategory(computedName)
+      ][computedName] = new ComputedValue(
+        computedCtx,
+        computedName,
+        // @ts-expect-error
+        computed[computedName],
+      );
+    });
+
+    Object.assign(computedCtx, computedMethods);
   }
 
   if (effects) {
@@ -375,16 +477,17 @@ export const defineModel = <
     }),
   );
 
-  const model: InternalModel<Name, State, Action, Effect> = Object.assign(
-    composeGetter(
-      {
-        _$opts: options,
-      },
-      getName,
-      getState,
-    ),
-    enhancedMethods.external,
-  );
+  const model: InternalModel<Name, State, Action, Effect, Computed> =
+    Object.assign(
+      composeGetter(
+        {
+          _$opts: options,
+        },
+        getName,
+        getState,
+      ),
+      enhancedMethods.external,
+    );
 
   return model as any;
 };

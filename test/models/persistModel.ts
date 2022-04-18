@@ -16,6 +16,11 @@ export const persistModel = defineModel('persist', {
       state.counter -= step;
     },
   },
+  persist: {
+    decode(state) {
+      state.counter = state.counter;
+    },
+  },
 });
 
 export const hasVersionPersistModel = cloneModel('persit1', persistModel, {

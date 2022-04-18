@@ -8,7 +8,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  store.refresh();
   store.unmount();
 });
 
