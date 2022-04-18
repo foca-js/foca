@@ -45,7 +45,6 @@
     "react": "^16.9 || ^17 || ^18"
   },
   "dependencies": {
-    "clone": "^2.1.2",
     "immer": "^9.0.12",
     "react-redux": "^8.0.0",
     "redux": "^4.1.2",

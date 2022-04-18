@@ -79,3 +79,33 @@ test('trigger ready hooks on store and persist ready', async () => {
   expect(hook2Model.state.count).toBe(101);
   expect(clonedModel.state.count).toBe(101);
 });
+
+test('initialState should be serializable', () => {
+  const createModel = (initialState: any) => {
+    return defineModel('model' + Math.random(), { initialState });
+  };
+
+  [
+    { x: undefined },
+    { x: undefined, y: null },
+    { x: Symbol('test') },
+    [Symbol('test')],
+    { x: function () {} },
+    { x: /test/ },
+    { x: new Map() },
+    { x: new Set() },
+    { x: new Date() },
+    [new (class {})()],
+    new (class {})(),
+  ].forEach((initialState) => {
+    expect(() => createModel(initialState)).toThrowError();
+  });
+
+  [
+    { x: 0 },
+    [0, 1, '2', {}, { x: null }],
+    { x: { y: { z: [{}, {}] } } },
+  ].forEach((initialState) => {
+    createModel(initialState);
+  });
+});

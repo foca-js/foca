@@ -1,5 +1,6 @@
 import type { AnyAction } from 'redux';
-import cloneDeep from 'clone';
+import { cloneDeep } from '../utils/cloneDeep';
+import { deepEqual } from '../utils/deepEqual';
 import { EnhancedAction, enhanceAction } from './enhanceAction';
 import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
 import { modelStore } from '../store/modelStore';
@@ -223,7 +224,16 @@ export const defineModel = <
   uniqueName: Name,
   options: DefineModelOptions<State, Action, Effect>,
 ): Model<Name, State, Action, Effect> => {
-  const { initialState, actions, effects, skipRefresh, hooks } = options;
+  const { actions, effects, skipRefresh, hooks } = options;
+  const initialState = cloneDeep(options.initialState);
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (!deepEqual(initialState, options.initialState)) {
+      throw new Error(
+        `[model:${uniqueName}] initialState contains unserializable data, the available types are Object, Array, Number, String and Null`,
+      );
+    }
+  }
 
   const getName = <T extends object>(obj: T): T & GetName<Name> => {
     return defineGetter(obj, 'name', () => uniqueName);
@@ -236,9 +246,7 @@ export const defineModel = <
   const getInitialState = <T extends object>(
     obj: T,
   ): T & GetInitialState<State> => {
-    return defineGetter(obj, 'initialState', () =>
-      cloneDeep(initialState, false),
-    );
+    return defineGetter(obj, 'initialState', () => cloneDeep(initialState));
   };
 
   guard(uniqueName);
@@ -340,7 +348,7 @@ export const defineModel = <
     uniqueName,
     createReducer({
       name: uniqueName,
-      initialState: cloneDeep(initialState, false),
+      initialState: initialState,
       allowRefresh: !skipRefresh,
     }),
   );
