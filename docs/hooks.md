@@ -89,3 +89,31 @@ const App: FC = () => {
 ```typescript
 const loading = useLoading(userModel.create, userModel.update, ...);
 ```
+
+# useComputed
+
+配合 computed 计算属性使用。
+
+```tsx
+import { useComputed } from 'foca';
+
+// 假设有这么一个model
+const userModel = defineModel('user', {
+  initialState: {
+    firstName: 'tick',
+    lastName: 'tock',
+  },
+  computed: {
+    fullName() {
+      return this.state.firstName + '.' + this.state.lastName;
+    },
+  },
+});
+
+const App: FC = () => {
+  // 只有当 firstName 或者 lastName 变化，才会重新刷新该组件
+  const fullName = useComputed(userModel.fullName);
+
+  return <div>{fullName}</div>;
+};
+```

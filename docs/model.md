@@ -134,3 +134,38 @@ const userModel = defineModel('users', {
 ```
 
 好吧，这样看起来更纯粹一些，代价就是要委屈你多写几行代码了。
+
+# Computed
+
+对于一些数据，其实是需要经过比较冗长的拼接或者复杂的计算才能得出结果，同时你想自动缓存这些结果？来吧，展示：
+
+```typescript
+const initialState = {
+  firstName: 'tick',
+  lastName: 'tock',
+  age: 0,
+};
+
+const userModel = defineModel('users', {
+  initialState,
+  computed: {
+    fullName() {
+      return this.state.firstName + '.' + this.state.lastName;
+    },
+  },
+});
+```
+
+我们可以在任意地方使用计算属性，也可以在 hooks 中使用：
+
+```typescript
+// 实时
+userModel.fullName; // ComputedRef<string>
+userModel.fullName.value; // string
+// hooks
+useComputed(userModel.fullName); // string
+```
+
+计算属性什么时候才会更新？框架自动收集依赖，只有其中某个依赖更新了，计算属性才会更新。上面的例子中，当`firstName`或者`lastName`有变化时，fullName 将被标记为`dirty`状态，下一次访问则会重新计算结果。而当`age`变化时，不影响 fullName 的结果，下一次访问仍使用缓存作为结果。
+
+!> 可以在 computed 中使用其它 model 的数据。

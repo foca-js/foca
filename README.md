@@ -20,6 +20,7 @@
 - 专注 typescript 极致体验
 - 模型自动注册，导出即可使用
 - 内置 immer 快速处理数据
+- 支持 computed 计算属性
 - 智能追踪异步函数的执行状态
 - 模型支持私有方法
 - 可定制的多引擎数据持久化
@@ -60,6 +61,14 @@ export const counterModel = defineModel('counter', {
     // 私有方法，只能在模型内部被effect方法调用，外部调用则TS报错（属性不存在）
     _clear(state) {
       return this.initialState;
+    },
+  },
+  // 计算属性，自动收集依赖
+  computed: {
+    filled() {
+      return Array(this.state.count)
+        .fill('')
+        .map((_, index) => index);
     },
   },
   effects: {

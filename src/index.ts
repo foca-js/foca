@@ -4,6 +4,7 @@ export { useModel } from './api/useModel';
 export { useLoading } from './api/useLoading';
 export { getLoading } from './api/getLoading';
 export { connect } from './api/connect';
+export { useComputed } from './api/useComputed';
 
 // Init
 export { modelStore as store } from './store/modelStore';
@@ -28,3 +29,4 @@ export type {
 } from 'redux';
 export type { Model } from './model/defineModel';
 export type { StorageEngine } from './engines';
+export type { ComputedRef } from './computed/types';
