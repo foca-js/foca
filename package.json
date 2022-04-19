@@ -47,7 +47,7 @@
   "dependencies": {
     "immer": "^9.0.12",
     "react-redux": "^8.0.0",
-    "redux": "^4.1.2",
+    "redux": "^4.2.0",
     "topic": "^3.0.0"
   },
   "devDependencies": {
