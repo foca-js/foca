@@ -1,4 +1,9 @@
-import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
+import {
+  AnyAction,
+  applyMiddleware,
+  legacy_createStore as createStore,
+  Store,
+} from 'redux';
 import type {
   PromiseAssignEffect,
   PromiseEffect,

@@ -2,7 +2,7 @@ import {
   AnyAction,
   applyMiddleware,
   compose,
-  createStore,
+  legacy_createStore as createStore,
   Middleware,
   PreloadedState,
   Reducer,

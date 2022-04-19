@@ -1,4 +1,4 @@
-import { createStore, Store } from 'redux';
+import { legacy_createStore as createStore, Store } from 'redux';
 
 export const proxyStore = createStore(() => ({}));
 
