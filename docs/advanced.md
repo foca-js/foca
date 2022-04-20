@@ -180,7 +180,7 @@ userModel._myLogic; // 报错了，找不到属性 _myLogic
 
 ```typescript
 import { store, combine } from 'foca';
-import { createStore } from 'my-package';
+import { createStore } from 'my-redux-package';
 
 // 你原来的store
 const legacyStore = createStore(...);

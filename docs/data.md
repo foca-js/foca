@@ -11,3 +11,7 @@
 # loading
 
 模型异步函数的当前状态，通过`getLoading(effect)`获取。
+
+# initialState
+
+只有在 actions 和 effects 方法内部才能使用。通过`this.initialState`获取。

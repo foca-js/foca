@@ -2,7 +2,7 @@
 
 # 仓库
 
-foca 遵循唯一 store 原则，foca 提供了快速初始化的入口。
+foca 遵循`唯一store`原则，并提供了快速初始化的入口。
 
 ```typescript
 // File: store.ts
@@ -63,7 +63,7 @@ ReactDom.render(
 
 <small>如果是 React-Native，你可以跳过这一节。</small>
 
-因为 store.ts 需要被入口文件引入，而 store.ts 又引入了部分 model，所以如果相应的 model 做了修改操作时，会导致浏览器页面全量刷新而非热更新。如果你正在使用当前流行的打包工具，建议加上`hot.accept`手动处理模块更新。
+因为 store.ts 需要被入口文件引入，而 store.ts 又引入了部分 model（持久化需要这么做），所以如果相应的 model 做了修改操作时，会导致浏览器页面全量刷新而非热更新。如果你正在使用当前流行的打包工具，建议加上`hot.accept`手动处理模块更新。
 
 <!-- tabs:start -->
 

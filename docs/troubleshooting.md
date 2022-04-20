@@ -44,3 +44,9 @@
 这些 es6 语法在现代浏览器（chrome 45+，firefox 34+，edge 12+，safari 9+，opera 32+）的早期(2015 年)版本就已经实现，完全不需要担心兼容性问题。
 
 在没有 polyfill 的情况下，使用 IE 无法正常运行，但如果你正在使用`webpack+babel`或者`rollup+babel`或者`vite`打包项目，那么这些工具通常支持自动 polyfill。所以理论上跑在 IE9+ 浏览器上面也没有问题。
+
+# this.initialState 是否多余
+
+大部分情况下你会觉得多余，直到你使用`cloneModel`复制出一个新的模型。我们允许复制模型的同时修改初始值，所以`this.initialState`就和`this.state`一样能明确自己归属于哪个模型。
+
+同时，每次获取`this.initialState`，框架都会返回给你一份全新的数据（deep clone)，这样再也不怕你会改动初始值了。
