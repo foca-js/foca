@@ -12,25 +12,25 @@
   "description": "流畅的react状态管理库",
   "author": "geekact",
   "license": "MIT",
-  "main": "lib/index.js",
-  "module": "es/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "sideEffects": false,
   "scripts": {
     "test": "jest",
-    "prepublishOnly": "ts-prepublish",
+    "prepublishOnly": "tsup",
     "docs": "docsify serve ./docs",
     "prepare": "husky install"
   },
   "exports": {
     ".": {
-      "require": "./lib/index.js",
-      "import": "./es/index.js"
-    },
-    "./": "./"
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
   },
   "files": [
-    "lib",
-    "es",
+    "dist",
     "LICENSE",
     "package.json",
     "README.md",
@@ -70,6 +70,7 @@
     "sleep-promise": "^9.1.0",
     "ts-jest": "^27.1.4",
     "ts-prepublish": "^2.0.0",
+    "tsup": "^5.12.5",
     "typescript": "^4.6.3"
   }
 }
