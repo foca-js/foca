@@ -1,3 +1,8 @@
+## [0.10.1](https://github.com/foca-js/foca/compare/v0.10.0...v0.10.1)&nbsp;&nbsp;(2022-04-21)
+
+- 使用新的文件打包方案
+- 使用简单的 JSON.stringify 和 JSON.parse 处理初始值的深度拷贝任务
+
 ## [0.10.0](https://github.com/foca-js/foca/compare/v0.9.3...v0.10.0)&nbsp;&nbsp;(2022-04-15)
 
 - 支持 react-18 并发渲染
