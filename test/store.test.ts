@@ -1,6 +1,6 @@
 import { compose, StoreEnhancer } from 'redux';
 import sleep from 'sleep-promise';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from '@redux-devtools/extension';
 import { engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { PersistManager } from '../src/persist/PersistManager';

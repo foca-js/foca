@@ -102,7 +102,7 @@ if (module.hot) {
 
 # 日志
 
-- 对于 Browser 项目，需要安装 Chrome 的 [redux-devtools](https://github.com/zalmoxisus/redux-devtools-extension) 扩展，然后打开控制台查看。
+- 对于 Web 项目，需要安装 Chrome 的 [redux-devtools](https://github.com/reduxjs/redux-devtools) 扩展，然后打开控制台查看。
 - 对于 React-Native 项目，则是需要安装并启动软件 [react-native-debugger](https://github.com/jhen0409/react-native-debugger)，然后点击 App 里的按钮 `Debug with Chrome`。
 
 接着，我们在 store 里注入增强函数：
@@ -112,7 +112,7 @@ store.init({
   middleware: [...],
   // 字符串 redux-devtools 即 window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 的缩写
   // 设置 redux-devtools 在生产环境(process.env.NODE_ENV === 'production')下会自动关闭
-  // 你也可以安装等效的插件包 redux-devtools-extension 自由控制
+  // 你也可以安装等效的插件包 @redux-devtools/extension 自由控制
   compose: 'redux-devtools',
 });
 ```
@@ -120,7 +120,7 @@ store.init({
 compose 也支持回调形式，目的是为了注入更多插件。
 
 ```typescript
-import { composeWithDevTools as compose } from 'redux-devtools-extension';
+import { composeWithDevTools as compose } from '@redux-devtools/extension';
 // 或者使用原生的compose
 // import { compose } from 'foca';
 
