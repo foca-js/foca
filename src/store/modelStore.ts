@@ -37,7 +37,10 @@ class StoreAdvanced implements Store {
   protected origin?: Store;
   protected consumers: Record<string, Reducer> = {};
   protected reducerKeys: string[] = [];
-  public /*protected*/ persistor?: PersistManager;
+  /**
+   * @protected
+   */
+  public persistor?: PersistManager;
 
   protected reducer!: Reducer;
 
@@ -188,7 +191,10 @@ class StoreAdvanced implements Store {
     };
   }
 
-  public /*protected*/ appendReducer(key: string, consumer: Reducer) {
+  /**
+   * @protected
+   */
+  public appendReducer(key: string, consumer: Reducer) {
     const store = this.origin;
     const exists = store && this.consumers.hasOwnProperty(key);
 
