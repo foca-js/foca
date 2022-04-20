@@ -17,21 +17,47 @@ store.init();
 
 与原生 react-redux 类似，你需要把 foca 提供的 Provider 组件放置到入口文件，这样才能在业务组件中获取到数据。
 
+<!-- tabs:start -->
+
+#### ** React >= 18 **
+
 ```tsx
 // File: index.tsx
-import './store'; // 别忘了这行！
-
+import './store'; // 别忘了这行！！！
 import ReactDOM from 'react-dom';
 import { FocaProvider } from 'foca';
 import App from './App';
+
+const container = document.getElementById('root');
+const root = ReactDom.createRoot(container);
+
+root.render(
+  <FocaProvider>
+    <App />
+  </FocaProvider>,
+);
+```
+
+#### ** React >= 16 **
+
+```tsx
+// File: index.tsx
+import './store'; // 别忘了这行！！！
+import ReactDOM from 'react-dom';
+import { FocaProvider } from 'foca';
+import App from './App';
+
+const container = document.getElementById('root');
 
 ReactDom.render(
   <FocaProvider>
     <App />
   </FocaProvider>,
-  document.getElementById('root'),
+  container,
 );
 ```
+
+<!-- tabs:end -->
 
 # 热更新
 
