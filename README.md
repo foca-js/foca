@@ -96,6 +96,8 @@ export const counterModel = defineModel('counter', {
       this.plus(1);
       console.log(this.state);
     },
+    // state变化时的回调
+    onChange(prevState, nextState) {},
   },
 });
 ```

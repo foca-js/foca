@@ -32,7 +32,7 @@ class StoreAdvanced implements Store {
     storeReady: [];
   }> = new Topic();
   protected readonly keepToken: KeepToken;
-  protected isReady: boolean = false;
+  protected _isReady: boolean = false;
 
   protected origin?: Store;
   protected consumers: Record<string, Reducer> = {};
@@ -45,7 +45,11 @@ class StoreAdvanced implements Store {
   protected reducer!: Reducer;
 
   constructor() {
-    this.keepToken = this.topic.keep('storeReady', () => this.isReady);
+    this.keepToken = this.topic.keep('storeReady', () => this._isReady);
+  }
+
+  get isReady(): boolean {
+    return this._isReady;
   }
 
   init(options: CreateStoreOptions = {}) {
@@ -57,7 +61,7 @@ class StoreAdvanced implements Store {
       }
     }
 
-    this.isReady = false;
+    this._isReady = false;
     this.reducer = this.combineReducers();
     this.persistor && this.persistor.destroy();
 
@@ -127,12 +131,12 @@ class StoreAdvanced implements Store {
 
   unmount() {
     this.origin = void 0;
-    this.isReady = false;
+    this._isReady = false;
   }
 
   onInitialized(): Promise<void> {
     return new Promise((resolve) => {
-      if (this.isReady) {
+      if (this._isReady) {
         resolve();
       } else {
         this.topic.subscribeOnce('storeReady', resolve);
@@ -141,8 +145,8 @@ class StoreAdvanced implements Store {
   }
 
   protected ready() {
+    this._isReady = true;
     this.topic.publish('storeReady');
-    this.isReady = true;
   }
 
   protected get store(): Store<Record<string, object>, AnyAction> {

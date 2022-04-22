@@ -123,13 +123,21 @@ export type InternalAction<State extends object> = {
   [key: string]: (state: State, ...args: any[]) => State | void;
 };
 
-export interface Hook {
+export interface Hook<State> {
   /**
    * store初始化完成，并且持久化（如果有）的数据也已经恢复。
    *
    * 上下文 **this** 可以直接调用actions和effects的函数。
    */
   onInit?: () => void;
+  /**
+   * 每当state有变化时的回调通知。
+   *
+   * 初始化(onInit)执行之前不会触发该回调。如果在onInit中做了修改state的操作，则会触发该回调。
+   *
+   * 上下文 **this** 可以直接调用actions和effects的函数。
+   */
+  onChange?: (prevState: State, nextState: State) => void;
 }
 
 export interface HookCtx<State extends object>
@@ -212,7 +220,8 @@ export interface DefineModelOptions<
   /**
    * 模型钩子
    */
-  hooks?: Hook & ThisType<ModelAction<State, Action> & Effect & HookCtx<State>>;
+  hooks?: Hook<State> &
+    ThisType<ModelAction<State, Action> & Effect & HookCtx<State>>;
 }
 
 export const defineModel = <
@@ -330,12 +339,25 @@ export const defineModel = <
   }
 
   if (hooks) {
-    const { onInit } = hooks;
+    const { onInit, onChange } = hooks;
     const hookCtx: HookCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
       enhancedMethods.external,
       enhancedMethods.internal,
     );
+
+    if (onChange) {
+      modelStore.onInitialized().then(() => {
+        let prevState = hookCtx.state;
+        modelStore.subscribe(() => {
+          const nextState = hookCtx.state;
+          if (prevState !== nextState) {
+            modelStore.isReady && onChange.call(hookCtx, prevState, nextState);
+            prevState = nextState;
+          }
+        });
+      });
+    }
 
     if (onInit) {
       modelStore.onInitialized().then(() => {
