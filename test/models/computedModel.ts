@@ -66,8 +66,14 @@ export const computedModel = defineModel('computed-model', {
     testObjectKeys() {
       return Object.keys(this.state.translate);
     },
-    testSetters() {
+    testJSON() {
+      return JSON.stringify(this.state);
+    },
+    testExtendObject() {
       this.state.statusList.push('k');
+    },
+    testModifyValue() {
+      this.state.statusList[0] = 'BALA';
     },
     a() {
       this.b.value;

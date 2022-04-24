@@ -196,7 +196,18 @@ test('only execute computed function when deps changed', () => {
   expect(spy).toBeCalledTimes(2);
 });
 
-test.skip('type checking', () => {
+test('Can handle JSON.stringify', () => {
+  expect(computedModel.testJSON.value).toBe(
+    JSON.stringify(computedModel.state),
+  );
+});
+
+test('Fail to set value on proxy state', () => {
+  expect(() => computedModel.testExtendObject.value).toThrowError();
+  expect(() => computedModel.testModifyValue.value).toThrowError();
+});
+
+test.skip('Type checking', () => {
   computedModel.fullName;
   // @ts-expect-error
   computedModel._privateFullname;
