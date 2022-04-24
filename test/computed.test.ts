@@ -1,4 +1,4 @@
-import { store } from '../src';
+import { defineModel, store } from '../src';
 import { ComputedValue } from '../src/computed/ComputedValue';
 import { depsCollector } from '../src/computed/depsCollector';
 import { ObjectProxy } from '../src/computed/ObjectProxy';
@@ -151,6 +151,49 @@ test('ComputedValue can remove duplicated deps', () => {
   computedModel.changeFirstName('hello');
   computedModel.changeLastName('world');
   expect(computedValue.isDirty()).toBeFalsy();
+});
+
+test('only execute computed function when deps changed', () => {
+  const spy = jest.fn().mockImplementation(() => {
+    model.state.a;
+  });
+
+  const model = defineModel('x' + Math.random(), {
+    initialState: {
+      a: 0,
+      b: 2,
+    },
+    actions: {
+      updateA(state) {
+        state.a += 1;
+      },
+      updateB(state) {
+        state.b += 1;
+      },
+    },
+    computed: {
+      testa: spy,
+    },
+  });
+
+  expect(spy).toBeCalledTimes(0);
+
+  model.testa.value;
+  expect(spy).toBeCalledTimes(1);
+
+  model.testa.value;
+  expect(spy).toBeCalledTimes(1);
+
+  model.updateB();
+  model.testa.value;
+  expect(spy).toBeCalledTimes(1);
+
+  model.updateA();
+  model.testa.value;
+  expect(spy).toBeCalledTimes(2);
+
+  model.testa.value;
+  expect(spy).toBeCalledTimes(2);
 });
 
 test.skip('type checking', () => {
