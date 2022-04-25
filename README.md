@@ -187,6 +187,8 @@ React 案例仓库：https://github.com/foca-js/foca-demo-web
 RN 案例仓库：https://github.com/foca-js/foca-demo-react-native
 <br>
 Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
+<br>
+Nextjs 案例仓库：https://github.com/foca-js/foca-demo-nextjs
 
 # 生态
 
