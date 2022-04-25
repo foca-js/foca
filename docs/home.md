@@ -10,6 +10,7 @@
 [![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/foca?label=bundle+size)](https://bundlephobia.com/package/foca@latest)
 ![GitHub top language](https://img.shields.io/github/languages/top/foca-js/foca)
 [![License](https://img.shields.io/github/license/foca-js/foca)](https://github.com/foca-js/foca/blob/master/LICENSE)
+[![Join the chat at https://gitter.im/foca-js/foca](https://badges.gitter.im/foca-js/foca.svg)](https://gitter.im/foca-js/foca)
 
 <br>
 
