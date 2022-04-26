@@ -2,15 +2,17 @@
   "name": "foca",
   "version": "0.11.0",
   "repository": "git@github.com:foca-js/foca.git",
+  "homepage": "https://foca.js.org",
   "keywords": [
     "redux",
     "redux-model",
     "redux-typescript",
     "react-redux",
-    "react-model"
+    "react-model",
+    "redux-toolkit"
   ],
-  "description": "流畅的react状态管理库",
-  "author": "geekact",
+  "description": "流畅的React状态管理库",
+  "author": "罪 <fanwenhua1990@gmail.com> (https://github.com/geekact)",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -31,6 +33,7 @@
   },
   "files": [
     "dist",
+    "src",
     "LICENSE",
     "package.json",
     "README.md",
