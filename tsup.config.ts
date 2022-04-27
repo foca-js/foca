@@ -7,5 +7,8 @@ export default defineConfig({
   clean: true,
   format: ['cjs', 'esm'],
   platform: 'node',
+  tsconfig: './tsconfig.json',
+  target: 'es5',
+  shims: false,
   dts: true,
 });
