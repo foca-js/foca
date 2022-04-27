@@ -65,13 +65,14 @@
     "@types/react-dom": "^18.0.2",
     "docsify-cli": "^4.4.4",
     "husky": "^7.0.0",
-    "jest": "^27.5.1",
+    "jest": "^28.0.2",
+    "jest-environment-jsdom": "^28.0.2",
     "prettier": "^2.6.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-test-renderer": "^18.1.0",
     "sleep-promise": "^9.1.0",
-    "ts-jest": "^27.1.4",
+    "ts-jest": "^28.0.0-next.2",
     "tsup": "^5.12.6",
     "typescript": "^4.6.3"
   }
