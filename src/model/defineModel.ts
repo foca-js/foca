@@ -8,10 +8,10 @@ import { createReducer } from '../redux/createReducer';
 import { composeGetter, defineGetter } from '../utils/getter';
 import { getMethodCategory } from '../utils/getMethodCategory';
 import { guard } from './guard';
-import { ComputedValue } from '../computed/ComputedValue';
-import { depsCollector } from '../computed/depsCollector';
-import { ObjectProxy } from '../computed/ObjectProxy';
-import { ComputedRef } from '../computed/types';
+import { ComputedValue } from '../reactive/ComputedValue';
+import { depsCollector } from '../reactive/depsCollector';
+import { ObjectProxy } from '../reactive/ObjectProxy';
+import { ComputedRef } from '../reactive/types';
 
 export interface GetName<Name extends string> {
   /**

@@ -1,7 +1,7 @@
 import { defineModel, store } from '../src';
-import { ComputedValue } from '../src/computed/ComputedValue';
-import { depsCollector } from '../src/computed/depsCollector';
-import { ObjectProxy } from '../src/computed/ObjectProxy';
+import { ComputedValue } from '../src/reactive/ComputedValue';
+import { depsCollector } from '../src/reactive/depsCollector';
+import { ObjectProxy } from '../src/reactive/ObjectProxy';
 import { computedModel } from './models/computedModel';
 
 beforeEach(() => {

@@ -29,4 +29,4 @@ export type {
 } from 'redux';
 export type { Model } from './model/defineModel';
 export type { StorageEngine } from './engines';
-export type { ComputedRef } from './computed/types';
+export type { ComputedRef } from './reactive/types';
