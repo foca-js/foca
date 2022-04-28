@@ -36,7 +36,7 @@ yarn add foca
 
 # 使用
 
-### 定义模型
+### 定义完整的模型
 
 ```typescript
 // File: counterModel.ts
@@ -113,7 +113,7 @@ export const counterModel = defineModel('counter', {
 });
 ```
 
-### 在函数组件中使用
+### 在 function 组件中使用
 
 ```tsx
 import { FC, useEffect } from 'react';
@@ -122,7 +122,7 @@ import { counterModel } from './counterModel';
 
 const App: FC = () => {
   // count类型自动提示 number
-  const { count } = useModel(counterModel);
+  const count = useModel(counterModel, (state) => state.count);
   // 仅effects的异步函数能作为参数传入，其他函数TS自动报错
   const loading = useLoading(counterModel.doSomething);
 
@@ -140,7 +140,7 @@ const App: FC = () => {
 export default App;
 ```
 
-### 在类组件中使用
+### 在 class 组件中使用
 
 ```tsx
 import { Component } from 'react';
