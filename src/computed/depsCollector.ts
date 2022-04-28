@@ -1,6 +1,6 @@
 import { Deps } from './types';
 
-let deps: Deps[][] = [];
+const deps: Deps[][] = [];
 let level = -1;
 
 export const depsCollector = {
@@ -12,16 +12,33 @@ export const depsCollector = {
     callback();
     deps.length = level--;
 
-    if (this.collecting) {
-      for (let i = current.length; i-- > 0; ) {
-        current[i]!.cloneAndCollect();
-      }
+    const filteredDeps = uniqueDeps(current);
+
+    for (let i = filteredDeps.length; i-- > 0; ) {
+      filteredDeps[i]!.end();
     }
 
-    return current;
+    return filteredDeps;
   },
-  write<T extends Deps>(dep: T) {
+  append(dep: Deps) {
     deps[level]!.push(dep);
-    return dep;
   },
+  prepend(dep: Deps) {
+    deps[level]!.unshift(dep);
+  },
+};
+
+const uniqueDeps = (deps: Deps[]) => {
+  if (deps.length <= 1) {
+    return deps;
+  }
+
+  const uniqueTagName: string[] = [];
+  return deps.filter(({ tagName }) => {
+    if (uniqueTagName.indexOf(tagName) === -1) {
+      uniqueTagName.push(tagName);
+      return true;
+    }
+    return false;
+  });
 };

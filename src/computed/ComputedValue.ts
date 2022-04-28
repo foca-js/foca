@@ -2,9 +2,11 @@ import { ComputedCtx } from '../model/defineModel';
 import { ComputedRef, Deps } from './types';
 import { depsCollector } from './depsCollector';
 
-export class ComputedValue<T = any> implements ComputedRef<T> {
+export class ComputedValue<T = any> implements Deps, ComputedRef<T> {
   public deps: Deps[] = [];
+  public readonly tagName: string;
 
+  protected asDeps = false;
   protected memorized = false;
   protected snapshot: any;
   protected collecting: boolean = false;
@@ -13,7 +15,9 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
     protected readonly ctx: ComputedCtx<any>,
     protected readonly property: string,
     protected readonly fn: () => any,
-  ) {}
+  ) {
+    this.tagName = `computed-${ctx.name}-${property}`;
+  }
 
   public get value(): T {
     if (this.collecting) {
@@ -27,37 +31,53 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
     if (!this.memorized || this.isDirty()) {
       this.deps = depsCollector.produce(() => {
         this.snapshot = this.fn.call(this.ctx);
+        this.memorized = true;
       });
-      this.memorized = true;
-      this.end();
     }
 
     this.collecting = false;
+    this.asSuperDeps();
 
     return this.snapshot;
   }
 
   isDirty(): boolean {
-    for (let i = this.deps.length; i-- > 0; ) {
-      if (this.deps[i]!.isDirty()) return true;
+    return this.asDeps ? this.isSnapshotDirty() : this.isDepsDirty();
+  }
+
+  end(): void {
+    this.asSuperDeps();
+  }
+
+  protected isDepsDirty(): boolean {
+    const deps = this.deps;
+    for (let i = deps.length; i-- > 0; ) {
+      if (deps[i]!.isDirty()) return true;
     }
     return false;
   }
 
-  protected end(): void {
-    if (this.deps.length > 1) {
-      const uniqueTagName: string[] = [];
-      this.deps = this.deps.filter(({ tagName }) => {
-        if (uniqueTagName.indexOf(tagName) === -1) {
-          uniqueTagName.push(tagName);
-          return true;
-        }
-        return false;
-      });
+  protected isSnapshotDirty(): boolean {
+    const deps = this.deps;
+
+    for (let i = deps.length; i-- > 0; ) {
+      if (deps[i]!.isDirty()) {
+        return this.snapshot !== this.fn.call(this.ctx);
+      }
     }
 
-    for (let i = this.deps.length; i-- > 0; ) {
-      this.deps[i]!.end();
+    return false;
+  }
+
+  protected asSuperDeps() {
+    if (depsCollector.collecting) {
+      const computed = new ComputedValue(this.ctx, this.property, this.fn);
+
+      computed.asDeps = true;
+      computed.deps = this.deps;
+      computed.memorized = this.memorized;
+      computed.snapshot = this.snapshot;
+      depsCollector.prepend(this);
     }
   }
 }

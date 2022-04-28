@@ -3,42 +3,30 @@ import { depsCollector } from './depsCollector';
 import { Deps } from './types';
 
 export class ObjectProxy<T = any> implements Deps {
-  protected collecting = true;
+  protected collecting: boolean = true;
   protected snapshot: any;
-  protected prevRootState: any;
+  protected memoRootState: any;
 
   constructor(
     protected readonly modelName: string,
     protected readonly store: { getState: () => any },
     protected readonly deps: string[] = [],
   ) {
-    this.prevRootState = this.getRootState();
-    depsCollector.write(this);
-  }
-
-  cloneAndCollect(): Deps {
-    return new ObjectProxy(this.modelName, this.store, this.deps.slice());
-  }
-
-  getRootState(): T {
-    return this.store.getState()[this.modelName];
+    this.memoRootState = this.getRootState();
   }
 
   isDirty(): boolean {
-    const state = this.getRootState() as any;
+    const rootState = this.getRootState() as any;
 
-    if (this.prevRootState === state) {
+    if (this.memoRootState === rootState) {
       return false;
     }
 
-    const currentSnapshot = this.getSnapshot(state);
-
-    if (currentSnapshot === this.snapshot) {
+    if (this.snapshot === this.getSnapshot(rootState)) {
+      this.memoRootState = rootState;
       return false;
     }
 
-    this.prevRootState = state;
-    this.snapshot = currentSnapshot;
     return true;
   }
 
@@ -47,12 +35,17 @@ export class ObjectProxy<T = any> implements Deps {
   }
 
   start<T>(startState: T): T {
+    depsCollector.append(this);
     return this.createProxy(startState);
   }
 
   end(): void {
     this.collecting = false;
     this.snapshot = this.getSnapshot(this.getRootState());
+  }
+
+  protected getRootState(): T {
+    return this.store.getState()[this.modelName];
   }
 
   protected getSnapshot(state: any) {
@@ -76,8 +69,8 @@ export class ObjectProxy<T = any> implements Deps {
 
     const nextState: object | any[] = isArray(currentState) ? [] : {};
     const keys = Object.keys(currentState);
+    const currentDeps = this.deps.slice();
     let visited = false;
-    let currentDeps = this.deps.slice();
 
     for (let i = keys.length; i-- > 0; ) {
       const key = keys[i]!;
@@ -105,7 +98,7 @@ export class ObjectProxy<T = any> implements Deps {
 
           visited = true;
           this.deps.push(key);
-          return this.createProxy(currentState[key]);
+          return this.createProxy((this.snapshot = currentState[key]));
         },
       });
     }

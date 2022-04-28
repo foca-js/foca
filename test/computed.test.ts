@@ -67,9 +67,33 @@ test('Split the deps for same getters', () => {
     proxyState.a.b;
     proxyState.a.b.c;
   });
-  deps.forEach((dep) => dep.end());
-
   expect(deps).toHaveLength(2);
+
+  deps = depsCollector.produce(() => {
+    const proxy = new ObjectProxy('x', mockStore);
+    const proxyState = proxy.start(mockState);
+    proxyState.a.b;
+  });
+  expect(deps).toHaveLength(1);
+});
+
+test('Dirty deps never turn to clean', () => {
+  let mockState = { a: { b: { c: 'd' } } };
+  const mockStore = {
+    getState() {
+      return {
+        x: mockState,
+      };
+    },
+  };
+
+  let deps = depsCollector.produce(() => {
+    const proxy = new ObjectProxy('x', mockStore);
+    const proxyState = proxy.start(mockState);
+    proxyState.a.b;
+    proxyState.a.b.c;
+  });
+
   expect(deps[0]!.isDirty()).toBeFalsy();
   expect(deps[1]!.isDirty()).toBeFalsy();
 
@@ -88,15 +112,7 @@ test('Split the deps for same getters', () => {
 
   mockState = { a: { b: { c: 'e' } } };
   expect(deps[0]!.isDirty()).toBeTruthy();
-  expect(deps[1]!.isDirty()).toBeFalsy();
-
-  deps = depsCollector.produce(() => {
-    const proxy = new ObjectProxy('x', mockStore);
-    const proxyState = proxy.start(mockState);
-    proxyState.a.b;
-  });
-  deps.forEach((dep) => dep.end());
-  expect(deps).toHaveLength(1);
+  expect(deps[1]!.isDirty()).toBeTruthy();
 });
 
 test('Unable to visit proxy state outside collecting mode', () => {
@@ -110,11 +126,9 @@ test('Unable to visit proxy state outside collecting mode', () => {
   };
 
   let proxyState: typeof mockState;
-  let deps = depsCollector.produce(() => {
-    const proxy = new ObjectProxy('x', mockStore);
-    proxyState = proxy.start(mockState);
+  depsCollector.produce(() => {
+    proxyState = new ObjectProxy('x', mockStore).start(mockState);
   });
-  deps.forEach((dep) => dep.end());
 
   expect(() => proxyState.a).toThrowError();
 });
@@ -140,16 +154,49 @@ test('ComputedValue can remove duplicated deps', () => {
   // Collecting
   computedValue.value;
 
-  expect(computedValue.deps).toHaveLength(2);
+  expect(computedValue.deps).toHaveLength(3);
+});
 
-  computedModel.changeFirstName('hello');
-  expect(computedValue.isDirty()).toBeTruthy();
+test('ComputedValue can be a copy deps', () => {
+  const computedValue = new ComputedValue(
+    {
+      name: computedModel.name,
+      get state() {
+        return computedModel.state;
+      },
+    },
+    'prop',
+    () => {
+      return computedModel.fullName.value + '-abc';
+    },
+  );
 
-  computedModel.changeLastName('world');
-  expect(computedValue.isDirty()).toBeTruthy();
+  // Collecting
+  computedValue.value;
 
-  computedModel.changeFirstName('hello');
-  computedModel.changeLastName('world');
+  expect(computedValue.deps).toHaveLength(1);
+  expect(computedValue.deps[0]).toBeInstanceOf(ComputedValue);
+  expect(computedValue.deps[0]).not.toBe(computedModel.fullName);
+
+  const fullNameAsRef = computedModel.fullName as ComputedValue;
+
+  expect(fullNameAsRef.isDirty()).toBeFalsy();
+
+  computedModel.changeFirstName('z-');
+  expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
+
+  expect(fullNameAsRef.isDirty()).toBeTruthy();
+  expect(fullNameAsRef.value).toBe('z-tock');
+  expect(fullNameAsRef.isDirty()).toBeFalsy();
+
+  expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
+  expect(computedValue.value).toBe('z-tock-abc');
+  expect(computedValue.deps[0]!.isDirty()).toBeFalsy();
+
+  computedModel.changeFirstName('z-to');
+  computedModel.changeLastName('ck');
+  expect(fullNameAsRef.isDirty()).toBeTruthy();
+  expect(computedValue.deps[0]!.isDirty()).toBeFalsy();
   expect(computedValue.isDirty()).toBeFalsy();
 });
 
