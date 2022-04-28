@@ -77,7 +77,7 @@ export class ComputedValue<T = any> implements Deps, ComputedRef<T> {
       computed.deps = this.deps;
       computed.memorized = this.memorized;
       computed.snapshot = this.snapshot;
-      depsCollector.prepend(this);
+      depsCollector.prepend(computed);
     }
   }
 }
