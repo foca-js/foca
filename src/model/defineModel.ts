@@ -10,7 +10,7 @@ import { getMethodCategory } from '../utils/getMethodCategory';
 import { guard } from './guard';
 import { ComputedValue } from '../reactive/ComputedValue';
 import { depsCollector } from '../reactive/depsCollector';
-import { ObjectProxy } from '../reactive/ObjectProxy';
+import { ObjectDeps } from '../reactive/ObjectDeps';
 import { ComputedRef } from '../reactive/types';
 
 export interface GetName<Name extends string> {
@@ -314,7 +314,7 @@ export const defineModel = <
     return defineGetter(obj, 'state', () => {
       const state = modelStore.getState()[uniqueName];
       return depsCollector.collecting
-        ? new ObjectProxy(uniqueName, modelStore).start(state)
+        ? new ObjectDeps(uniqueName, modelStore).start(state)
         : state;
     });
   };

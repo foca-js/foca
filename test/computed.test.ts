@@ -1,7 +1,8 @@
 import { defineModel, store } from '../src';
+import { ComputedDeps } from '../src/reactive/ComputedDeps';
 import { ComputedValue } from '../src/reactive/ComputedValue';
 import { depsCollector } from '../src/reactive/depsCollector';
-import { ObjectProxy } from '../src/reactive/ObjectProxy';
+import { ObjectDeps } from '../src/reactive/ObjectDeps';
 import { computedModel } from './models/computedModel';
 
 beforeEach(() => {
@@ -62,7 +63,7 @@ test('Split the deps for same getters', () => {
   };
 
   let deps = depsCollector.produce(() => {
-    const proxy = new ObjectProxy('x', mockStore);
+    const proxy = new ObjectDeps('x', mockStore);
     const proxyState = proxy.start(mockState);
     proxyState.a.b;
     proxyState.a.b.c;
@@ -70,7 +71,7 @@ test('Split the deps for same getters', () => {
   expect(deps).toHaveLength(2);
 
   deps = depsCollector.produce(() => {
-    const proxy = new ObjectProxy('x', mockStore);
+    const proxy = new ObjectDeps('x', mockStore);
     const proxyState = proxy.start(mockState);
     proxyState.a.b;
   });
@@ -88,7 +89,7 @@ test('Dirty deps never turn to clean', () => {
   };
 
   let deps = depsCollector.produce(() => {
-    const proxy = new ObjectProxy('x', mockStore);
+    const proxy = new ObjectDeps('x', mockStore);
     const proxyState = proxy.start(mockState);
     proxyState.a.b;
     proxyState.a.b.c;
@@ -127,7 +128,7 @@ test('Unable to visit proxy state outside collecting mode', () => {
 
   let proxyState: typeof mockState;
   depsCollector.produce(() => {
-    proxyState = new ObjectProxy('x', mockStore).start(mockState);
+    proxyState = new ObjectDeps('x', mockStore).start(mockState);
   });
 
   expect(() => proxyState.a).toThrowError();
@@ -175,7 +176,7 @@ test('ComputedValue can be a copy deps', () => {
   computedValue.value;
 
   expect(computedValue.deps).toHaveLength(1);
-  expect(computedValue.deps[0]).toBeInstanceOf(ComputedValue);
+  expect(computedValue.deps[0]).toBeInstanceOf(ComputedDeps);
   expect(computedValue.deps[0]).not.toBe(computedModel.fullName);
 
   const fullNameAsRef = computedModel.fullName as ComputedValue;
@@ -183,11 +184,11 @@ test('ComputedValue can be a copy deps', () => {
   expect(fullNameAsRef.isDirty()).toBeFalsy();
 
   computedModel.changeFirstName('z-');
-  expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
-
   expect(fullNameAsRef.isDirty()).toBeTruthy();
-  expect(fullNameAsRef.value).toBe('z-tock');
+  expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
   expect(fullNameAsRef.isDirty()).toBeFalsy();
+
+  expect(fullNameAsRef.value).toBe('z-tock');
 
   expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
   expect(computedValue.value).toBe('z-tock-abc');

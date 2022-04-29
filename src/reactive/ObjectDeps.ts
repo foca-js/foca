@@ -1,8 +1,8 @@
 import { isArray } from '../utils/isArray';
 import { depsCollector } from './depsCollector';
-import { Deps } from './types';
+import type { Deps } from './types';
 
-export class ObjectProxy<T = any> implements Deps {
+export class ObjectDeps<T = any> implements Deps {
   protected collecting: boolean = true;
   protected snapshot: any;
   protected memoRootState: any;
@@ -30,7 +30,7 @@ export class ObjectProxy<T = any> implements Deps {
     return true;
   }
 
-  get tagName(): string {
+  get id(): string {
     return this.modelName + '.' + this.deps.join('.');
   }
 
@@ -41,7 +41,6 @@ export class ObjectProxy<T = any> implements Deps {
 
   end(): void {
     this.collecting = false;
-    this.snapshot = this.getSnapshot(this.getRootState());
   }
 
   protected getRootState(): T {
@@ -89,7 +88,7 @@ export class ObjectProxy<T = any> implements Deps {
           }
 
           if (visited) {
-            return new ObjectProxy(
+            return new ObjectDeps(
               this.modelName,
               this.store,
               currentDeps.slice(),

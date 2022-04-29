@@ -1,23 +1,20 @@
+import type { ComputedRef, Deps } from './types';
 import { ComputedCtx } from '../model/defineModel';
-import { ComputedRef, Deps } from './types';
 import { depsCollector } from './depsCollector';
+import { ComputedDeps } from './ComputedDeps';
 
-export class ComputedValue<T = any> implements Deps, ComputedRef<T> {
+export class ComputedValue<T = any> implements ComputedRef<T> {
   public deps: Deps[] = [];
-  public readonly tagName: string;
+  public snapshot: any;
 
-  protected asDeps = false;
   protected memorized = false;
-  protected snapshot: any;
   protected collecting: boolean = false;
 
   constructor(
-    protected readonly ctx: ComputedCtx<any>,
-    protected readonly property: string,
+    public readonly ctx: ComputedCtx<any>,
+    public readonly property: string,
     protected readonly fn: () => any,
-  ) {
-    this.tagName = `computed-${ctx.name}-${property}`;
-  }
+  ) {}
 
   public get value(): T {
     if (this.collecting) {
@@ -35,49 +32,20 @@ export class ComputedValue<T = any> implements Deps, ComputedRef<T> {
       });
     }
 
+    if (depsCollector.collecting) {
+      depsCollector.prepend(new ComputedDeps(this));
+    }
+
     this.collecting = false;
-    this.asSuperDeps();
 
     return this.snapshot;
   }
 
   isDirty(): boolean {
-    return this.asDeps ? this.isSnapshotDirty() : this.isDepsDirty();
-  }
-
-  end(): void {
-    this.asSuperDeps();
-  }
-
-  protected isDepsDirty(): boolean {
     const deps = this.deps;
     for (let i = deps.length; i-- > 0; ) {
       if (deps[i]!.isDirty()) return true;
     }
     return false;
-  }
-
-  protected isSnapshotDirty(): boolean {
-    const deps = this.deps;
-
-    for (let i = deps.length; i-- > 0; ) {
-      if (deps[i]!.isDirty()) {
-        return this.snapshot !== this.fn.call(this.ctx);
-      }
-    }
-
-    return false;
-  }
-
-  protected asSuperDeps() {
-    if (depsCollector.collecting) {
-      const computed = new ComputedValue(this.ctx, this.property, this.fn);
-
-      computed.asDeps = true;
-      computed.deps = this.deps;
-      computed.memorized = this.memorized;
-      computed.snapshot = this.snapshot;
-      depsCollector.prepend(computed);
-    }
   }
 }

@@ -1,4 +1,4 @@
-import { Deps } from './types';
+import type { Deps } from './types';
 
 const deps: Deps[][] = [];
 let level = -1;
@@ -33,10 +33,10 @@ const uniqueDeps = (deps: Deps[]) => {
     return deps;
   }
 
-  const uniqueTagName: string[] = [];
-  return deps.filter(({ tagName }) => {
-    if (uniqueTagName.indexOf(tagName) === -1) {
-      uniqueTagName.push(tagName);
+  const uniqueID: string[] = [];
+  return deps.filter(({ id }) => {
+    if (uniqueID.indexOf(id) === -1) {
+      uniqueID.push(id);
       return true;
     }
     return false;

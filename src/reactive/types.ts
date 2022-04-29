@@ -1,5 +1,5 @@
 export interface Deps {
-  tagName: string;
+  id: string;
   end(): void;
   isDirty(): boolean;
 }
