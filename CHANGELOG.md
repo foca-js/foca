@@ -1,3 +1,16 @@
+## [0.11.1](https://github.com/foca-js/foca/compare/v0.11.0...v0.11.1)&nbsp;&nbsp;(2022-04-29)
+
+- 优化 computed in computed 时的缓存对比策略
+- 废弃属性 `hooks` 并推荐使用 `events` 以防止和 react-hooks 在名字上混淆。属性 `hooks` 将在 1.0.0 版本发布时删除。
+
+```diff
+export const testModel = defineModel('test', {
+  initialState,
+- hooks: {},
++ events: {},
+});
+```
+
 ## [0.11.0](https://github.com/foca-js/foca/compare/v0.10.2...v0.11.0)&nbsp;&nbsp;(2022-04-24)
 
 - 模型新增生命周期 `onChange(prevState, nextState)` 以监听当前模型的状态变化
