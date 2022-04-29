@@ -202,3 +202,9 @@ Nextjs 案例仓库：https://github.com/foca-js/foca-demo-nextjs
 | [rn-async-storage](https://github.com/react-native-async-storage/async-storage) | [![npm](https://img.shields.io/npm/v/@react-native-async-storage/async-storage)](https://www.npmjs.com/package/@react-native-async-storage/async-storage) | React-Native 持久化引擎   | RN                         |
 | [localForage](https://github.com/localForage/localForage)                       | [![npm](https://img.shields.io/npm/v/localforage)](https://www.npmjs.com/package/localforage)                                                             | 浏览器端持久化引擎        | React                      |
 | [redux-logger](https://github.com/LogRocket/redux-logger)                       | [![npm](https://img.shields.io/npm/v/redux-logger)](https://www.npmjs.com/package/redux-logger)                                                           | 控制台打印 redux 日志     | React, RN <br> Taro, Remax |
+
+# 捐赠
+
+开源不易，升级维护框架和解决各种 issue 需要十分多的精力和时间。希望能得到你的支持，让项目处于良性发展的状态。
+<br>
+捐赠地址：[二维码](https://foca.js.org#donate)
