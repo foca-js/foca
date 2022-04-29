@@ -107,12 +107,12 @@ export const counterModel = defineModel('counter', {
 });
 ```
 
-### hooks 生命周期
+### events 事件回调
 
 ```typescript
 export const counterModel = defineModel('counter', {
   initialState,
-  hooks: {
+  events: {
     // 模型初始化
     onInit() {
       console.log(this.state);

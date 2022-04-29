@@ -140,7 +140,7 @@ export type InternalAction<State extends object> = {
   [key: string]: (state: State, ...args: any[]) => State | void;
 };
 
-export interface Hook<State> {
+export interface Event<State> {
   /**
    * store初始化完成，并且持久化（如果有）的数据也已经恢复。
    *
@@ -157,7 +157,7 @@ export interface Hook<State> {
   onChange?: (prevState: State, nextState: State) => void;
 }
 
-export interface HookCtx<State extends object>
+export interface EventCtx<State extends object>
   extends GetName<string>,
     GetState<State> {}
 
@@ -274,14 +274,32 @@ export interface DefineModelOptions<
    */
   persist?: ModelPersist<State> & ThisType<null>;
   /**
-   * 模型钩子
+   * 生命周期
+   * @since 0.11.1
    */
-  hooks?: Hook<State> &
+  events?: Event<State> &
     ThisType<
       ModelAction<State, Action> &
         ModelComputed<Computed> &
         Effect &
-        HookCtx<State>
+        EventCtx<State>
+    >;
+  /**
+   * @deprecated 容易与react的hooks产生歧义，请替换成：events
+   *
+   * ```diff
+   * defineModel('test', {
+   * -  hooks: {},
+   * +  events: {},
+   * });
+   * ```
+   */
+  hooks?: Event<State> &
+    ThisType<
+      ModelAction<State, Action> &
+        ModelComputed<Computed> &
+        Effect &
+        EventCtx<State>
     >;
 }
 
@@ -295,8 +313,22 @@ export const defineModel = <
   uniqueName: Name,
   options: DefineModelOptions<State, Action, Effect, Computed>,
 ): Model<Name, State, Action, Effect, Computed> => {
-  const { actions, effects, computed, skipRefresh, hooks } = options;
+  const {
+    actions,
+    effects,
+    computed,
+    skipRefresh,
+    events = options.hooks,
+  } = options;
   const initialState = cloneDeep(options.initialState);
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (options.hooks) {
+      console.warn(
+        `[model:${uniqueName}] Use option 'events' instead of 'hooks' which is confused with react-hooks, and 'hooks' will be removed once 1.0.0 is released`,
+      );
+    }
+  }
 
   if (process.env.NODE_ENV !== 'production') {
     if (!deepEqual(initialState, options.initialState)) {
@@ -440,9 +472,9 @@ export const defineModel = <
     });
   }
 
-  if (hooks) {
-    const { onInit, onChange } = hooks;
-    const hookCtx: HookCtx<State> = Object.assign(
+  if (events) {
+    const { onInit, onChange } = events;
+    const hookCtx: EventCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
       enhancedMethods.external,
       enhancedMethods.internal,

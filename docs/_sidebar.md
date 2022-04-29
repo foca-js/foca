@@ -12,7 +12,7 @@
 
 - [持久化](/persist.md)
 
-- [生命钩子](/lifecycle.md)
+- [事件回调](/events.md)
 
 - [进阶用法](/advanced.md)
 

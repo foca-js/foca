@@ -23,7 +23,7 @@ export const myModel = defineModel('my', {
       // ...
     },
   },
-  hooks: {
+  events: {
     onInit() {
       this.add(10);
       this.requestApi();
@@ -48,7 +48,7 @@ export const myModel = defineModel('my', {
       state.count += step;
     },
   },
-  hooks: {
+  events: {
     onChange(prevState, nextState) {
       if (nextState.count < 10) {
         // 必须在满足某种条件下才能再次修改，否则进入死循环

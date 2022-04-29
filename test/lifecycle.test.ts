@@ -7,7 +7,7 @@ describe('onInit', () => {
   });
 
   const createModel = () => {
-    return defineModel('hooks' + Math.random(), {
+    return defineModel('events' + Math.random(), {
       initialState: { count: 0 },
       effects: {
         invokeByReadyHook() {
@@ -16,7 +16,7 @@ describe('onInit', () => {
           });
         },
       },
-      hooks: {
+      events: {
         onInit() {
           this.invokeByReadyHook();
         },
@@ -24,12 +24,12 @@ describe('onInit', () => {
     });
   };
 
-  test('trigger ready hooks on store ready', async () => {
+  test('trigger ready events on store ready', async () => {
     const hookModel = createModel();
     store.init();
 
     const hook2Model = createModel();
-    const clonedModel = cloneModel('hooks' + Math.random(), hookModel);
+    const clonedModel = cloneModel('events' + Math.random(), hookModel);
 
     await Promise.resolve();
 
@@ -38,7 +38,7 @@ describe('onInit', () => {
     expect(clonedModel.state.count).toBe(101);
   });
 
-  test('trigger ready hooks on store and persist ready', async () => {
+  test('trigger ready events on store and persist ready', async () => {
     const hookModel = createModel();
 
     await engines.memoryStorage.setItem(
@@ -68,7 +68,7 @@ describe('onInit', () => {
     });
 
     const hook2Model = createModel();
-    const clonedModel = cloneModel('hooks' + Math.random(), hookModel);
+    const clonedModel = cloneModel('events' + Math.random(), hookModel);
 
     expect(hookModel.state.count).toBe(0);
     expect(hook2Model.state.count).toBe(0);
@@ -93,7 +93,7 @@ describe('onChange', () => {
 
   test('onChange should call after onInit', async () => {
     let testMessage = '';
-    const model = defineModel('hooks' + Math.random(), {
+    const model = defineModel('events' + Math.random(), {
       initialState: { count: 0 },
       actions: {
         plus(state) {
@@ -110,7 +110,7 @@ describe('onChange', () => {
           });
         },
       },
-      hooks: {
+      events: {
         onInit() {
           testMessage += 'onInit-';
           this._invokeByReadyHook();

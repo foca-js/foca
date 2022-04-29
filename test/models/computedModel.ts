@@ -85,7 +85,7 @@ export const computedModel = defineModel('computed-model', {
       this.a.value;
     },
   },
-  hooks: {
+  events: {
     onInit() {
       // type checking
       this.fullName;

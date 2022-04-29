@@ -12,7 +12,7 @@ type OverrideOptions<
   Computed extends object,
 > = Pick<
   DefineModelOptions<State, Action, Effect, Computed>,
-  'initialState' | 'hooks' | 'persist' | 'skipRefresh'
+  'initialState' | 'events' | 'hooks' | 'persist' | 'skipRefresh'
 >;
 
 export const cloneModel = <
