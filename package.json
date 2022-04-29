@@ -12,7 +12,9 @@
     "redux-toolkit"
   ],
   "description": "流畅的React状态管理库",
-  "author": "罪 <fanwenhua1990@gmail.com> (https://github.com/geekact)",
+  "contributors": [
+    "罪 <fanwenhua1990@gmail.com> (https://github.com/geekact)"
+  ],
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
