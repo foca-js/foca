@@ -123,16 +123,18 @@ export const counterModel = defineModel('counter', {
 });
 ```
 
-### 克隆想同逻辑的模型
+### clone 复制模型
 
 ```typescript
 import { cloneModel } from 'foca';
 import { counterModel } from './counterModel';
 
 export const counter2Model = cloneModel('counter2', counterModel);
+
 export const counter3Model = cloneModel('counter3', counterModel, {
   initialState: { count: 100 },
 });
+
 export const counter4Model = cloneModel('counter4', counterModel, (prev) => {
   return {
     initialState: { count: prev.count * 2 },
