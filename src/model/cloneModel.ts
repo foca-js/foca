@@ -48,6 +48,7 @@ export const cloneModel = <
     // 防止被开发者覆盖
     nextOpts.actions = prevOpts.actions;
     nextOpts.effects = prevOpts.effects;
+    nextOpts.computed = prevOpts.computed;
   }
 
   return defineModel(uniqueName, nextOpts);

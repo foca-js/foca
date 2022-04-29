@@ -34,7 +34,7 @@
 yarn add foca
 ```
 
-# 使用
+# 创建模型
 
 ### actions 修改数据
 
@@ -122,6 +122,25 @@ export const counterModel = defineModel('counter', {
   },
 });
 ```
+
+### 克隆想同逻辑的模型
+
+```typescript
+import { cloneModel } from 'foca';
+import { counterModel } from './counterModel';
+
+export const counter2Model = cloneModel('counter2', counterModel);
+export const counter3Model = cloneModel('counter3', counterModel, {
+  initialState: { count: 100 },
+});
+export const counter4Model = cloneModel('counter4', counterModel, (prev) => {
+  return {
+    initialState: { count: prev.count * 2 },
+  };
+});
+```
+
+# 使用
 
 ### 在 function 组件中使用
 

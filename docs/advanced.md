@@ -18,7 +18,7 @@ const user2Model = cloneModel('users2', userModel);
 
 共享方法但状态是独立的，这是个不错的主意，你只要维护一份代码就行了。
 
-克隆时也支持修改除 actions 和 effects 之外的其他属性
+克隆时支持修改 `initialState, events, persist, skipRefresh` 这些属性
 
 ```typescript
 const user3Model = cloneModel('users3', userModel, {
