@@ -36,78 +36,88 @@ yarn add foca
 
 # 使用
 
-### 定义完整的模型
+### actions 修改数据
 
 ```typescript
-// File: counterModel.ts
 import { defineModel } from 'foca';
 
-const initialState: { count: number } = {
-  count: 0,
-};
+const initialState: { count: number } = { count: 0 };
 
-// 无须手动注册到store，直接导出到react组件中使用
 export const counterModel = defineModel('counter', {
-  // 初始值，必填属性，其他属性均可选
   initialState,
   actions: {
-    // state可自动提示类型 { count: number }
-    plus(state, value: number, double: boolean = false) {
-      // 直接修改状态
-      state.count += value * (double ? 2 : 1);
+    // 支持无限参数
+    plus(state, value: number, times: number = 1) {
+      state.count += value * times;
     },
     minus(state, value: number) {
-      // 直接返回新状态
       return { count: state.count - value };
     },
-    // 私有方法，只能在模型内部被effect方法调用，外部调用则TS报错（属性不存在）
-    _clear(state) {
-      return this.initialState;
-    },
   },
-  // 计算属性，自动收集依赖
+});
+```
+
+### computed 计算属性
+
+```typescript
+export const counterModel = defineModel('counter', {
+  initialState,
+  // 自动收集依赖
   computed: {
     filled() {
       return Array(this.state.count)
         .fill('')
-        .map((_, index) => index);
+        .map((_, index) => index)
+        .map((item) => item * 2);
+    },
+  },
+});
+```
+
+### effects 副作用
+
+```typescript
+export const counterModel = defineModel('counter', {
+  initialState,
+  actions: {
+    increment(state) {
+      state.count += 1;
     },
   },
   effects: {
-    // 异步函数，自动追踪执行状态(loading)
-    async doSomething() {
-      // 调用私有方法
+    async incrementAsync() {
       await this._sleep(100);
 
-      // 快速处理状态，对于网络请求的数据十分方便
+      this.increment();
+      // 也可直接修改状态而不通过actions，仅在内部使用
       this.setState({ count: 1 });
       this.setState((state) => {
         state.count += 1;
       });
-      // 调用action函数处理状态
-      this.plus(1, true);
 
-      // 调用effect函数
-      return this.commonUtil(1);
+      return 'OK';
     },
-    // 普通函数
-    commonUtil(x: number) {
-      return x + 1;
-    },
-    // 私有方法，只能在模型内部使用，外部调用则TS报错（属性不存在）
+    // 私有方法，仅在内部调用
     _sleep(duration: number) {
       return new Promise((resolve) => {
         setTimeout(resolve, duration);
       });
     },
   },
+});
+```
+
+### hooks 生命周期
+
+```typescript
+export const counterModel = defineModel('counter', {
+  initialState,
   hooks: {
-    // store初始化完成后触发onInit钩子
+    // 模型初始化
     onInit() {
-      this.plus(1);
       console.log(this.state);
     },
-    // state变化时的回调
+    // 模型数据变更
     onChange(prevState, nextState) {},
   },
 });
@@ -121,13 +131,11 @@ import { useModel, useLoading } from 'foca';
 import { counterModel } from './counterModel';
 
 const App: FC = () => {
-  // count类型自动提示 number
   const count = useModel(counterModel, (state) => state.count);
-  // 仅effects的异步函数能作为参数传入，其他函数TS自动报错
-  const loading = useLoading(counterModel.doSomething);
+  const loading = useLoading(counterModel.incrementAsync);
 
   useEffect(() => {
-    counterModel.doSomething();
+    counterModel.incrementAsync();
   }, []);
 
   return (
@@ -151,7 +159,7 @@ type Props = ReturnType<typeof mapStateToProps>;
 
 class App extends Component<Props> {
   componentDidMount() {
-    counterModel.doSomething();
+    counterModel.incrementAsync();
   }
 
   render() {
@@ -168,7 +176,7 @@ class App extends Component<Props> {
 const mapStateToProps = () => {
   return {
     count: counterModel.state.count,
-    loading: getLoading(counterModel.doSomething),
+    loading: getLoading(counterModel.incrementAsync),
   };
 };
 
