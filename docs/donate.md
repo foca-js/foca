@@ -4,10 +4,10 @@
 
 > 捐赠时请备注你的 github 账号，对于每一个捐赠者，我都会放到 README.md 中表示感谢。
 
-## 国内捐赠：
+#### 二维码：
 
 <center>
-<img src="./alipay.jpg" width="40%" />
-&emsp;&emsp;
-<img src="./wepay.jpg" width="44.2%" />
+<img src="./alipay.png" width="40%" />
+<span style="display:inline-block; width: 8%"></span>
+<img src="./wepay.png" width="40%" />
 </center>
