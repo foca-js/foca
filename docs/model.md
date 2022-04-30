@@ -169,3 +169,71 @@ useComputed(userModel.fullName); // string
 计算属性什么时候才会更新？框架自动收集依赖，只有其中某个依赖更新了，计算属性才会更新。上面的例子中，当`firstName`或者`lastName`有变化时，fullName 将被标记为`dirty`状态，下一次访问则会重新计算结果。而当`age`变化时，不影响 fullName 的结果，下一次访问仍使用缓存作为结果。
 
 !> 可以在 computed 中使用其它 model 的数据。
+
+# Events
+
+每个模型都有针对自身的事件回调，在某些复杂的业务场景下，事件和其它属性的组合将变得十分灵活。
+
+## onInit
+
+当 store 初始化完成 并且持久化（如果有）数据已经恢复时，onInit 就会被自动触发。你可以调用 effects 或者 actions 做一些额外操作。
+
+```typescript
+import { defineModel } from 'foca';
+
+// 如果是持久化的模型，则初始值不一定是0
+const initialState = { count: 0 };
+
+export const myModel = defineModel('my', {
+  initialState,
+  actions: {
+    add(state, step: number) {
+      state.count += step;
+    },
+  },
+  effects: {
+    async requestApi() {
+      const result = await http.get('/path/to');
+      // ...
+    },
+  },
+  events: {
+    onInit() {
+      this.add(10);
+      this.requestApi();
+    },
+  },
+});
+```
+
+## onChange
+
+每当 state 有变化时的回调通知。初始化(onInit)执行之前不会触发该回调。如果在 onInit 中做了修改 state 的操作，则会触发该回调。
+
+```typescript
+import { defineModel } from 'foca';
+
+const initialState = { count: 0 };
+
+export const testModel = defineModel('test', {
+  initialState,
+  actions: {
+    add(state, step: number) {
+      state.count += step;
+    },
+  },
+  effects: {
+    _notify() {
+      // do something
+    },
+  },
+  events: {
+    onChange(prevState, nextState) {
+      if (prevState.count !== nextState.count) {
+        // 达到watch的效果
+        this._notify();
+      }
+    },
+  },
+});
+```

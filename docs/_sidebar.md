@@ -12,8 +12,6 @@
 
 * [持久化](/persist.md)
 
-- [事件回调](/events.md)
-
 * [进阶用法](/advanced.md)
 
 - [问题解答](/troubleshooting.md)
