@@ -1,4 +1,4 @@
-#
+# <!-- {docsify-ignore} -->
 
 # onInit
 
@@ -58,3 +58,5 @@ export const myModel = defineModel('my', {
   },
 });
 ```
+
+!> onChange 配合 effects 私有方法，可以模拟出 watch 的效果

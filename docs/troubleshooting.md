@@ -1,4 +1,4 @@
-#
+# <!-- {docsify-ignore} -->
 
 # 函数里 this 的类型是 any
 

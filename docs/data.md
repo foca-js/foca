@@ -1,4 +1,4 @@
-#
+# <!-- {docsify-ignore} -->
 
 # name
 
@@ -10,7 +10,7 @@
 
 # loading
 
-模型异步函数的当前状态，通过`getLoading(effect)`获取。
+模型异步函数的当前状态，通过`getLoading(model.asyncXXX)`获取。
 
 # initialState
 

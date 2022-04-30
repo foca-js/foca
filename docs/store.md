@@ -1,4 +1,4 @@
-#
+# <!-- {docsify-ignore} -->
 
 # 仓库
 
@@ -19,7 +19,7 @@ store.init();
 
 <!-- tabs:start -->
 
-#### ** React >= 18 **
+#### ** React 18+ **
 
 ```tsx
 // File: index.tsx
@@ -38,7 +38,7 @@ root.render(
 );
 ```
 
-#### ** React >= 16 **
+#### ** React 16+ **
 
 ```tsx
 // File: index.tsx
