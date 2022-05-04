@@ -5,15 +5,15 @@ export class ComputedDeps implements Deps {
   public readonly id: string;
   protected snapshot: any;
 
-  constructor(protected readonly computedValue: ComputedValue) {
-    this.id = `computed-${computedValue.ctx.name}-${computedValue.property}`;
+  constructor(protected readonly body: ComputedValue) {
+    this.id = `computed-${body.ctx.name}-${body.property}`;
   }
 
   end(): void {
-    this.snapshot = this.computedValue.snapshot;
+    this.snapshot = this.body.snapshot;
   }
 
   isDirty(): boolean {
-    return this.snapshot !== this.computedValue.value;
+    return this.snapshot !== this.body.value;
   }
 }
