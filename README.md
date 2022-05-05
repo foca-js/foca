@@ -222,15 +222,29 @@ Nextjs 案例仓库：https://github.com/foca-js/foca-demo-nextjs
 
 # 生态
 
-| 仓库                                                                            | 版本                                                                                                                                                      | 描述                      | 平台                       |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------------------------- |
-| [axios](https://github.com/axios/axios)                                         | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                                                                         | 当下最流行的请求库        | React, RN                  |
-| [foca-axios](https://github.com/foca-js/foca-axios)                             | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)                                                               | 针对 axios 的增强型适配器 | React, RN                  |
-| [foca-miniprogram-axios](https://github.com/foca-js/foca-miniprogram-axios)     | [![npm](https://img.shields.io/npm/v/foca-miniprogram-axios)](https://www.npmjs.com/package/foca-miniprogram-axios)                                       | 针对 axios 的增强型适配器 | Taro, Remax                |
-| [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)               | [![npm](https://img.shields.io/npm/v/foca-taro-storage)](https://www.npmjs.com/package/foca-taro-storage)                                                 | Taro 持久化引擎           | Taro                       |
-| [rn-async-storage](https://github.com/react-native-async-storage/async-storage) | [![npm](https://img.shields.io/npm/v/@react-native-async-storage/async-storage)](https://www.npmjs.com/package/@react-native-async-storage/async-storage) | React-Native 持久化引擎   | RN                         |
-| [localForage](https://github.com/localForage/localForage)                       | [![npm](https://img.shields.io/npm/v/localforage)](https://www.npmjs.com/package/localforage)                                                             | 浏览器端持久化引擎        | React                      |
-| [redux-logger](https://github.com/LogRocket/redux-logger)                       | [![npm](https://img.shields.io/npm/v/redux-logger)](https://www.npmjs.com/package/redux-logger)                                                           | 控制台打印 redux 日志     | React, RN <br> Taro, Remax |
+#### 请求
+
+| 仓库                                                                        | 版本                                                                                                                | 描述                      | 平台        |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------- | ----------- |
+| [axios](https://github.com/axios/axios)                                     | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                                   | 当下最流行的请求库        | React, RN   |
+| [foca-axios](https://github.com/foca-js/foca-axios)                         | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)                         | 针对 axios 的增强型适配器 | React, RN   |
+| [foca-miniprogram-axios](https://github.com/foca-js/foca-miniprogram-axios) | [![npm](https://img.shields.io/npm/v/foca-miniprogram-axios)](https://www.npmjs.com/package/foca-miniprogram-axios) | 针对 axios 的增强型适配器 | Taro, Remax |
+
+#### 存储引擎
+
+| 仓库                                                                                      | 版本                                                                                                                                                      | 描述                    | 平台  |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ----- |
+| [react-native-async-storage](https://github.com/react-native-async-storage/async-storage) | [![npm](https://img.shields.io/npm/v/@react-native-async-storage/async-storage)](https://www.npmjs.com/package/@react-native-async-storage/async-storage) | React-Native 持久化引擎 | RN    |
+| [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)                         | [![npm](https://img.shields.io/npm/v/foca-taro-storage)](https://www.npmjs.com/package/foca-taro-storage)                                                 | Taro 持久化引擎         | Taro  |
+| [localForage](https://github.com/localForage/localForage)                                 | [![npm](https://img.shields.io/npm/v/localforage)](https://www.npmjs.com/package/localforage)                                                             | 浏览器端持久化引擎      | React |
+
+#### 日志
+
+| 仓库                                                                       | 版本                                                                                                                      | 描述           | 平台                       |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | -------------------------- |
+| [@redux-devtools/extension](https://github.com/reduxjs/redux-devtools)     | [![npm](https://img.shields.io/npm/v/@redux-devtools/extension)](https://www.npmjs.com/package/@redux-devtools/extension) | 浏览器日志插件 | React, RN                  |
+| [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | [![npm](https://img.shields.io/npm/v/react-native-debugger)](https://www.npmjs.com/package/react-native-debugger)         | 日志应用程序   | RN                         |
+| [redux-logger](https://github.com/LogRocket/redux-logger)                  | [![npm](https://img.shields.io/npm/v/redux-logger)](https://www.npmjs.com/package/redux-logger)                           | 控制台输出日志 | React, RN <br> Taro, Remax |
 
 # 捐赠
 
