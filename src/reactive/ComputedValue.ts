@@ -1,5 +1,4 @@
 import type { ComputedRef, Deps } from './types';
-import { ComputedCtx } from '../model/defineModel';
 import { depsCollector } from './depsCollector';
 import { ComputedDeps } from './ComputedDeps';
 
@@ -7,11 +6,13 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   public deps: Deps[] = [];
   public snapshot: any;
 
-  protected memorized = false;
-  protected collecting: boolean = false;
+  protected memorized?: boolean;
+  protected collecting?: boolean;
+  protected root: any;
 
   constructor(
-    public readonly ctx: ComputedCtx<any>,
+    protected readonly store: { getState: () => any },
+    public readonly modelName: string,
     public readonly property: string,
     protected readonly fn: () => any,
   ) {}
@@ -19,16 +20,21 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   public get value(): T {
     if (this.collecting) {
       throw new Error(
-        `[${this.ctx.name}] computed '${this.property}' circularly references itself`,
+        `[${this.modelName}] computed '${this.property}' circularly references itself`,
       );
     }
 
     this.collecting = true;
+    const unmemorized = !this.memorized;
 
-    if (!this.memorized || this.isDirty()) {
+    if (unmemorized) {
+      this.root = this.store.getState();
+      this.memorized = true;
+    }
+
+    if (unmemorized || this.isDirty()) {
       this.deps = depsCollector.produce(() => {
-        this.snapshot = this.fn.call(this.ctx);
-        this.memorized = true;
+        this.snapshot = this.fn();
       });
     }
 
@@ -42,10 +48,18 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   }
 
   isDirty(): boolean {
+    const rootState = this.store.getState();
+
+    if (this.root === rootState) {
+      return false;
+    }
+
     const deps = this.deps;
     for (let i = deps.length; i-- > 0; ) {
       if (deps[i]!.isDirty()) return true;
     }
+
+    this.root = rootState;
     return false;
   }
 }

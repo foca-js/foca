@@ -346,7 +346,7 @@ export const defineModel = <
     return defineGetter(obj, 'state', () => {
       const state = modelStore.getState()[uniqueName];
       return depsCollector.collecting
-        ? new ObjectDeps(uniqueName, modelStore).start(state)
+        ? new ObjectDeps(modelStore, uniqueName).start(state)
         : state;
     });
   };
@@ -442,10 +442,11 @@ export const defineModel = <
       computedMethods[computedName] = enhancedMethods[
         getMethodCategory(computedName)
       ][computedName] = new ComputedValue(
-        computedCtx,
+        modelStore,
+        uniqueName,
         computedName,
         // @ts-expect-error
-        computed[computedName],
+        (computed[computedName] as Function).bind(computedCtx),
       );
     });
 

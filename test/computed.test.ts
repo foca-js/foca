@@ -63,7 +63,7 @@ test('Split the deps for same getters', () => {
   };
 
   let deps = depsCollector.produce(() => {
-    const proxy = new ObjectDeps('x', mockStore);
+    const proxy = new ObjectDeps(mockStore, 'x');
     const proxyState = proxy.start(mockState);
     proxyState.a.b;
     proxyState.a.b.c;
@@ -71,7 +71,7 @@ test('Split the deps for same getters', () => {
   expect(deps).toHaveLength(2);
 
   deps = depsCollector.produce(() => {
-    const proxy = new ObjectDeps('x', mockStore);
+    const proxy = new ObjectDeps(mockStore, 'x');
     const proxyState = proxy.start(mockState);
     proxyState.a.b;
   });
@@ -89,7 +89,7 @@ test('Dirty deps never turn to clean', () => {
   };
 
   let deps = depsCollector.produce(() => {
-    const proxy = new ObjectDeps('x', mockStore);
+    const proxy = new ObjectDeps(mockStore, 'x');
     const proxyState = proxy.start(mockState);
     proxyState.a.b;
     proxyState.a.b.c;
@@ -128,20 +128,24 @@ test('Unable to visit proxy state outside collecting mode', () => {
 
   let proxyState: typeof mockState;
   depsCollector.produce(() => {
-    proxyState = new ObjectDeps('x', mockStore).start(mockState);
+    proxyState = new ObjectDeps(mockStore, 'x').start(mockState);
   });
 
   expect(() => proxyState.a).toThrowError();
 });
 
 test('ComputedValue can remove duplicated deps', () => {
-  const computedValue = new ComputedValue(
-    {
-      name: computedModel.name,
-      get state() {
-        return computedModel.state;
-      },
+  const mockStore = {
+    getState() {
+      return {
+        [computedModel.name]: computedModel.state,
+      };
     },
+  };
+
+  const computedValue = new ComputedValue(
+    mockStore,
+    computedModel.name,
     'prop',
     () => {
       computedModel.state.firstName;
@@ -159,13 +163,17 @@ test('ComputedValue can remove duplicated deps', () => {
 });
 
 test('ComputedValue can be a copy deps', () => {
-  const computedValue = new ComputedValue(
-    {
-      name: computedModel.name,
-      get state() {
-        return computedModel.state;
-      },
+  const mockStore = {
+    getState() {
+      return {
+        [computedModel.name]: computedModel.state,
+      };
     },
+  };
+
+  const computedValue = new ComputedValue(
+    mockStore,
+    computedModel.name,
     'prop',
     () => {
       return computedModel.fullName.value + '-abc';

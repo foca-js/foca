@@ -8,8 +8,8 @@ export class ObjectDeps<T = any> implements Deps {
   protected memoRootState: any;
 
   constructor(
-    protected readonly modelName: string,
     protected readonly store: { getState: () => any },
+    protected readonly modelName: string,
     protected readonly deps: string[] = [],
   ) {
     this.memoRootState = this.getRootState();
@@ -89,8 +89,8 @@ export class ObjectDeps<T = any> implements Deps {
 
           if (visited) {
             return new ObjectDeps(
-              this.modelName,
               this.store,
+              this.modelName,
               currentDeps.slice(),
             ).start(currentState)[key];
           }
