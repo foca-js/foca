@@ -27,6 +27,6 @@ export type {
   StoreEnhancer,
   Unsubscribe,
 } from 'redux';
-export type { Model } from './model/defineModel';
+export type { Model } from './model/types';
 export type { StorageEngine } from './engines';
 export type { ComputedRef } from './reactive/types';

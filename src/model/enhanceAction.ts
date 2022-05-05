@@ -1,7 +1,7 @@
 import type { PreModelAction } from '../actions/model';
 import { modelStore } from '../store/modelStore';
 import { toArgs } from '../utils/toArgs';
-import type { ActionCtx } from './defineModel';
+import type { ActionCtx } from './types';
 
 export interface EnhancedAction<State extends object> {
   (payload: any): PreModelAction<State>;

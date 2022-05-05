@@ -1,5 +1,5 @@
 import { defineModel, cloneModel, store } from '../src';
-import { InternalModel } from '../src/model/defineModel';
+import type { InternalModel } from '../src/model/types';
 import { basicModel } from './models/basicModel';
 
 let modelIndex = 0;

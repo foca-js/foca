@@ -1,9 +1,5 @@
-import {
-  defineModel,
-  Model,
-  InternalModel,
-  DefineModelOptions,
-} from './defineModel';
+import { defineModel } from './defineModel';
+import type { DefineModelOptions, InternalModel, Model } from './types';
 
 type OverrideOptions<
   State extends object,

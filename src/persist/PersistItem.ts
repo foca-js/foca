@@ -1,5 +1,5 @@
 import type { StorageEngine } from '../engines';
-import type { InternalModel, Model, ModelPersist } from '../model/defineModel';
+import type { InternalModel, Model, ModelPersist } from '../model/types';
 
 export interface PersistSchema {
   /**

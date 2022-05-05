@@ -3,7 +3,7 @@ import {
   LOADING_CATEGORY,
   TYPE_SET_LOADING,
 } from '../actions/loading';
-import type { EffectCtx } from './defineModel';
+import type { EffectCtx } from './types';
 import { isPromise } from '../utils/isPromise';
 import { toArgs } from '../utils/toArgs';
 import { loadingStore } from '../store/loadingStore';
