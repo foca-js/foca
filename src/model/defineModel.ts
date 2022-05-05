@@ -33,6 +33,8 @@ export const defineModel = <
   uniqueName: Name,
   options: DefineModelOptions<State, Action, Effect, Computed>,
 ): Model<Name, State, Action, Effect, Computed> => {
+  guard(uniqueName);
+
   const {
     actions,
     effects,
@@ -41,6 +43,30 @@ export const defineModel = <
     events = options.hooks,
   } = options;
   const initialState = cloneDeep(options.initialState);
+
+  if (process.env.NODE_ENV !== 'production') {
+    const items = [
+      { name: 'actions', value: actions },
+      { name: 'effects', value: effects },
+      { name: 'computed', value: computed },
+    ];
+    const validateUniqueMethod = (index1: number, index2: number) => {
+      const item1 = items[index1]!;
+      const item2 = items[index2]!;
+      if (item1.value && item2.value) {
+        Object.keys(item1.value).forEach((key) => {
+          if (item2.value!.hasOwnProperty(key)) {
+            throw new Error(
+              `[model:${uniqueName}] You have defined method "${key}" in both ${item1.name} and ${item2.name}`,
+            );
+          }
+        });
+      }
+    };
+    validateUniqueMethod(0, 1);
+    validateUniqueMethod(0, 2);
+    validateUniqueMethod(1, 2);
+  }
 
   if (process.env.NODE_ENV !== 'production') {
     if (options.hooks) {
@@ -76,32 +102,6 @@ export const defineModel = <
   ): T & GetInitialState<State> => {
     return defineGetter(obj, 'initialState', () => cloneDeep(initialState));
   };
-
-  guard(uniqueName);
-
-  if (process.env.NODE_ENV !== 'production') {
-    const items = [
-      { name: 'actions', value: actions },
-      { name: 'effects', value: effects },
-      { name: 'computed', value: computed },
-    ];
-    const validateUniqueMethod = (index1: number, index2: number) => {
-      const item1 = items[index1]!;
-      const item2 = items[index2]!;
-      if (item1.value && item2.value) {
-        Object.keys(item1.value).forEach((key) => {
-          if (item2.value!.hasOwnProperty(key)) {
-            throw new Error(
-              `[model:${uniqueName}] You have defined method "${key}" in both ${item1.name} and ${item2.name}`,
-            );
-          }
-        });
-      }
-    };
-    validateUniqueMethod(0, 1);
-    validateUniqueMethod(0, 2);
-    validateUniqueMethod(1, 2);
-  }
 
   const actionCtx: ActionCtx<State> = composeGetter(
     {},
@@ -177,8 +177,10 @@ export const defineModel = <
     const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
 
     Object.keys(effects).forEach((effectName) => {
-      process.env.NODE_ENV !== 'production' &&
+      if (process.env.NODE_ENV !== 'production') {
         effectCtxs.push(createEffectCtx(effectName));
+      }
+
       enhancedMethods[getMethodCategory(effectName)][effectName] =
         enhanceEffect(
           effectCtxs[effectCtxs.length - 1]!,
@@ -188,9 +190,13 @@ export const defineModel = <
         );
     });
 
-    effectCtxs.forEach((ctx) => {
-      Object.assign(ctx, enhancedMethods.external, enhancedMethods.internal);
-    });
+    for (let i = effectCtxs.length; i-- > 0; ) {
+      Object.assign(
+        effectCtxs[i],
+        enhancedMethods.external,
+        enhancedMethods.internal,
+      );
+    }
   }
 
   if (events) {
