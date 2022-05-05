@@ -144,7 +144,7 @@ export interface Event<State> {
   /**
    * store初始化完成，并且持久化（如果有）的数据也已经恢复。
    *
-   * 上下文 **this** 可以直接调用actions和effects的函数。
+   * 上下文 **this** 可以直接调用actions和effects的函数以及computed计算属性。
    */
   onInit?: () => void;
   /**
@@ -152,7 +152,7 @@ export interface Event<State> {
    *
    * 初始化(onInit)执行之前不会触发该回调。如果在onInit中做了修改state的操作，则会触发该回调。
    *
-   * 上下文 **this** 可以直接调用actions和effects的函数。
+   * 上下文 **this** 可以直接调用actions和effects的函数以及computed计算属性，请谨慎执行修改数据的操作以防止死循环。
    */
   onChange?: (prevState: State, nextState: State) => void;
 }

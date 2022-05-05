@@ -10,8 +10,6 @@ export const guard = (uniqueName: string) => {
   }
 
   if (++counter[uniqueName] > 1) {
-    throw new Error(
-      `[model] You have used "${uniqueName}" many times, make sure model name is global unique.`,
-    );
+    throw new Error(`You have used "${uniqueName}" as model name many times.`);
   }
 };
