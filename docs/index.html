@@ -41,10 +41,16 @@
         homepage: 'home.md',
         autoHeader: true,
         topMargin: 30,
+        search: {
+          placeholder: '搜索',
+          noData: '未找到相关信息',
+          hideOtherSidebarContent: true,
+        },
       };
     </script>
     <!-- Docsify v4 -->
     <script src="//unpkg.com/docsify@4"></script>
+    <script src="//unpkg.com/docsify@4/lib/plugins/search.min.js"></script>
     <script src="//unpkg.com/prismjs@1/components/prism-typescript.min.js"></script>
     <script src="//unpkg.com/prismjs@1/components/prism-bash.min.js"></script>
     <script src="//unpkg.com/prismjs@1/components/prism-jsx.min.js"></script>
