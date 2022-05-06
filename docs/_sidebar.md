@@ -14,6 +14,8 @@
 
 - [进阶用法](/advanced.md)
 
-* [问题解答](/troubleshooting.md)
+* [API一览](/api.md)
 
-- [捐赠](/donate.md)
+- [问题解答](/troubleshooting.md)
+
+* [捐赠](/donate.md)
