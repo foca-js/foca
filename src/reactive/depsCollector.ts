@@ -12,13 +12,20 @@ export const depsCollector = {
     callback();
     deps.length = level--;
 
-    const filteredDeps = uniqueDeps(current);
+    const uniqueDeps: Deps[] = [];
+    const uniqueID: string[] = [];
 
-    for (let i = filteredDeps.length; i-- > 0; ) {
-      filteredDeps[i]!.end();
+    for (let i = 0; i < current.length; ++i) {
+      const dep = current[i]!;
+      const id = dep.id;
+      if (uniqueID.indexOf(id) === -1) {
+        uniqueID.push(id);
+        uniqueDeps.push(dep);
+        dep.end();
+      }
     }
 
-    return filteredDeps;
+    return uniqueDeps;
   },
   append(dep: Deps) {
     deps[level]!.push(dep);
@@ -26,19 +33,4 @@ export const depsCollector = {
   prepend(dep: Deps) {
     deps[level]!.unshift(dep);
   },
-};
-
-const uniqueDeps = (deps: Deps[]) => {
-  if (deps.length <= 1) {
-    return deps;
-  }
-
-  const uniqueID: string[] = [];
-  return deps.filter(({ id }) => {
-    if (uniqueID.indexOf(id) === -1) {
-      uniqueID.push(id);
-      return true;
-    }
-    return false;
-  });
 };
