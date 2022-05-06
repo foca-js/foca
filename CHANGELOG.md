@@ -1,3 +1,7 @@
+## [0.11.2](https://github.com/foca-js/foca/compare/v0.11.1...v0.11.2)&nbsp;&nbsp;(2022-05-06)
+
+- 提升 computed 脏检查性能
+
 ## [0.11.1](https://github.com/foca-js/foca/compare/v0.11.0...v0.11.1)&nbsp;&nbsp;(2022-04-29)
 
 - 优化 computed in computed 时的缓存对比策略

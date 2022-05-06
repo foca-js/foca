@@ -1,6 +1,6 @@
 {
   "name": "foca",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "repository": "git@github.com:foca-js/foca.git",
   "homepage": "https://foca.js.org",
   "keywords": [
@@ -28,9 +28,9 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
   "files": [
