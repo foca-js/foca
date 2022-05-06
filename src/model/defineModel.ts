@@ -91,7 +91,7 @@ export const defineModel = <
   const getState = <T extends object>(obj: T): T & GetState<State> => {
     return defineGetter(obj, 'state', () => {
       const state = modelStore.getState()[uniqueName];
-      return depsCollector.collecting
+      return depsCollector.active
         ? new ObjectDeps(modelStore, uniqueName).start(state)
         : state;
     });

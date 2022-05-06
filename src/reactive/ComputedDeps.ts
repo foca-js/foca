@@ -6,7 +6,7 @@ export class ComputedDeps implements Deps {
   protected snapshot: any;
 
   constructor(protected readonly body: ComputedValue) {
-    this.id = `computed-${body.modelName}-${body.property}`;
+    this.id = `c-${body.model}-${body.property}`;
   }
 
   end(): void {

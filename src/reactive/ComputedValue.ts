@@ -6,43 +6,43 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   public deps: Deps[] = [];
   public snapshot: any;
 
-  protected memorized?: boolean;
-  protected collecting?: boolean;
+  protected cached?: boolean;
+  protected active?: boolean;
   protected root: any;
 
   constructor(
     protected readonly store: { getState: () => any },
-    public readonly modelName: string,
+    public readonly model: string,
     public readonly property: string,
     protected readonly fn: () => any,
   ) {}
 
   public get value(): T {
-    if (this.collecting) {
+    if (this.active) {
       throw new Error(
-        `[${this.modelName}] computed '${this.property}' circularly references itself`,
+        `[${this.model}] computed '${this.property}' circularly references itself`,
       );
     }
 
-    this.collecting = true;
-    const unmemorized = !this.memorized;
+    this.active = true;
+    const uncached = !this.cached;
 
-    if (unmemorized) {
+    if (uncached) {
       this.root = this.store.getState();
-      this.memorized = true;
+      this.cached = true;
     }
 
-    if (unmemorized || this.isDirty()) {
+    if (uncached || this.isDirty()) {
       this.deps = depsCollector.produce(() => {
         this.snapshot = this.fn();
       });
     }
 
-    if (depsCollector.collecting) {
+    if (depsCollector.active) {
       depsCollector.prepend(new ComputedDeps(this));
     }
 
-    this.collecting = false;
+    this.active = false;
 
     return this.snapshot;
   }

@@ -3,27 +3,27 @@ import { depsCollector } from './depsCollector';
 import type { Deps } from './types';
 
 export class ObjectDeps<T = any> implements Deps {
-  protected collecting: boolean = true;
+  protected active: boolean = true;
   protected snapshot: any;
-  protected memoRootState: any;
+  protected root: any;
 
   constructor(
     protected readonly store: { getState: () => any },
-    protected readonly modelName: string,
+    protected readonly model: string,
     protected readonly deps: string[] = [],
   ) {
-    this.memoRootState = this.getRootState();
+    this.root = this.getState();
   }
 
   isDirty(): boolean {
-    const rootState = this.getRootState() as any;
+    const rootState = this.getState() as any;
 
-    if (this.memoRootState === rootState) {
+    if (this.root === rootState) {
       return false;
     }
 
     if (this.snapshot === this.getSnapshot(rootState)) {
-      this.memoRootState = rootState;
+      this.root = rootState;
       return false;
     }
 
@@ -31,20 +31,20 @@ export class ObjectDeps<T = any> implements Deps {
   }
 
   get id(): string {
-    return this.modelName + '.' + this.deps.join('.');
+    return this.model + '.' + this.deps.join('.');
   }
 
   start<T>(startState: T): T {
     depsCollector.append(this);
-    return this.createProxy(startState);
+    return this.proxy(startState);
   }
 
   end(): void {
-    this.collecting = false;
+    this.active = false;
   }
 
-  protected getRootState(): T {
-    return this.store.getState()[this.modelName];
+  protected getState(): T {
+    return this.store.getState()[this.model];
   }
 
   protected getSnapshot(state: any) {
@@ -61,7 +61,7 @@ export class ObjectDeps<T = any> implements Deps {
     return snapshot;
   }
 
-  protected createProxy(currentState: Record<string, any>): any {
+  protected proxy(currentState: Record<string, any>): any {
     if (currentState === null || typeof currentState !== 'object') {
       return currentState;
     }
@@ -78,9 +78,9 @@ export class ObjectDeps<T = any> implements Deps {
         enumerable: true,
         get: () => {
           if (process.env.NODE_ENV !== 'production') {
-            if (!this.collecting) {
+            if (!this.active) {
               throw new Error(
-                `[${this.modelName}] Visit value '${this.deps
+                `[${this.model}] Visit value '${this.deps
                   .concat(key)
                   .join('.')}' outside the computed function`,
               );
@@ -90,14 +90,14 @@ export class ObjectDeps<T = any> implements Deps {
           if (visited) {
             return new ObjectDeps(
               this.store,
-              this.modelName,
+              this.model,
               currentDeps.slice(),
             ).start(currentState)[key];
           }
 
           visited = true;
           this.deps.push(key);
-          return this.createProxy((this.snapshot = currentState[key]));
+          return this.proxy((this.snapshot = currentState[key]));
         },
       });
     }

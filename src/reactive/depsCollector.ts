@@ -4,7 +4,7 @@ const deps: Deps[][] = [];
 let level = -1;
 
 export const depsCollector = {
-  get collecting(): boolean {
+  get active(): boolean {
     return level >= 0;
   },
   produce(callback: Function): Deps[] {
