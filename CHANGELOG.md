@@ -1,3 +1,7 @@
+## [0.11.3](https://github.com/foca-js/foca/compare/v0.11.2...v0.11.3)&nbsp;&nbsp;(2022-05-07)
+
+- 修复 setTimeout 类型 (#15)
+
 ## [0.11.2](https://github.com/foca-js/foca/compare/v0.11.1...v0.11.2)&nbsp;&nbsp;(2022-05-06)
 
 - 提升 computed 脏检查性能
