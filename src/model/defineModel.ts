@@ -201,7 +201,7 @@ export const defineModel = <
 
   if (events) {
     const { onInit, onChange } = events;
-    const hookCtx: EventCtx<State> = Object.assign(
+    const eventCtx: EventCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
       enhancedMethods.external,
       enhancedMethods.internal,
@@ -209,11 +209,11 @@ export const defineModel = <
 
     if (onChange) {
       modelStore.onInitialized().then(() => {
-        let prevState = hookCtx.state;
+        let prevState = eventCtx.state;
         modelStore.subscribe(() => {
-          const nextState = hookCtx.state;
+          const nextState = eventCtx.state;
           if (prevState !== nextState) {
-            modelStore.isReady && onChange.call(hookCtx, prevState, nextState);
+            modelStore.isReady && onChange.call(eventCtx, prevState, nextState);
             prevState = nextState;
           }
         });
@@ -222,7 +222,7 @@ export const defineModel = <
 
     if (onInit) {
       modelStore.onInitialized().then(() => {
-        onInit.call(hookCtx);
+        onInit.call(eventCtx);
       });
     }
   }
