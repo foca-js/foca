@@ -6,7 +6,7 @@ import { PersistItem, PersistOptions } from './PersistItem';
 export class PersistManager {
   protected initialized: boolean = false;
   protected readonly list: PersistItem[] = [];
-  protected timer?: NodeJS.Timeout;
+  protected timer?: ReturnType<typeof setTimeout>;
   protected unsubscrbeStore!: Unsubscribe;
 
   constructor(options: PersistOptions[]) {
