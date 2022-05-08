@@ -150,16 +150,12 @@ export const defineModel = <
   }
 
   if (computed) {
-    const computedCtx: ComputedCtx<State> = composeGetter(
-      {},
-      getName,
-      getState,
-    );
-
-    const computedMethods: Record<string, ComputedValue> = {};
+    const computedCtx: ComputedCtx<State> & {
+      [K in string]?: ComputedValue;
+    } = composeGetter({}, getName, getState);
 
     Object.keys(computed).forEach((computedName) => {
-      computedMethods[computedName] = enhancedMethods[
+      computedCtx[computedName] = enhancedMethods[
         getMethodCategory(computedName)
       ][computedName] = new ComputedValue(
         modelStore,
@@ -169,21 +165,22 @@ export const defineModel = <
         (computed[computedName] as Function).bind(computedCtx),
       );
     });
-
-    Object.assign(computedCtx, computedMethods);
   }
 
   if (effects) {
     const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
 
     Object.keys(effects).forEach((effectName) => {
+      let ctx = effectCtxs[0]!;
+
       if (process.env.NODE_ENV !== 'production') {
         effectCtxs.push(createEffectCtx(effectName));
+        ctx = effectCtxs[effectCtxs.length - 1]!;
       }
 
       enhancedMethods[getMethodCategory(effectName)][effectName] =
         enhanceEffect(
-          effectCtxs[effectCtxs.length - 1]!,
+          ctx,
           effectName,
           // @ts-expect-error
           effects[effectName],
@@ -207,8 +204,8 @@ export const defineModel = <
       enhancedMethods.internal,
     );
 
-    if (onChange) {
-      modelStore.onInitialized().then(() => {
+    modelStore.onInitialized().then(() => {
+      if (onChange) {
         let prevState = eventCtx.state;
         modelStore.subscribe(() => {
           const nextState = eventCtx.state;
@@ -217,14 +214,10 @@ export const defineModel = <
             prevState = nextState;
           }
         });
-      });
-    }
+      }
 
-    if (onInit) {
-      modelStore.onInitialized().then(() => {
-        onInit.call(eventCtx);
-      });
-    }
+      onInit && onInit.call(eventCtx);
+    });
   }
 
   modelStore.appendReducer(
