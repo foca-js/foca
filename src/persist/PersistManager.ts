@@ -5,7 +5,7 @@ import { PersistItem, PersistOptions } from './PersistItem';
 
 export class PersistManager {
   protected initialized: boolean = false;
-  protected readonly list: PersistItem[] = [];
+  protected readonly list: PersistItem[];
   protected timer?: ReturnType<typeof setTimeout>;
   protected unsubscrbeStore!: Unsubscribe;
 
