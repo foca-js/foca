@@ -82,3 +82,35 @@ test('Override persist', () => {
   expect(model3._$opts.persist).toHaveProperty('maxAge');
   expect(model3._$opts.persist).toHaveProperty('decode');
 });
+
+test('override methods or unknown option can cause error', () => {
+  const model = defineModel('model' + ++modelIndex, { initialState: {} });
+
+  expect(() =>
+    cloneModel('a', model, {
+      // @ts-expect-error
+      actions: {},
+    }),
+  ).toThrowError();
+
+  expect(() =>
+    cloneModel('b', model, {
+      // @ts-expect-error
+      effects: {},
+    }),
+  ).toThrowError();
+
+  expect(() =>
+    cloneModel('c', model, {
+      // @ts-expect-error
+      computed: {},
+    }),
+  ).toThrowError();
+
+  expect(() =>
+    cloneModel('d', model, {
+      // @ts-expect-error
+      whateverblabla: {},
+    }),
+  ).toThrowError();
+});

@@ -1,15 +1,22 @@
 import { defineModel } from './defineModel';
 import type { DefineModelOptions, InternalModel, Model } from './types';
 
+const editableKeys = [
+  'initialState',
+  'events',
+  'hooks',
+  'persist',
+  'skipRefresh',
+] as const;
+
+type EditableKeys = typeof editableKeys[number];
+
 type OverrideOptions<
   State extends object,
   Action extends object,
   Effect extends object,
   Computed extends object,
-> = Pick<
-  DefineModelOptions<State, Action, Effect, Computed>,
-  'initialState' | 'events' | 'hooks' | 'persist' | 'skipRefresh'
->;
+> = Pick<DefineModelOptions<State, Action, Effect, Computed>, EditableKeys>;
 
 export const cloneModel = <
   Name extends string,
@@ -41,10 +48,19 @@ export const cloneModel = <
       nextOpts,
       typeof options === 'function' ? options(nextOpts) : options,
     );
-    // 防止被开发者覆盖
-    nextOpts.actions = prevOpts.actions;
-    nextOpts.effects = prevOpts.effects;
-    nextOpts.computed = prevOpts.computed;
+
+    if (process.env.NODE_ENV !== 'production') {
+      (Object.keys(nextOpts) as EditableKeys[]).forEach((key) => {
+        if (
+          nextOpts[key] !== prevOpts[key] &&
+          editableKeys.indexOf(key) === -1
+        ) {
+          throw new Error(
+            `[model:${uniqueName}] Stop overridding option '${key}' during clone model`,
+          );
+        }
+      });
+    }
   }
 
   return defineModel(uniqueName, nextOpts);
