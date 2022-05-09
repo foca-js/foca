@@ -21,7 +21,7 @@ export const isPreModelAction = (
   return test.preModel && !!test.model && typeof test.consumer === 'function';
 };
 
-export const isPostModel = <State extends object>(
+export const isPostModelAction = <State extends object>(
   action: AnyAction,
 ): action is PostModelAction<State> => {
   const test = action as PostModelAction<State>;

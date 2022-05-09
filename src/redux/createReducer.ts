@@ -1,5 +1,5 @@
 import type { Reducer } from 'redux';
-import { isPostModel } from '../actions/model';
+import { isPostModelAction } from '../actions/model';
 import { isRefreshAction } from '../actions/refresh';
 import { freezeState } from '../utils/freezeState';
 
@@ -21,7 +21,7 @@ export const createReducer = <State extends object>(
       return initialState;
     }
 
-    if (isPostModel<State>(action) && action.model === reducerName) {
+    if (isPostModelAction<State>(action) && action.model === reducerName) {
       return freezeState(action.next);
     }
 
