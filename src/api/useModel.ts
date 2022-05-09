@@ -23,7 +23,7 @@ export function useModel<State extends object>(
   model: Model<string, State>,
 ): State;
 export function useModel<State extends object, T>(
-  model: Model<any, State>,
+  model: Model<string, State>,
   selector: (state: State) => T,
   algorithm?: Algorithm,
 ): T;
@@ -41,15 +41,9 @@ export function useModel<
 } & {
   [K in Name2]: State2;
 };
-export function useModel<
-  Name1 extends string,
-  State1 extends object,
-  Name2 extends string,
-  State2 extends object,
-  T,
->(
-  model1: Model<Name1, State1>,
-  model2: Model<Name2, State2>,
+export function useModel<State1 extends object, State2 extends object, T>(
+  model1: Model<string, State1>,
+  model2: Model<string, State2>,
   selector: (state1: State1, state2: State2) => T,
   algorithm?: Algorithm,
 ): T;
@@ -73,17 +67,14 @@ export function useModel<
   [K in Name3]: State3;
 };
 export function useModel<
-  Name1 extends string,
   State1 extends object,
-  Name2 extends string,
   State2 extends object,
-  Name3 extends string,
   State3 extends object,
   T,
 >(
-  model1: Model<Name1, State1>,
-  model2: Model<Name2, State2>,
-  model3: Model<Name3, State3>,
+  model1: Model<string, State1>,
+  model2: Model<string, State2>,
+  model3: Model<string, State3>,
   selector: (state1: State1, state2: State2, state3: State3) => T,
   algorithm?: Algorithm,
 ): T;
@@ -112,20 +103,16 @@ export function useModel<
   [K in Name4]: State4;
 };
 export function useModel<
-  Name1 extends string,
   State1 extends object,
-  Name2 extends string,
   State2 extends object,
-  Name3 extends string,
   State3 extends object,
-  Name4 extends string,
   State4 extends object,
   T,
 >(
-  model1: Model<Name1, State1>,
-  model2: Model<Name2, State2>,
-  model3: Model<Name3, State3>,
-  model4: Model<Name4, State4>,
+  model1: Model<string, State1>,
+  model2: Model<string, State2>,
+  model3: Model<string, State3>,
+  model4: Model<string, State4>,
   selector: (
     state1: State1,
     state2: State2,
@@ -164,23 +151,18 @@ export function useModel<
   [K in Name5]: State5;
 };
 export function useModel<
-  Name1 extends string,
   State1 extends object,
-  Name2 extends string,
   State2 extends object,
-  Name3 extends string,
   State3 extends object,
-  Name4 extends string,
   State4 extends object,
-  Name5 extends string,
   State5 extends object,
   T,
 >(
-  model1: Model<Name1, State1>,
-  model2: Model<Name2, State2>,
-  model3: Model<Name3, State3>,
-  model4: Model<Name4, State4>,
-  model5: Model<Name5, State5>,
+  model1: Model<string, State1>,
+  model2: Model<string, State2>,
+  model3: Model<string, State3>,
+  model4: Model<string, State4>,
+  model5: Model<string, State5>,
   selector: (
     state1: State1,
     state2: State2,
