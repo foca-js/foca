@@ -14,6 +14,9 @@ import {
 
 afterEach(() => {
   store.unmount();
+  engines.memoryStorage.clear();
+  engines.localStorage.clear();
+  engines.sessionStorage.clear();
 });
 
 const initializeStoreWithPersist = () => {
@@ -65,6 +68,42 @@ test('Store can initialize many times except production env', async () => {
   await store.onInitialized();
 });
 
+test('Delay to restore data when state changed', async () => {
+  initializeStoreWithPersist();
+
+  await store.onInitialized();
+
+  // @ts-expect-error
+  const getTimer = () => store.persistor!.timer;
+  let prevTimer: ReturnType<typeof getTimer>;
+
+  expect(getTimer()).toBeUndefined();
+  basicModel.plus(1);
+  expect(getTimer()).not.toBeUndefined();
+  prevTimer = getTimer();
+  basicModel.plus(20);
+  expect(getTimer()).toBe(prevTimer);
+  basicModel.plus(1);
+  expect(getTimer()).toBe(prevTimer);
+
+  expect(store.persistor?.collect()[basicModel.name]).not.toBe(
+    basicModel.state,
+  );
+  await sleep(50);
+  expect(store.persistor?.collect()[basicModel.name]).toBe(basicModel.state);
+
+  expect(getTimer()).toBeUndefined();
+  basicModel.plus(1);
+  expect(getTimer()).not.toBeUndefined();
+  expect(getTimer()).not.toBe(prevTimer);
+
+  expect(store.persistor?.collect()[basicModel.name]).not.toBe(
+    basicModel.state,
+  );
+  await sleep(50);
+  expect(store.persistor?.collect()[basicModel.name]).toBe(basicModel.state);
+});
+
 test('Store can define persist with different engine', async () => {
   initializeStoreWithPersist();
 
@@ -72,15 +111,7 @@ test('Store can define persist with different engine', async () => {
 
   expect(JSON.stringify(store.persistor?.collect())).toBe('{}');
 
-  const spy = jest.spyOn(globalThis, 'clearTimeout');
-  expect(spy).toHaveBeenCalledTimes(0);
   basicModel.plus(1);
-  expect(spy).toHaveBeenCalledTimes(0);
-  basicModel.plus(20);
-  expect(spy).toHaveBeenCalledTimes(1);
-  basicModel.plus(1);
-  expect(spy).toHaveBeenCalledTimes(2);
-  spy.mockRestore();
 
   await sleep(50);
   expect(store.persistor?.collect()).toMatchObject({

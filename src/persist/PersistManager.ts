@@ -15,7 +15,7 @@ export class PersistManager {
 
   init(store: Store, hydrate: boolean) {
     this.unsubscrbeStore = store.subscribe(() => {
-      this.initialized && this.update(store.getState());
+      this.initialized && this.update(store);
     });
 
     return Promise.all(this.list.map((item) => item.init())).then(() => {
@@ -45,12 +45,13 @@ export class PersistManager {
     };
   }
 
-  protected update(nextState: Record<string, object>) {
-    this.timer && clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      this.timer = void this.list.forEach((item) => {
-        item.update(nextState);
-      });
+  protected update(store: Store) {
+    this.timer ??= setTimeout(() => {
+      const nextState = store.getState();
+      this.timer = void 0;
+      for (let i = this.list.length; i-- > 0; ) {
+        this.list[i]!.update(nextState);
+      }
     }, 50);
   }
 }
