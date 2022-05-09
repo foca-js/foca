@@ -1,3 +1,4 @@
+import type { Store } from 'redux';
 import { isArray } from '../utils/isArray';
 import { depsCollector } from './depsCollector';
 import type { Deps } from './types';
@@ -8,7 +9,7 @@ export class ObjectDeps<T = any> implements Deps {
   protected root: any;
 
   constructor(
-    protected readonly store: { getState: () => any },
+    protected readonly store: Pick<Store<Record<string, any>>, 'getState'>,
     protected readonly model: string,
     protected readonly deps: string[] = [],
   ) {
@@ -16,7 +17,7 @@ export class ObjectDeps<T = any> implements Deps {
   }
 
   isDirty(): boolean {
-    const rootState = this.getState() as any;
+    const rootState = this.getState();
 
     if (this.root === rootState) {
       return false;

@@ -1,3 +1,4 @@
+import type { Store } from 'redux';
 import type { ComputedRef, Deps } from './types';
 import { depsCollector } from './depsCollector';
 import { ComputedDeps } from './ComputedDeps';
@@ -11,7 +12,7 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   protected root: any;
 
   constructor(
-    protected readonly store: { getState: () => any },
+    protected readonly store: Pick<Store<Record<string, any>>, 'getState'>,
     public readonly model: string,
     public readonly property: string,
     protected readonly fn: () => any,
