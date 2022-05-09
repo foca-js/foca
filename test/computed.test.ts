@@ -1,4 +1,5 @@
-import { defineModel, store } from '../src';
+import { expectType } from 'ts-expect';
+import { defineModel, store, ComputedRef } from '../src';
 import { ComputedDeps } from '../src/reactive/ComputedDeps';
 import { ComputedValue } from '../src/reactive/ComputedValue';
 import { depsCollector } from '../src/reactive/depsCollector';
@@ -263,8 +264,8 @@ test('Fail to set value on proxy state', () => {
   expect(() => computedModel.testModifyValue.value).toThrowError();
 });
 
-test.skip('Type checking', () => {
-  computedModel.fullName;
+test('Type checking', () => {
+  expectType<ComputedRef<string>>(computedModel.fullName);
   // @ts-expect-error
   computedModel._privateFullname;
 });

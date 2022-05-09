@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react';
+import { expectType } from 'ts-expect';
 import { renderHook } from './helpers/renderHook';
 import { FocaProvider, store, useModel } from '../src';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
@@ -248,19 +249,18 @@ test('Hooks keep working after hot reload', async () => {
 
 test.skip('type checking', () => {
   const basic = useModel(basicModel);
-  basic.count.toFixed();
-  basic.hello.trim();
+
+  expectType<number>(basic.count);
+  expectType<string>(basic.hello);
   // @ts-expect-error
   basic.notExist;
 
   const count = useModel(basicModel, (state) => state.count);
-  count.toFixed();
-  // @ts-expect-error
-  count.trim();
+  expectType<number>(count);
 
   const obj = useModel(basicModel, complexModel);
-  obj.basic.count.toFixed();
-  obj.complex.ids.entries();
+  expectType<number>(obj.basic.count);
+  expectType<number[]>(obj.complex.ids);
   // @ts-expect-error
   obj.notExists;
 
@@ -270,7 +270,5 @@ test.skip('type checking', () => {
     (basic, complex) => basic.hello + complex.ids.length,
   );
 
-  hello.trim();
-  // @ts-expect-error
-  hello.toFixed();
+  expectType<string>(hello);
 });

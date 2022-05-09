@@ -1,3 +1,4 @@
+import { expectType } from 'ts-expect';
 import { getLoading, store } from '../src';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
@@ -29,11 +30,10 @@ test('Collect error message for effect method', async () => {
   expect(getLoading(basicModel.hasError)).toBeFalsy();
 });
 
-test.skip('Loading is unsupported for non-async effect method', () => {
-  getLoading(basicModel.foo).valueOf();
-
-  getLoading(basicModel.foo.assign).find('xx');
-  getLoading(basicModel.foo.assign, 'xx').valueOf();
+test('Loading is unsupported for non-async effect method', () => {
+  expectType<boolean>(getLoading(basicModel.foo));
+  expectType<boolean>(getLoading(basicModel.foo.assign).find('xx'));
+  expectType<boolean>(getLoading(basicModel.foo.assign, 'xx'));
   // @ts-expect-error
   getLoading(basicModel.foo.assign, basicModel.foo);
   // @ts-expect-error
