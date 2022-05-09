@@ -18,17 +18,12 @@ export const isPreModelAction = (
   action: AnyAction,
 ): action is PreModelAction => {
   const test = action as PreModelAction;
-
-  return (
-    test.preModel === true &&
-    !!test.model &&
-    typeof test.consumer === 'function'
-  );
+  return test.preModel && !!test.model && typeof test.consumer === 'function';
 };
 
 export const isPostModel = <State extends object>(
   action: AnyAction,
 ): action is PostModelAction<State> => {
   const test = action as PostModelAction<State>;
-  return test.postModel === true && !!test.next;
+  return test.postModel && !!test.next;
 };
