@@ -59,7 +59,7 @@
     "@commitlint/cli": "^16.2.4",
     "@commitlint/config-conventional": "^16.2.4",
     "@redux-devtools/extension": "^3.2.2",
-    "@swc/core": "^1.2.179",
+    "@swc/core": "^1.2.181",
     "@testing-library/react": "^13.2.0",
     "@types/jest": "^27.5.0",
     "@types/node": "^17.0.31",
