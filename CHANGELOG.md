@@ -1,3 +1,23 @@
+## [0.11.4](https://github.com/foca-js/foca/compare/v0.11.3...v0.11.4)&nbsp;&nbsp;(2022-05-10)
+
+- 优化持久化逻辑
+- 使用中文提示错误和警告
+- 废弃 effects 中的 `assign` 方法，并新增 `room` 作为代替
+
+```diff
+const testModel = defineModel('test', {
+  effects: {
+    xyz(id: number) {},
+  },
+});
+
+- testModel.xyz.assign(1).execute(1)
++ testModel.xyz.room(1).execute(1)
+
+- useLoading(testModel.xyz.assign).find(1)
++ useLoading(testModel.xyz.room).find(1)
+```
+
 ## [0.11.3](https://github.com/foca-js/foca/compare/v0.11.2...v0.11.3)&nbsp;&nbsp;(2022-05-07)
 
 - 修复 setTimeout 类型 (#15)
