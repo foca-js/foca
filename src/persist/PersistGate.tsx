@@ -19,9 +19,7 @@ export const PersistGate: FC<PersistGateProps> = (props) => {
 
   if (process.env.NODE_ENV !== 'production') {
     if (loading && typeof children === 'function') {
-      console.error(
-        'PersistGate expects either a function child or loading prop. The loading prop will be ignored.',
-      );
+      console.error('[PersistGate] 当前children为函数类型，loading属性无效');
     }
   }
 

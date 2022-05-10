@@ -44,9 +44,9 @@ test('can return correct length from array', () => {
 });
 
 test('Can throw error with circularly reference', () => {
-  expect(() => computedModel.a.value).toThrowError('circularly reference');
-  expect(() => computedModel.b.value).toThrowError('circularly reference');
-  expect(() => computedModel.c.value).toThrowError('circularly reference');
+  expect(() => computedModel.a.value).toThrowError('循环引用');
+  expect(() => computedModel.b.value).toThrowError('循环引用');
+  expect(() => computedModel.c.value).toThrowError('循环引用');
 });
 
 test('Can visit compute value from effects', () => {

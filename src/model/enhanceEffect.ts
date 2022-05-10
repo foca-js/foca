@@ -104,7 +104,7 @@ export const enhanceEffect = <State extends object>(
   ) => {
     if (process.env.NODE_ENV !== 'production') {
       console.warn(
-        `'${ctx.name}.${methodName}.assign' has been deprecated and will be removed at version 1.0.0, use equivalent api '${ctx.name}.${methodName}.room' instead.`,
+        `请替换'${ctx.name}.${methodName}.assign'为'${ctx.name}.${methodName}.room'，'assign'方法将在版本1.0.0发布时删除`,
       );
     }
 

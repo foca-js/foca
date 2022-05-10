@@ -81,9 +81,11 @@ export class ObjectDeps<T = any> implements Deps {
           if (process.env.NODE_ENV !== 'production') {
             if (!this.active) {
               throw new Error(
-                `[${this.model}] Visit value '${this.deps
+                `[${
+                  this.model
+                }:computed] 请勿在计算属性函数外部访问数据：'${this.deps
                   .concat(key)
-                  .join('.')}' outside the computed function`,
+                  .join('.')}'`,
               );
             }
           }

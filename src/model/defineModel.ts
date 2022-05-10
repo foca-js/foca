@@ -57,7 +57,7 @@ export const defineModel = <
         Object.keys(item1.value).forEach((key) => {
           if (item2.value!.hasOwnProperty(key)) {
             throw new Error(
-              `[model:${uniqueName}] You have defined method "${key}" in both ${item1.name} and ${item2.name}`,
+              `[model:${uniqueName}] 属性'${key}'在${item1.name}和${item2.name}中重复使用`,
             );
           }
         });
@@ -71,7 +71,7 @@ export const defineModel = <
   if (process.env.NODE_ENV !== 'production') {
     if (options.hooks) {
       console.warn(
-        `[model:${uniqueName}] Use option 'events' instead of 'hooks' which is confused with react-hooks, and 'hooks' will be removed once 1.0.0 is released`,
+        `[model:${uniqueName}] 属性'hooks'已经重命名为'events'了，原因是和react的hooks同名，容易产生误解。属性'hooks'将在版本1.0.0发布时删除`,
       );
     }
   }
@@ -79,7 +79,7 @@ export const defineModel = <
   if (process.env.NODE_ENV !== 'production') {
     if (!deepEqual(initialState, options.initialState)) {
       throw new Error(
-        `[model:${uniqueName}] initialState contains unserializable data, the available types are Object, Array, Number, String and Null`,
+        `[model:${uniqueName}] initialState 包含了不可系列化的数据，允许的类型为：Object, Array, Number, String 和 Null`,
       );
     }
   }

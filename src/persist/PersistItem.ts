@@ -150,7 +150,7 @@ export class PersistItem {
         return;
       } catch {
         this.dump();
-        throw new Error('[persist] Unable to parse persist data from storage');
+        throw new Error('[persist] 无法解析持久化数据，已重置');
       }
     });
   }

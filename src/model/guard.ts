@@ -10,6 +10,6 @@ export const guard = (uniqueName: string) => {
   }
 
   if (++counter[uniqueName] > 1) {
-    throw new Error(`You have used "${uniqueName}" as model name many times.`);
+    throw new Error(`模型名称'${uniqueName}'被重复使用`);
   }
 };

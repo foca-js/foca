@@ -56,7 +56,7 @@ export const cloneModel = <
           editableKeys.indexOf(key) === -1
         ) {
           throw new Error(
-            `[model:${uniqueName}] Stop overridding option '${key}' during clone model`,
+            `[model:${uniqueName}] 复制模型时禁止重写属性'${key}'`,
           );
         }
       });

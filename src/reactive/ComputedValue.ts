@@ -21,7 +21,7 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   public get value(): T {
     if (this.active) {
       throw new Error(
-        `[${this.model}] computed '${this.property}' circularly references itself`,
+        `[model:${this.model}:computed] 属性'${this.property}'正在处于循环引用状态`,
       );
     }
 

@@ -57,7 +57,7 @@ class StoreAdvanced implements Store {
 
     if (!firstInitialize) {
       if (process.env.NODE_ENV === 'production') {
-        throw new Error('[store] Call init() multiple times.');
+        throw new Error(`[store] 请勿多次执行'store.init()'`);
       }
     }
 
@@ -106,7 +106,7 @@ class StoreAdvanced implements Store {
 
   /** @deprecated */
   replaceReducer(): never {
-    throw new Error('[store] replaceReducer() had been deprecated.');
+    throw new Error(`[store] 请勿使用'replaceReducer'方法`);
   }
 
   dispatch: Store['dispatch'] = (action) => {
@@ -151,7 +151,7 @@ class StoreAdvanced implements Store {
 
   protected get store(): Store<Record<string, object>, AnyAction> {
     if (!this.origin) {
-      throw new Error('[store] did you forgt to call init()?');
+      throw new Error(`[store] 当前无实例，忘记执行'store.init()'了吗？`);
     }
     return this.origin;
   }
