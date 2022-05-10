@@ -24,7 +24,7 @@ store.init();
 ```tsx
 // File: index.tsx
 import './store'; // 别忘了这行！！！
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { FocaProvider } from 'foca';
 import App from './App';
 
