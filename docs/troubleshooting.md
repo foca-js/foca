@@ -31,7 +31,6 @@
 - React Web
 - React Native
 - Taro
-- Remax
 - Nextjs
 
 # 浏览器兼容性如何
