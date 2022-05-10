@@ -46,7 +46,7 @@ export class PersistManager {
   }
 
   protected update(store: Store) {
-    this.timer ??= setTimeout(() => {
+    this.timer ||= setTimeout(() => {
       const nextState = store.getState();
       this.timer = void 0;
       for (let i = this.list.length; i-- > 0; ) {
