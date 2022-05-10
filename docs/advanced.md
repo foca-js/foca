@@ -75,10 +75,10 @@ store.refresh(true);
 import { useLoading } from 'foca';
 
 const App: FC = () => {
-  const loadings = useLoading(model.myMethod.assign);
+  const loadings = useLoading(model.myMethod.room);
 
   const handleClick = (id: number) => {
-    model.myMethod.assign(id).execute(id);
+    model.myMethod.room(id).execute(id);
   };
 
   return (
@@ -102,10 +102,10 @@ const App: FC = () => {
 如果你能确定 find 的参数，那么也可以直接传递：
 
 ```typescript
-const loading = useLoading(model.myMethod.assign, 100); // boolean
+const loading = useLoading(model.myMethod.room, 100); // boolean
 
 // 等效于
-const loading = useLoading(model.myMethod.assign).find(100);
+const loading = useLoading(model.myMethod.room).find(100);
 ```
 
 # 同步函数

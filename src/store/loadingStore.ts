@@ -4,10 +4,7 @@ import {
   legacy_createStore as createStore,
   Store,
 } from 'redux';
-import type {
-  PromiseAssignEffect,
-  PromiseEffect,
-} from '../model/enhanceEffect';
+import type { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingInterceptor } from '../middleware/loadingInterceptor';
 import { isLoadingAction } from '../actions/loading';
 import { freezeState } from '../utils/freezeState';
@@ -54,7 +51,7 @@ const defaultRecord = freezeState(createDefaultRecord());
 const helper = {
   status: <Record<string, boolean>>{},
 
-  get(effect: PromiseEffect | PromiseAssignEffect): LoadingStoreStateItem {
+  get(effect: PromiseEffect | PromiseRoomEffect): LoadingStoreStateItem {
     const {
       _: { model, method },
     } = effect;

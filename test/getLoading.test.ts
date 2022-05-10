@@ -32,28 +32,43 @@ test('Collect error message for effect method', async () => {
 
 test('Loading is unsupported for non-async effect method', () => {
   expectType<boolean>(getLoading(basicModel.foo));
-  expectType<boolean>(getLoading(basicModel.foo.assign).find('xx'));
-  expectType<boolean>(getLoading(basicModel.foo.assign, 'xx'));
+  expectType<boolean>(getLoading(basicModel.foo.room).find('xx'));
+  expectType<boolean>(getLoading(basicModel.foo.room, 'xx'));
   // @ts-expect-error
-  getLoading(basicModel.foo.assign, basicModel.foo);
+  getLoading(basicModel.foo.room, basicModel.foo);
   // @ts-expect-error
-  getLoading(basicModel.foo.assign, true);
+  getLoading(basicModel.foo.room, true);
   // @ts-expect-error
-  getLoading(basicModel.foo.assign, false);
+  getLoading(basicModel.foo.room, false);
   // @ts-expect-error
-  getLoading(basicModel.normalMethod.assign);
+  getLoading(basicModel.normalMethod.room);
 });
 
 test('Trace loadings', async () => {
+  expect(getLoading(basicModel.bos.room, 'x')).toBeFalsy();
+  expect(getLoading(basicModel.bos.room).find('x')).toBeFalsy();
+
+  const promise = basicModel.bos.room('x').execute();
+  expect(getLoading(basicModel.bos.room, 'x')).toBeTruthy();
+  expect(getLoading(basicModel.bos.room).find('x')).toBeTruthy();
+  expect(getLoading(basicModel.bos.room, 'y')).toBeFalsy();
+  expect(getLoading(basicModel.bos.room).find('y')).toBeFalsy();
+  expect(getLoading(basicModel.bos)).toBeFalsy();
+
+  await promise;
+  expect(getLoading(basicModel.bos.room, 'x')).toBeFalsy();
+  expect(getLoading(basicModel.bos.room).find('x')).toBeFalsy();
+});
+
+test('Trace loadings by deprecated method', async () => {
   expect(getLoading(basicModel.bos.assign, 'x')).toBeFalsy();
   expect(getLoading(basicModel.bos.assign).find('x')).toBeFalsy();
 
-  const promise = basicModel.bos.assign('x').execute();
+  const promise = basicModel.bos.room('x').execute();
   expect(getLoading(basicModel.bos.assign, 'x')).toBeTruthy();
   expect(getLoading(basicModel.bos.assign).find('x')).toBeTruthy();
   expect(getLoading(basicModel.bos.assign, 'y')).toBeFalsy();
   expect(getLoading(basicModel.bos.assign).find('y')).toBeFalsy();
-  expect(getLoading(basicModel.bos)).toBeFalsy();
 
   await promise;
   expect(getLoading(basicModel.bos.assign, 'x')).toBeFalsy();
@@ -65,8 +80,8 @@ test('loadings are frozen', async () => {
   loadingStore.helper.activate(combineKey);
 
   const promise = basicModel.pureAsync();
-  expect(Object.isFrozen(getLoading(basicModel.pureAsync.assign))).toBeTruthy();
+  expect(Object.isFrozen(getLoading(basicModel.pureAsync.room))).toBeTruthy();
 
   await promise;
-  expect(Object.isFrozen(getLoading(basicModel.pureAsync.assign))).toBeTruthy();
+  expect(Object.isFrozen(getLoading(basicModel.pureAsync.room))).toBeTruthy();
 });

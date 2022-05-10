@@ -1,5 +1,5 @@
 import { LOADING_CATEGORY } from '../actions/loading';
-import { PromiseAssignEffect, PromiseEffect } from '../model/enhanceEffect';
+import { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingStore, FindLoading } from '../store/loadingStore';
 
 const helper = loadingStore.helper;
@@ -22,31 +22,31 @@ export function getLoading(
  * 检测给定的effect方法是否正在执行。
  *
  * ```typescript
- * loadings = getLoading(effect.assign);
+ * loadings = getLoading(effect.room);
  * loading = loadings.find(CATEGORY)
  * ```
  */
-export function getLoading(effect: PromiseAssignEffect): FindLoading;
+export function getLoading(effect: PromiseRoomEffect): FindLoading;
 
 /**
  * 检测给定的effect方法是否正在执行。
  *
  * ```typescript
- * loading = getLoading(effect.assign, CATEGORY);
+ * loading = getLoading(effect.room, CATEGORY);
  * ```
  */
 export function getLoading(
-  effect: PromiseAssignEffect,
+  effect: PromiseRoomEffect,
   category: string | number,
 ): boolean;
 
 export function getLoading(
-  effect: PromiseEffect | PromiseAssignEffect,
+  effect: PromiseEffect | PromiseRoomEffect,
   category?: string | number | PromiseEffect,
 ): boolean | FindLoading {
   const args = arguments;
 
-  if (effect._.assign && typeof category !== 'function') {
+  if (effect._.hasRoom && typeof category !== 'function') {
     const loadings = helper.get(effect).loadings;
     return category === void 0 ? loadings : loadings.find(category);
   }

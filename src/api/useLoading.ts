@@ -1,4 +1,4 @@
-import { PromiseAssignEffect, PromiseEffect } from '../model/enhanceEffect';
+import { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { FindLoading } from '../store/loadingStore';
 import { useLoadingSelector } from '../redux/useSelector';
 import { getLoading } from './getLoading';
@@ -21,21 +21,21 @@ export function useLoading(
  * 检测给定的effect方法是否正在执行。
  *
  * ```typescript
- * loadings = useLoading(effect.assign);
- * loading = loadings.find(CATEGORY)
+ * loadings = useLoading(effect.room);
+ * loading = loadings.find(CATEGORY);
  * ```
  */
-export function useLoading(effect: PromiseAssignEffect): FindLoading;
+export function useLoading(effect: PromiseRoomEffect): FindLoading;
 
 /**
  * 检测给定的effect方法是否正在执行。
  *
  * ```typescript
- * loading = useLoading(effect.assign, CATEGORY);
+ * loading = useLoading(effect.room, CATEGORY);
  * ```
  */
 export function useLoading(
-  effect: PromiseAssignEffect,
+  effect: PromiseRoomEffect,
   category: string | number,
 ): boolean;
 

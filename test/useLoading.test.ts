@@ -70,6 +70,31 @@ test('Compose the loadings', async () => {
 
 test('Trace loadings', async () => {
   const { result } = renderHook(
+    () => useLoading(basicModel.pureAsync.room, 'x'),
+    {
+      wrapper: FocaProvider,
+    },
+  );
+
+  expect(result.current).toBeFalsy();
+
+  let promise!: Promise<any>;
+
+  act(() => {
+    promise = basicModel.pureAsync.room('x').execute();
+  });
+
+  expect(result.current).toBeTruthy();
+
+  await act(async () => {
+    await promise;
+  });
+
+  expect(result.current).toBeFalsy();
+});
+
+test('Trace loadings by deprecated methods', async () => {
+  const { result } = renderHook(
     () => useLoading(basicModel.pureAsync.assign, 'x'),
     {
       wrapper: FocaProvider,
@@ -94,7 +119,7 @@ test('Trace loadings', async () => {
 });
 
 test('Pick loading from loadings', async () => {
-  const { result } = renderHook(() => useLoading(basicModel.pureAsync.assign), {
+  const { result } = renderHook(() => useLoading(basicModel.pureAsync.room), {
     wrapper: FocaProvider,
   });
 
@@ -104,7 +129,7 @@ test('Pick loading from loadings', async () => {
   let promise!: Promise<any>;
 
   act(() => {
-    promise = basicModel.pureAsync.assign('m').execute();
+    promise = basicModel.pureAsync.room('m').execute();
   });
 
   expect(result.current.find('m')).toBeTruthy();
@@ -128,16 +153,20 @@ test.skip('type checking', () => {
   // @ts-expect-error
   useLoading({});
 
+  expectType<boolean>(useLoading(basicModel.foo.room).find('xx'));
+  expectType<boolean>(useLoading(basicModel.foo.room, 'xx'));
   expectType<boolean>(useLoading(basicModel.foo.assign).find('xx'));
   expectType<boolean>(useLoading(basicModel.foo.assign, 'xx'));
   // @ts-expect-error
-  useLoading(basicModel.foo.assign, basicModel.foo);
+  useLoading(basicModel.foo.room, basicModel.foo);
   // @ts-expect-error
-  useLoading(basicModel.foo.assign, true);
+  useLoading(basicModel.foo.room, true);
   // @ts-expect-error
-  useLoading(basicModel.foo.assign, false);
+  useLoading(basicModel.foo.room, false);
+  // @ts-expect-error
+  useLoading(basicModel.normalMethod.room);
   // @ts-expect-error
   useLoading(basicModel.normalMethod.assign);
   // @ts-expect-error
-  useLoading(basicModel.minus.assign);
+  useLoading(basicModel.minus.room);
 });

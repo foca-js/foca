@@ -8,18 +8,18 @@ import { isPromise } from '../utils/isPromise';
 import { toArgs } from '../utils/toArgs';
 import { loadingStore } from '../store/loadingStore';
 
-interface AssignFunc<P extends any[] = any[], R = Promise<any>> {
+interface RoomFunc<P extends any[] = any[], R = Promise<any>> {
   (category: number | string): {
     execute(...args: P): R;
   };
 }
 
-interface AsyncAssignEffect<P extends any[] = any[], R = Promise<any>>
-  extends AssignFunc<P, R> {
+interface AsyncRoomEffect<P extends any[] = any[], R = Promise<any>>
+  extends RoomFunc<P, R> {
   readonly _: {
     readonly model: string;
     readonly method: string;
-    readonly assign: true;
+    readonly hasRoom: true;
   };
 }
 
@@ -28,7 +28,7 @@ interface AsyncEffect<P extends any[] = any[], R = Promise<any>>
   readonly _: {
     readonly model: string;
     readonly method: string;
-    readonly assign: '';
+    readonly hasRoom: '';
   };
   /**
    * 对同一effect函数的执行状态进行分类以实现独立保存。好处有：
@@ -38,18 +38,24 @@ interface AsyncEffect<P extends any[] = any[], R = Promise<any>>
    * 2. 可以精确地判断业务中是哪个控件或者逻辑正在执行。
    *
    * ```typescript
-   * model.effect.assign(CATEGORY).execute(...);
+   * model.effect.room(CATEGORY).execute(...);
    * ```
    *
-   * @see useLoading(effect.assign)
-   * @see getLoading(effect.assign)
+   * @see useLoading(effect.room)
+   * @see getLoading(effect.room)
+   * @since 0.11.4
    *
    */
-  readonly assign: AsyncAssignEffect<P, R>;
+  readonly room: AsyncRoomEffect<P, R>;
+  /**
+   * @deprecated 请使用room函数
+   * @see room
+   */
+  readonly assign: AsyncRoomEffect<P, R>;
 }
 
 export type PromiseEffect = AsyncEffect;
-export type PromiseAssignEffect = AsyncAssignEffect;
+export type PromiseRoomEffect = AsyncRoomEffect;
 
 interface EffectFunc<P extends any[] = any[], R = Promise<any>> {
   (...args: P): R;
@@ -76,10 +82,10 @@ export const enhanceEffect = <State extends object>(
   fn._ = {
     model: ctx.name,
     method: methodName,
-    assign: '',
+    hasRoom: '',
   };
 
-  const assign: NonReadonly<AsyncAssignEffect> & AssignFunc = (
+  const room: NonReadonly<AsyncRoomEffect> & RoomFunc = (
     category: number | string,
   ) => ({
     execute() {
@@ -87,10 +93,24 @@ export const enhanceEffect = <State extends object>(
     },
   });
 
-  assign._ = Object.assign({}, fn._, {
-    assign: true as const,
+  room._ = Object.assign({}, fn._, {
+    hasRoom: true as const,
   });
 
+  fn.room = room;
+
+  const assign: NonReadonly<AsyncRoomEffect> & RoomFunc = (
+    category: number | string,
+  ) => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        `[effects] ${ctx.name}.${methodName}.assign has been deprecated, use ${ctx.name}.${methodName}.room instead.`,
+      );
+    }
+
+    return room(category);
+  };
+  assign._ = room._;
   fn.assign = assign;
 
   return fn;
