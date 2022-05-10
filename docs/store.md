@@ -29,7 +29,7 @@ import { FocaProvider } from 'foca';
 import App from './App';
 
 const container = document.getElementById('root');
-const root = ReactDom.createRoot(container);
+const root = ReactDOM.createRoot(container);
 
 root.render(
   <FocaProvider>
@@ -49,7 +49,7 @@ import App from './App';
 
 const container = document.getElementById('root');
 
-ReactDom.render(
+ReactDOM.render(
   <FocaProvider>
     <App />
   </FocaProvider>,
@@ -57,7 +57,7 @@ ReactDom.render(
 );
 ```
 
-#### ** Nextjs **
+#### ** Next.js **
 
 ```tsx
 import '../app/store'; // 别忘了这行！！！
