@@ -1,4 +1,4 @@
-## [0.11.4](https://github.com/foca-js/foca/compare/v0.11.3...v0.11.4)&nbsp;&nbsp;(2022-05-10)
+## [0.11.5](https://github.com/foca-js/foca/compare/v0.11.3...v0.11.5)&nbsp;&nbsp;(2022-05-10)
 
 - 优化持久化逻辑
 - 使用中文提示错误和警告
