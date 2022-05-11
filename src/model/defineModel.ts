@@ -106,7 +106,6 @@ export const defineModel = <
   const actionCtx: ActionCtx<State> = composeGetter(
     {},
     getName,
-    getState,
     getInitialState,
   );
 
