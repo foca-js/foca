@@ -1,4 +1,5 @@
-import { defineModel } from '../../src';
+import { expectType } from 'ts-expect';
+import { ComputedRef, defineModel } from '../../src';
 
 const initialState: {
   firstName: string;
@@ -32,8 +33,7 @@ export const computedModel = defineModel('computed-model', {
   },
   effects: {
     effectsGetFullName() {
-      // type checking
-      this._privateFullname;
+      expectType<ComputedRef<string>>(this._privateFullname);
 
       return this.fullName.value;
     },
@@ -87,9 +87,8 @@ export const computedModel = defineModel('computed-model', {
   },
   events: {
     onInit() {
-      // type checking
-      this.fullName;
-      this._privateFullname;
+      expectType<ComputedRef<string>>(this.fullName);
+      expectType<ComputedRef<string>>(this._privateFullname);
     },
   },
 });

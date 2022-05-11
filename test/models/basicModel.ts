@@ -1,5 +1,6 @@
 import sleep from 'sleep-promise';
-import { cloneModel, defineModel } from '../../src';
+import { expectType } from 'ts-expect';
+import { AnyAction, cloneModel, defineModel } from '../../src';
 
 const initialState: {
   count: number;
@@ -66,9 +67,9 @@ export const basicModel = defineModel('basic', {
     },
     async _effectIsPrivate() {},
     ____alsoPrivateEffect() {
-      this._effectIsPrivate;
-      this._actionIsPrivate;
-      this.____alsoPrivateAction;
+      expectType<() => Promise<void>>(this._effectIsPrivate);
+      expectType<() => AnyAction>(this._actionIsPrivate);
+      expectType<() => AnyAction>(this.____alsoPrivateAction);
     },
   },
 });
