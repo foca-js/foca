@@ -34,6 +34,14 @@
 yarn add foca
 ```
 
+# 初始化
+
+```typescript
+import { store } from 'foca';
+
+store.init();
+```
+
 # 创建模型
 
 ### actions 修改数据
@@ -90,7 +98,7 @@ export const counterModel = defineModel('counter', {
 
       this.increment();
       // 也可直接修改状态而不通过actions，仅在内部使用
-      this.setState({ count: 1 });
+      this.setState({ count: this.state.count + 1 });
       this.setState((state) => {
         state.count += 1;
       });
@@ -120,25 +128,6 @@ export const counterModel = defineModel('counter', {
     // 模型数据变更
     onChange(prevState, nextState) {},
   },
-});
-```
-
-### clone 复制模型
-
-```typescript
-import { cloneModel } from 'foca';
-import { counterModel } from './counterModel';
-
-export const counter2Model = cloneModel('counter2', counterModel);
-
-export const counter3Model = cloneModel('counter3', counterModel, {
-  initialState: { count: 100 },
-});
-
-export const counter4Model = cloneModel('counter4', counterModel, (prev) => {
-  return {
-    initialState: { count: prev.count * 2 },
-  };
 });
 ```
 
