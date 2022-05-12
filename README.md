@@ -3,13 +3,14 @@
 流畅的 react 状态管理库，基于[redux](https://github.com/reduxjs/redux)和[react-redux](https://github.com/reduxjs/react-redux)。简洁、极致、高效。
 
 [![npm peer dependency version](https://img.shields.io/npm/dependency-version/foca/peer/react)](https://github.com/facebook/react)
-[![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/foca-js/foca?label=code%20quality)](https://lgtm.com/projects/g/foca-js/foca)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/Test/master?label=test)](https://github.com/foca-js/foca/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca)](https://codecov.io/gh/foca-js/foca)
 [![npm](https://img.shields.io/npm/v/foca)](https://www.npmjs.com/package/foca)
 [![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/foca?label=bundle+size)](https://bundlephobia.com/package/foca@latest)
 ![GitHub top language](https://img.shields.io/github/languages/top/foca-js/foca)
 [![License](https://img.shields.io/github/license/foca-js/foca)](https://github.com/foca-js/foca/blob/master/LICENSE)
+[![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/foca-js/foca?label=code%20quality)](https://lgtm.com/projects/g/foca-js/foca)
+[![Code Style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Join the chat at https://gitter.im/foca-js/foca](https://badges.gitter.im/foca-js/foca.svg)](https://gitter.im/foca-js/foca)
 
 <br>
