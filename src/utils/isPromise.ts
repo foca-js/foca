@@ -4,10 +4,7 @@ const hasPromise = typeof Promise === FUNCTION;
 
 export const isPromise = <T>(value: any): value is Promise<T> => {
   return (
-    hasPromise &&
-    (value instanceof Promise ||
-      (value !== null &&
-        (isObject(value) || isFunction(value)) &&
-        isFunction(value.then)))
+    (hasPromise && value instanceof Promise) ||
+    ((isObject(value) || isFunction(value)) && isFunction(value.then))
   );
 };
