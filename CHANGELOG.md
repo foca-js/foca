@@ -1,3 +1,7 @@
+## [0.11.6](https://github.com/foca-js/foca/compare/v0.11.5...v0.11.6)&nbsp;&nbsp;(2022-05-13)
+
+- 使用`.js`文件以适配旧的打包工具
+
 ## [0.11.5](https://github.com/foca-js/foca/compare/v0.11.3...v0.11.5)&nbsp;&nbsp;(2022-05-10)
 
 - 优化持久化逻辑
