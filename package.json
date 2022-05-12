@@ -17,19 +17,19 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "scripts": {
     "test": "jest",
-    "prepublishOnly": "tsup",
+    "prepublishOnly": "tsup && cp dist/esm/index.js dist/esm/index.mjs && cp dist/esm/index.js.map dist/esm/index.mjs.map",
     "docs": "docsify serve ./docs",
     "prepare": "husky install"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/esm/index.mjs",
       "require": "./dist/index.js"
     }
   },
@@ -50,7 +50,7 @@
     "react": "^16.9 || ^17 || ^18"
   },
   "dependencies": {
-    "immer": "^9.0.12",
+    "immer": "^9.0.14",
     "react-redux": "^8.0.1",
     "redux": "^4.2.0",
     "topic": "^3.0.1"
@@ -59,10 +59,10 @@
     "@commitlint/cli": "^16.2.4",
     "@commitlint/config-conventional": "^16.2.4",
     "@redux-devtools/extension": "^3.2.2",
-    "@swc/core": "^1.2.181",
+    "@swc/core": "^1.2.182",
     "@testing-library/react": "^13.2.0",
-    "@types/jest": "^27.5.0",
-    "@types/node": "^17.0.31",
+    "@types/jest": "^27.5.1",
+    "@types/node": "^17.0.32",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.3",
     "docsify-cli": "^4.4.4",

@@ -9,6 +9,7 @@ export default defineConfig({
   platform: 'node',
   tsconfig: './tsconfig.json',
   target: 'es5',
+  legacyOutput: true,
   shims: false,
   dts: true,
 });
