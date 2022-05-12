@@ -61,29 +61,28 @@ type CustomModelPersistOptions = Required<ModelPersist<object>>;
 
 const defaultDecodeFn = (value: any) => value;
 
+interface PersistRecord {
+  model: Model;
+  /**
+   * 模型的persist参数
+   */
+  opts: CustomModelPersistOptions;
+  /**
+   * 已经存储的模型内容，data是字符串。
+   * 存储时，如果各项属性符合条件，则会当作最终值，从而省去了系列化的过程。
+   */
+  schema?: PersistItemSchema;
+  /**
+   * 已经存储的模型内容，data是对象。
+   * 主要用于和store变化后的state对比。
+   */
+  prev?: object;
+}
+
 export class PersistItem {
   readonly key: string;
 
-  protected readonly records: Record<
-    string,
-    {
-      model: Model;
-      /**
-       * 模型的persist参数
-       */
-      opts: CustomModelPersistOptions;
-      /**
-       * 已经存储的模型内容，data是字符串。
-       * 存储时，如果各项属性符合条件，则会当作最终值，从而省去了系列化的过程。
-       */
-      schema?: PersistItemSchema;
-      /**
-       * 已经存储的模型内容，data是对象。
-       * 主要用于和store变化后的state对比。
-       */
-      prev?: object;
-    }
-  > = {};
+  protected readonly records: Record<string, PersistRecord> = {};
 
   constructor(protected readonly options: PersistOptions) {
     const {
@@ -159,8 +158,7 @@ export class PersistItem {
   collect(): Record<string, object> {
     const stateMaps: Record<string, object> = {};
 
-    Object.keys(this.records).forEach((key) => {
-      const state = this.records[key]!.prev;
+    this.loop(({ prev: state }, key) => {
       state && (stateMaps[key] = state);
     });
 
@@ -171,8 +169,7 @@ export class PersistItem {
     const now = Date.now();
     let changed = false;
 
-    Object.keys(this.records).forEach((key) => {
-      const record = this.records[key]!;
+    this.loop((record) => {
       const { model, prev, opts, schema } = record;
       const nextStateForKey = nextState[model.name];
 
@@ -196,11 +193,18 @@ export class PersistItem {
     changed && this.dump();
   }
 
+  protected loop(callback: (record: PersistRecord, key: string) => void) {
+    const records = this.records;
+    Object.keys(records).forEach((key) => {
+      callback(records[key]!, key);
+    });
+  }
+
   protected dump() {
     this.options.engine.setItem(this.key, JSON.stringify(this.toJSON()));
   }
 
-  protected validateSchema(schema: any) {
+  protected validateSchema(schema: any): schema is PersistSchema {
     return (
       isObject<PersistSchema>(schema) &&
       isObject<PersistSchema['d']>(schema.d) &&
@@ -223,8 +227,7 @@ export class PersistItem {
   protected toJSON(): PersistSchema {
     const states: PersistSchema['d'] = {};
 
-    Object.keys(this.records).forEach((key) => {
-      const schema = this.records[key]!.schema;
+    this.loop(({ schema }, key) => {
       schema && (states[key] = schema);
     });
 
