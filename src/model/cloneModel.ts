@@ -1,3 +1,4 @@
+import { isFunction } from '../utils/isType';
 import { defineModel } from './defineModel';
 import type { DefineModelOptions, InternalModel, Model } from './types';
 
@@ -44,10 +45,7 @@ export const cloneModel = <
   const nextOpts = Object.assign({}, prevOpts);
 
   if (options) {
-    Object.assign(
-      nextOpts,
-      typeof options === 'function' ? options(nextOpts) : options,
-    );
+    Object.assign(nextOpts, isFunction(options) ? options(nextOpts) : options);
 
     if (process.env.NODE_ENV !== 'production') {
       (Object.keys(nextOpts) as EditableKeys[]).forEach((key) => {

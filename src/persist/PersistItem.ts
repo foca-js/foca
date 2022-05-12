@@ -1,5 +1,6 @@
 import type { StorageEngine } from '../engines';
 import type { InternalModel, Model, ModelPersist } from '../model/types';
+import { isObject, isString } from '../utils/isType';
 
 export interface PersistSchema {
   /**
@@ -119,7 +120,7 @@ export class PersistItem {
       }
 
       try {
-        const schema: PersistSchema = JSON.parse(data);
+        const schema = JSON.parse(data);
 
         if (!this.validateSchema(schema)) {
           return this.dump();
@@ -199,12 +200,10 @@ export class PersistItem {
     this.options.engine.setItem(this.key, JSON.stringify(this.toJSON()));
   }
 
-  protected validateSchema(schema: PersistSchema) {
+  protected validateSchema(schema: any) {
     return (
-      schema &&
-      typeof schema === 'object' &&
-      schema.d &&
-      typeof schema.d === 'object' &&
+      isObject<PersistSchema>(schema) &&
+      isObject<PersistSchema['d']>(schema.d) &&
       schema.v === this.options.version
     );
   }
@@ -216,7 +215,7 @@ export class PersistItem {
     return (
       schema &&
       schema.v === options.version &&
-      typeof schema.d === 'string' &&
+      isString(schema.d) &&
       schema.t + options.maxAge >= Date.now()
     );
   }

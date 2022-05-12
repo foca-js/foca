@@ -1,6 +1,7 @@
 import { LOADING_CATEGORY } from '../actions/loading';
 import { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingStore, FindLoading } from '../store/loadingStore';
+import { isFunction } from '../utils/isType';
 
 const helper = loadingStore.helper;
 
@@ -46,7 +47,7 @@ export function getLoading(
 ): boolean | FindLoading {
   const args = arguments;
 
-  if (effect._.hasRoom && typeof category !== 'function') {
+  if (effect._.hasRoom && !isFunction(category)) {
     const loadings = helper.get(effect).loadings;
     return category === void 0 ? loadings : loadings.find(category);
   }

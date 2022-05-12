@@ -1,5 +1,5 @@
 import type { Store } from 'redux';
-import { isArray } from '../utils/isArray';
+import { isObject } from '../utils/isType';
 import { depsCollector } from './depsCollector';
 import type { Deps } from './types';
 
@@ -53,7 +53,7 @@ export class ObjectDeps<T = any> implements Deps {
     let snapshot = state;
 
     for (let i = 0; i < deps.length; ++i) {
-      if (snapshot === null || typeof snapshot !== 'object') {
+      if (!isObject<Record<string, any>>(snapshot)) {
         break;
       }
       snapshot = snapshot[deps[i]!];
@@ -63,11 +63,11 @@ export class ObjectDeps<T = any> implements Deps {
   }
 
   protected proxy(currentState: Record<string, any>): any {
-    if (currentState === null || typeof currentState !== 'object') {
+    if (currentState === null || !isObject<Record<string, any>>(currentState)) {
       return currentState;
     }
 
-    const nextState: object | any[] = isArray(currentState) ? [] : {};
+    const nextState: object | any[] = Array.isArray(currentState) ? [] : {};
     const keys = Object.keys(currentState);
     const currentDeps = this.deps.slice();
     let visited = false;

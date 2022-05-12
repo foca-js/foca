@@ -17,6 +17,7 @@ import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
 import { combine } from './proxyStore';
 import { loadingStore } from './loadingStore';
+import { OBJECT } from '../utils/isType';
 
 type Compose = typeof compose | ((enhancer: StoreEnhancer) => StoreEnhancer);
 
@@ -161,9 +162,9 @@ class StoreAdvanced implements Store {
       if (process.env.NODE_ENV !== 'production') {
         return (
           /** @ts-expect-error */
-          (typeof window === 'object'
+          (typeof window === OBJECT
             ? window
-            : typeof global === 'object'
+            : typeof global === OBJECT
             ? global
             : {})['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
         );

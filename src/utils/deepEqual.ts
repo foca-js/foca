@@ -1,7 +1,9 @@
+import { OBJECT } from './isType';
+
 export const deepEqual = (a: any, b: any): boolean => {
   if (a === b) return true;
 
-  if (a && b && typeof a == 'object' && typeof b == 'object') {
+  if (a && b && typeof a == OBJECT && typeof b == OBJECT) {
     if (a.constructor !== b.constructor) return false;
 
     let i: number;

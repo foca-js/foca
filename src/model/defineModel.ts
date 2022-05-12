@@ -22,6 +22,7 @@ import type {
   EventCtx,
   InternalModel,
 } from './types';
+import { isFunction } from '../utils/isType';
 
 export const defineModel = <
   Name extends string,
@@ -117,13 +118,8 @@ export const defineModel = <
         actionCtx,
         `${methodName}.setState`,
         (state: State, fn_state: State | StateCallback) => {
-          /**
-           * 函数类型有时候会推导失败，需要强制指定
-           * @since typescript@4.6
-           * @link https://github.com/microsoft/TypeScript/issues/48118
-           */
-          return typeof fn_state === 'function'
-            ? (fn_state as StateCallback)(state)
+          return isFunction<StateCallback>(fn_state)
+            ? fn_state(state)
             : fn_state;
         },
       ),

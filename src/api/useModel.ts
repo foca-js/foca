@@ -3,6 +3,7 @@ import { deepEqual } from '../utils/deepEqual';
 import type { Model } from '../model/types';
 import { toArgs } from '../utils/toArgs';
 import { useModelSelector } from '../redux/useSelector';
+import { isFunction, isString } from '../utils/isType';
 
 /**
  * hooks新旧数据的对比方式：
@@ -176,9 +177,9 @@ export function useModel<
 export function useModel(): any {
   const args = toArgs(arguments);
   let algorithm: Algorithm | false =
-    getLastElementType(args) === 'string' && args.pop();
+    args.length > 1 && isString(args[args.length - 1]) && args.pop();
   const selector: Function | false =
-    getLastElementType(args) === 'function' && args.pop();
+    args.length > 1 && isFunction(args[args.length - 1]) && args.pop();
   const models: Model[] = args;
   const modelsLength = models.length;
   const onlyOneModel = modelsLength === 1;
@@ -264,8 +265,4 @@ const compareFn: Record<
   deepEqual: deepEqual,
   shallowEqual: shallowEqual,
   strictEqual: void 0,
-};
-
-const getLastElementType = (args: any[]) => {
-  return args.length > 1 && typeof args[args.length - 1];
 };

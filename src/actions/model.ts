@@ -1,4 +1,5 @@
 import type { Action, AnyAction } from 'redux';
+import { isFunction } from '../utils/isType';
 
 export interface PreModelAction<State extends object = object, Payload = object>
   extends Action<string> {
@@ -18,7 +19,7 @@ export const isPreModelAction = (
   action: AnyAction,
 ): action is PreModelAction => {
   const test = action as PreModelAction;
-  return test.preModel && !!test.model && typeof test.consumer === 'function';
+  return test.preModel && !!test.model && isFunction(test.consumer);
 };
 
 export const isPostModelAction = <State extends object>(

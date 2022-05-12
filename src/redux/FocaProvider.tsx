@@ -5,6 +5,7 @@ import { modelStore } from '../store/modelStore';
 import { PersistGate, PersistGateProps } from '../persist/PersistGate';
 import { proxyStore } from '../store/proxyStore';
 import { loadingStore } from '../store/loadingStore';
+import { isFunction } from '../utils/isType';
 
 interface OwnProps extends PersistGateProps {}
 
@@ -29,7 +30,7 @@ export const FocaProvider: FC<OwnProps> = ({ children, loading }) => {
         <Provider context={ModelContext} store={modelStore}>
           {modelStore.persistor ? (
             <PersistGate loading={loading} children={children} />
-          ) : typeof children == 'function' ? (
+          ) : isFunction(children) ? (
             children(true)
           ) : (
             children
