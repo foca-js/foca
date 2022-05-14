@@ -22,20 +22,19 @@
   "sideEffects": false,
   "scripts": {
     "test": "jest",
-    "prepublishOnly": "tsup && cp dist/esm/index.js dist/esm/index.mjs && cp dist/esm/index.js.map dist/esm/index.mjs.map",
+    "prepublishOnly": "tsup",
     "docs": "docsify serve ./docs",
     "prepare": "husky install"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/esm/index.mjs",
+      "import": "./dist/esm/index.js",
       "require": "./dist/index.js"
     }
   },
   "files": [
     "dist",
-    "src",
     "LICENSE",
     "package.json",
     "README.md",
