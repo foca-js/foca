@@ -19,13 +19,12 @@
 
 # 特性
 
-- 模块化开发，拒绝模板
+- 模块化开发，导出即可使用
 - 专注 TS 极致体验，100%类型提示
-- 模型自动注册，导出即可使用
-- 内置 immer 快速处理数据
+- 内置 [immer](https://github.com/immerjs/immer) 响应式修改数据
 - 支持 computed 计算属性，自动收集依赖
+- 支持私有方法
 - 自动管理异步函数的 loading 状态
-- 支持私有方法，仅在内部调用
 - 可定制的多引擎数据持久化
 - 允许同类 redux 库并存，迁移无忧
 
@@ -106,7 +105,7 @@ export const counterModel = defineModel('counter', {
 
       return 'OK';
     },
-    // 私有方法，仅在内部调用
+    // 私有方法，外部使用时不会提示该方法
     _sleep(duration: number) {
       return new Promise((resolve) => {
         setTimeout(resolve, duration);
