@@ -236,6 +236,16 @@ Nextjs 案例仓库：https://github.com/foca-js/foca-demo-nextjs
 | [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | [![npm](https://img.shields.io/npm/v/react-native-debugger)](https://www.npmjs.com/package/react-native-debugger)         | 日志应用程序   | RN              |
 | [redux-logger](https://github.com/LogRocket/redux-logger)                  | [![npm](https://img.shields.io/npm/v/redux-logger)](https://www.npmjs.com/package/redux-logger)                           | 控制台输出日志 | React, RN, Taro |
 
+# 常见疑问
+
+### 函数里 this 的类型是 any
+
+答：需要在文件 **tsconfig.json** 中开启`"strict": true`或者`"noImplicitThis": true`
+
+---
+
+更多答案请[查看文档](https://foca.js.org/#/troubleshooting)
+
 # 捐赠
 
 开源不易，升级维护框架和解决各种 issue 需要十分多的精力和时间。希望能得到你的支持，让项目处于良性发展的状态。捐赠地址：[二维码](https://foca.js.org#donate)
