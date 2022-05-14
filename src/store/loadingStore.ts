@@ -8,7 +8,6 @@ import type { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingInterceptor } from '../middleware/loadingInterceptor';
 import { isLoadingAction } from '../actions/loading';
 import { freezeState } from '../utils/freezeState';
-import { getImmer } from '../utils/getImmer';
 import { actionRefresh, isRefreshAction } from '../actions/refresh';
 import { combine } from './proxyStore';
 
@@ -86,8 +85,6 @@ const helper = {
   },
 };
 
-const immer = getImmer();
-
 export const loadingStore = createStore(
   (state: LoadingStoreState = {}, action: AnyAction): LoadingStoreState => {
     if (isLoadingAction(action)) {
@@ -96,13 +93,19 @@ export const loadingStore = createStore(
         method,
         payload: { category, loading },
       } = action;
-      const combineKey = helper.keyOf(model, method);
-      const next = immer.produce(state, (draft) => {
-        const { loadings } = (draft[combineKey] ||= createDefaultRecord());
-        loadings.data[category] = loading;
+      const key = helper.keyOf(model, method);
+      // immer处理大对象时性能较差，不如直接浅复制
+      const next = Object.assign({}, state);
+      const record = (next[key] = Object.assign(
+        {},
+        next[key] || createDefaultRecord(),
+      ));
+      const loadings = (record.loadings = Object.assign({}, record.loadings));
+      loadings.data = Object.assign({}, loadings.data, {
+        [category]: loading,
       });
 
-      freezeState(next[combineKey]!.loadings);
+      freezeState(loadings);
       return next;
     }
 
@@ -113,7 +116,7 @@ export const loadingStore = createStore(
     return state;
   },
   applyMiddleware(loadingInterceptor(helper)),
-) as unknown as Store<LoadingStoreState> & { helper: typeof helper };
+) as Store<LoadingStoreState> & { helper: typeof helper };
 
 combine(loadingStore);
 
