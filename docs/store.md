@@ -22,7 +22,6 @@ store.init();
 #### ** React 18+ **
 
 ```tsx
-// File: index.tsx
 import './store'; // 别忘了这行！！！
 import ReactDOM from 'react-dom/client';
 import { FocaProvider } from 'foca';
@@ -41,7 +40,6 @@ root.render(
 #### ** React 16+ **
 
 ```tsx
-// File: index.tsx
 import './store'; // 别忘了这行！！！
 import ReactDOM from 'react-dom';
 import { FocaProvider } from 'foca';
@@ -55,6 +53,20 @@ ReactDOM.render(
   </FocaProvider>,
   container,
 );
+```
+
+#### ** Taro.js **
+
+```tsx
+import './store'; // 别忘了这行！！！
+import { Component } from 'react';
+import { FocaProvider } from 'foca';
+
+export default class App extends Component {
+  render() {
+    return <FocaProvider>{this.props.children}</FocaProvider>;
+  }
+}
 ```
 
 #### ** Next.js **
