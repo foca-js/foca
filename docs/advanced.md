@@ -139,12 +139,8 @@ export const userModel = defineModel('users', {
 const userModel = defineModel('users', {
   initialState,
   actions: {
-    addUser(state, user: UserItem) {
-      state.push(user);
-    },
-    _deleteUser(state, userId: number) {
-      return state.filter((user) => user.id !== userId);
-    },
+    addUser(state, user: UserItem) {},
+    _deleteUser(state, userId: number) {},
   },
   effects: {
     async retrieve(id: number) {
@@ -155,16 +151,20 @@ const userModel = defineModel('users', {
       this._deleteUser(15);
       // 私有effect方法
       this._myLogic();
+      // 私有computed变量
+      this._fullname.value;
     },
-    async _myLogic() {
-      // ...
-    },
+    async _myLogic() {},
+  },
+  computed: {
+    _fullname() {},
   },
 });
 
 userModel.retrieve; // OK
 userModel._deleteUser; // 报错了，找不到属性 _deleteUser
 userModel._myLogic; // 报错了，找不到属性 _myLogic
+userModel._fullname; // 报错了，找不到属性 _fullname
 ```
 
 对外接口变得十分清爽，减少出错概率的同时，也提升了数据的安全性。
