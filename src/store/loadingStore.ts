@@ -85,6 +85,8 @@ const helper = {
   },
 };
 
+const copy = <T>(source: T): T => Object.assign({}, source);
+
 export const loadingStore = createStore(
   (state: LoadingStoreState = {}, action: AnyAction): LoadingStoreState => {
     if (isLoadingAction(action)) {
@@ -95,15 +97,11 @@ export const loadingStore = createStore(
       } = action;
       const key = helper.keyOf(model, method);
       // immer处理大对象时性能较差，不如直接浅复制
-      const next = Object.assign({}, state);
-      const record = (next[key] = Object.assign(
-        {},
-        next[key] || createDefaultRecord(),
-      ));
-      const loadings = (record.loadings = Object.assign({}, record.loadings));
-      loadings.data = Object.assign({}, loadings.data, {
-        [category]: loading,
-      });
+      const next = copy(state);
+      const record = (next[key] = copy(next[key] || createDefaultRecord()));
+      const loadings = (record.loadings = copy(record.loadings));
+      // { [category]: loading } 这种写法会导致runtime引入helper来处理，徒增体积
+      (loadings.data = copy(loadings.data))[category] = loading;
 
       freezeState(loadings);
       return next;
