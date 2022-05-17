@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import React from 'react';
+import type { FC } from 'react';
 import { Provider } from 'react-redux';
 import { ProxyContext, ModelContext, LoadingContext } from './contexts';
 import { modelStore } from '../store/modelStore';
