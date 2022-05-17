@@ -7,8 +7,8 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   public deps: Deps[] = [];
   public snapshot: any;
 
-  protected cached?: boolean;
   protected active?: boolean;
+  protected dirty: boolean = false;
   protected root: any;
 
   constructor(
@@ -26,16 +26,11 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
     }
 
     this.active = true;
-    const uncached = !this.cached;
 
-    if (uncached) {
-      this.root = this.store.getState();
-      this.cached = true;
-    }
-
-    if (uncached || this.isDirty()) {
+    if (this.isDirty()) {
       this.deps = depsCollector.produce(() => {
         this.snapshot = this.fn();
+        this.dirty = false;
       });
     }
 
@@ -50,17 +45,25 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
 
   isDirty(): boolean {
     const rootState = this.store.getState();
+    const prevRoot = this.root;
 
-    if (this.root === rootState) {
-      return false;
+    if (prevRoot === rootState) {
+      return this.dirty;
+    }
+
+    this.root = rootState;
+
+    if (!prevRoot) {
+      return (this.dirty = true);
     }
 
     const deps = this.deps;
     for (let i = deps.length; i-- > 0; ) {
-      if (deps[i]!.isDirty()) return true;
+      if (deps[i]!.isDirty()) {
+        return (this.dirty = true);
+      }
     }
 
-    this.root = rootState;
-    return false;
+    return (this.dirty = false);
   }
 }
