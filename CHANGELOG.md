@@ -1,3 +1,10 @@
+## [0.11.7](https://github.com/foca-js/foca/compare/v0.11.6...v0.11.7)&nbsp;&nbsp;(2022-05-17)
+
+- 优化 loading 写入性能
+- 修复 react 命名导出在 node ESM 环境中可能报错的风险
+- 打包不再使用 `.mjs` 后缀，设置新的 package.json 同样可以识别成 ESM
+- 不再导出`combine`方法，因为几乎用不上
+
 ## [0.11.6](https://github.com/foca-js/foca/compare/v0.11.5...v0.11.6)&nbsp;&nbsp;(2022-05-13)
 
 - 使用`.js`文件以适配旧的打包工具
