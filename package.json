@@ -21,7 +21,7 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
     "prepublishOnly": "tsup",
     "docs": "docsify serve ./docs",
     "prepare": "husky install"
