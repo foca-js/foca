@@ -139,7 +139,7 @@ test('ComputedValue can remove duplicated deps', () => {
   const mockStore = {
     getState() {
       return {
-        [computedModel.name]: computedModel.state,
+        [computedModel.name]: store.getState()[computedModel.name],
       };
     },
   };
@@ -167,7 +167,7 @@ test('ComputedValue can be a copy deps', () => {
   const mockStore = {
     getState() {
       return {
-        [computedModel.name]: computedModel.state,
+        [computedModel.name]: store.getState()[computedModel.name],
       };
     },
   };
@@ -195,6 +195,7 @@ test('ComputedValue can be a copy deps', () => {
   computedModel.changeFirstName('z-');
   expect(fullNameAsRef.isDirty()).toBeTruthy();
   expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
+  // 上一个ComputedDeps触发了ComputedValue.value
   expect(fullNameAsRef.isDirty()).toBeFalsy();
 
   expect(fullNameAsRef.value).toBe('z-tock');
