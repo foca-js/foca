@@ -1,5 +1,7 @@
 # FOCA
 
+简体中文 | [English](/README-EN.md)
+
 流畅的 react 状态管理库，基于[redux](https://github.com/reduxjs/redux)和[react-redux](https://github.com/reduxjs/react-redux)。简洁、极致、高效。
 
 [![npm peer dependency version](https://img.shields.io/npm/dependency-version/foca/peer/react?logo=react)](https://github.com/facebook/react)
