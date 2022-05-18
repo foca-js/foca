@@ -1,7 +1,8 @@
 import { compose, StoreEnhancer } from 'redux';
 import sleep from 'sleep-promise';
+import { from, map } from 'rxjs';
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { engines, store } from '../src';
+import { defineModel, engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { PersistManager } from '../src/persist/PersistManager';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
@@ -264,4 +265,49 @@ test('Get custom compose', () => {
   process.env.NODE_ENV = 'production';
   expect(get('redux-devtools')).toBe(compose);
   process.env.NODE_ENV = prevEnv;
+});
+
+it('rxjs can observe store', () => {
+  store.init();
+
+  const observable = from(store);
+  const results: any[] = [];
+
+  const model = defineModel('rxjs', {
+    initialState: {
+      foo: 0,
+      bar: 0,
+    },
+    actions: {
+      foo(state) {
+        state.foo += 1;
+      },
+      bar(state) {
+        state.bar += 1;
+      },
+    },
+  });
+
+  const sub = observable
+    .pipe(
+      map((state) => {
+        return { fromRx: true, ...state[model.name] };
+      }),
+    )
+    .subscribe((state) => {
+      results.push(state);
+    });
+
+  model.foo();
+  model.foo();
+  sub.unsubscribe();
+  model.bar();
+
+  expect(results).toEqual(
+    expect.arrayContaining([
+      { foo: 0, bar: 0, fromRx: true },
+      { foo: 1, bar: 0, fromRx: true },
+      { foo: 2, bar: 0, fromRx: true },
+    ]),
+  );
 });
