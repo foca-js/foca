@@ -244,8 +244,8 @@ Nextjs 案例仓库：https://github.com/foca-js/foca-demo-nextjs
 
 ---
 
-更多答案请[查看文档](https://foca.js.org/#/troubleshooting)
+更多答案请[查看文档](https://foca.js.org/#/zh/troubleshooting)
 
 # 捐赠
 
-开源不易，升级维护框架和解决各种 issue 需要十分多的精力和时间。希望能得到你的支持，让项目处于良性发展的状态。捐赠地址：[二维码](https://foca.js.org#donate)
+开源不易，升级维护框架和解决各种 issue 需要十分多的精力和时间。希望能得到你的支持，让项目处于良性发展的状态。捐赠地址：[二维码](https://foca.js.org#/zh/donate)

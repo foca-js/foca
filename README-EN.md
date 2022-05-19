@@ -244,4 +244,4 @@ Nextjs demo: https://github.com/foca-js/foca-demo-nextjs
 
 ---
 
-More QA [see here](https://foca.js.org/#/troubleshooting)
+More QA [see here](https://foca.js.org/#/en/troubleshooting)
