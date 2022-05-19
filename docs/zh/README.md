@@ -15,7 +15,7 @@
 
 <br>
 
-![mind map](./mindMap.svg)
+![mind map](../mindMap.svg)
 
 # 安装
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Foca</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="description" content="现代化react状态管理库" />
+    <meta name="description" content="Fluent React state management library" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
@@ -28,24 +28,39 @@
         border-bottom: 0;
       }
     </style>
+
+    <script>
+      if (/^#?\/?$/.test(window.location.hash)) {
+        window.location.hash = /^zh/i.test(navigator.language)
+          ? '#/zh/'
+          : '#/en/';
+      }
+    </script>
   </head>
   <body>
-    <div id="app">加载中...</div>
+    <div id="app">Loading...</div>
     <script>
+      var isZH = /^zh/i.test(navigator.language);
+
+      var searchOpts = {
+        hideOtherSidebarContent: true,
+      };
+
+      if (isZH) {
+        searchOpts.placeholder = '搜索';
+        searchOpts.noData = '未找到相关信息';
+      }
+
       window.$docsify = {
         name: 'Foca',
         repo: 'https://github.com/foca-js/foca',
         loadSidebar: true,
+        loadNavbar: true,
         subMaxLevel: 2,
         auto2top: true,
-        homepage: 'home.md',
         autoHeader: true,
         topMargin: 30,
-        search: {
-          placeholder: '搜索',
-          noData: '未找到相关信息',
-          hideOtherSidebarContent: true,
-        },
+        search: searchOpts,
       };
     </script>
     <!-- Docsify v4 -->
