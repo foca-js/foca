@@ -164,7 +164,8 @@ class StoreAdvanced implements Store {
           /** @ts-expect-error */
           (typeof window === OBJECT
             ? window
-            : typeof global === OBJECT
+            : /* istanbul ignore next */
+            typeof global === OBJECT
             ? global
             : {})['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
         );
