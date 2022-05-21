@@ -187,7 +187,7 @@ test('duplicate init() will keep state', () => {
 test('duplicate init() will replace persistor', async () => {
   store.init();
   await store.onInitialized();
-  expect(store.persistor).toBeUndefined();
+  expect(store.persistor).toBeNull();
 
   store.init({
     persist: [

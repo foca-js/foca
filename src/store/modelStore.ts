@@ -28,9 +28,11 @@ interface CreateStoreOptions {
   persist?: PersistOptions[];
 }
 
+const topicName = 'storeReady';
+
 class StoreAdvanced implements Store {
   protected topic: Topic<{
-    storeReady: [];
+    [K in typeof topicName]: [];
   }> = new Topic();
   protected readonly keepToken: KeepToken;
   protected _isReady: boolean = false;
@@ -41,12 +43,12 @@ class StoreAdvanced implements Store {
   /**
    * @protected
    */
-  public persistor?: PersistManager;
+  public persistor: PersistManager | null = null;
 
   protected reducer!: Reducer;
 
   constructor() {
-    this.keepToken = this.topic.keep('storeReady', () => this._isReady);
+    this.keepToken = this.topic.keep(topicName, () => this._isReady);
   }
 
   get isReady(): boolean {
@@ -54,7 +56,8 @@ class StoreAdvanced implements Store {
   }
 
   init(options: CreateStoreOptions = {}) {
-    const firstInitialize = !this.origin;
+    const prevStore = this.origin;
+    const firstInitialize = !prevStore;
 
     if (!firstInitialize) {
       if (process.env.NODE_ENV === 'production') {
@@ -64,13 +67,15 @@ class StoreAdvanced implements Store {
 
     this._isReady = false;
     this.reducer = this.combineReducers();
-    this.persistor && this.persistor.destroy();
 
-    if (options.persist && options.persist.length) {
-      this.persistor = new PersistManager(options.persist);
-      this.reducer = this.persistor.combineReducer(this.reducer);
+    const persistOptions = options.persist;
+    let persistor = this.persistor;
+    persistor && persistor.destroy();
+    if (persistOptions && persistOptions.length) {
+      persistor = this.persistor = new PersistManager(persistOptions);
+      this.reducer = persistor.combineReducer(this.reducer);
     } else {
-      this.persistor = void 0;
+      persistor = this.persistor = null;
     }
 
     let store: Store;
@@ -90,12 +95,12 @@ class StoreAdvanced implements Store {
       combine(store);
     } else {
       // 重新创建store会导致组件里的subscription都失效
-      store = this.origin!;
+      store = prevStore;
       store.replaceReducer(this.reducer);
     }
 
-    if (this.persistor) {
-      this.persistor.init(store, firstInitialize).then(() => {
+    if (persistor) {
+      persistor.init(store, firstInitialize).then(() => {
         this.ready();
       });
     } else {
@@ -140,14 +145,14 @@ class StoreAdvanced implements Store {
       if (this._isReady) {
         resolve();
       } else {
-        this.topic.subscribeOnce('storeReady', resolve);
+        this.topic.subscribeOnce(topicName, resolve);
       }
     });
   }
 
   protected ready() {
     this._isReady = true;
-    this.topic.publish('storeReady');
+    this.topic.publish(topicName);
   }
 
   protected get store(): Store<Record<string, object>, AnyAction> {
