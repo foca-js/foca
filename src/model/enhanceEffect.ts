@@ -120,13 +120,16 @@ const dispatchLoading = (
   modelName: string,
   methodName: string,
   loading: boolean,
-  category: number | string = LOADING_CATEGORY,
+  category?: number | string,
 ) => {
   loadingStore.dispatch<LoadingAction>({
     type: TYPE_SET_LOADING,
     model: modelName,
     method: methodName,
-    payload: { category, loading },
+    payload: {
+      category: category === void 0 ? LOADING_CATEGORY : category,
+      loading,
+    },
   });
 };
 

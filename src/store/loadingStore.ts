@@ -88,7 +88,12 @@ const helper = {
 const copy = <T>(source: T): T => Object.assign({}, source);
 
 export const loadingStore = createStore(
-  (state: LoadingStoreState = {}, action: AnyAction): LoadingStoreState => {
+  (
+    state: LoadingStoreState | undefined,
+    action: AnyAction,
+  ): LoadingStoreState => {
+    if (state === void 0) state = {};
+
     if (isLoadingAction(action)) {
       const {
         model,

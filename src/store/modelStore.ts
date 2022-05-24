@@ -183,8 +183,11 @@ class StoreAdvanced implements Store {
   }
 
   protected combineReducers(): Reducer<Record<string, object>> {
-    return (state = {}, action) => {
+    return (state, action) => {
+      if (state === void 0) state = {};
+
       const reducerKeys = this.reducerKeys;
+      const consumers = this.consumers;
       const keyLength = reducerKeys.length;
       const nextState: Record<string, any> = {};
       let hasChanged = false;
@@ -192,8 +195,12 @@ class StoreAdvanced implements Store {
 
       while (i-- > 0) {
         const key = reducerKeys[i]!;
-        nextState[key] = this.consumers[key]!(state[key], action);
-        hasChanged ||= nextState[key] !== state[key];
+        const prevForKey = state[key];
+        const nextForKey = (nextState[key] = consumers[key]!(
+          prevForKey,
+          action,
+        ));
+        hasChanged ||= nextForKey !== prevForKey;
       }
 
       return hasChanged || keyLength !== Object.keys(state).length
