@@ -45,7 +45,7 @@ npm install foca
 
 #### 支持 computed 计算属性，自动收集依赖
 
-不需要再羡慕`vue`或者`mobx`等框架的计算属性了，foca 虽然基于 redux，但是也能支持计算属性并且自动收集依赖，大大降低了心智负担。
+现在，redux 家族不需要再羡慕`vue`或者`mobx`等响应式框架，咱也能支持计算属性并且自动收集依赖，而且是时候把[reselect](https://github.com/reduxjs/reselect)**扔进垃圾桶**了。
 
 #### 支持私有方法
 
