@@ -69,22 +69,6 @@ export default class App extends Component {
 }
 ```
 
-#### ** Next.js **
-
-```tsx
-import '../app/store'; // 别忘了这行！！！
-import { FocaProvider } from 'foca';
-import type { AppProps } from 'next/app';
-
-export default function Root({ Component, pageProps }: AppProps) {
-  return (
-    <FocaProvider>
-      <Component {...pageProps} />
-    </FocaProvider>
-  );
-}
-```
-
 <!-- tabs:end -->
 
 # 热更新

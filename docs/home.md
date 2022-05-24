@@ -59,6 +59,10 @@ npm install foca
 
 某些数据在一个时间段内可能是不变的，比如登录凭证 token。所以你想着先把数据存到本地，下次自动恢复到模型中，这样用户就不需要频繁登录了。
 
+# 缺陷
+
+- [不支持 SSR](/troubleshooting?id=为什么不支持-ssr)
+
 # 生态
 
 #### 网络请求
@@ -92,8 +96,6 @@ React 案例仓库：https://github.com/foca-js/foca-demo-web
 RN 案例仓库：https://github.com/foca-js/foca-demo-react-native
 <br>
 Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
-<br>
-Nextjs 案例仓库：https://github.com/foca-js/foca-demo-nextjs
 <br>
 
 # 在线试玩

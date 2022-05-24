@@ -27,6 +27,10 @@
 - 自动管理异步函数的 loading 状态
 - 可定制的多引擎数据持久化
 
+# 缺陷
+
+- [不支持 SSR](https://foca.js.org/#/troubleshooting?id=为什么不支持-ssr)
+
 # 安装
 
 ```bash
@@ -205,8 +209,6 @@ React 案例仓库：https://github.com/foca-js/foca-demo-web
 RN 案例仓库：https://github.com/foca-js/foca-demo-react-native
 <br>
 Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
-<br>
-Nextjs 案例仓库：https://github.com/foca-js/foca-demo-nextjs
 
 # 生态
 
