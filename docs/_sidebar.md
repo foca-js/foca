@@ -1,8 +1,8 @@
-* [介绍](/)
+* [关于Foca](/)
 
 - [更新日志](/changelog.md)
 
-* [初始化](/store.md)
+* [开始使用](/initialize.md)
 
 - [模型](/model.md)
 

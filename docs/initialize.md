@@ -1,5 +1,15 @@
 # <!-- {docsify-ignore} -->
 
+# 安装
+
+```bash
+# 如果是 yarn
+yarn add foca
+
+# 如果是 npm
+npm install foca
+```
+
 # 仓库
 
 foca 遵循`唯一store`原则，并提供了快速初始化的入口。

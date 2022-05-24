@@ -17,16 +17,6 @@
 
 ![mind map](./mindMap.svg)
 
-# 安装
-
-```bash
-# 如果是 yarn
-yarn add foca
-
-# 如果是 npm
-npm install foca
-```
-
 # 特性
 
 #### 模块化开发，导出即可使用
