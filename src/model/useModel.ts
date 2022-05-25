@@ -1,6 +1,6 @@
 import { shallowEqual } from 'react-redux';
 import { deepEqual } from '../utils/deepEqual';
-import type { Model } from '../model/types';
+import type { Model } from './types';
 import { toArgs } from '../utils/toArgs';
 import { useModelSelector } from '../redux/useSelector';
 import { isFunction, isString } from '../utils/isType';

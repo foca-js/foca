@@ -1,4 +1,4 @@
-import { ComputedRef } from '../reactive/types';
+import { ComputedRef } from './types';
 import { useModelSelector } from '../redux/useSelector';
 
 export const useComputed = <T>(ref: ComputedRef<T>): T => {

@@ -1,5 +1,5 @@
 import { Connect, connect as originalConnect } from 'react-redux';
-import { ProxyContext } from '../redux/contexts';
+import { ProxyContext } from './contexts';
 import { toArgs } from '../utils/toArgs';
 
 export const connect: Connect = function () {

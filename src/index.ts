@@ -3,11 +3,11 @@ export { defineModel } from './model/defineModel';
 export { cloneModel } from './model/cloneModel';
 
 // 组件中使用
-export { useModel } from './api/useModel';
+export { useModel } from './model/useModel';
 export { useLoading } from './api/useLoading';
 export { getLoading } from './api/getLoading';
-export { connect } from './api/connect';
-export { useComputed } from './api/useComputed';
+export { connect } from './redux/connect';
+export { useComputed } from './reactive/useComputed';
 
 // 入口使用
 export { compose } from 'redux';
