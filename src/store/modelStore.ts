@@ -110,10 +110,10 @@ class StoreAdvanced implements Store {
     return this;
   }
 
-  /** @deprecated */
-  replaceReducer(): never {
-    throw new Error(`[store] 请勿使用'replaceReducer'方法`);
-  }
+  /**
+   * @deprecated 请勿使用该方法，因为它其实没有被实现
+   */
+  declare replaceReducer: Store['replaceReducer'];
 
   dispatch: Store['dispatch'] = (action) => {
     return this.store.dispatch(action);
