@@ -16,16 +16,20 @@ jobs:
       matrix:
         node-version: [14.x, 16.x, 18.x]
         ts-version: [4.4.x, 4.5.x, 4.6.x]
+        react-version: ['16.9.0', 16.x, 17.x, 18.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }}
+      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
           yarn install
-          yarn add typescript@${{ matrix.ts-version }} --dev
+          yarn add --dev \
+            typescript@${{ matrix.ts-version }} \
+            react@${{ matrix.react-version }} \
+            react-dom@${{ matrix.react-version }}
       - run: yarn tsc
 
   react-16-17:
