@@ -13,25 +13,20 @@ export const useDefinedModel = <
   Effect extends object = object,
   Computed extends object = object,
 >(
-  fromGlobalModel: Model<string, State, Action, Effect, Computed>,
+  globalModel: Model<string, State, Action, Effect, Computed>,
 ): HookModel<string, State, Action, Effect, Computed> => {
   const hookModel = React.useMemo(() => {
-    return cloneModel(
-      fromGlobalModel.name + '#' + nameCounter++,
-      fromGlobalModel,
-    );
-  }, [fromGlobalModel]);
+    return cloneModel(globalModel.name + '#' + nameCounter++, globalModel);
+  }, [globalModel]);
 
   React.useEffect(() => {
     const modelName = hookModel.name;
     return () => {
-      // 尽量延迟一下，防止业务中的useEffect有对模型的操作
-      setTimeout(() => {
-        modelStore.removeReducer(modelName);
-        loadingStore.dispatch<DestroyLodingAction>({
-          type: DESTROY_LOADING,
-          model: modelName,
-        });
+      // 在开发环境中有热更新，setTimeout延迟做会导致卸载失败
+      modelStore.removeReducer(modelName);
+      loadingStore.dispatch<DestroyLodingAction>({
+        type: DESTROY_LOADING,
+        model: modelName,
       });
     };
   }, [hookModel]);
