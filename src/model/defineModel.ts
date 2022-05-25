@@ -184,7 +184,7 @@ export const defineModel = <
 
     for (let i = effectCtxs.length; i-- > 0; ) {
       Object.assign(
-        effectCtxs[i],
+        effectCtxs[i]!,
         enhancedMethods.external,
         enhancedMethods.internal,
       );
