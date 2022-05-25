@@ -23,6 +23,7 @@ import type {
   InternalModel,
 } from './types';
 import { isFunction } from '../utils/isType';
+import { Unsubscribe } from 'redux';
 
 export const defineModel = <
   Name extends string,
@@ -192,7 +193,7 @@ export const defineModel = <
   }
 
   if (events) {
-    const { onInit, onChange } = events;
+    const { onInit, onChange, onDestroy } = events;
     const eventCtx: EventCtx<State> = Object.assign(
       composeGetter({}, getName, getState),
       enhancedMethods.external,
@@ -200,18 +201,34 @@ export const defineModel = <
     );
 
     modelStore.onInitialized().then(() => {
+      const subscriptions: Unsubscribe[] = [];
+
       if (onChange) {
         let prevState = eventCtx.state;
-        modelStore.subscribe(() => {
-          const nextState = eventCtx.state;
-          if (prevState !== nextState) {
-            modelStore.isReady && onChange.call(eventCtx, prevState, nextState);
-            prevState = nextState;
-          }
-        });
+        subscriptions.push(
+          modelStore.subscribe(() => {
+            const nextState = eventCtx.state;
+            if (prevState !== nextState) {
+              modelStore.isReady &&
+                onChange.call(eventCtx, prevState, nextState);
+              prevState = nextState;
+            }
+          }),
+        );
       }
 
       onInit && onInit.call(eventCtx);
+
+      if (onDestroy) {
+        subscriptions.push(
+          modelStore.subscribe(() => {
+            if (eventCtx.state === void 0) {
+              subscriptions.forEach((executor) => executor());
+              onDestroy.call(null as never);
+            }
+          }),
+        );
+      }
     });
   }
 

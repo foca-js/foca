@@ -6,7 +6,7 @@ import {
 } from 'redux';
 import type { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingInterceptor } from '../middleware/loadingInterceptor';
-import { isLoadingAction } from '../actions/loading';
+import { isDestroyLoadingAction, isLoadingAction } from '../actions/loading';
 import { freezeState } from '../utils/freezeState';
 import { actionRefresh, isRefreshAction } from '../actions/refresh';
 import { combine } from './proxyStore';
@@ -77,7 +77,7 @@ const helper = {
   },
 
   keyOf(model: string, method: string) {
-    return model + '.' + method;
+    return model + '/' + method;
   },
 
   refresh() {
@@ -110,6 +110,24 @@ export const loadingStore = createStore(
 
       freezeState(loadings);
       return next;
+    }
+
+    if (isDestroyLoadingAction(action)) {
+      const prefix = action.model + '/';
+      const keys = Object.keys(state);
+      let hasChanged = false;
+
+      const next: LoadingStoreState = {};
+      for (let i = keys.length; i-- > 0; ) {
+        const key = keys[i]!;
+        if (key.indexOf(prefix) === 0) {
+          hasChanged = true;
+        } else {
+          next[key] = state[key]!;
+        }
+      }
+
+      return hasChanged ? next : state;
     }
 
     if (isRefreshAction(action)) {

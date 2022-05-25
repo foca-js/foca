@@ -8,6 +8,7 @@ export { useLoading } from './api/useLoading';
 export { getLoading } from './api/getLoading';
 export { connect } from './redux/connect';
 export { useComputed } from './reactive/useComputed';
+export { useDefinedModel } from './model/useDefinedModel';
 
 // 入口使用
 export { compose } from 'redux';
@@ -26,6 +27,6 @@ export type {
   StoreEnhancer,
   Unsubscribe,
 } from 'redux';
-export type { Model } from './model/types';
+export type { Model, HookModel } from './model/types';
 export type { StorageEngine } from './engines';
 export type { ComputedRef } from './reactive/types';

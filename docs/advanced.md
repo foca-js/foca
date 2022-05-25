@@ -37,6 +37,43 @@ const user3Model = cloneModel('users3', userModel, (prev) => {
 });
 ```
 
+# 局部模型
+
+通过`defineModel`和`cloneModel`创建的模型均为全局类别的模型，数据一直保持在内存中，直到应用关闭或者退出才会释放，对于比较大的项目，这可能会有性能问题。所以有时候你其实想要一种`用完就扔`的模型，即在 React 组件初始化时把模型数据扔到 store 中，当 React 组件被销毁时，模型的数据也跟着销毁。现在局部模型很适合你的需求：
+
+```tsx
+import { useEffect } from 'react';
+import { defineModel, useDefinedModel } from 'foca';
+
+// testModel.ts
+export const testModel = defineModel('test', {
+  initialState: { count: 0 },
+  actions: {
+    plus(state, value: number) {
+      state.count += value;
+    },
+  },
+});
+
+// App.tsx
+const App: FC = () => {
+  const model = useDefinedModel(testModel);
+  const { count } = useModel(model);
+
+  useEffect(() => {
+    model.plus(1);
+  }, []);
+
+  return <div>{count}</div>;
+};
+```
+
+利用 `useDefinedModel` 函数根据全局模型创建一个新的局部模型，然后就是通用的模型操作，这似乎没有增加工作量（因为只多了一行）。下面我列举了局部函数的几个特点：
+
+- 组件内部使用，不污染全局
+- 数据随组件自动挂载/释放
+- 有效降低内存占用量
+
 # 重置所有数据
 
 当用户退出登录时，你需要清理与用户相关的一些数据，然后把页面切换到`登录页`。清理操作其实是比较麻烦的，首先 model 太多了，然后就是后期也可能再增加其它模型，不可能手动一个个清理。这时候可以用上 store 自带的方法：

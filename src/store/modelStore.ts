@@ -212,13 +212,28 @@ class StoreAdvanced implements Store {
   /**
    * @protected
    */
-  public appendReducer(key: string, consumer: Reducer) {
+  public appendReducer(key: string, consumer: Reducer): void {
     const store = this.origin;
-    const exists = store && this.consumers.hasOwnProperty(key);
+    const consumers = this.consumers;
+    const exists = store && consumers.hasOwnProperty(key);
 
-    this.consumers[key] = consumer;
-    this.reducerKeys = Object.keys(this.consumers);
+    consumers[key] = consumer;
+    this.reducerKeys = Object.keys(consumers);
     store && !exists && store.replaceReducer(this.reducer);
+  }
+
+  /**
+   * @protected
+   */
+  public removeReducer(key: string): void {
+    const store = this.origin;
+    const consumers = this.consumers;
+
+    if (consumers.hasOwnProperty(key)) {
+      delete consumers[key];
+      this.reducerKeys = Object.keys(consumers);
+      store && store.replaceReducer(this.reducer);
+    }
   }
 }
 

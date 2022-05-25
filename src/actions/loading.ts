@@ -4,6 +4,8 @@ export const TYPE_SET_LOADING = '@@store/loading';
 
 export const LOADING_CATEGORY = '##' + Math.random();
 
+export const DESTROY_LOADING = '@@store/loading/destroy';
+
 export interface LoadingAction extends Action<typeof TYPE_SET_LOADING> {
   model: string;
   method: string;
@@ -14,11 +16,22 @@ export interface LoadingAction extends Action<typeof TYPE_SET_LOADING> {
 }
 
 export const isLoadingAction = (action: AnyAction): action is LoadingAction => {
-  const test = action as LoadingAction;
+  const tester = action as LoadingAction;
   return (
-    test.type === TYPE_SET_LOADING &&
-    !!test.model &&
-    !!test.method &&
-    !!test.payload
+    tester.type === TYPE_SET_LOADING &&
+    !!tester.model &&
+    !!tester.method &&
+    !!tester.payload
   );
+};
+
+export interface DestroyLodingAction extends Action<typeof DESTROY_LOADING> {
+  model: string;
+}
+
+export const isDestroyLoadingAction = (
+  action: AnyAction,
+): action is DestroyLodingAction => {
+  const tester = action as DestroyLodingAction;
+  return tester.type === DESTROY_LOADING && !!tester.model;
 };
