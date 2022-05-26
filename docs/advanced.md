@@ -74,37 +74,7 @@ const App: FC = () => {
 - 数据随组件自动挂载/释放
 - 有效降低内存占用量
 
-# 重置所有数据
-
-当用户退出登录时，你需要清理与用户相关的一些数据，然后把页面切换到`登录页`。清理操作其实是比较麻烦的，首先 model 太多了，然后就是后期也可能再增加其它模型，不可能手动一个个清理。这时候可以用上 store 自带的方法：
-
-```typescript
-import { store } from 'foca';
-
-// onLogout是你的业务方法
-onLogout().then(() => {
-  store.refresh();
-});
-```
-
-一个方法就能把所有数据都恢复成初始值状态，太方便了吧？
-
-重置时，你也可以保留部分模型的数据不被影响（可能是一些全局的配置数据），在相应的模型下加入关键词`skipRefresh`即可：
-
-```diff
-defineModel('my-global-model', {
-  initialState: {},
-+ skipRefresh: true,
-});
-```
-
-对了，如果你实在是想无情地删除所有数据（即无视 skipRefresh 参数），那么就用`强制模式`好了：
-
-```typescript
-store.refresh(true);
-```
-
-# 一个 effect 多个 loading
+# 一个 effect 多份 loading
 
 默认地，effect 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.effectX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数拥有多个状态互不干扰。
 
@@ -139,9 +109,10 @@ const App: FC = () => {
 如果你能确定 find 的参数，那么也可以直接传递：
 
 ```typescript
+// 适用于知道明确的编号，比如是从组件props直接传入
 const loading = useLoading(model.myMethod.room, 100); // boolean
 
-// 等效于
+// 适用于列表，编号只能在for循环中获取
 const loading = useLoading(model.myMethod.room).find(100);
 ```
 
@@ -205,3 +176,33 @@ userModel._fullname; // 报错了，找不到属性 _fullname
 ```
 
 对外接口变得十分清爽，减少出错概率的同时，也提升了数据的安全性。
+
+# 重置所有数据
+
+当用户退出登录时，你需要清理与用户相关的一些数据，然后把页面切换到`登录页`。清理操作其实是比较麻烦的，首先 model 太多了，然后就是后期也可能再增加其它模型，不可能手动一个个清理。这时候可以用上 store 自带的方法：
+
+```diff
+import { store } from 'foca';
+
+// onLogout是你的业务方法
+onLogout().then(() => {
++ store.refresh();
+});
+```
+
+一个方法就能把所有数据都恢复成初始值状态，太方便了吧？
+
+重置时，你也可以保留部分模型的数据不被影响（可能是一些全局的配置数据），在相应的模型下加入关键词`skipRefresh`即可：
+
+```diff
+defineModel('my-global-model', {
+  initialState: {},
++ skipRefresh: true,
+});
+```
+
+对了，如果你实在是想无情地删除所有数据（即无视 skipRefresh 参数），那么就用`强制模式`好了：
+
+```typescript
+store.refresh(true);
+```
