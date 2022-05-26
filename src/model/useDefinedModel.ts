@@ -17,11 +17,12 @@ export const useDefinedModel = <
   globalModel: Model<string, State, Action, Effect, Computed>,
 ): HookModel<string, State, Action, Effect, Computed> => {
   const modelName = globalModel.name;
-  const count = React.useMemo(() => nameCounter++, [modelName]);
+  const initialCount = React.useState(() => nameCounter++)[0];
+
   const uniqueName =
     process.env.NODE_ENV === 'production'
-      ? useProdName(modelName, count)
-      : useDevName(modelName, count);
+      ? useProdName(modelName, initialCount)
+      : useDevName(modelName, initialCount);
 
   const hookModel = React.useMemo(() => {
     return cloneModel(uniqueName, globalModel);
@@ -46,29 +47,31 @@ const useProdName = (modelName: string, count: number) => {
 /**
  * 开发模式下，需要Hot Reload。
  * 必须保证数据不会丢，即如果用户一直保持`model.name`不变，就被判定为可以共享热更新之前的数据。
+ *
+ * 必须严格控制count在组件内的自增次数，否则在第一次修改model的name时，总是会报错：
+ * Warning: Cannot update a component (`XXX`) while rendering a different component (`XXX`)
  */
 const useDevName = (modelName: string, count: number) => {
-  const [cache, setCache] = React.useState(() => ({
+  const [cache, setCache] = React.useState({
     name: modelName,
     count: count,
-  }));
+  });
 
-  const nextCount = cache.name === modelName ? cache.count : nameCounter++;
-  const uniqueName = concatUniqueName(modelName, nextCount);
-
-  React.useEffect(() => {
-    if (cache.name !== modelName || cache.count !== nextCount) {
-      setCache({
-        name: modelName,
-        count: nextCount,
-      });
-    }
-  }, [modelName, nextCount]);
+  const uniqueName = concatUniqueName(modelName, count);
 
   React.useMemo(() => {
     timesCounter[uniqueName] ||= 0;
     ++timesCounter[uniqueName];
   }, [uniqueName]);
+
+  React.useEffect(() => {
+    if (cache.name !== modelName || cache.count !== count) {
+      setCache({
+        name: modelName,
+        count: count,
+      });
+    }
+  }, [modelName, count]);
 
   React.useEffect(() => {
     const currentTimes = timesCounter[uniqueName];
