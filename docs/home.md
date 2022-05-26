@@ -6,6 +6,7 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/Test/master?label=test&logo=jest)](https://github.com/foca-js/foca/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca?logo=codecov)](https://codecov.io/gh/foca-js/foca)
 [![npm](https://img.shields.io/npm/v/foca?logo=npm)](https://www.npmjs.com/package/foca)
+[![npm](https://img.shields.io/npm/dm/foca?logo=codeforces)](https://www.npmjs.com/package/foca)
 [![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/foca?label=bundle+size&cacheSeconds=3600&logo=esbuild)](https://bundlephobia.com/package/foca@latest)
 ![GitHub top language](https://img.shields.io/github/languages/top/foca-js/foca?logo=typescript)
 [![License](https://img.shields.io/github/license/foca-js/foca?logo=open-source-initiative)](https://github.com/foca-js/foca/blob/master/LICENSE)
