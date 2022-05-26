@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DestroyLodingAction, DESTROY_LOADING } from '../actions/loading';
 import { loadingStore } from '../store/loadingStore';
 import { modelStore } from '../store/modelStore';
@@ -17,7 +17,7 @@ export const useDefinedModel = <
   globalModel: Model<string, State, Action, Effect, Computed>,
 ): HookModel<string, State, Action, Effect, Computed> => {
   const modelName = globalModel.name;
-  const count = useMemo(() => nameCounter++, [modelName]);
+  const count = React.useMemo(() => nameCounter++, [modelName]);
   const uniqueName =
     process.env.NODE_ENV === 'production'
       ? useProdName(modelName, count)
@@ -65,7 +65,7 @@ const useDevName = (modelName: string, count: number) => {
     }
   }, [modelName, nextCount]);
 
-  useMemo(() => {
+  React.useMemo(() => {
     timesCounter[uniqueName] ||= 0;
     ++timesCounter[uniqueName];
   }, [uniqueName]);
