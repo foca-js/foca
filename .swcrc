@@ -1,0 +1,14 @@
+{
+  "env": {
+    "targets": [
+      "ie >= 11",
+      "edge >= 12",
+      "safari >= 9",
+      "chrome >= 49", // chrome@49 是Windows XP最后一个版本
+      "opera >= 36", // opera@36 基于chromeium 49
+      "firefox >= 50",
+      "ios_saf >= 9", // ios系统的safari,
+      "not dead"
+    ]
+  }
+}
