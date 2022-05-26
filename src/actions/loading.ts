@@ -4,7 +4,7 @@ export const TYPE_SET_LOADING = '@@store/loading';
 
 export const LOADING_CATEGORY = '##' + Math.random();
 
-export const DESTROY_LOADING = '@@store/loading/destroy';
+export const DESTROY_LOADING = TYPE_SET_LOADING + '/destroy';
 
 export interface LoadingAction extends Action<typeof TYPE_SET_LOADING> {
   model: string;

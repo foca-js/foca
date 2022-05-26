@@ -10,6 +10,8 @@ import { isDestroyLoadingAction, isLoadingAction } from '../actions/loading';
 import { freezeState } from '../utils/freezeState';
 import { actionRefresh, isRefreshAction } from '../actions/refresh';
 import { combine } from './proxyStore';
+import { destroyLoadingInterceptor } from '../middleware/destroyLoadingInterceptor';
+import { immer } from '../utils/immer';
 
 export interface FindLoading {
   find(category: number | string): boolean;
@@ -25,9 +27,11 @@ interface LoadingStoreStateItem {
   loadings: LoadingState;
 }
 
-export type LoadingStoreState = {
-  [model_method: string]: LoadingStoreStateItem;
-};
+export type LoadingStoreState = Partial<{
+  [model: string]: Partial<{
+    [method: string]: LoadingStoreStateItem;
+  }>;
+}>;
 
 const findLoading: FindLoading['find'] = function (
   this: LoadingState,
@@ -58,7 +62,7 @@ const helper = {
     const combineKey = this.keyOf(model, method);
 
     if (this.isActive(combineKey)) {
-      record = loadingStore.getState()[combineKey];
+      record = loadingStore.getState()[model]?.[method];
     } else {
       this.activate(combineKey);
     }
@@ -77,15 +81,13 @@ const helper = {
   },
 
   keyOf(model: string, method: string) {
-    return model + '/' + method;
+    return model + '.' + method;
   },
 
   refresh() {
     return loadingStore.dispatch(actionRefresh(true));
   },
 };
-
-const copy = <T>(source: T): T => Object.assign({}, source);
 
 export const loadingStore = createStore(
   (
@@ -100,34 +102,20 @@ export const loadingStore = createStore(
         method,
         payload: { category, loading },
       } = action;
-      const key = helper.keyOf(model, method);
-      // immer处理大对象时性能较差，不如直接浅复制
-      const next = copy(state);
-      const record = (next[key] = copy(next[key] || createDefaultRecord()));
-      const loadings = (record.loadings = copy(record.loadings));
-      // { [category]: loading } 这种写法会导致runtime引入helper来处理，徒增体积
-      (loadings.data = copy(loadings.data))[category] = loading;
+      const next = immer.produce(state, (draft) => {
+        draft[model] ||= {};
+        const { loadings } = (draft[model]![method] ||= createDefaultRecord());
+        loadings.data[category] = loading;
+      });
 
-      freezeState(loadings);
+      freezeState(next[model]![method]!.loadings);
       return next;
     }
 
     if (isDestroyLoadingAction(action)) {
-      const prefix = action.model + '/';
-      const keys = Object.keys(state);
-      let hasChanged = false;
-
-      const next: LoadingStoreState = {};
-      for (let i = keys.length; i-- > 0; ) {
-        const key = keys[i]!;
-        if (key.indexOf(prefix) === 0) {
-          hasChanged = true;
-        } else {
-          next[key] = state[key]!;
-        }
-      }
-
-      return hasChanged ? next : state;
+      const next = Object.assign({}, state);
+      delete next[action.model];
+      return next;
     }
 
     if (isRefreshAction(action)) {
@@ -136,7 +124,7 @@ export const loadingStore = createStore(
 
     return state;
   },
-  applyMiddleware(loadingInterceptor(helper)),
+  applyMiddleware(loadingInterceptor(helper), destroyLoadingInterceptor),
 ) as Store<LoadingStoreState> & { helper: typeof helper };
 
 combine(loadingStore);

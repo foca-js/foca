@@ -15,15 +15,14 @@ export const loadingInterceptor = (
       method,
       payload: { category, loading },
     } = action;
-    const combineKey = helper.keyOf(model, method);
 
-    if (!helper.isActive(combineKey)) {
+    if (!helper.isActive(helper.keyOf(model, method))) {
       return;
     }
 
-    const state = api.getState()[combineKey];
+    const record = api.getState()[model]?.[method];
 
-    if (!state || state.loadings.data[category] !== loading) {
+    if (!record || record.loadings.data[category] !== loading) {
       return dispatch(action);
     }
 
