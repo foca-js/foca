@@ -24,31 +24,11 @@
 
 状态数据使用独立的内部 store 存储，任何变动都不会触发模型数据(useModel, connect)的重新检查。
 
-# 能用在哪些环境
-
-只要是 react 系列的基本都没问题，下面列出常用环境：
-
-- React Web
-- React Native
-- Taro
-
 # 为什么不支持 SSR
 
 因为 foca 是遵循单一 store 存储，它的优点就是 model 创建后无需手动注册，在 SPA(Single-Page-Application) 中用起来很舒服。而 SSR(Server-Side-Rendering) 方案中，node 进程常驻于内存，这意味着所有的请求都会共享同一个 store，数据也必然会乱套。所以一些 SSR 框架比如 next.js, remix 都无法使用了。
 
 SPA 的需求量远远大于 SSR，为了长期的用户体验，放弃 SSR 也不是一件坏事。并且 SSR 其实也不是唯一的`SEO`优化方案，SPA + User-Agent 一样可以搞定，参考文章：https://segmentfault.com/a/1190000023481810
-
-# 浏览器兼容性如何
-
-大部分都是基于 es3 和 es5 的语法，小部分使用了 es6 语法：
-
-- Object.assign
-- Promise.resolve
-- Promise.all
-
-这些 es6 语法在现代浏览器（chrome 45+，firefox 34+，edge 12+，safari 9+，opera 32+）的早期(2015 年)版本就已经实现，完全不需要担心兼容性问题。
-
-在没有 polyfill 的情况下，使用 IE 无法正常运行，但如果你正在使用`webpack+babel`或者`rollup+babel`或者`vite`打包项目，那么这些工具通常支持自动 polyfill。所以理论上跑在 IE9+ 浏览器上面也没有问题。
 
 # this.initialState 是否多余
 
