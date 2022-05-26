@@ -109,6 +109,11 @@ if (import.meta.hot) {
 ```typescript
 // File: store.ts
 
+// ##########################
+// 请先安装npm依赖 @types/webpack-env
+// 否则会出现TS报错 TS2339: Property 'hot' does not exist on type 'NodeModule'.
+// ##########################
+
 store.init(...);
 
 // 如果是ESM项目，亦可尝试：import.meta.webpackHot
