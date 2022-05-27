@@ -1,3 +1,7 @@
+## [0.12.1](https://github.com/foca-js/foca/compare/v0.12.0...v0.12.1)&nbsp;&nbsp;(2022-05-27)
+
+- 开发模式下局部模型的名称携带组件名称以方便调试
+
 ## [0.12.0](https://github.com/foca-js/foca/compare/v0.11.7...v0.12.0)&nbsp;&nbsp;(2022-05-26)
 
 - 增加局部模型接口 `useDefinedModel`，数据跟随组件挂载和释放
