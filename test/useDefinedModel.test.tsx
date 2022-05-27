@@ -1,4 +1,5 @@
-import { act } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import sleep from 'sleep-promise';
 import {
@@ -10,20 +11,27 @@ import {
   useDefinedModel,
   useModel,
   Model,
+  HookModel,
 } from '../src';
 import { loadingStore } from '../src/store/loadingStore';
 import { renderHook } from './helpers/renderHook';
 import { basicModel } from './models/basicModel';
 
+beforeEach(() => {
+  store.init();
+});
+
+afterEach(() => {
+  store.unmount();
+});
+
 ['development', 'production'].forEach((env) => {
   describe(`[${env} mode]`, () => {
     beforeEach(() => {
       process.env.NODE_ENV = env;
-      store.init();
     });
 
     afterEach(() => {
-      store.unmount();
       process.env.NODE_ENV = 'testing';
     });
 
@@ -144,6 +152,22 @@ import { basicModel } from './models/basicModel';
       expect(store.getState()).not.toHaveProperty(name1);
     });
   });
+});
+
+test('Can get component name in dev mode', () => {
+  let model!: HookModel;
+  function MyApp() {
+    model = useDefinedModel(basicModel);
+    return null;
+  }
+
+  render(
+    <FocaProvider>
+      <MyApp />
+    </FocaProvider>,
+  );
+
+  expect(model.name).toMatch('MyApp:');
 });
 
 test.skip('Type checking', () => {

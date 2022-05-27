@@ -22,7 +22,7 @@ export const useDefinedModel = <
   const uniqueName =
     process.env.NODE_ENV === 'production'
       ? useProdName(modelName, initialCount)
-      : useDevName(modelName, initialCount);
+      : useDevName(modelName, initialCount, new Error());
 
   const hookModel = React.useMemo(() => {
     return cloneModel(uniqueName, globalModel);
@@ -32,7 +32,7 @@ export const useDefinedModel = <
 };
 
 const useProdName = (modelName: string, count: number) => {
-  const uniqueName = concatUniqueName(modelName, count);
+  const uniqueName = modelName + '#' + count;
 
   React.useEffect(
     () => () => {
@@ -51,13 +51,33 @@ const useProdName = (modelName: string, count: number) => {
  * 必须严格控制count在组件内的自增次数，否则在第一次修改model的name时，总是会报错：
  * Warning: Cannot update a component (`XXX`) while rendering a different component (`XXX`)
  */
-const useDevName = (modelName: string, count: number) => {
+const useDevName = (modelName: string, count: number, err: Error) => {
   const [cache, setCache] = React.useState({
     name: modelName,
     count: count,
   });
 
-  const uniqueName = concatUniqueName(modelName, count);
+  const componentName = React.useMemo((): string => {
+    try {
+      const stacks = err.stack!.split('\n');
+
+      const innerNamePattern = new RegExp(
+        `at\\s${useDefinedModel.name}\\s\\(`,
+        'i',
+      );
+      const componentNamePattern = /at\s(.+?)\s\(/i;
+
+      for (let i = 0; i < stacks.length; ++i) {
+        if (innerNamePattern.test(stacks[i]!)) {
+          return stacks[i + 1]!.match(componentNamePattern)![1]!;
+        }
+      }
+    } catch {}
+
+    return 'Anonymous';
+  }, []);
+
+  const uniqueName = `${componentName}:${count}:${modelName}`;
 
   React.useMemo(() => {
     timesCounter[uniqueName] ||= 0;
@@ -85,10 +105,6 @@ const useDevName = (modelName: string, count: number) => {
   }, [uniqueName]);
 
   return uniqueName;
-};
-
-const concatUniqueName = (modelName: string, count: number) => {
-  return modelName + '#' + count;
 };
 
 const unmountModel = (modelName: string) => {
