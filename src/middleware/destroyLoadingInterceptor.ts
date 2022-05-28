@@ -10,5 +10,5 @@ export const destroyLoadingInterceptor: Middleware =
       return dispatch(action);
     }
 
-    return false;
+    return action;
   };
