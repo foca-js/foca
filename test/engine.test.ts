@@ -14,7 +14,7 @@ beforeEach(() => {
 
 afterEach(() => {
   storages.forEach(([storage]) => {
-    storage.clear?.();
+    storage.clear();
   });
 });
 

@@ -122,12 +122,17 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
     let record: LoadingStoreStateItem | undefined;
 
     if (this.isActive(model, method)) {
-      record = loadingStore.getState()[model]?.[method];
+      record = this.getItem(model, method);
     } else {
       this.activate(model, method);
     }
 
     return record || this.defaultRecord;
+  }
+
+  getItem(model: string, method: string): LoadingStoreStateItem | undefined {
+    const level1 = this.getState()[model];
+    return level1 && level1[method];
   }
 
   isActive(model: string, method: string): boolean {
@@ -144,7 +149,7 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
   }
 
   refresh() {
-    return loadingStore.dispatch(actionRefresh(true));
+    return this.dispatch(actionRefresh(true));
   }
 }
 

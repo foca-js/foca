@@ -5,7 +5,7 @@ import { isLoadingAction } from '../actions/loading';
 export const loadingInterceptor = (
   loadingStore: LoadingStore,
 ): Middleware<{}, LoadingStoreState> => {
-  return (api) => (dispatch) => (action: AnyAction) => {
+  return () => (dispatch) => (action: AnyAction) => {
     if (!isLoadingAction(action)) {
       return dispatch(action);
     }
@@ -20,7 +20,7 @@ export const loadingInterceptor = (
       return;
     }
 
-    const record = api.getState()[model]?.[method];
+    const record = loadingStore.getItem(model, method);
 
     if (!record || record.loadings.data[category] !== loading) {
       return dispatch(action);
