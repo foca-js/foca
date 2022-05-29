@@ -53,7 +53,11 @@ test('Store will throw error before initialize', () => {
 });
 
 test('Method replaceReducer is deprecated', () => {
-  expect(() => store.replaceReducer(() => {})).toThrowError();
+  expect(() =>
+    store.replaceReducer(() => {
+      return {} as any;
+    }),
+  ).toThrowError();
 });
 
 test('Store can initialize many times except production env', async () => {

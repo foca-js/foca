@@ -1,9 +1,9 @@
 import type { AnyAction, Middleware } from 'redux';
-import type { loadingStore, LoadingStoreState } from '../store/loadingStore';
+import type { LoadingStore, LoadingStoreState } from '../store/loadingStore';
 import { isLoadingAction } from '../actions/loading';
 
 export const loadingInterceptor = (
-  helper: typeof loadingStore['helper'],
+  loadingStore: LoadingStore,
 ): Middleware<{}, LoadingStoreState> => {
   return (api) => (dispatch) => (action: AnyAction) => {
     if (!isLoadingAction(action)) {
@@ -16,7 +16,7 @@ export const loadingInterceptor = (
       payload: { category, loading },
     } = action;
 
-    if (!helper.isActive(helper.keyOf(model, method))) {
+    if (!loadingStore.isActive(model, method)) {
       return;
     }
 

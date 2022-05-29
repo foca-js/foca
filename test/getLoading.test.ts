@@ -76,8 +76,7 @@ test('Trace loadings by deprecated method', async () => {
 });
 
 test('loadings are frozen', async () => {
-  const combineKey = loadingStore.helper.keyOf(basicModel.name, 'pureAsync');
-  loadingStore.helper.activate(combineKey);
+  loadingStore.activate(basicModel.name, 'pureAsync');
 
   const promise = basicModel.pureAsync();
   expect(Object.isFrozen(getLoading(basicModel.pureAsync.room))).toBeTruthy();

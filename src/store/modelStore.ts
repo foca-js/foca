@@ -1,5 +1,4 @@
 import {
-  AnyAction,
   applyMiddleware,
   compose,
   legacy_createStore as createStore,
@@ -9,15 +8,14 @@ import {
   Store,
   StoreEnhancer,
 } from 'redux';
-import { $$observable } from '../utils/symbolObservable';
-import { KeepToken, Topic } from 'topic';
+import { Topic } from 'topic';
 import { actionRefresh, RefreshAction } from '../actions/refresh';
 import { modelInterceptor } from '../middleware/modelInterceptor';
 import type { PersistOptions } from '../persist/PersistItem';
 import { PersistManager } from '../persist/PersistManager';
 import { combine } from './proxyStore';
-import { loadingStore } from './loadingStore';
 import { OBJECT } from '../utils/isType';
+import { StoreBasic } from './StoreBasic';
 
 type Compose = typeof compose | ((enhancer: StoreEnhancer) => StoreEnhancer);
 
@@ -28,16 +26,14 @@ interface CreateStoreOptions {
   persist?: PersistOptions[];
 }
 
-const topicName = 'storeReady';
-
-class StoreAdvanced implements Store {
-  protected topic: Topic<{
-    [K in typeof topicName]: [];
+class ModelStore extends StoreBasic<Record<string, any>> {
+  public topic: Topic<{
+    init: [];
+    ready: [];
+    refresh: [];
+    unmount: [];
   }> = new Topic();
-  protected readonly keepToken: KeepToken;
   protected _isReady: boolean = false;
-
-  protected origin?: Store;
   protected consumers: Record<string, Reducer> = {};
   protected reducerKeys: string[] = [];
   /**
@@ -48,7 +44,8 @@ class StoreAdvanced implements Store {
   protected reducer!: Reducer;
 
   constructor() {
-    this.keepToken = this.topic.keep(topicName, () => this._isReady);
+    super();
+    this.topic.keep('ready', () => this._isReady);
   }
 
   get isReady(): boolean {
@@ -91,6 +88,7 @@ class StoreAdvanced implements Store {
         options.preloadedState,
         this.getCompose(options.compose)(enhancer),
       );
+      this.topic.publish('init');
 
       combine(store);
     } else {
@@ -110,34 +108,16 @@ class StoreAdvanced implements Store {
     return this;
   }
 
-  /**
-   * @deprecated 请勿使用该方法，因为它其实没有被实现
-   */
-  declare replaceReducer: Store['replaceReducer'];
-
-  dispatch: Store['dispatch'] = (action) => {
-    return this.store.dispatch(action);
-  };
-
-  getState: Store<Record<string, any>>['getState'] = () => {
-    return this.store.getState();
-  };
-
-  subscribe: Store['subscribe'] = (listener) => {
-    return this.store.subscribe(listener);
-  };
-
-  [$$observable]: Store[typeof $$observable] = () => {
-    return this.store[$$observable]();
-  };
-
   refresh(force: boolean = false): RefreshAction {
-    return loadingStore.helper.refresh(), this.dispatch(actionRefresh(force));
+    const action = this.dispatch(actionRefresh(force));
+    this.topic.publish('refresh');
+    return action;
   }
 
   unmount() {
-    this.origin = void 0;
+    this.origin = null;
     this._isReady = false;
+    this.topic.publish('unmount');
   }
 
   onInitialized(): Promise<void> {
@@ -145,21 +125,14 @@ class StoreAdvanced implements Store {
       if (this._isReady) {
         resolve();
       } else {
-        this.topic.subscribeOnce(topicName, resolve);
+        this.topic.subscribeOnce('ready', resolve);
       }
     });
   }
 
   protected ready() {
     this._isReady = true;
-    this.topic.publish(topicName);
-  }
-
-  protected get store(): Store<Record<string, object>, AnyAction> {
-    if (!this.origin) {
-      throw new Error(`[store] 当前无实例，忘记执行'store.init()'了吗？`);
-    }
-    return this.origin;
+    this.topic.publish('ready');
   }
 
   protected getCompose(customCompose: CreateStoreOptions['compose']): Compose {
@@ -237,4 +210,4 @@ class StoreAdvanced implements Store {
   }
 }
 
-export const modelStore = new StoreAdvanced();
+export const modelStore = new ModelStore();

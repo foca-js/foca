@@ -3,8 +3,6 @@ import { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingStore, FindLoading } from '../store/loadingStore';
 import { isFunction } from '../utils/isType';
 
-const helper = loadingStore.helper;
-
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。
  *
@@ -48,12 +46,12 @@ export function getLoading(
   const args = arguments;
 
   if (effect._.hasRoom && !isFunction(category)) {
-    const loadings = helper.get(effect).loadings;
+    const loadings = loadingStore.get(effect).loadings;
     return category === void 0 ? loadings : loadings.find(category);
   }
 
   for (let i = args.length; i-- > 0; ) {
-    if (helper.get(args[i]).loadings.find(LOADING_CATEGORY)) {
+    if (loadingStore.get(args[i]).loadings.find(LOADING_CATEGORY)) {
       return true;
     }
   }

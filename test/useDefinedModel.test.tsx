@@ -68,8 +68,8 @@ afterEach(() => {
         },
       );
 
-      const key1 = loadingStore.helper.keyOf(result.current.name, 'pureAsync');
-      const key2 = loadingStore.helper.keyOf(basicModel.name, 'pureAsync');
+      const key1 = `${result.current.name}[pureAsync]`;
+      const key2 = `${basicModel.name}[pureAsync]`;
       expect(loadingStore.getState()).not.toHaveProperty(key1);
 
       await act(async () => {

@@ -1,4 +1,5 @@
 import { store } from '../src';
+import { DestroyLodingAction, DESTROY_LOADING } from '../src/actions/loading';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
@@ -43,18 +44,14 @@ test('dispatch the same loading should be intercepted', async () => {
   const fn = jest.fn();
   const unsubscribe = loadingStore.subscribe(fn);
 
-  loadingStore.helper.inactivate(
-    loadingStore.helper.keyOf(basicModel.name, 'pureAsync'),
-  );
+  loadingStore.inactivate(basicModel.name, 'pureAsync');
 
   expect(fn).toHaveBeenCalledTimes(0);
   await basicModel.pureAsync();
   await basicModel.pureAsync();
   expect(fn).toHaveBeenCalledTimes(0);
 
-  loadingStore.helper.activate(
-    loadingStore.helper.keyOf(basicModel.name, 'pureAsync'),
-  );
+  loadingStore.activate(basicModel.name, 'pureAsync');
 
   await basicModel.pureAsync();
   expect(fn).toHaveBeenCalledTimes(2);
@@ -66,4 +63,27 @@ test('dispatch the same loading should be intercepted', async () => {
 
   unsubscribe();
   fn.mockRestore();
+});
+
+test('destroy model will not trigger reducer without effect called', () => {
+  const spy = jest.fn();
+  loadingStore.subscribe(spy);
+  loadingStore.dispatch<DestroyLodingAction>({
+    type: DESTROY_LOADING,
+    model: basicModel.name,
+  });
+  expect(spy).toBeCalledTimes(0);
+  spy.mockRestore();
+});
+
+test('destroy model will trigger reducer with effect called', async () => {
+  await basicModel.pureAsync();
+  const spy = jest.fn();
+  loadingStore.subscribe(spy);
+  loadingStore.dispatch<DestroyLodingAction>({
+    type: DESTROY_LOADING,
+    model: basicModel.name,
+  });
+  expect(spy).toBeCalledTimes(1);
+  spy.mockRestore();
 });

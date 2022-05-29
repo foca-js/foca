@@ -2,7 +2,6 @@ import {
   AnyAction,
   applyMiddleware,
   legacy_createStore as createStore,
-  Store,
 } from 'redux';
 import type { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingInterceptor } from '../middleware/loadingInterceptor';
@@ -12,6 +11,8 @@ import { actionRefresh, isRefreshAction } from '../actions/refresh';
 import { combine } from './proxyStore';
 import { destroyLoadingInterceptor } from '../middleware/destroyLoadingInterceptor';
 import { immer } from '../utils/immer';
+import { StoreBasic } from './StoreBasic';
+import { modelStore } from './modelStore';
 
 export interface FindLoading {
   find(category: number | string): boolean;
@@ -49,51 +50,39 @@ const createDefaultRecord = (): LoadingStoreStateItem => {
   };
 };
 
-const defaultRecord = freezeState(createDefaultRecord());
+export class LoadingStore extends StoreBasic<LoadingStoreState> {
+  protected status: Partial<{
+    [model: string]: Partial<{
+      [method: string]: boolean;
+    }>;
+  }> = {};
+  protected defaultRecord = freezeState(createDefaultRecord());
 
-const helper = {
-  status: <Record<string, boolean>>{},
+  constructor() {
+    super();
+    const topic = modelStore.topic;
+    topic.subscribe('init', this.init.bind(this));
+    topic.subscribe('refresh', this.refresh.bind(this));
+    topic.subscribe('unmount', this.unmount.bind(this));
+  }
 
-  get(effect: PromiseEffect | PromiseRoomEffect): LoadingStoreStateItem {
-    const {
-      _: { model, method },
-    } = effect;
-    let record: LoadingStoreStateItem | undefined;
-    const combineKey = this.keyOf(model, method);
+  init() {
+    this.origin = createStore(
+      this.reducer.bind(this),
+      applyMiddleware(loadingInterceptor(this), destroyLoadingInterceptor),
+    );
 
-    if (this.isActive(combineKey)) {
-      record = loadingStore.getState()[model]?.[method];
-    } else {
-      this.activate(combineKey);
-    }
+    combine(this.store);
+  }
 
-    return record || defaultRecord;
-  },
+  unmount(): void {
+    this.origin = null;
+  }
 
-  isActive(key: string): boolean {
-    return this.status[key] === true;
-  },
-  activate(key: string) {
-    this.status[key] = true;
-  },
-  inactivate(key: string) {
-    this.status[key] = false;
-  },
-
-  keyOf(model: string, method: string) {
-    return model + '.' + method;
-  },
-
-  refresh() {
-    return loadingStore.dispatch(actionRefresh(true));
-  },
-};
-
-export const loadingStore = createStore(
-  (
+  reducer(
     state: LoadingStoreState | undefined,
     action: AnyAction,
-  ): LoadingStoreState => {
+  ): LoadingStoreState {
     if (state === void 0) state = {};
 
     if (isLoadingAction(action)) {
@@ -115,6 +104,7 @@ export const loadingStore = createStore(
     if (isDestroyLoadingAction(action)) {
       const next = Object.assign({}, state);
       delete next[action.model];
+      delete this.status[action.model];
       return next;
     }
 
@@ -123,10 +113,39 @@ export const loadingStore = createStore(
     }
 
     return state;
-  },
-  applyMiddleware(loadingInterceptor(helper), destroyLoadingInterceptor),
-) as Store<LoadingStoreState> & { helper: typeof helper };
+  }
 
-combine(loadingStore);
+  get(effect: PromiseEffect | PromiseRoomEffect): LoadingStoreStateItem {
+    const {
+      _: { model, method },
+    } = effect;
+    let record: LoadingStoreStateItem | undefined;
 
-loadingStore.helper = helper;
+    if (this.isActive(model, method)) {
+      record = loadingStore.getState()[model]?.[method];
+    } else {
+      this.activate(model, method);
+    }
+
+    return record || this.defaultRecord;
+  }
+
+  isActive(model: string, method: string): boolean {
+    const level1 = this.status[model];
+    return level1 !== void 0 && level1[method] === true;
+  }
+
+  activate(model: string, method: string) {
+    (this.status[model] ||= {})[method] = true;
+  }
+
+  inactivate(model: string, method: string) {
+    (this.status[model] ||= {})[method] = false;
+  }
+
+  refresh() {
+    return loadingStore.dispatch(actionRefresh(true));
+  }
+}
+
+export const loadingStore = new LoadingStore();
