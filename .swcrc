@@ -13,5 +13,8 @@
       "firefox >= 34",
       "ios_saf >= 9"
     ]
+  },
+  "jsc": {
+    "loose": true
   }
 }
