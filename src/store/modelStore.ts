@@ -148,17 +148,18 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
 
   protected getCompose(customCompose: CreateStoreOptions['compose']): Compose {
     if (customCompose === 'redux-devtools') {
+      /* c8 ignore start */
       if (process.env.NODE_ENV !== 'production') {
         return (
           /** @ts-expect-error */
           (typeof window === OBJECT
             ? window
-            : /* istanbul ignore next */
-            typeof global === OBJECT
+            : typeof global === OBJECT
             ? global
             : {})['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
         );
       }
+      /* c8 ignore end */
 
       return compose;
     }

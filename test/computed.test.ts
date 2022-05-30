@@ -133,7 +133,7 @@ test('visit proxy state without collecting mode should not collect deps', () => 
     },
   };
 
-  const spy = jest.spyOn(depsCollector, 'append');
+  const spy = vitest.spyOn(depsCollector, 'append');
 
   let proxyState!: typeof mockState;
   depsCollector.produce(() => {
@@ -245,7 +245,7 @@ test('ComputedValue can be a copy deps', () => {
 });
 
 test('only execute computed function when deps changed', () => {
-  const spy = jest.fn().mockImplementation(() => {
+  const spy = vitest.fn().mockImplementation(() => {
     model.state.a;
   });
 
