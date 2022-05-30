@@ -131,8 +131,8 @@ test('select compare algorithm', async () => {
 });
 
 test('Memoize the selector result', () => {
-  const fn1 = jest.fn();
-  const fn2 = jest.fn();
+  const fn1 = vitest.fn();
+  const fn2 = vitest.fn();
 
   const { result: result1 } = renderHook(() => {
     return useModel(basicModel, (state) => {

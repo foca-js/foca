@@ -199,7 +199,7 @@ describe('onDestroy', () => {
   });
 
   test('call onDestroy when invoke store.destroy()', async () => {
-    const spy = jest.fn();
+    const spy = vitest.fn();
     const model = defineModel('events' + Math.random(), {
       initialState: { count: 0 },
       reducers: {
@@ -222,8 +222,8 @@ describe('onDestroy', () => {
   });
 
   test('should not call onChange', async () => {
-    const destroySpy = jest.fn();
-    const changeSpy = jest.fn();
+    const destroySpy = vitest.fn();
+    const changeSpy = vitest.fn();
     const model = defineModel('events' + Math.random(), {
       initialState: { count: 0 },
       reducers: {

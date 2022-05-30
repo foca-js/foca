@@ -13,7 +13,7 @@ afterEach(() => {
 });
 
 test('dispatch the same state should be intercepted', () => {
-  const fn = jest.fn();
+  const fn = vitest.fn();
   const unsubscribe = store.subscribe(fn);
 
   expect(fn).toHaveBeenCalledTimes(0);
@@ -41,7 +41,7 @@ test('dispatch the same state should be intercepted', () => {
 });
 
 test('dispatch the same loading should be intercepted', async () => {
-  const fn = jest.fn();
+  const fn = vitest.fn();
   const unsubscribe = loadingStore.subscribe(fn);
 
   loadingStore.inactivate(basicModel.name, 'pureAsync');
@@ -66,7 +66,7 @@ test('dispatch the same loading should be intercepted', async () => {
 });
 
 test('destroy model will not trigger reducer without method called', () => {
-  const spy = jest.fn();
+  const spy = vitest.fn();
   loadingStore.subscribe(spy);
   loadingStore.dispatch<DestroyLodingAction>({
     type: DESTROY_LOADING,
@@ -78,7 +78,7 @@ test('destroy model will not trigger reducer without method called', () => {
 
 test('destroy model will trigger reducer with method called', async () => {
   await basicModel.pureAsync();
-  const spy = jest.fn();
+  const spy = vitest.fn();
   loadingStore.subscribe(spy);
   loadingStore.dispatch<DestroyLodingAction>({
     type: DESTROY_LOADING,

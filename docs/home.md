@@ -4,7 +4,7 @@
 
 [![npm peer react version](https://img.shields.io/npm/dependency-version/foca/peer/react?logo=react)](https://github.com/facebook/react)
 [![npm peer typescript version](https://img.shields.io/npm/dependency-version/foca/peer/typescript?logo=typescript)](https://github.com/microsoft/TypeScript)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/foca-js/foca/test.yml?branch=master&label=test&logo=jest)](https://github.com/foca-js/foca/actions)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/foca-js/foca/test.yml?branch=master&label=test&logo=vitest)](https://github.com/foca-js/foca/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca?logo=codecov)](https://codecov.io/gh/foca-js/foca)
 [![npm](https://img.shields.io/npm/v/foca?logo=npm)](https://www.npmjs.com/package/foca)
 [![npm](https://img.shields.io/npm/dt/foca?logo=codeforces)](https://www.npmjs.com/package/foca)
