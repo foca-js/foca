@@ -49,7 +49,7 @@ test('forceUpdate should not trigger useEffect immediately', async () => {
 
   // console.error
   // Warning: You seem to have overlapping act() calls, this is not supported. Be sure to await previous act() calls before making a new one.
-  const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  const spy = vitest.spyOn(console, 'error').mockImplementation(() => {});
 
   await expect(
     Promise.all(

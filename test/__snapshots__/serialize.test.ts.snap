@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
 exports[`can clone null and undefined 1`] = `"{"x":["__JSON_UNDEFINED__",1,{"test":"__JSON_UNDEFINED__","test1":"hello"},null,"__JSON_UNDEFINED__"],"y":null,"z":"__JSON_UNDEFINED__"}"`;
 

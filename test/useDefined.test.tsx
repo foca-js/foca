@@ -1,4 +1,4 @@
-import { act, render } from '@testing-library/react';
+import { act, cleanup, render } from '@testing-library/react';
 import { useEffect, useState } from 'react';
 import sleep from 'sleep-promise';
 import {
@@ -14,22 +14,18 @@ import { loadingStore } from '../src/store/loadingStore';
 import { renderHook } from './helpers/renderHook';
 import { basicModel } from './models/basicModel';
 
-beforeEach(() => {
-  store.init();
-});
-
-afterEach(() => {
-  store.unmount();
-});
-
-['development', 'production'].forEach((env) => {
+(['development', 'production'] as const).forEach((env) => {
   describe(`[${env} mode]`, () => {
     beforeEach(() => {
+      store.init();
       process.env.NODE_ENV = env;
     });
 
-    afterEach(() => {
+    afterEach(async () => {
       process.env.NODE_ENV = 'testing';
+      cleanup();
+      await sleep(10);
+      store.unmount();
     });
 
     test('can register to modelStore and remove from modelStore', async () => {
@@ -55,8 +51,8 @@ afterEach(() => {
         return model;
       });
 
-      const key1 = `${result.current.name}[pureAsync]`;
-      const key2 = `${basicModel.name}[pureAsync]`;
+      const key1 = `${result.current.name}.pureAsync`;
+      const key2 = `${basicModel.name}.pureAsync`;
       expect(loadingStore.getState()).not.toHaveProperty(key1);
 
       await act(async () => {
@@ -80,7 +76,7 @@ afterEach(() => {
     });
 
     test('call onDestroy event when local model is destroyed', async () => {
-      const spy = jest.fn();
+      const spy = vitest.fn();
       const globalModel = defineModel('local-demo-1', {
         initialState: {},
         events: {
@@ -131,21 +127,24 @@ afterEach(() => {
       expect(result.current.name).toMatch('hook-demo-2');
       expect(store.getState()).not.toHaveProperty(name1);
     });
+
+    test.runIf(env === 'development')(
+      'Can get component name in dev mode',
+      () => {
+        let model!: HookModel;
+        function MyApp() {
+          model = useDefined(basicModel);
+          return null;
+        }
+
+        render(
+          <FocaProvider>
+            <MyApp />
+          </FocaProvider>,
+        );
+
+        expect(model.name).toMatch('MyApp:');
+      },
+    );
   });
-});
-
-test('Can get component name in dev mode', () => {
-  let model!: HookModel;
-  function MyApp() {
-    model = useDefined(basicModel);
-    return null;
-  }
-
-  render(
-    <FocaProvider>
-      <MyApp />
-    </FocaProvider>,
-  );
-
-  expect(model.name).toMatch('MyApp:');
 });

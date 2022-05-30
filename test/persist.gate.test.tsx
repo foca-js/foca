@@ -78,7 +78,7 @@ test('PersistGate allows loading children', async () => {
 });
 
 test('PersistGate will warning for both function children and loading children', async () => {
-  const spy = jest.spyOn(console, 'error').mockImplementation();
+  const spy = vitest.spyOn(console, 'error').mockImplementation(() => {});
 
   render(<Root useFunction loading={<Loading />} />);
   expect(spy).toHaveBeenCalledTimes(1);

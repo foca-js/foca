@@ -55,7 +55,12 @@ const useDevName = (modelName: string, count: number, err: Error) => {
   const componentName = useMemo((): string => {
     try {
       const stacks = err.stack!.split('\n');
-      const innerNamePattern = new RegExp(`at\\s${useDefined.name}\\s\\(`, 'i');
+
+      const innerNamePattern = new RegExp(
+        // vitest测试框架的stack增加了 Module.
+        `at\\s(?:Module\\.)?${useDefined.name}\\s\\(`,
+        'i',
+      );
       const componentNamePattern = /at\s(.+?)\s\(/i;
 
       for (let i = 0; i < stacks.length; ++i) {
