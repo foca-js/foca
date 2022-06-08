@@ -19,8 +19,6 @@ test('initialState should be serializable', () => {
   };
 
   [
-    { x: undefined },
-    { x: undefined, y: null },
     { x: Symbol('test') },
     [Symbol('test')],
     { x: function () {} },
@@ -35,6 +33,8 @@ test('initialState should be serializable', () => {
   });
 
   [
+    { x: undefined },
+    { x: undefined, y: null },
     { x: 0 },
     [0, 1, '2', {}, { x: null }],
     { x: { y: { z: [{}, {}] } } },

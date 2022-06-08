@@ -2,6 +2,7 @@ import sleep from 'sleep-promise';
 import { engines, Model, StorageEngine, store } from '../src';
 import { PersistItem, PersistSchema } from '../src/persist/PersistItem';
 import { resolve } from '../src/utils/resolve';
+import { stringifyState } from '../src/utils/serialize';
 import { basicModel } from './models/basicModel';
 import {
   hasDecodePersistModel,
@@ -9,7 +10,7 @@ import {
   persistModel,
 } from './models/persistModel';
 
-const stringifyState = (model: Model) => {
+const stringifyTwice = (model: Model) => {
   return JSON.stringify(JSON.stringify(model.state));
 };
 
@@ -43,7 +44,7 @@ test('rehydrate state to storage', async () => {
   );
   await expect(
     engines.memoryStorage.getItem(persist.key),
-  ).resolves.not.toContain(stringifyState(persistModel));
+  ).resolves.not.toContain(stringifyTwice(persistModel));
 
   persistModel.plus(15);
   expect(persistModel.state.counter).toBe(15);
@@ -56,7 +57,7 @@ test('rehydrate state to storage', async () => {
 
   const value = await engines.memoryStorage.getItem(persist.key);
   expect(value).toBe(JSON.stringify(persist));
-  expect(value).toContain(stringifyState(persistModel));
+  expect(value).toContain(stringifyTwice(persistModel));
 });
 
 test('hydrate state from storage', async () => {
@@ -70,7 +71,7 @@ test('hydrate state from storage', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify({ counter: 15 }),
+          d: stringifyState({ counter: 15, extra: undefined }),
         },
       },
     }),
@@ -81,8 +82,13 @@ test('hydrate state from storage', async () => {
   expect(persist.collect()).toMatchObject({
     [persistModel.name]: {
       counter: 15,
+      extra: undefined,
     },
   });
+  expect(persist.collect()[persistModel.name]).toHaveProperty(
+    'extra',
+    undefined,
+  );
 });
 
 test('hydrate failed due to different persist version', async () => {
@@ -96,7 +102,7 @@ test('hydrate failed due to different persist version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: stringifyState(persistModel.state),
         },
       },
     }),
@@ -118,7 +124,7 @@ test('hydrate failed due to different model version', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 17,
-          d: JSON.stringify(persistModel.state),
+          d: stringifyState(persistModel.state),
         },
       },
     }),
@@ -146,7 +152,7 @@ test('hydrate failed due to expired', async () => {
         [persistModel.name]: {
           t: Date.now() - 101,
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: stringifyState(persistModel.state),
         },
       },
     }),
@@ -174,7 +180,7 @@ test('never rehydrate even time expired', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: stringifyState(persistModel.state),
         },
       },
     }),
@@ -182,7 +188,7 @@ test('never rehydrate even time expired', async () => {
 
   await persist.init();
   const currentValue = await engines.memoryStorage.getItem(persist.key);
-  expect(currentValue).toContain(stringifyState(persistModel));
+  expect(currentValue).toContain(stringifyTwice(persistModel));
 
   await sleep(1);
   persist.update({
@@ -213,7 +219,7 @@ test('hydrate failed due to invalid format', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state) + '$$$$',
+          d: stringifyState(persistModel.state) + '$$$$',
         },
       },
     }),
@@ -235,7 +241,7 @@ test('hydrate failed due to invalid format', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state) + '$$$$',
+          d: stringifyState(persistModel.state) + '$$$$',
         },
       },
     }) + '$$$$',
@@ -265,12 +271,12 @@ test('abandon unregisted model', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: stringifyState(persistModel.state),
         },
         [basicModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(basicModel.state),
+          d: stringifyState(basicModel.state),
         },
       },
     }),
@@ -286,8 +292,8 @@ test('abandon unregisted model', async () => {
   });
 
   const storageValue = await engines.memoryStorage.getItem(persist.key);
-  expect(storageValue).toContain(stringifyState(basicModel));
-  expect(storageValue).not.toContain(stringifyState(persistModel));
+  expect(storageValue).toContain(stringifyTwice(basicModel));
+  expect(storageValue).not.toContain(stringifyTwice(persistModel));
 });
 
 test('model can specific persist version', async () => {
@@ -306,7 +312,7 @@ test('model can specific persist version', async () => {
         [hasVersionPersistModel.name]: {
           t: Date.now(),
           v: 10,
-          d: JSON.stringify(hasVersionPersistModel.state),
+          d: stringifyState(hasVersionPersistModel.state),
         },
       },
     }),
@@ -335,7 +341,7 @@ test('model can specific persist decoder', async () => {
         [hasDecodePersistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(hasDecodePersistModel.state),
+          d: stringifyState(hasDecodePersistModel.state),
         },
       },
     }),
@@ -383,7 +389,7 @@ test('stop restoring before hydrate (slow engine)', async () => {
         [persistModel.name]: {
           t: Date.now(),
           v: 0,
-          d: JSON.stringify(persistModel.state),
+          d: stringifyState(persistModel.state),
         },
       },
     }),
@@ -409,14 +415,14 @@ test('stop restoring before hydrate (slow engine)', async () => {
 
   expect(persistModel.state.counter).toBe(0);
   await expect(engine.getItem('@test1')).resolves.toContain(
-    stringifyState(persistModel),
+    stringifyTwice(persistModel),
   );
 
   await sleep(100);
 
   expect(persistModel.state.counter).toBe(0);
   await expect(engine.getItem('@test1')).resolves.toContain(
-    stringifyState(persistModel),
+    stringifyTwice(persistModel),
   );
   expect(persistManager.collect()).toMatchObject({
     [persistModel.name]: persistModel.state,

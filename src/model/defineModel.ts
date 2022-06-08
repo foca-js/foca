@@ -1,4 +1,4 @@
-import { cloneDeep } from '../utils/cloneDeep';
+import { parseState, stringifyState } from '../utils/serialize';
 import { deepEqual } from '../utils/deepEqual';
 import { EnhancedAction, enhanceAction } from './enhanceAction';
 import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
@@ -44,7 +44,7 @@ export const defineModel = <
     skipRefresh,
     events = options.hooks,
   } = options;
-  const initialState = cloneDeep(options.initialState);
+  const initialStateStr = stringifyState(options.initialState);
 
   if (process.env.NODE_ENV !== 'production') {
     const items = [
@@ -79,9 +79,9 @@ export const defineModel = <
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    if (!deepEqual(initialState, options.initialState)) {
+    if (!deepEqual(parseState(initialStateStr), options.initialState)) {
       throw new Error(
-        `[model:${uniqueName}] initialState 包含了不可系列化的数据，允许的类型为：Object, Array, Number, String 和 Null`,
+        `[model:${uniqueName}] initialState 包含了不可系列化的数据，允许的类型为：Object, Array, Number, String, Undefined 和 Null`,
       );
     }
   }
@@ -102,7 +102,7 @@ export const defineModel = <
   const getInitialState = <T extends object>(
     obj: T,
   ): T & GetInitialState<State> => {
-    return defineGetter(obj, 'initialState', () => cloneDeep(initialState));
+    return defineGetter(obj, 'initialState', () => parseState(initialStateStr));
   };
 
   const actionCtx: ActionCtx<State> = composeGetter(
@@ -236,7 +236,7 @@ export const defineModel = <
     uniqueName,
     createReducer({
       name: uniqueName,
-      initialState: initialState,
+      initialState: parseState(initialStateStr),
       allowRefresh: !skipRefresh,
     }),
   );

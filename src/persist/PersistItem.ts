@@ -1,6 +1,7 @@
 import type { StorageEngine } from '../engines';
 import type { InternalModel, Model, ModelPersist } from '../model/types';
 import { isObject, isString } from '../utils/isType';
+import { parseState, stringifyState } from '../utils/serialize';
 
 export interface PersistSchema {
   /**
@@ -134,7 +135,7 @@ export class PersistItem {
             const itemSchema = schema.d[key]!;
 
             if (this.validateItemSchema(itemSchema, record.opts)) {
-              const state: object = JSON.parse(itemSchema.d);
+              const state: object = parseState(itemSchema.d);
               const decodedState = record.opts.decode.call(null, state);
               record.schema = itemSchema;
               record.prev = decodedState === void 0 ? state : decodedState;
@@ -180,7 +181,7 @@ export class PersistItem {
         const nextSchema = {
           t: now,
           v: opts.version,
-          d: JSON.stringify(nextStateForKey),
+          d: stringifyState(nextStateForKey),
         };
 
         if (!schema || nextSchema.d !== schema.d) {
