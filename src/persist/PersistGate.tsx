@@ -9,14 +9,14 @@ export interface PersistGateProps {
 }
 
 export const PersistGate: FC<PersistGateProps> = (props) => {
-  const state = React.useState(false);
-  const isReady = state[0];
+  const [isReady, setIsReady] = React.useState(() => modelStore.isReady);
   const { loading = null, children } = props;
 
   React.useEffect(() => {
-    modelStore.onInitialized().then(() => {
-      state[1](true);
-    });
+    isReady ||
+      modelStore.onInitialized().then(() => {
+        setIsReady(true);
+      });
   }, []);
 
   if (process.env.NODE_ENV !== 'production') {

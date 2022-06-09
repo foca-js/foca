@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { act, render, screen } from '@testing-library/react';
-import { engines, FocaProvider, store } from '../src';
+import { FocaProvider, store } from '../src';
 import { PersistGateProps } from '../src/persist/PersistGate';
 import { basicModel } from './models/basicModel';
+import { slowEngine } from './helpers/slowEngine';
 
 const Loading: FC = () => <div data-testid="gateLoading">Yes</div>;
 
@@ -33,7 +34,7 @@ beforeEach(() => {
         version: 1,
         key: 'test1',
         models: [basicModel],
-        engine: engines.localStorage,
+        engine: slowEngine,
       },
     ],
   });
