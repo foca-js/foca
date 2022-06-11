@@ -8,7 +8,7 @@ import { HookModel as HookModel, Model } from './types';
 let nameCounter = 0;
 let timesCounter: Record<string, number> = {};
 
-export const useDefinedModel = <
+export const useDefined = <
   State extends object = object,
   Action extends object = object,
   Effect extends object = object,
@@ -29,6 +29,26 @@ export const useDefinedModel = <
   }, [uniqueName]);
 
   return hookModel as any;
+};
+
+/**
+ * @deprecated 换了个函数名字
+ * @see useDefined
+ */
+export const useDefinedModel = <
+  State extends object = object,
+  Action extends object = object,
+  Effect extends object = object,
+  Computed extends object = object,
+>(
+  globalModel: Model<string, State, Action, Effect, Computed>,
+): HookModel<string, State, Action, Effect, Computed> => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      '请使用 "useDefined" 代替函数 "useDefinedModel"，废弃函数将在1.0.0版本发布时删除',
+    );
+  }
+  return useDefined(globalModel);
 };
 
 const useProdName = (modelName: string, count: number) => {
@@ -61,10 +81,7 @@ const useDevName = (modelName: string, count: number, err: Error) => {
     try {
       const stacks = err.stack!.split('\n');
 
-      const innerNamePattern = new RegExp(
-        `at\\s${useDefinedModel.name}\\s\\(`,
-        'i',
-      );
+      const innerNamePattern = new RegExp(`at\\s${useDefined.name}\\s\\(`, 'i');
       const componentNamePattern = /at\s(.+?)\s\(/i;
 
       for (let i = 0; i < stacks.length; ++i) {

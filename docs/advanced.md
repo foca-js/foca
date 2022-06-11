@@ -43,7 +43,7 @@ const user3Model = cloneModel('users3', userModel, (prev) => {
 
 ```tsx
 import { useEffect } from 'react';
-import { defineModel, useDefinedModel } from 'foca';
+import { defineModel, useDefined } from 'foca';
 
 // testModel.ts
 export const testModel = defineModel('test', {
@@ -57,7 +57,7 @@ export const testModel = defineModel('test', {
 
 // App.tsx
 const App: FC = () => {
-  const model = useDefinedModel(testModel);
+  const model = useDefined(testModel);
   const { count } = useModel(model);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const App: FC = () => {
 };
 ```
 
-利用 `useDefinedModel` 函数根据全局模型创建一个新的局部模型，然后就是通用的模型操作，这似乎没有增加工作量（因为只多了一行）。下面我列举了局部函数的几个特点：
+利用 `useDefined` 函数根据全局模型创建一个新的局部模型，然后就是通用的模型操作，这似乎没有增加工作量（因为只多了一行）。下面我列举了局部函数的几个特点：
 
 - 组件内部使用，不污染全局
 - 数据随组件自动挂载/释放

@@ -169,8 +169,9 @@ export interface Event<State> {
    */
   onChange?: (prevState: State, nextState: State) => void;
   /**
-   * 销毁模型时的回调通知，仅在创建局部模型时生效
-   * @see useDefinedModel
+   * 销毁模型时的回调通知，此时模型已经被销毁。
+   * 该事件仅在局部模型生效
+   * @see useDefined
    */
   onDestroy?: (this: never) => void;
 }

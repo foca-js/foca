@@ -8,6 +8,7 @@ import {
   FocaProvider,
   store,
   useLoading,
+  useDefined,
   useDefinedModel,
   useModel,
   Model,
@@ -36,12 +37,9 @@ afterEach(() => {
     });
 
     test('can register to modelStore and remove from modelStore', async () => {
-      const { result, unmount } = renderHook(
-        () => useDefinedModel(basicModel),
-        {
-          wrapper: FocaProvider,
-        },
-      );
+      const { result, unmount } = renderHook(() => useDefined(basicModel), {
+        wrapper: FocaProvider,
+      });
 
       expect(result.current).not.toBe(basicModel);
       expect(store.getState()).toHaveProperty(
@@ -57,7 +55,7 @@ afterEach(() => {
     test('can register to loadingStore and remove from loadingStore', async () => {
       const { result, unmount } = renderHook(
         () => {
-          const model = useDefinedModel(basicModel);
+          const model = useDefined(basicModel);
           useLoading(basicModel.pureAsync);
           useLoading(model.pureAsync);
 
@@ -101,7 +99,7 @@ afterEach(() => {
         },
       });
 
-      const { unmount } = renderHook(() => useDefinedModel(globalModel), {
+      const { unmount } = renderHook(() => useDefined(globalModel), {
         wrapper: FocaProvider,
       });
 
@@ -122,7 +120,7 @@ afterEach(() => {
         () => {
           const [state, setState] = useState<Model>(basicModel);
 
-          const model = useDefinedModel(state);
+          const model = useDefined(state);
 
           useEffect(() => {
             setTimeout(() => {
@@ -157,7 +155,7 @@ afterEach(() => {
 test('Can get component name in dev mode', () => {
   let model!: HookModel;
   function MyApp() {
-    model = useDefinedModel(basicModel);
+    model = useDefined(basicModel);
     return null;
   }
 
@@ -170,8 +168,19 @@ test('Can get component name in dev mode', () => {
   expect(model.name).toMatch('MyApp:');
 });
 
+test('deprecated useDefinedModel', () => {
+  const spy = jest.spyOn(console, 'warn');
+
+  renderHook(() => useDefinedModel(basicModel), {
+    wrapper: FocaProvider,
+  });
+
+  expect(spy).toHaveBeenCalledTimes(1);
+  spy.mockRestore();
+});
+
 test.skip('Type checking', () => {
-  const hookModel = useDefinedModel(basicModel);
+  const hookModel = useDefined(basicModel);
 
   useModel(hookModel);
   useModel(hookModel, (state) => state.count);
@@ -186,7 +195,7 @@ test.skip('Type checking', () => {
   useModel(hookModel, basicModel, () => {});
 
   // @ts-expect-error
-  useDefinedModel(hookModel);
+  useDefined(hookModel);
   // @ts-expect-error
   cloneModel(hookModel);
 

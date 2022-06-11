@@ -1,3 +1,7 @@
+## master
+
+- 废弃函数 `useDefinedModel`，并新增函数 `useDefined` 作为代替
+
 ## [0.12.2](https://github.com/foca-js/foca/compare/v0.12.1...v0.12.2)&nbsp;&nbsp;(2022-06-08)
 
 - initialState 现在支持传递 `undefined` 值 (#17)
