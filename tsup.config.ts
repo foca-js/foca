@@ -12,5 +12,5 @@ export default defineConfig({
   legacyOutput: true,
   shims: false,
   dts: true,
-  onSuccess: 'cp package.esm.json dist/esm/package.json',
+  onSuccess: 'echo {\\"type\\": \\"module\\"} > dist/esm/package.json',
 });
