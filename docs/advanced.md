@@ -74,7 +74,7 @@ const App: FC = () => {
 - 数据随组件自动挂载/释放
 - 有效降低内存占用量
 
-# 一个 effect 多份 loading
+# loadings
 
 默认地，effect 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.effectX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数拥有多个状态互不干扰。
 
@@ -109,11 +109,14 @@ const App: FC = () => {
 如果你能确定 find 的参数，那么也可以直接传递：
 
 ```typescript
-// 适用于知道明确的编号，比如是从组件props直接传入
+// 适用于明确地知道编号的场景，比如是从组件props直接传入
 const loading = useLoading(model.myMethod.room, 100); // boolean
 
-// 适用于列表，编号只能在for循环中获取
-const loading = useLoading(model.myMethod.room).find(100);
+// 适用于列表，编号只能在for循环中获取的场景
+const loadings = useLoading(model.myMethod.room);
+list.forEach(({ id }) => {
+  const loading = loadings.find(id);
+});
 ```
 
 # 同步函数
