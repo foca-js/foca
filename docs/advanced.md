@@ -119,27 +119,34 @@ list.forEach(({ id }) => {
 });
 ```
 
-# 同步函数
+# 重置所有数据
 
-没有人规定 effects 里的方法就必须是异步的，你可以随意写，只要是函数就行了。比如有时候一个模型里重复代码太多，提取通用的部分代码到 effects 里就很合适。或者组件里经常需要大量操作才能获得 state 里的一个数据，那么也建议放到 effects 里节省工作量。
+当用户退出登录时，你需要清理与用户相关的一些数据，然后把页面切换到`登录页`。清理操作其实是比较麻烦的，首先 model 太多了，然后就是后期也可能再增加其它模型，不可能手动一个个清理。这时候可以用上 store 自带的方法：
+
+```diff
+import { store } from 'foca';
+
+// onLogout是你的业务方法
+onLogout().then(() => {
++ store.refresh();
+});
+```
+
+一个方法就能把所有数据都恢复成初始值状态，太方便了吧？
+
+重置时，你也可以保留部分模型的数据不被影响（可能是一些全局的配置数据），在相应的模型下加入关键词`skipRefresh`即可：
+
+```diff
+defineModel('my-global-model', {
+  initialState: {},
++ skipRefresh: true,
+});
+```
+
+对了，如果你实在是想无情地删除所有数据（即无视 skipRefresh 参数），那么就用`强制模式`好了：
 
 ```typescript
-export const userModel = defineModel('users', {
-  initialState,
-  effects: {
-    getUsersAmount() {
-      return this.state.length;
-    },
-    getOther() {
-      return {
-        amount: this.getUsersAmount(),
-        other: 'xyz',
-      };
-    },
-  },
-});
-
-// const count = userModel.getUsersAmount();
+store.refresh(true);
 ```
 
 # 私有方法
@@ -180,32 +187,25 @@ userModel._fullname; // 报错了，找不到属性 _fullname
 
 对外接口变得十分清爽，减少出错概率的同时，也提升了数据的安全性。
 
-# 重置所有数据
+# 同步函数
 
-当用户退出登录时，你需要清理与用户相关的一些数据，然后把页面切换到`登录页`。清理操作其实是比较麻烦的，首先 model 太多了，然后就是后期也可能再增加其它模型，不可能手动一个个清理。这时候可以用上 store 自带的方法：
-
-```diff
-import { store } from 'foca';
-
-// onLogout是你的业务方法
-onLogout().then(() => {
-+ store.refresh();
-});
-```
-
-一个方法就能把所有数据都恢复成初始值状态，太方便了吧？
-
-重置时，你也可以保留部分模型的数据不被影响（可能是一些全局的配置数据），在相应的模型下加入关键词`skipRefresh`即可：
-
-```diff
-defineModel('my-global-model', {
-  initialState: {},
-+ skipRefresh: true,
-});
-```
-
-对了，如果你实在是想无情地删除所有数据（即无视 skipRefresh 参数），那么就用`强制模式`好了：
+没有人规定 effects 里的方法就必须是异步的，你可以随意写，只要是函数就行了。比如有时候一个模型里重复代码太多，提取通用的部分代码到 effects 里就很合适。或者组件里经常需要大量操作才能获得 state 里的一个数据，那么也建议放到 effects 里节省工作量。
 
 ```typescript
-store.refresh(true);
+export const userModel = defineModel('users', {
+  initialState,
+  effects: {
+    getUsersAmount() {
+      return this.state.length;
+    },
+    getOther() {
+      return {
+        amount: this.getUsersAmount(),
+        other: 'xyz',
+      };
+    },
+  },
+});
+
+// const count = userModel.getUsersAmount();
 ```
