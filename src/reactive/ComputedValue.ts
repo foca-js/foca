@@ -20,12 +20,12 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   public get value(): T {
     if (this.active) {
       throw new Error(
-        `[model:${this.model}:computed] 属性'${this.property}'正在处于循环引用状态`,
+        `[model:${this.model}] 计算属性"${this.property}"正在被循环引用`,
       );
     }
 
     this.active = true;
-    this.updateSnapshot();
+    this.isDirty() && this.updateSnapshot();
     this.active = false;
 
     if (depsCollector.active) {
@@ -54,11 +54,9 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   }
 
   protected updateSnapshot() {
-    if (this.isDirty()) {
-      this.deps = depsCollector.produce(() => {
-        this.snapshot = this.fn();
-        this.root = this.store.getState();
-      });
-    }
+    this.deps = depsCollector.produce(() => {
+      this.snapshot = this.fn();
+      this.root = this.store.getState();
+    });
   }
 }
