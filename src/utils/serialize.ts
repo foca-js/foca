@@ -25,5 +25,8 @@ export const stringifyState = (value: any) => {
 };
 
 export const parseState = (value: string) => {
-  return JSON.parse(value, reviver);
+  return JSON.parse(
+    value,
+    value.indexOf(JSON_UNDEFINED) >= 0 ? reviver : void 0,
+  );
 };
