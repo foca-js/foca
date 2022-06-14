@@ -1,11 +1,7 @@
 {
-  // 检测范围：
-  // Object.assign
-  // Promise.resolve
-  // Promise.all
   "env": {
     "targets": [
-      "ie >= 11",
+      "ie >= 10",
       "edge >= 12",
       "safari >= 9",
       "chrome >= 45",
