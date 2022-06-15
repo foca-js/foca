@@ -124,7 +124,7 @@ test('Dirty deps never turn to clean', () => {
   expect(deps[1]!.isDirty()).toBeTruthy();
 });
 
-test('can visit proxy state outside collecting mode', () => {
+test('visit proxy state without collecting mode should not collect deps', () => {
   let mockState = { a: { b: { c: 'd' } } };
   const mockStore = {
     getState() {
@@ -139,11 +139,12 @@ test('can visit proxy state outside collecting mode', () => {
   let proxyState!: typeof mockState;
   depsCollector.produce(() => {
     proxyState = new ObjectDeps(mockStore, 'x').start(mockState);
+    proxyState.a;
+    proxyState.a.b;
   });
+  expect(spy).toHaveBeenCalledTimes(2);
 
-  expect(spy).toHaveBeenCalledTimes(1);
   spy.mockClear();
-
   expect(proxyState.a).toMatchObject({
     b: {
       c: 'd',
@@ -153,6 +154,17 @@ test('can visit proxy state outside collecting mode', () => {
     c: 'd',
   });
   expect(spy).toHaveBeenCalledTimes(0);
+
+  spy.mockClear();
+  depsCollector.produce(() => {
+    const custom = new ObjectDeps(mockStore, 'x').start(mockState);
+    custom.a;
+
+    proxyState.a;
+    proxyState.a.b;
+    proxyState.a.b.c;
+  });
+  expect(spy).toHaveBeenCalledTimes(1);
 });
 
 test('ComputedValue can remove duplicated deps', () => {
