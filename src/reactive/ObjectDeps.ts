@@ -78,16 +78,8 @@ export class ObjectDeps<T = any> implements Deps {
       Object.defineProperty(nextState, key, {
         enumerable: true,
         get: () => {
-          if (process.env.NODE_ENV !== 'production') {
-            if (!this.active) {
-              throw new Error(
-                `[${
-                  this.model
-                }:computed] 请勿在计算属性函数外部访问数据：'${this.deps
-                  .concat(key)
-                  .join('.')}'`,
-              );
-            }
+          if (!this.active) {
+            return currentState[key];
           }
 
           if (visited) {

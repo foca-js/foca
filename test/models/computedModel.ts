@@ -66,6 +66,12 @@ export const computedModel = defineModel('computed-model', {
     testObjectKeys() {
       return Object.keys(this.state.translate);
     },
+    testFind() {
+      return this.state.statusList.find((item) => item.startsWith('off'));
+    },
+    testVisitArray() {
+      return this.state.statusList;
+    },
     testJSON() {
       return JSON.stringify(this.state);
     },

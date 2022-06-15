@@ -38,6 +38,14 @@ test('Can return correct result from Object.keys', () => {
   );
 });
 
+test('can enum all items for find method', () => {
+  expect(computedModel.testFind.value).toBe('offline');
+});
+
+test('can visit array item', () => {
+  expect(computedModel.testVisitArray.value[0]).toBe('online');
+});
+
 test('can return correct length from array', () => {
   expect(computedModel.testArrayLength.value).toBe(2);
 });
@@ -116,7 +124,7 @@ test('Dirty deps never turn to clean', () => {
   expect(deps[1]!.isDirty()).toBeTruthy();
 });
 
-test('Unable to visit proxy state outside collecting mode', () => {
+test('can visit proxy state outside collecting mode', () => {
   let mockState = { a: { b: { c: 'd' } } };
   const mockStore = {
     getState() {
@@ -126,12 +134,25 @@ test('Unable to visit proxy state outside collecting mode', () => {
     },
   };
 
-  let proxyState: typeof mockState;
+  const spy = jest.spyOn(depsCollector, 'append');
+
+  let proxyState!: typeof mockState;
   depsCollector.produce(() => {
     proxyState = new ObjectDeps(mockStore, 'x').start(mockState);
   });
 
-  expect(() => proxyState.a).toThrowError();
+  expect(spy).toHaveBeenCalledTimes(1);
+  spy.mockClear();
+
+  expect(proxyState.a).toMatchObject({
+    b: {
+      c: 'd',
+    },
+  });
+  expect(proxyState.a.b).toMatchObject({
+    c: 'd',
+  });
+  expect(spy).toHaveBeenCalledTimes(0);
 });
 
 test('ComputedValue can remove duplicated deps', () => {
