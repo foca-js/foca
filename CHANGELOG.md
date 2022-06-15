@@ -1,6 +1,10 @@
 ## master
 
+## [0.12.3](https://github.com/foca-js/foca/compare/v0.12.2...v0.12.3)&nbsp;&nbsp;(2022-06-15)
+
 - 废弃函数 `useDefinedModel`，并新增函数 `useDefined` 作为代替
+- 修复计算属性在返回 **原始数组** 或者 **原始对象** 时无法访问的问题
+- 优化 initialState 深拷贝速度
 
 ## [0.12.2](https://github.com/foca-js/foca/compare/v0.12.1...v0.12.2)&nbsp;&nbsp;(2022-06-08)
 
