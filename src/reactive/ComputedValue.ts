@@ -1,7 +1,7 @@
 import type { Store } from 'redux';
 import type { ComputedRef, Deps } from './types';
 import { depsCollector } from './depsCollector';
-import { ComputedDeps } from './ComputedDeps';
+import { createComputedDeps } from './createComputedDeps';
 
 export class ComputedValue<T = any> implements ComputedRef<T> {
   public deps: Deps[] = [];
@@ -29,7 +29,7 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
     this.active = false;
 
     if (depsCollector.active) {
-      depsCollector.prepend(new ComputedDeps(this));
+      depsCollector.prepend(createComputedDeps(this));
     }
 
     return this.snapshot;

@@ -1,6 +1,5 @@
 import { expectType } from 'ts-expect';
 import { defineModel, store, ComputedRef } from '../src';
-import { ComputedDeps } from '../src/reactive/ComputedDeps';
 import { ComputedValue } from '../src/reactive/ComputedValue';
 import { depsCollector } from '../src/reactive/depsCollector';
 import { ObjectDeps } from '../src/reactive/ObjectDeps';
@@ -185,7 +184,9 @@ test('ComputedValue can be a copy deps', () => {
   computedValue.value;
 
   expect(computedValue.deps).toHaveLength(1);
-  expect(computedValue.deps[0]).toBeInstanceOf(ComputedDeps);
+  expect(computedValue.deps[0]).toHaveProperty('id');
+  expect(computedValue.deps[0]).toHaveProperty('end');
+  expect(computedValue.deps[0]).toHaveProperty('isDirty');
   expect(computedValue.deps[0]).not.toBe(computedModel.fullName);
 
   const fullNameAsRef = computedModel.fullName as ComputedValue;
