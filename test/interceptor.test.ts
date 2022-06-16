@@ -1,4 +1,4 @@
-import { store } from '../src';
+import { defineModel, store } from '../src';
 import { DestroyLodingAction, DESTROY_LOADING } from '../src/actions/loading';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
@@ -86,4 +86,23 @@ test('destroy model will trigger reducer with effect called', async () => {
   });
   expect(spy).toBeCalledTimes(1);
   spy.mockRestore();
+});
+
+test('action in action is invalid operation', () => {
+  const model1 = defineModel('aia-1', {
+    initialState: {},
+    actions: {
+      test1() {},
+    },
+  });
+  const model2 = defineModel('aia-2', {
+    initialState: {},
+    actions: {
+      test2() {
+        model1.test1();
+      },
+    },
+  });
+
+  expect(() => model2.test2()).toThrowError('[dispatch]');
 });

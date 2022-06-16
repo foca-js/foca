@@ -1,5 +1,7 @@
 ## master
 
+- 在开发环境下检测 `action in action` 的错误操作并抛出异常
+
 ## [0.12.3](https://github.com/foca-js/foca/compare/v0.12.2...v0.12.3)&nbsp;&nbsp;(2022-06-15)
 
 - 废弃函数 `useDefinedModel`，并新增函数 `useDefined` 作为代替

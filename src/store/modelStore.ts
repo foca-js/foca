@@ -16,6 +16,7 @@ import { PersistManager } from '../persist/PersistManager';
 import { combine } from './proxyStore';
 import { OBJECT } from '../utils/isType';
 import { StoreBasic } from './StoreBasic';
+import { createActionInActionInterceptor } from '../middleware/createActionInActionInterceptor';
 
 type Compose = typeof compose | ((enhancer: StoreEnhancer) => StoreEnhancer);
 
@@ -78,9 +79,14 @@ class ModelStore extends StoreBasic<Record<string, any>> {
     let store: Store;
 
     if (firstInitialize) {
+      const internalMiddleware: Middleware[] = [modelInterceptor];
+      if (process.env.NODE_ENV !== 'production') {
+        internalMiddleware.unshift(createActionInActionInterceptor());
+      }
+
       const enhancer: StoreEnhancer<any> = applyMiddleware.apply(
         null,
-        (options.middleware || []).concat(modelInterceptor),
+        (options.middleware || []).concat(internalMiddleware),
       );
 
       store = this.origin = createStore(
