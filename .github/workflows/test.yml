@@ -16,7 +16,7 @@ jobs:
       matrix:
         node-version: [14.x, 16.x, 18.x]
         ts-version: [4.4.x, 4.5.x, 4.6.x, 4.7.x]
-        react-version: ['16.9.0', 16.x, 17.x, 18.x]
+        react-version: ['16.14.0', 16.x, 17.x, 18.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
-        react-version: ['16.9.0', 16.x, 17.x]
+        react-version: ['16.14.0', 16.x, 17.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

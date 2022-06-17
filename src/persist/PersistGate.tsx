@@ -1,5 +1,4 @@
-import React from 'react';
-import type { ReactNode, FC } from 'react';
+import React, { ReactNode, FC, useState, useEffect } from 'react';
 import { modelStore } from '../store/modelStore';
 import { isFunction } from '../utils/isType';
 
@@ -9,10 +8,10 @@ export interface PersistGateProps {
 }
 
 export const PersistGate: FC<PersistGateProps> = (props) => {
-  const [isReady, setIsReady] = React.useState(() => modelStore.isReady);
+  const [isReady, setIsReady] = useState(() => modelStore.isReady);
   const { loading = null, children } = props;
 
-  React.useEffect(() => {
+  useEffect(() => {
     isReady ||
       modelStore.onInitialized().then(() => {
         setIsReady(true);
