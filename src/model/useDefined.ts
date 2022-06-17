@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DestroyLodingAction, DESTROY_LOADING } from '../actions/loading';
 import { loadingStore } from '../store/loadingStore';
 import { modelStore } from '../store/modelStore';
@@ -17,14 +17,14 @@ export const useDefined = <
   globalModel: Model<string, State, Action, Effect, Computed>,
 ): HookModel<string, State, Action, Effect, Computed> => {
   const modelName = globalModel.name;
-  const initialCount = React.useState(() => nameCounter++)[0];
+  const initialCount = useState(() => nameCounter++)[0];
 
   const uniqueName =
     process.env.NODE_ENV === 'production'
       ? useProdName(modelName, initialCount)
       : useDevName(modelName, initialCount, new Error());
 
-  const hookModel = React.useMemo(() => {
+  const hookModel = useMemo(() => {
     return cloneModel(uniqueName, globalModel);
   }, [uniqueName]);
 
@@ -34,7 +34,7 @@ export const useDefined = <
 const useProdName = (modelName: string, count: number) => {
   const uniqueName = modelName + '#' + count;
 
-  React.useEffect(
+  useEffect(
     () => () => {
       setTimeout(unmountModel, 0, uniqueName);
     },
@@ -52,12 +52,12 @@ const useProdName = (modelName: string, count: number) => {
  * Warning: Cannot update a component (`XXX`) while rendering a different component (`XXX`)
  */
 const useDevName = (modelName: string, count: number, err: Error) => {
-  const [cache, setCache] = React.useState({
+  const [cache, setCache] = useState({
     name: modelName,
     count: count,
   });
 
-  const componentName = React.useMemo((): string => {
+  const componentName = useMemo((): string => {
     try {
       const stacks = err.stack!.split('\n');
 
@@ -76,12 +76,12 @@ const useDevName = (modelName: string, count: number, err: Error) => {
 
   const uniqueName = `${componentName}:${count}:${modelName}`;
 
-  React.useMemo(() => {
+  useMemo(() => {
     timesCounter[uniqueName] ||= 0;
     ++timesCounter[uniqueName];
   }, [uniqueName]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (cache.name !== modelName || cache.count !== count) {
       setCache({
         name: modelName,
@@ -90,7 +90,7 @@ const useDevName = (modelName: string, count: number, err: Error) => {
     }
   }, [modelName, count]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const currentTimes = timesCounter[uniqueName];
     return () => {
       setTimeout(() => {

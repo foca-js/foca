@@ -1,17 +1,17 @@
-import React from 'react';
+import { createContext } from 'react';
 import type { ReactReduxContextValue } from 'react-redux';
 
-export const ModelContext = React.createContext<ReactReduxContextValue>(
+export const ModelContext = createContext<ReactReduxContextValue>(
   // @ts-expect-error
   null,
 );
 
-export const LoadingContext = React.createContext<ReactReduxContextValue>(
+export const LoadingContext = createContext<ReactReduxContextValue>(
   // @ts-expect-error
   null,
 );
 
-export const ProxyContext = React.createContext<ReactReduxContextValue>(
+export const ProxyContext = createContext<ReactReduxContextValue>(
   // @ts-expect-error
   null,
 );
