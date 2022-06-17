@@ -5,7 +5,6 @@ import type { DefineModelOptions, InternalModel, Model } from './types';
 const editableKeys = [
   'initialState',
   'events',
-  'hooks',
   'persist',
   'skipRefresh',
 ] as const;

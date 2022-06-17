@@ -9,7 +9,6 @@ import {
   store,
   useLoading,
   useDefined,
-  useDefinedModel,
   useModel,
   Model,
   HookModel,
@@ -166,17 +165,6 @@ test('Can get component name in dev mode', () => {
   );
 
   expect(model.name).toMatch('MyApp:');
-});
-
-test('deprecated useDefinedModel', () => {
-  const spy = jest.spyOn(console, 'warn');
-
-  renderHook(() => useDefinedModel(basicModel), {
-    wrapper: FocaProvider,
-  });
-
-  expect(spy).toHaveBeenCalledTimes(1);
-  spy.mockRestore();
 });
 
 test.skip('Type checking', () => {

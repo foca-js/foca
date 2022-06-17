@@ -47,11 +47,6 @@ interface AsyncEffect<P extends any[] = any[], R = Promise<any>>
    *
    */
   readonly room: AsyncRoomEffect<P, R>;
-  /**
-   * @deprecated 请使用room函数
-   * @see room
-   */
-  readonly assign: AsyncRoomEffect<P, R>;
 }
 
 export type PromiseEffect = AsyncEffect;
@@ -98,20 +93,6 @@ export const enhanceEffect = <State extends object>(
   });
 
   fn.room = room;
-
-  const assign: NonReadonly<AsyncRoomEffect> & RoomFunc = (
-    category: number | string,
-  ) => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        `请替换'${ctx.name}.${methodName}.assign'为'${ctx.name}.${methodName}.room'，'assign'方法将在版本1.0.0发布时删除`,
-      );
-    }
-
-    return room(category);
-  };
-  assign._ = room._;
-  fn.assign = assign;
 
   return fn;
 };

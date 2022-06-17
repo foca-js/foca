@@ -60,21 +60,6 @@ test('Trace loadings', async () => {
   expect(getLoading(basicModel.bos.room).find('x')).toBeFalsy();
 });
 
-test('Trace loadings by deprecated method', async () => {
-  expect(getLoading(basicModel.bos.assign, 'x')).toBeFalsy();
-  expect(getLoading(basicModel.bos.assign).find('x')).toBeFalsy();
-
-  const promise = basicModel.bos.room('x').execute();
-  expect(getLoading(basicModel.bos.assign, 'x')).toBeTruthy();
-  expect(getLoading(basicModel.bos.assign).find('x')).toBeTruthy();
-  expect(getLoading(basicModel.bos.assign, 'y')).toBeFalsy();
-  expect(getLoading(basicModel.bos.assign).find('y')).toBeFalsy();
-
-  await promise;
-  expect(getLoading(basicModel.bos.assign, 'x')).toBeFalsy();
-  expect(getLoading(basicModel.bos.assign).find('x')).toBeFalsy();
-});
-
 test('loadings are frozen', async () => {
   loadingStore.activate(basicModel.name, 'pureAsync');
 

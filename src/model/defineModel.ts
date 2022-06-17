@@ -37,13 +37,7 @@ export const defineModel = <
 ): Model<Name, State, Action, Effect, Computed> => {
   guard(uniqueName);
 
-  const {
-    actions,
-    effects,
-    computed,
-    skipRefresh,
-    events = options.hooks,
-  } = options;
+  const { actions, effects, computed, skipRefresh, events } = options;
   const initialStateStr = stringifyState(options.initialState);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -68,14 +62,6 @@ export const defineModel = <
     validateUniqueMethod(0, 1);
     validateUniqueMethod(0, 2);
     validateUniqueMethod(1, 2);
-  }
-
-  if (process.env.NODE_ENV !== 'production') {
-    if (options.hooks) {
-      console.warn(
-        `[model:${uniqueName}] 属性'hooks'已经重命名为'events'了，原因是和react的hooks同名，容易产生误解。属性'hooks'将在版本1.0.0发布时删除`,
-      );
-    }
   }
 
   if (process.env.NODE_ENV !== 'production') {
