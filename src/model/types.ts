@@ -303,21 +303,4 @@ export interface DefineModelOptions<
         Effect &
         EventCtx<State>
     >;
-  /**
-   * @deprecated 容易与react的hooks产生歧义，请替换成：events
-   *
-   * ```diff
-   * defineModel('test', {
-   * -  hooks: {},
-   * +  events: {},
-   * });
-   * ```
-   */
-  hooks?: Event<State> &
-    ThisType<
-      ModelAction<State, Action> &
-        ModelComputed<Computed> &
-        Effect &
-        EventCtx<State>
-    >;
 }

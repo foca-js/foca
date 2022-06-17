@@ -93,31 +93,6 @@ test('Trace loadings', async () => {
   expect(result.current).toBeFalsy();
 });
 
-test('Trace loadings by deprecated methods', async () => {
-  const { result } = renderHook(
-    () => useLoading(basicModel.pureAsync.assign, 'x'),
-    {
-      wrapper: FocaProvider,
-    },
-  );
-
-  expect(result.current).toBeFalsy();
-
-  let promise!: Promise<any>;
-
-  act(() => {
-    promise = basicModel.pureAsync.assign('x').execute();
-  });
-
-  expect(result.current).toBeTruthy();
-
-  await act(async () => {
-    await promise;
-  });
-
-  expect(result.current).toBeFalsy();
-});
-
 test('Pick loading from loadings', async () => {
   const { result } = renderHook(() => useLoading(basicModel.pureAsync.room), {
     wrapper: FocaProvider,
@@ -155,8 +130,6 @@ test.skip('type checking', () => {
 
   expectType<boolean>(useLoading(basicModel.foo.room).find('xx'));
   expectType<boolean>(useLoading(basicModel.foo.room, 'xx'));
-  expectType<boolean>(useLoading(basicModel.foo.assign).find('xx'));
-  expectType<boolean>(useLoading(basicModel.foo.assign, 'xx'));
   // @ts-expect-error
   useLoading(basicModel.foo.room, basicModel.foo);
   // @ts-expect-error
