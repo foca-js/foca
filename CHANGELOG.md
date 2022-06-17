@@ -1,5 +1,16 @@
 ## master
 
+## [1.0.0](https://github.com/foca-js/foca/compare/v0.12.3...v1.0.0)&nbsp;&nbsp;(2022-06-17)
+
+### 不兼容更新
+
+- 删除已废弃函数 ~~`useDefinedModel`~~，代替函数：`useDefined`
+- 删除已废弃属性 ~~`hooks`~~，代替属性：`events`
+- 删除已废弃的方法 ~~`assign`~~ ，代替方法：`room`
+- 支持最小 React 版本为 `16.14.0`
+
+### 特性
+
 - 在开发环境下检测 `action in action` 的错误操作并抛出异常
 
 ## [0.12.3](https://github.com/foca-js/foca/compare/v0.12.2...v0.12.3)&nbsp;&nbsp;(2022-06-15)
