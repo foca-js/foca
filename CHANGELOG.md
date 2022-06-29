@@ -1,5 +1,9 @@
 ## master
 
+## [1.0.1](https://github.com/foca-js/foca/compare/v1.0.0...v1.0.1)&nbsp;&nbsp;(2022-06-29)
+
+- 完善 action-in-action 的报错信息
+
 ## [1.0.0](https://github.com/foca-js/foca/compare/v0.12.3...v1.0.0)&nbsp;&nbsp;(2022-06-17)
 
 ### 不兼容更新
