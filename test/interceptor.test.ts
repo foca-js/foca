@@ -1,4 +1,4 @@
-import { defineModel, store } from '../src';
+import { defineModel, getLoading, store } from '../src';
 import { DestroyLodingAction, DESTROY_LOADING } from '../src/actions/loading';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
@@ -94,6 +94,12 @@ test('action in action is invalid operation', () => {
     actions: {
       test1() {},
     },
+    effects: {
+      async ok() {},
+      notOk() {
+        this.test1();
+      },
+    },
   });
   const model2 = defineModel('aia-2', {
     initialState: {},
@@ -101,8 +107,19 @@ test('action in action is invalid operation', () => {
       test2() {
         model1.test1();
       },
+      test3() {
+        model1.ok();
+      },
+      test4() {
+        model1.notOk();
+      },
     },
   });
 
   expect(() => model2.test2()).toThrowError('[dispatch]');
+
+  getLoading(model1.ok);
+  expect(() => model2.test3()).not.toThrowError();
+
+  expect(() => model2.test4()).toThrowError();
 });
