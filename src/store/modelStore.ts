@@ -79,15 +79,12 @@ class ModelStore extends StoreBasic<Record<string, any>> {
     let store: Store;
 
     if (firstInitialize) {
-      const internalMiddleware: Middleware[] = [modelInterceptor];
+      const middleware = (options.middleware || []).concat(modelInterceptor);
       if (process.env.NODE_ENV !== 'production') {
-        internalMiddleware.unshift(createActionInActionInterceptor());
+        middleware.unshift(createActionInActionInterceptor());
       }
 
-      const enhancer: StoreEnhancer<any> = applyMiddleware.apply(
-        null,
-        (options.middleware || []).concat(internalMiddleware),
-      );
+      const enhancer = applyMiddleware.apply(null, middleware);
 
       store = this.origin = createStore(
         this.reducer,
