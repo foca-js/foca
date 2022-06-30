@@ -11,3 +11,8 @@
 <span style="display:inline-block; width: 8%"></span>
 <img src="./wepay.png" width="40%" />
 </center>
+<br><br>
+
+### 记录
+
+共收到匿名捐赠 **10.00** 元
