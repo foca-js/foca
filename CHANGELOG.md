@@ -1,5 +1,9 @@
 ## master
 
+## [1.0.2](https://github.com/foca-js/foca/compare/v1.0.1...v1.0.2)&nbsp;&nbsp;(2022-06-30)
+
+- 修复在 react17 下 action-in-action 中间件可能报错的问题 (#20)
+
 ## [1.0.1](https://github.com/foca-js/foca/compare/v1.0.0...v1.0.1)&nbsp;&nbsp;(2022-06-29)
 
 - 完善 action-in-action 的报错信息
