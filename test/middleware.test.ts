@@ -123,3 +123,29 @@ test('action in action is invalid operation', () => {
 
   expect(() => model2.test4()).toThrowError();
 });
+
+test('freeze model state', () => {
+  expect(Object.isFrozen(store.getState())).toBeTruthy();
+
+  expect(Object.isFrozen(complexModel.state)).toBeTruthy();
+  expect(Object.isFrozen(complexModel.state.ids)).toBeTruthy();
+  expect(Object.isFrozen(complexModel.state.users)).toBeTruthy();
+
+  complexModel.addUser(10, 'tom');
+  expect(Object.isFrozen(complexModel.state)).toBeTruthy();
+  expect(Object.isFrozen(complexModel.state.ids)).toBeTruthy();
+  expect(Object.isFrozen(complexModel.state.users)).toBeTruthy();
+  expect(() => complexModel.state.ids.push(2)).toThrowError();
+});
+
+test('freeze loading state', async () => {
+  expect(Object.isFrozen(loadingStore.getState())).toBeTruthy();
+  expect(Object.isFrozen(getLoading(basicModel.pureAsync))).toBeTruthy();
+
+  loadingStore.activate(basicModel.name, 'pureAsync');
+
+  const promise = basicModel.pureAsync();
+  expect(Object.isFrozen(getLoading(basicModel.pureAsync.room))).toBeTruthy();
+  await promise;
+  expect(Object.isFrozen(getLoading(basicModel.pureAsync.room))).toBeTruthy();
+});

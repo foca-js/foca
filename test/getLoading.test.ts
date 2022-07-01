@@ -1,6 +1,5 @@
 import { expectType } from 'ts-expect';
 import { getLoading, store } from '../src';
-import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
 
 beforeEach(() => {
@@ -58,14 +57,4 @@ test('Trace loadings', async () => {
   await promise;
   expect(getLoading(basicModel.bos.room, 'x')).toBeFalsy();
   expect(getLoading(basicModel.bos.room).find('x')).toBeFalsy();
-});
-
-test('loadings are frozen', async () => {
-  loadingStore.activate(basicModel.name, 'pureAsync');
-
-  const promise = basicModel.pureAsync();
-  expect(Object.isFrozen(getLoading(basicModel.pureAsync.room))).toBeTruthy();
-
-  await promise;
-  expect(Object.isFrozen(getLoading(basicModel.pureAsync.room))).toBeTruthy();
 });

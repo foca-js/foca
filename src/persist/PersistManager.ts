@@ -1,6 +1,5 @@
 import type { Reducer, Store, Unsubscribe } from 'redux';
 import { actionHydrate, isHydrateAction } from '../actions/persist';
-import { freezeState } from '../utils/freezeState';
 import { PersistItem, PersistOptions } from './PersistItem';
 
 export class PersistManager {
@@ -40,7 +39,7 @@ export class PersistManager {
       if (state === void 0) state = {};
 
       if (isHydrateAction(action)) {
-        return Object.assign({}, state, freezeState(action.payload));
+        return Object.assign({}, state, action.payload);
       }
 
       return original(state, action);

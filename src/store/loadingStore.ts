@@ -2,17 +2,19 @@ import {
   AnyAction,
   applyMiddleware,
   legacy_createStore as createStore,
+  Middleware,
 } from 'redux';
 import type { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
 import { loadingInterceptor } from '../middleware/loadingInterceptor';
 import { isDestroyLoadingAction, isLoadingAction } from '../actions/loading';
-import { freezeState } from '../utils/freezeState';
 import { actionRefresh, isRefreshAction } from '../actions/refresh';
 import { combine } from './proxyStore';
 import { destroyLoadingInterceptor } from '../middleware/destroyLoadingInterceptor';
 import { immer } from '../utils/immer';
 import { StoreBasic } from './StoreBasic';
 import { modelStore } from './modelStore';
+import { freeze } from 'immer';
+import { freezeStateMiddleware } from '../middleware/freezeStateMiddleware';
 
 export interface FindLoading {
   find(category: number | string): boolean;
@@ -56,7 +58,10 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
       [method: string]: boolean;
     }>;
   }> = {};
-  protected defaultRecord = freezeState(createDefaultRecord());
+  protected defaultRecord: LoadingStoreStateItem = freeze(
+    createDefaultRecord(),
+    true,
+  );
 
   constructor() {
     super();
@@ -67,9 +72,18 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
   }
 
   init() {
+    const middleware: Middleware[] = [
+      loadingInterceptor(this),
+      destroyLoadingInterceptor,
+    ];
+
+    if (process.env.NODE_ENV !== 'production') {
+      middleware.push(freezeStateMiddleware);
+    }
+
     this.origin = createStore(
       this.reducer.bind(this),
-      applyMiddleware(loadingInterceptor(this), destroyLoadingInterceptor),
+      applyMiddleware.apply(null, middleware),
     );
 
     combine(this.store);
@@ -97,7 +111,6 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
         loadings.data[category] = loading;
       });
 
-      freezeState(next[model]![method]!.loadings);
       return next;
     }
 
