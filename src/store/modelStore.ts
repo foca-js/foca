@@ -16,7 +16,7 @@ import { PersistManager } from '../persist/PersistManager';
 import { combine } from './proxyStore';
 import { OBJECT } from '../utils/isType';
 import { StoreBasic } from './StoreBasic';
-import { createActionInActionInterceptor } from '../middleware/createActionInActionInterceptor';
+import { actionInActionInterceptor } from '../middleware/actionInActionInterceptor';
 import { freezeStateMiddleware } from '../middleware/freezeStateMiddleware';
 
 type Compose = typeof compose | ((enhancer: StoreEnhancer) => StoreEnhancer);
@@ -82,7 +82,7 @@ class ModelStore extends StoreBasic<Record<string, any>> {
     if (firstInitialize) {
       const middleware = (options.middleware || []).concat(modelInterceptor);
       if (process.env.NODE_ENV !== 'production') {
-        middleware.unshift(createActionInActionInterceptor());
+        middleware.unshift(actionInActionInterceptor);
         middleware.push(freezeStateMiddleware);
       }
 

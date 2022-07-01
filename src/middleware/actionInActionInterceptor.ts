@@ -2,11 +2,11 @@ import type { AnyAction, Middleware } from 'redux';
 import { isPreModelAction } from '../actions/model';
 
 // 开发者有可能在action中执行action，这是十分不规范的操作。
-export const createActionInActionInterceptor = (): Middleware => {
+export const actionInActionInterceptor: Middleware = () => {
   let dispatching = false;
   let prevAction: AnyAction | null = null;
 
-  return () => (dispatch) => (action: AnyAction) => {
+  return (dispatch) => (action: AnyAction) => {
     if (!isPreModelAction(action)) {
       // 非model的action会直接进入redux，redux中已经有dispatch保护机制。
       return dispatch(action);
