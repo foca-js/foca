@@ -49,6 +49,11 @@ export const basicModel = defineModel('basic', {
         hello: 'earth',
       });
     },
+    setPartialState(step: number) {
+      this.setState({
+        count: step,
+      });
+    },
     async bar() {
       return this.foo('', 100);
     },

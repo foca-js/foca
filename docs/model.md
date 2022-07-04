@@ -107,11 +107,40 @@ const userModel = defineModel('users', {
 
 瞧见没，你可以在 effects 里自由地使用 async/await 方案，然后通过`this.setState`快速更新 state。
 
-现在你需要知道 setState 有三种调用方式：
+接下来我们说说`setState`，这其实完全就是 action 的快捷方式，你可以直接传入数据或者使用匿名函数来操作，十分方便。这不禁让我们想起了 React Component 里的 setState，好吧，我承认此处有抄的成分。
 
-1. 直接传递新的且完整的 state。
-2. 通过回调函数更新 state 的部分数据，而且不用返回。
-3. 通过回调函数返回新的且完整的 state。
+```typescript
+// 1. 全量更新，适用于 array, object
+this.setState({
+  a: 1,
+  b: 2,
+});
+this.setState(['a', 'b', 'c']);
+
+// 2. 部分更新，适用于 object
+this.setState({
+  a: 1,
+});
+
+// 3. 回调全量更新，与action一致，适用于 array, object
+this.setState((state) => {
+  return {
+    a: 1,
+    b: 2,
+  };
+});
+this.setState((state) => {
+  return ['a', 'b', 'c'];
+});
+
+// 4. 回调部分更新，与action一致，适用于 array, object
+this.setState((state) => {
+  state.b = 2;
+});
+this.setState((state) => {
+  state.push('a');
+});
+```
 
 但是你压根就不想用`setState`，你觉得这样看起来很混乱？OK，你突然想起可以使用 actions 去改变 state 不是吗？
 

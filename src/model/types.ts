@@ -55,14 +55,22 @@ export interface EffectCtx<State extends object>
    * });
    * ```
    *
-   * 如果你是要替换**全部状态**，可以直接传给setState
-   *
+   * 对于object类型，你可以直接传递 **全部** 或者 **部分** 数据
    * ```typescript
    * this.setState({ count: 10 });
    * ```
+   *
+   * 对于array类型，直接传递数组就行了
+   * ```typescript
+   * this.setState(['a', 'b', 'c']);
+   * ```
    */
-  setState(state: State): AnyAction;
-  setState(fn: (state: State) => State | void): AnyAction;
+  setState<K extends keyof State>(
+    // 使用Partial<>会导致类型提示不够友好
+    state: State extends any[]
+      ? State
+      : State | Pick<State, K> | ((draftState: State) => State | void),
+  ): AnyAction;
 }
 
 export interface ComputedCtx<State extends object>

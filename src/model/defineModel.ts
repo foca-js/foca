@@ -24,6 +24,7 @@ import type {
 } from './types';
 import { isFunction } from '../utils/isType';
 import { Unsubscribe } from 'redux';
+import { original } from 'immer';
 
 export const defineModel = <
   Name extends string,
@@ -38,6 +39,7 @@ export const defineModel = <
   guard(uniqueName);
 
   const { actions, effects, computed, skipRefresh, events } = options;
+  const isArrayState = Array.isArray(options.initialState);
   const initialStateStr = stringifyState(options.initialState);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -105,9 +107,13 @@ export const defineModel = <
         actionCtx,
         `${methodName}.setState`,
         (state: State, fn_state: State | StateCallback) => {
-          return isFunction<StateCallback>(fn_state)
-            ? fn_state(state)
-            : fn_state;
+          if (isFunction<StateCallback>(fn_state)) {
+            return fn_state(state);
+          }
+
+          if (isArrayState) return fn_state;
+
+          return Object.assign({}, original(state), fn_state);
         },
       ),
     };

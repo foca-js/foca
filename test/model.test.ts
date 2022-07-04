@@ -75,7 +75,7 @@ test('call action with multiple parameters', () => {
   expect(basicModel.state.hello).toBe('world, timi');
 });
 
-test('Set state in effect method', async () => {
+test('Set state in effects', async () => {
   expect(basicModel.state.count).toBe(0);
   expect(basicModel.state.hello).toBe('world');
 
@@ -85,7 +85,7 @@ test('Set state in effect method', async () => {
   expect(basicModel.state.hello).toBe('earth');
 });
 
-test('Set state without function callback in effect method', () => {
+test('Set state without function callback in effects', () => {
   expect(basicModel.state.count).toBe(0);
 
   basicModel.setWithoutFn(15);
@@ -96,6 +96,103 @@ test('Set state without function callback in effect method', () => {
 
   basicModel.setWithoutFn(54.3);
   expect(basicModel.state.count).toBe(54.3);
+});
+
+test('set partial object state in effects', () => {
+  const model = defineModel('partial-object-model', {
+    initialState: <
+      { test: { count: number }; hello: string | undefined; name: string }
+    >{
+      test: {
+        count: 0,
+      },
+      hello: 'world',
+      name: 'timi',
+    },
+    effects: {
+      setNothing() {
+        this.setState({});
+      },
+      setCount() {
+        this.setState({
+          test: {
+            count: 2,
+          },
+        });
+      },
+      setHello() {
+        this.setState({
+          hello: 'x',
+        });
+      },
+      override() {
+        this.setState({
+          // @ts-expect-error
+          test: 123,
+        });
+      },
+      doNotSetUndefined() {
+        this.setState({
+          hello: undefined,
+        });
+        this.setState({
+          // @ts-expect-error
+          test: undefined,
+          // @ts-expect-error
+          name: undefined,
+        });
+        this.setState({
+          test: {
+            // @ts-expect-error
+            count: undefined,
+          },
+        });
+      },
+    },
+  });
+
+  model.setCount();
+  expect(model.state.test).toBe({
+    count: 2,
+  });
+  expect(model.state.hello).toBe('world');
+
+  model.setHello();
+  expect(model.state.test).toBe({
+    count: 2,
+  });
+  expect(model.state.hello).toBe('x');
+
+  model.setNothing();
+  expect(model.state.test).toBe({
+    count: 2,
+  });
+  expect(model.state.hello).toBe('x');
+
+  model.override();
+  expect(model.state.test).toBe(123);
+});
+
+test('set partial array state in effects', () => {
+  const model = defineModel('partial-array-model', {
+    initialState: ['2'],
+    effects: {
+      set() {
+        this.setState(['20', '30']);
+      },
+      doNotUndefined() {
+        // @ts-expect-error
+        this.setState(['20', '30', undefined]);
+        // @ts-expect-error
+        this.setState(undefined);
+        // @ts-expect-error
+        this.setState();
+      },
+    },
+  });
+
+  model.set();
+  expect(model.state).toBe(['20', '30']);
 });
 
 test('private action and effect', () => {
