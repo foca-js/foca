@@ -152,19 +152,19 @@ test('set partial object state in effects', () => {
   });
 
   model.setCount();
-  expect(model.state.test).toBe({
+  expect(model.state.test).toStrictEqual({
     count: 2,
   });
   expect(model.state.hello).toBe('world');
 
   model.setHello();
-  expect(model.state.test).toBe({
+  expect(model.state.test).toStrictEqual({
     count: 2,
   });
   expect(model.state.hello).toBe('x');
 
   model.setNothing();
-  expect(model.state.test).toBe({
+  expect(model.state.test).toStrictEqual({
     count: 2,
   });
   expect(model.state.hello).toBe('x');
@@ -192,7 +192,7 @@ test('set partial array state in effects', () => {
   });
 
   model.set();
-  expect(model.state).toBe(['20', '30']);
+  expect(model.state).toStrictEqual(['20', '30']);
 });
 
 test('private action and effect', () => {
