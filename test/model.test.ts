@@ -99,10 +99,13 @@ test('Set state without function callback in effects', () => {
 });
 
 test('set partial object state in effects', () => {
+  type State = {
+    test: { count: number };
+    hello: string | undefined;
+    name: string;
+  };
   const model = defineModel('partial-object-model', {
-    initialState: <
-      { test: { count: number }; hello: string | undefined; name: string }
-    >{
+    initialState: <State>{
       test: {
         count: 0,
       },

@@ -66,10 +66,10 @@ export interface EffectCtx<State extends object>
    * ```
    */
   setState<K extends keyof State>(
-    // 使用Partial<>会导致类型提示不够友好
-    state: State extends any[]
-      ? State
-      : State | Pick<State, K> | ((draftState: State) => State | void),
+    state:
+      | State
+      | ((draftState: State) => State | void)
+      | (State extends any[] ? never : Pick<State, K>),
   ): AnyAction;
 }
 
