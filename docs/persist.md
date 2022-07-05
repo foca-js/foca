@@ -63,20 +63,51 @@ export const customEngine: StorageEngine = {
 
 #### version
 
-版本号。如果数据结构有变化，那么可以直接升级版本号，代价就是所有的相关缓存都会被清除！
+版本号。如果数据结构有变化，那么可以直接升级版本号。
 
-如果你想更精细一点，那么可以尝试在模型中定义版本号：
+注意，**升级版本号会把相关模型的持久化数据都清除掉**，所以请谨慎操作！比如某个持久化模型存有用户 token 信息，那么升级 version 之后，用户再访问你的应用就得重新登录了。所以建议 tokenModel 放在独立的一个配置下，这样不容易被影响到：
 
 ```typescript
-const userModel = defineModel({
+store.init({
+  persist: [
+    {
+      key: '$PROJECT_normal_$ENV',
+      version: 3.6,
+      engine: engines.localStorage,
+      // 普通的数据放一起
+      models: [musicModel, stockModel],
+    },
+    {
+      key: '$PROJECT_token_$ENV',
+      version: 1,
+      engine: engines.localStorage,
+      // 十分重要的数据建议单独存放
+      models: [tokenModel],
+    },
+    {
+      key: '$PROJECT_important_$ENV',
+      version: 2.1,
+      engine: engines.localStorage,
+      // 十分重要的数据建议单独存放
+      models: [profileModel],
+    },
+  ],
+});
+```
+
+修改全局配置的 version 总是危险的一意孤行的方式，因为没有人愿意改动某个模型后就大动干戈地清理掉所有模型的缓存数据，这是严重的内耗问题。所以现在，让我们试试模型里的持久化配置：
+
+```typescript
+const userModel = defineModel('user', {
   initialState: [],
+  // 覆盖全局配置，只对当前模型有效
   persist: {
     version: 1,
   },
 });
 ```
 
-是的，每个模型都有自己的版本号，只要你改变版本号，那么模型就会删掉旧的并重新开始缓存。
+是的，如果有需要，每个模型都可以再次覆盖持久化配置以达到定制的需求。不要太方便呢！
 
 #### maxAge
 
