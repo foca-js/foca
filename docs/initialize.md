@@ -109,17 +109,38 @@ if (import.meta.hot) {
 ```typescript
 // File: store.ts
 
-// ##########################
-// 请先安装npm依赖 @types/webpack-env
-// 否则会出现TS报错 TS2339: Property 'hot' does not exist on type 'NodeModule'.
-// ##########################
+// ##################################################
+// ######                                     #######
+// ###### yarn add @types/webpack-env --dev   #######
+// ######                                     #######
+// ##################################################
 
 store.init(...);
 
-// 如果是ESM项目，亦可尝试：import.meta.webpackHot
 // https://webpack.docschina.org/api/hot-module-replacement/
 if (module.hot) {
   module.hot.accept(() => {
+    console.log('Hot updated: store');
+  });
+}
+```
+
+#### ** Webpack ESM **
+
+```typescript
+// File: store.ts
+
+// ##################################################
+// ######                                     #######
+// ###### yarn add @types/webpack-env --dev   #######
+// ######                                     #######
+// ##################################################
+
+store.init(...);
+
+// https://webpack.docschina.org/api/hot-module-replacement/
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept(() => {
     console.log('Hot updated: store');
   });
 }
