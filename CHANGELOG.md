@@ -1,5 +1,17 @@
 ## master
 
+## [1.1.0](https://github.com/foca-js/foca/compare/v1.0.2...v1.1.0)&nbsp;&nbsp;(2022-07-07)
+
+- setState 支持传入非完整数据
+
+```typescript
+const initialState = { a: 1, b: 'x' };
+
+this.setState({ a: 2, b: 'y' }); // state === { a: 2, b: 'y' }
+this.setState({ a: 123 }); // state === { a: 123, b: 'y' }
+this.setState({ b: 'hello' }); // state === { a: 123, b: 'hello' }
+```
+
 ## [1.0.2](https://github.com/foca-js/foca/compare/v1.0.1...v1.0.2)&nbsp;&nbsp;(2022-06-30)
 
 - 修复在 react17 下 action-in-action 中间件可能报错的问题 (#20)
