@@ -40,7 +40,6 @@ export const defineModel = <
 
   const { actions, effects, computed, skipRefresh, events } = options;
   const isArrayState = Array.isArray(options.initialState);
-  const initialStateStr = stringifyState(options.initialState);
 
   if (process.env.NODE_ENV !== 'production') {
     const items = [
@@ -67,6 +66,7 @@ export const defineModel = <
   }
 
   if (process.env.NODE_ENV !== 'production') {
+    const initialStateStr = stringifyState(options.initialState);
     if (!deepEqual(parseState(initialStateStr), options.initialState)) {
       throw new Error(
         `[model:${uniqueName}] initialState 包含了不可系列化的数据，允许的类型为：Object, Array, Number, String, Undefined 和 Null`,
@@ -90,7 +90,7 @@ export const defineModel = <
   const getInitialState = <T extends object>(
     obj: T,
   ): T & GetInitialState<State> => {
-    return defineGetter(obj, 'initialState', () => parseState(initialStateStr));
+    return defineGetter(obj, 'initialState', () => options.initialState);
   };
 
   const actionCtx: ActionCtx<State> = composeGetter(
@@ -228,7 +228,7 @@ export const defineModel = <
     uniqueName,
     createReducer({
       name: uniqueName,
-      initialState: parseState(initialStateStr),
+      initialState: options.initialState,
       allowRefresh: !skipRefresh,
     }),
   );
