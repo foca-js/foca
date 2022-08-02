@@ -45,6 +45,10 @@
       "@commitlint/config-conventional"
     ]
   },
+  "volta": {
+    "node": "16.16.0",
+    "yarn": "1.22.19"
+  },
   "peerDependencies": {
     "react": "^16.14 || ^17 || ^18",
     "typescript": "^4.4"
