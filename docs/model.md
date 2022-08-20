@@ -62,7 +62,7 @@ export const userModel = defineModel('users', {
         user.name = name;
       }
     },
-    removeUser(state, userId: number) {
+    removeUser(state, id: number) {
       const index = state.findIndex((item) => item.id === id);
       if (index >= 0) {
         state.splice(index, 1);
