@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`can clone null and undefined 1`] = `"{\\"x\\":[\\"__JSON_UNDEFINED__\\",1,{\\"test\\":\\"__JSON_UNDEFINED__\\",\\"test1\\":\\"hello\\"},null,\\"__JSON_UNDEFINED__\\"],\\"y\\":null,\\"z\\":\\"__JSON_UNDEFINED__\\"}"`;
+exports[`can clone null and undefined 1`] = `"{"x":["__JSON_UNDEFINED__",1,{"test":"__JSON_UNDEFINED__","test1":"hello"},null,"__JSON_UNDEFINED__"],"y":null,"z":"__JSON_UNDEFINED__"}"`;
 
 exports[`can clone null and undefined 2`] = `
-Object {
-  "x": Array [
+{
+  "x": [
     undefined,
     1,
-    Object {
+    {
       "test": undefined,
       "test1": "hello",
     },
