@@ -35,7 +35,7 @@ export class ObjectDeps<T = any> implements Deps {
     return this.model + '.' + this.deps.join('.');
   }
 
-  start<T>(startState: T): T {
+  start<T extends Record<string, any>>(startState: T): T {
     depsCollector.append(this);
     return this.proxy(startState);
   }
