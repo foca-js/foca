@@ -1,5 +1,12 @@
 ## master
 
+## [1.2.0](https://github.com/foca-js/foca/compare/v1.1.0...v1.2.0)&nbsp;&nbsp;(2022-11-10)
+
+- 重命名 actions 为 reducers (#29)
+- 重命名 effects 为 methods (#29)
+- exports 导出 package.json 文件
+- 不再支持typescript@4.4
+
 ## [1.1.0](https://github.com/foca-js/foca/compare/v1.0.2...v1.1.0)&nbsp;&nbsp;(2022-07-07)
 
 - setState 支持传入非完整数据
