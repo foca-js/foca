@@ -56,7 +56,7 @@ test('Can throw error with circularly reference', () => {
   expect(() => computedModel.c.value).toThrowError('循环引用');
 });
 
-test('Can visit compute value from effects', () => {
+test('Can visit compute value from methods', () => {
   expect(computedModel.effectsGetFullName()).toBe('ticktock');
 });
 
@@ -255,7 +255,7 @@ test('only execute computed function when deps changed', () => {
       a: 0,
       b: 2,
     },
-    actions: {
+    reducers: {
       updateA(state) {
         state.a += 1;
       },

@@ -10,7 +10,7 @@ afterEach(() => {
   store.unmount();
 });
 
-test('Collect loading status for effect method', async () => {
+test('Collect loading status for method', async () => {
   expect(getLoading(basicModel.bos)).toBeFalsy();
   const promise = basicModel.bos();
   expect(getLoading(basicModel.bos)).toBeTruthy();
@@ -18,7 +18,7 @@ test('Collect loading status for effect method', async () => {
   expect(getLoading(basicModel.bos)).toBeFalsy();
 });
 
-test('Collect error message for effect method', async () => {
+test('Collect error message for method', async () => {
   expect(getLoading(basicModel.hasError)).toBeFalsy();
 
   const promise = basicModel.hasError();
@@ -29,7 +29,7 @@ test('Collect error message for effect method', async () => {
   expect(getLoading(basicModel.hasError)).toBeFalsy();
 });
 
-test('Loading is unsupported for non-async effect method', () => {
+test('Loading is unsupported for non-async method', () => {
   expectType<boolean>(getLoading(basicModel.foo));
   expectType<boolean>(getLoading(basicModel.foo.room).find('xx'));
   expectType<boolean>(getLoading(basicModel.foo.room, 'xx'));

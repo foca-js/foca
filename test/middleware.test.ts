@@ -65,7 +65,7 @@ test('dispatch the same loading should be intercepted', async () => {
   fn.mockRestore();
 });
 
-test('destroy model will not trigger reducer without effect called', () => {
+test('destroy model will not trigger reducer without method called', () => {
   const spy = jest.fn();
   loadingStore.subscribe(spy);
   loadingStore.dispatch<DestroyLodingAction>({
@@ -76,7 +76,7 @@ test('destroy model will not trigger reducer without effect called', () => {
   spy.mockRestore();
 });
 
-test('destroy model will trigger reducer with effect called', async () => {
+test('destroy model will trigger reducer with method called', async () => {
   await basicModel.pureAsync();
   const spy = jest.fn();
   loadingStore.subscribe(spy);
@@ -88,13 +88,13 @@ test('destroy model will trigger reducer with effect called', async () => {
   spy.mockRestore();
 });
 
-test('action in action is invalid operation', () => {
+test('reducer in reducer is invalid operation', () => {
   const model1 = defineModel('aia-1', {
     initialState: {},
-    actions: {
+    reducers: {
       test1() {},
     },
-    effects: {
+    methods: {
       async ok() {},
       notOk() {
         this.test1();
@@ -103,7 +103,7 @@ test('action in action is invalid operation', () => {
   });
   const model2 = defineModel('aia-2', {
     initialState: {},
-    actions: {
+    reducers: {
       test2() {
         model1.test1();
       },

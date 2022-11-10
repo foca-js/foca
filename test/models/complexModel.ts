@@ -10,7 +10,7 @@ const initialState: {
 
 export const complexModel = defineModel('complex', {
   initialState,
-  actions: {
+  reducers: {
     addUser(state, id: number, name: string) {
       state.users[id] = name;
       !state.ids.includes(id) && state.ids.push(id);

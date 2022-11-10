@@ -16,7 +16,7 @@ const model = defineModel('aia' + Math.random(), {
     open: false,
     count: 1,
   },
-  actions: {
+  reducers: {
     plus(state) {
       state.count += 1;
     },

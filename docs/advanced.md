@@ -48,7 +48,7 @@ import { defineModel, useDefined } from 'foca';
 // testModel.ts
 export const testModel = defineModel('test', {
   initialState: { count: 0 },
-  actions: {
+  reducers: {
     plus(state, value: number) {
       state.count += value;
     },
@@ -76,7 +76,7 @@ const App: FC = () => {
 
 # loadings
 
-默认地，effect 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.effectX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数拥有多个状态互不干扰。
+默认地，methods 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.methodX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数拥有多个状态互不干扰。
 
 ```tsx
 import { useLoading } from 'foca';
@@ -156,18 +156,18 @@ store.refresh(true);
 ```typescript
 const userModel = defineModel('users', {
   initialState,
-  actions: {
+  reducers: {
     addUser(state, user: UserItem) {},
     _deleteUser(state, userId: number) {},
   },
-  effects: {
+  methods: {
     async retrieve(id: number) {
       const user = await http.get<UserItem>(`/users/${id}`);
       this.addUser(user);
 
-      // 私有action方法
+      // 私有reducers方法
       this._deleteUser(15);
-      // 私有effect方法
+      // 私有methods方法
       this._myLogic();
       // 私有computed变量
       this._fullname.value;
@@ -189,12 +189,12 @@ userModel._fullname; // 报错了，找不到属性 _fullname
 
 # 同步函数
 
-没有人规定 effects 里的方法就必须是异步的，你可以随意写，只要是函数就行了。比如有时候一个模型里重复代码太多，提取通用的部分代码到 effects 里就很合适。或者组件里经常需要大量操作才能获得 state 里的一个数据，那么也建议放到 effects 里节省工作量。
+没有人规定 methods 里的方法就必须是异步的，你可以随意写，只要是函数就行了。比如有时候一个模型里重复代码太多，提取通用的部分代码到 methods 里就很合适。或者组件里经常需要大量操作才能获得 state 里的一个数据，那么也建议放到 methods 里节省工作量。
 
 ```typescript
 export const userModel = defineModel('users', {
   initialState,
-  effects: {
+  methods: {
     getUsersAmount() {
       return this.state.length;
     },

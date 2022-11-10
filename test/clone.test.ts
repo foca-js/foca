@@ -57,7 +57,7 @@ test('Override persist', () => {
       maxAge: 20,
       decode: (state) => state,
     },
-    effects: {
+    methods: {
       cc() {
         return 3;
       },
@@ -89,14 +89,14 @@ test('override methods or unknown option can cause error', () => {
   expect(() =>
     cloneModel('a', model, {
       // @ts-expect-error
-      actions: {},
+      reducers: {},
     }),
   ).toThrowError();
 
   expect(() =>
     cloneModel('b', model, {
       // @ts-expect-error
-      effects: {},
+      methods: {},
     }),
   ).toThrowError();
 

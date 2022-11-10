@@ -2,7 +2,7 @@
 
 ## onInit
 
-当 store 初始化完成 并且持久化（如果有）数据已经恢复时，onInit 就会被自动触发。你可以调用 effects 或者 actions 做一些额外操作。
+当 store 初始化完成 并且持久化（如果有）数据已经恢复时，onInit 就会被自动触发。你可以调用 methods 或者 reducers 做一些额外操作。
 
 ```typescript
 import { defineModel } from 'foca';
@@ -12,12 +12,12 @@ const initialState = { count: 0 };
 
 export const myModel = defineModel('my', {
   initialState,
-  actions: {
+  reducers: {
     add(state, step: number) {
       state.count += step;
     },
   },
-  effects: {
+  methods: {
     async requestApi() {
       const result = await http.get('/path/to');
       // ...
@@ -43,12 +43,12 @@ const initialState = { count: 0 };
 
 export const testModel = defineModel('test', {
   initialState,
-  actions: {
+  reducers: {
     add(state, step: number) {
       state.count += step;
     },
   },
-  effects: {
+  methods: {
     _notify() {
       // do something
     },

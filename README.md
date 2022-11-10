@@ -64,7 +64,7 @@ store.init();
 
 # 创建模型
 
-### actions 修改数据
+### reducers 修改数据
 
 ```typescript
 import { defineModel } from 'foca';
@@ -73,7 +73,7 @@ const initialState: { count: number } = { count: 0 };
 
 export const counterModel = defineModel('counter', {
   initialState,
-  actions: {
+  reducers: {
     // 支持无限参数
     plus(state, value: number, times: number = 1) {
       state.count += value * times;
@@ -102,22 +102,22 @@ export const counterModel = defineModel('counter', {
 });
 ```
 
-### effects 副作用
+### methods 组合逻辑
 
 ```typescript
 export const counterModel = defineModel('counter', {
   initialState,
-  actions: {
+  reducers: {
     increment(state) {
       state.count += 1;
     },
   },
-  effects: {
+  methods: {
     async incrementAsync() {
       await this._sleep(100);
 
       this.increment();
-      // 也可直接修改状态而不通过actions，仅在内部使用
+      // 也可直接修改状态而不通过reducers，仅在内部使用
       this.setState({ count: this.state.count + 1 });
       this.setState((state) => {
         state.count += 1;

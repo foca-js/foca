@@ -8,7 +8,7 @@ const initialState: {
 
 export const persistModel = defineModel('persist', {
   initialState,
-  actions: {
+  reducers: {
     plus(state, step: number) {
       state.counter += step;
     },

@@ -53,7 +53,7 @@ test('Reset model state', () => {
   expect(basicModel.state.hello).toBe('world');
 });
 
-test('Call action', () => {
+test('Call reducer', () => {
   expect(basicModel.state.count).toBe(0);
 
   basicModel.plus(1);
@@ -66,7 +66,7 @@ test('Call action', () => {
   expect(basicModel.state.count).toBe(4);
 });
 
-test('call action with multiple parameters', () => {
+test('call reducer with multiple parameters', () => {
   expect(basicModel.state.count).toBe(0);
   expect(basicModel.state.hello).toBe('world');
 
@@ -75,7 +75,7 @@ test('call action with multiple parameters', () => {
   expect(basicModel.state.hello).toBe('world, timi');
 });
 
-test('Set state in effects', async () => {
+test('Set state in methods', async () => {
   expect(basicModel.state.count).toBe(0);
   expect(basicModel.state.hello).toBe('world');
 
@@ -85,7 +85,7 @@ test('Set state in effects', async () => {
   expect(basicModel.state.hello).toBe('earth');
 });
 
-test('Set state without function callback in effects', () => {
+test('Set state without function callback in methods', () => {
   expect(basicModel.state.count).toBe(0);
 
   basicModel.setWithoutFn(15);
@@ -98,7 +98,7 @@ test('Set state without function callback in effects', () => {
   expect(basicModel.state.count).toBe(54.3);
 });
 
-test('set partial object state in effects', () => {
+test('set partial object state in methods', () => {
   type State = {
     test: { count: number };
     hello: string | undefined;
@@ -112,7 +112,7 @@ test('set partial object state in effects', () => {
       hello: 'world',
       name: 'timi',
     },
-    effects: {
+    methods: {
       setNothing() {
         this.setState({});
       },
@@ -176,10 +176,10 @@ test('set partial object state in effects', () => {
   expect(model.state.test).toBe(123);
 });
 
-test('set partial array state in effects', () => {
+test('set partial array state in methods', () => {
   const model = defineModel('partial-array-model', {
     initialState: ['2'],
-    effects: {
+    methods: {
       set() {
         this.setState(['20', '30']);
       },
@@ -198,7 +198,7 @@ test('set partial array state in effects', () => {
   expect(model.state).toStrictEqual(['20', '30']);
 });
 
-test('private action and effect', () => {
+test('private reducer and method', () => {
   expect(
     // @ts-expect-error
     basicModel._actionIsPrivate,
@@ -227,10 +227,10 @@ test('define duplicated method keys will throw error', () => {
   expect(() =>
     defineModel('x' + Math.random(), {
       initialState: {},
-      actions: {
+      reducers: {
         test1() {},
       },
-      effects: {
+      methods: {
         test1() {},
         test2() {},
       },
@@ -240,7 +240,7 @@ test('define duplicated method keys will throw error', () => {
   expect(() =>
     defineModel('x' + Math.random(), {
       initialState: {},
-      actions: {
+      reducers: {
         test2() {},
       },
       computed: {
@@ -253,7 +253,7 @@ test('define duplicated method keys will throw error', () => {
   expect(() =>
     defineModel('x' + Math.random(), {
       initialState: {},
-      effects: {
+      methods: {
         test2() {},
       },
       computed: {

@@ -15,9 +15,9 @@ export const actionInActionInterceptor: Middleware = () => {
     // model的action如果没有变化则不会进入redux，所以需要在这里额外保护。
     if (dispatching) {
       throw new Error(
-        '[dispatch] 派发任务冲突，请检查是否在actions函数中直接或者间接执行了其他actions或者effects函数。\nactions的唯一职责是更新当前的state，有额外的业务逻辑时请把effects作为执行入口并按需调用actions。\n\n当前冲突的action：\n\n' +
+        '[dispatch] 派发任务冲突，请检查是否在reducers函数中直接或者间接执行了其他reducers或者methods函数。\nreducers的唯一职责是更新当前的state，有额外的业务逻辑时请把methods作为执行入口并按需调用reducers。\n\n当前冲突的reducer：\n\n' +
           JSON.stringify(action, null, 4) +
-          '\n\n上次执行未完成的action：\n\n' +
+          '\n\n上次执行未完成的reducer：\n\n' +
           JSON.stringify(prevAction, null, 4) +
           '\n\n',
       );

@@ -9,7 +9,7 @@ describe('onInit', () => {
   const createModel = () => {
     return defineModel('events' + Math.random(), {
       initialState: { count: 0 },
-      effects: {
+      methods: {
         invokeByReadyHook() {
           this.setState((state) => {
             state.count += 101;
@@ -95,7 +95,7 @@ describe('onChange', () => {
     let testMessage = '';
     const model = defineModel('events' + Math.random(), {
       initialState: { count: 0 },
-      actions: {
+      reducers: {
         plus(state) {
           state.count += 1;
         },
@@ -103,7 +103,7 @@ describe('onChange', () => {
           state.count -= 1;
         },
       },
-      effects: {
+      methods: {
         _invokeByReadyHook() {
           this.setState((state) => {
             state.count += 2;

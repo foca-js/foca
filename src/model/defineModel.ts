@@ -38,14 +38,34 @@ export const defineModel = <
 ): Model<Name, State, Action, Effect, Computed> => {
   guard(uniqueName);
 
-  const { actions, effects, computed, skipRefresh, events } = options;
+  const {
+    reducers = options.actions,
+    methods: methods = options.effects,
+    computed,
+    skipRefresh,
+    events,
+  } = options;
   const isArrayState = Array.isArray(options.initialState);
   const initialStateStr = stringifyState(options.initialState);
 
   if (process.env.NODE_ENV !== 'production') {
+    if (options.actions) {
+      console.warn(
+        `[model:${uniqueName}] 属性actions已经重命名为reducers，建议使用编辑器进行批量替换。该属性将在2.0.0版本发布时删除`,
+      );
+    }
+
+    if (options.effects) {
+      console.warn(
+        `[model:${uniqueName}] 属性effects已经重命名为methods，建议使用编辑器进行批量替换。该属性将在2.0.0版本发布时删除`,
+      );
+    }
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
     const items = [
-      { name: 'actions', value: actions },
-      { name: 'effects', value: effects },
+      { name: 'reducers', value: reducers },
+      { name: 'methods', value: methods },
       { name: 'computed', value: computed },
     ];
     const validateUniqueMethod = (index1: number, index2: number) => {
@@ -130,10 +150,10 @@ export const defineModel = <
     internal: {},
   };
 
-  if (actions) {
-    Object.keys(actions).forEach((actionName) => {
+  if (reducers) {
+    Object.keys(reducers).forEach((actionName) => {
       enhancedMethods[getMethodCategory(actionName)][actionName] =
-        enhanceAction(actionCtx, actionName, actions[actionName]!);
+        enhanceAction(actionCtx, actionName, reducers[actionName]!);
     });
   }
 
@@ -155,10 +175,10 @@ export const defineModel = <
     });
   }
 
-  if (effects) {
+  if (methods) {
     const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
 
-    Object.keys(effects).forEach((effectName) => {
+    Object.keys(methods).forEach((effectName) => {
       let ctx = effectCtxs[0]!;
 
       if (process.env.NODE_ENV !== 'production') {
@@ -171,7 +191,7 @@ export const defineModel = <
           ctx,
           effectName,
           // @ts-expect-error
-          effects[effectName],
+          methods[effectName],
         );
     });
 

@@ -216,7 +216,7 @@ export interface DefineModelOptions<
    * ```typescript
    * const model = defineModel('model1', {
    *   initialState,
-   *   actions: {
+   *   reducers: {
    *     plus(state, step: number) {
    *       state.count += step;
    *     },
@@ -227,6 +227,10 @@ export interface DefineModelOptions<
    * });
    * ```
    */
+  reducers?: Action & InternalAction<State> & ThisType<ActionCtx<State>>;
+  /**
+   * @deprecated 请使用reducers
+   */
   actions?: Action & InternalAction<State> & ThisType<ActionCtx<State>>;
   /**
    * 定义普通方法，异步方法等。
@@ -235,7 +239,7 @@ export interface DefineModelOptions<
    * ```typescript
    * const model = defineModel('model1', {
    *   initialState,
-   *   effects: {
+   *   methods: {
    *     async foo(p1: string, p2: number) {
    *       const result = await Promise.resolve();
    *       this.setState({ x: result });
@@ -247,6 +251,16 @@ export interface DefineModelOptions<
    * useLoading(model.foo); // 返回值类型: boolean
    * ```
    */
+  methods?: Effect &
+    ThisType<
+      ModelAction<State, Action> &
+        Effect &
+        ModelComputed<Computed> &
+        EffectCtx<State>
+    >;
+  /**
+   * @deprecated 请使用methods
+   */
   effects?: Effect &
     ThisType<
       ModelAction<State, Action> &
@@ -255,7 +269,7 @@ export interface DefineModelOptions<
         EffectCtx<State>
     >;
   /**
-   * 定义计算属性。针对需要复杂的计算才能得出结果的场景而设计。如果只是简单的返回，建议使用`effects`
+   * 定义计算属性。针对需要复杂的计算才能得出结果的场景而设计。如果只是简单的返回，建议使用`methods`
    *
    * ```typescript
    * const initialState = { firstName: 'tick', lastName: 'tock' };

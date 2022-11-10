@@ -12,7 +12,7 @@ const initialState: {
 
 export const basicModel = defineModel('basic', {
   initialState,
-  actions: {
+  reducers: {
     plus(state, step: number) {
       state.count += step;
     },
@@ -32,7 +32,7 @@ export const basicModel = defineModel('basic', {
     _actionIsPrivate() {},
     ____alsoPrivateAction() {},
   },
-  effects: {
+  methods: {
     async foo(hello: string, step: number) {
       await sleep(20);
 

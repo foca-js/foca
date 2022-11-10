@@ -282,7 +282,7 @@ it('rxjs can observe store', () => {
       foo: 0,
       bar: 0,
     },
-    actions: {
+    reducers: {
       foo(state) {
         state.foo += 1;
       },

@@ -2,7 +2,7 @@
 
 # Model
 
-原生的 redux 由 actions/types/reducer 三个部分组成，大多数情况我们会分成 3 个文件分别存储。在实际使用中，这种模板式的书写方式不仅繁琐，而且难以将他们关联起来，类型提示就更麻烦了。
+原生的 redux 由 action/type/reducer 三个部分组成，大多数情况我们会分成 3 个文件分别存储。在实际使用中，这种模板式的书写方式不仅繁琐，而且难以将他们关联起来，类型提示就更麻烦了。
 
 基于此，我们提出了模型概念，以 state 为核心，任何更改 state 的操作都应该放在一起。
 
@@ -45,14 +45,14 @@ defineModel('model-array', {
 });
 ```
 
-# Actions
+# Reducers
 
-模型光有 state 也不行，你现在拿到的就是一个空数组([])。加点数据上去吧，这时候就要用到 action：
+模型光有 state 也不行，你现在拿到的就是一个空数组([])。加点数据上去吧，这时候就要用到 reducers：
 
 ```typescript
 export const userModel = defineModel('users', {
   initialState,
-  actions: {
+  reducers: {
     addUser(state, user: UserItem) {
       state.push(user);
     },
@@ -75,7 +75,7 @@ export const userModel = defineModel('users', {
 });
 ```
 
-就这么干，你已经赋予了模型生命，你等下可以和它互动了。现在，我们来说说这些 actions 需要注意的几个点：
+就这么干，你已经赋予了模型生命，你等下可以和它互动了。现在，我们来说说这些 reducers 需要注意的几个点：
 
 - 函数的第一个参数一定是 state ，而且它是能自动识别到类型`State`的，你不用刻意地去指定。
 - 函数是可以带多个参数的，这全凭你自己的喜好。
@@ -83,14 +83,14 @@ export const userModel = defineModel('users', {
 - 函数返回值必须是`State`类型。当然你也可以不返回，这时 foca 会认为你正在直接修改 state。
 - 如果你想使用`this`上下文，比如上面的 **clear()** 函数返回了初始值，那么请~~不要使用箭头函数~~。
 
-# Effects
+# Methods
 
-不可否认，你的数据不可能总是凭空捏造，在真实的业务场景中，数据总是通过接口获得，然后保存到 state 中。foca 贴心地为你准备了异步函数，快来试试吧：
+不可否认，你的数据不可能总是凭空捏造，在真实的业务场景中，数据总是通过接口获得，然后保存到 state 中。foca 贴心地为你准备了组合逻辑的函数，快来试试吧：
 
 ```typescript
 const userModel = defineModel('users', {
   initialState,
-  effects: {
+  methods: {
     async get() {
       const users = await http.get<UserItem[]>('/users');
       this.setState(users);
@@ -105,9 +105,9 @@ const userModel = defineModel('users', {
 });
 ```
 
-瞧见没，你可以在 effects 里自由地使用 async/await 方案，然后通过`this.setState`快速更新 state。
+瞧见没，你可以在 methods 里自由地使用 async/await 方案，然后通过`this.setState`快速更新 state。
 
-接下来我们说说`setState`，这其实完全就是 action 的快捷方式，你可以直接传入数据或者使用匿名函数来操作，十分方便。这不禁让我们想起了 React Component 里的 setState，好吧，我承认此处有抄的成分。
+接下来我们说说`setState`，这其实完全就是 reducers 的快捷方式，你可以直接传入数据或者使用匿名函数来操作，十分方便。这不禁让我们想起了 React Component 里的 setState，好吧，我承认此处有抄的成分。
 
 ```typescript
 // 1. 全量更新，适用于 array, object
@@ -122,7 +122,7 @@ this.setState({
   a: 1,
 });
 
-// 3. 回调全量更新，与action一致，适用于 array, object
+// 3. 回调全量更新，与reducers一致，适用于 array, object
 this.setState((state) => {
   return {
     a: 1,
@@ -133,7 +133,7 @@ this.setState((state) => {
   return ['a', 'b', 'c'];
 });
 
-// 4. 回调部分更新，与action一致，适用于 array, object
+// 4. 回调部分更新，与reducers一致，适用于 array, object
 this.setState((state) => {
   state.b = 2;
 });
@@ -142,20 +142,20 @@ this.setState((state) => {
 });
 ```
 
-但是你压根就不想用`setState`，你觉得这样看起来很混乱？OK，你突然想起可以使用 actions 去改变 state 不是吗？
+但是你压根就不想用`setState`，你觉得这样看起来很混乱？OK，你突然想起可以使用 reducers 去改变 state 不是吗？
 
 ```typescript
 const userModel = defineModel('users', {
   initialState,
-  actions: {
+  reducers: {
     addUser(state, user: UserItem) {
       state.push(user);
     },
   },
-  effects: {
+  methods: {
     async retrieve(id: number) {
       const user = await http.get<UserItem>(`/users/${id}`);
-      // 调用actions里的函数
+      // 调用reducers里的函数
       this.addUser(user);
     },
   },
@@ -215,4 +215,4 @@ useComputed(userModel.fullName); // string
 
 ## initialState
 
-只有在 actions 和 effects 方法内部才能使用。通过`this.initialState`获取。
+只有在 reducers 和 methods 方法内部才能使用。通过`this.initialState`获取。

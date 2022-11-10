@@ -64,7 +64,7 @@ const count = useModel(
 
 # useLoading
 
-effects 函数大部分是异步的，你可能正在函数里执行一个请求 api 的操作。在用户等待期间，你需要为用户渲染`loading...`之类的字样或者图标以缓解用户的焦虑心情。利用 foca 提供的逻辑，你可以轻松地知道某个函数是否正在执行：
+methods 函数大部分是异步的，你可能正在函数里执行一个请求 api 的操作。在用户等待期间，你需要为用户渲染`loading...`之类的字样或者图标以缓解用户的焦虑心情。利用 foca 提供的逻辑，你可以轻松地知道某个函数是否正在执行：
 
 ```tsx
 import { useLoading } from 'foca';

@@ -18,7 +18,7 @@ const initialState: {
 
 export const computedModel = defineModel('computed-model', {
   initialState,
-  actions: {
+  reducers: {
     changeFirstName(state, value: string) {
       state.firstName = value;
     },
@@ -31,7 +31,7 @@ export const computedModel = defineModel('computed-model', {
       state.lastName = value;
     },
   },
-  effects: {
+  methods: {
     effectsGetFullName() {
       expectType<ComputedRef<string>>(this._privateFullname);
 
