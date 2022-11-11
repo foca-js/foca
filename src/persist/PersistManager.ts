@@ -36,7 +36,9 @@ export class PersistManager {
 
   combineReducer(original: Reducer): Reducer<Record<string, object>> {
     return (state, action) => {
-      if (state === void 0) state = {};
+      if (state === void 0) {
+        state = {};
+      }
 
       if (isHydrateAction(action)) {
         return Object.assign({}, state, action.payload);

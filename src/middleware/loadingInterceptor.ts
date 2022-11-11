@@ -16,9 +16,7 @@ export const loadingInterceptor = (
       payload: { category, loading },
     } = action;
 
-    if (!loadingStore.isActive(model, method)) {
-      return;
-    }
+    if (!loadingStore.isActive(model, method)) return;
 
     const record = loadingStore.getItem(model, method);
 

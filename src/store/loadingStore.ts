@@ -97,7 +97,9 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
     state: LoadingStoreState | undefined,
     action: AnyAction,
   ): LoadingStoreState {
-    if (state === void 0) state = {};
+    if (state === void 0) {
+      state = {};
+    }
 
     if (isLoadingAction(action)) {
       const {
@@ -121,9 +123,7 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
       return next;
     }
 
-    if (isRefreshAction(action)) {
-      return {};
-    }
+    if (isRefreshAction(action)) return {};
 
     return state;
   }

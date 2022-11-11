@@ -16,9 +16,7 @@ export const createReducer = <State extends object>(
   const initialState = options.initialState;
 
   return function reducer(state, action) {
-    if (state === void 0) {
-      return initialState;
-    }
+    if (state === void 0) return initialState;
 
     if (isPostModelAction<State>(action) && action.model === reducerName) {
       return action.next;

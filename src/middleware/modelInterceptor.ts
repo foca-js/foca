@@ -16,9 +16,7 @@ export const modelInterceptor: Middleware<{}, Record<string, object>> =
 
     action.actionInActionGuard?.();
 
-    if (deepEqual(prev, next)) {
-      return action;
-    }
+    if (deepEqual(prev, next)) return action;
 
     return dispatch<PostModelAction>({
       type: action.type,

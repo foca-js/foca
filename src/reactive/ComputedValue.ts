@@ -36,9 +36,7 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
   }
 
   isDirty(): boolean {
-    if (!this.root) {
-      return true;
-    }
+    if (!this.root) return true;
 
     const rootState = this.store.getState();
 

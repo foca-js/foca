@@ -162,7 +162,9 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
 
   protected combineReducers(): Reducer<Record<string, object>> {
     return (state, action) => {
-      if (state === void 0) state = {};
+      if (state === void 0) {
+        state = {};
+      }
 
       const reducerKeys = this.reducerKeys;
       const consumers = this.consumers;

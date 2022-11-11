@@ -124,9 +124,7 @@ const execute = <State extends object>(
   const modelName = ctx.name;
   const resultOrPromise = effect.apply(ctx, args);
 
-  if (!isPromise(resultOrPromise)) {
-    return resultOrPromise;
-  }
+  if (!isPromise(resultOrPromise)) return resultOrPromise;
 
   dispatchLoading(modelName, methodName, true, category);
 

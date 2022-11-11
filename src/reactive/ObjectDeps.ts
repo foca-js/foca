@@ -19,9 +19,7 @@ export class ObjectDeps<T = any> implements Deps {
   isDirty(): boolean {
     const rootState = this.getState();
 
-    if (this.root === rootState) {
-      return false;
-    }
+    if (this.root === rootState) return false;
 
     if (this.snapshot === this.getSnapshot(rootState)) {
       this.root = rootState;
@@ -53,9 +51,7 @@ export class ObjectDeps<T = any> implements Deps {
     let snapshot = state;
 
     for (let i = 0; i < deps.length; ++i) {
-      if (!isObject<Record<string, any>>(snapshot)) {
-        break;
-      }
+      if (!isObject<Record<string, any>>(snapshot)) break;
       snapshot = snapshot[deps[i]!];
     }
 
@@ -78,9 +74,7 @@ export class ObjectDeps<T = any> implements Deps {
       Object.defineProperty(nextState, key, {
         enumerable: true,
         get: () => {
-          if (!this.active) {
-            return currentState[key];
-          }
+          if (!this.active) return currentState[key];
 
           if (visited) {
             return new ObjectDeps(
