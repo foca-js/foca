@@ -40,7 +40,7 @@ export const defineModel = <
 
   const {
     reducers = options.actions,
-    methods: methods = options.effects,
+    methods = options.effects,
     computed,
     skipRefresh,
     events,
@@ -176,28 +176,25 @@ export const defineModel = <
   }
 
   if (methods) {
-    const effectCtxs: EffectCtx<State>[] = [createEffectCtx('')];
+    let ctx: EffectCtx<State>;
+    const ctxs: EffectCtx<State>[] = [(ctx = createEffectCtx(''))];
 
-    Object.keys(methods).forEach((effectName) => {
-      let ctx = effectCtxs[0]!;
-
+    Object.keys(methods).forEach((key) => {
       if (process.env.NODE_ENV !== 'production') {
-        effectCtxs.push(createEffectCtx(effectName));
-        ctx = effectCtxs[effectCtxs.length - 1]!;
+        ctxs.push((ctx = createEffectCtx(key)));
       }
 
-      enhancedMethods[getMethodCategory(effectName)][effectName] =
-        enhanceEffect(
-          ctx,
-          effectName,
-          // @ts-expect-error
-          methods[effectName],
-        );
+      enhancedMethods[getMethodCategory(key)][key] = enhanceEffect(
+        ctx,
+        key,
+        // @ts-expect-error
+        methods[key],
+      );
     });
 
-    for (let i = effectCtxs.length; i-- > 0; ) {
+    for (let i = ctxs.length; i-- > 0; ) {
       Object.assign(
-        effectCtxs[i]!,
+        ctxs[i]!,
         enhancedMethods.external,
         enhancedMethods.internal,
       );
