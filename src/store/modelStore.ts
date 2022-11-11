@@ -28,7 +28,7 @@ interface CreateStoreOptions {
   persist?: PersistOptions[];
 }
 
-class ModelStore extends StoreBasic<Record<string, any>> {
+export class ModelStore extends StoreBasic<Record<string, any>> {
   public topic: Topic<{
     init: [];
     ready: [];
@@ -187,10 +187,11 @@ class ModelStore extends StoreBasic<Record<string, any>> {
     };
   }
 
-  /**
-   * @protected
-   */
-  public appendReducer(key: string, consumer: Reducer): void {
+  public static appendReducer(
+    this: ModelStore,
+    key: string,
+    consumer: Reducer,
+  ): void {
     const store = this.origin;
     const consumers = this.consumers;
     const exists = store && consumers.hasOwnProperty(key);
@@ -200,10 +201,7 @@ class ModelStore extends StoreBasic<Record<string, any>> {
     store && !exists && store.replaceReducer(this.reducer);
   }
 
-  /**
-   * @protected
-   */
-  public removeReducer(key: string): void {
+  public static removeReducer(this: ModelStore, key: string): void {
     const store = this.origin;
     const consumers = this.consumers;
 
