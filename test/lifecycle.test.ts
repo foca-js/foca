@@ -144,3 +144,63 @@ describe('onChange', () => {
     );
   });
 });
+
+describe('onDestroy', () => {
+  beforeEach(() => {
+    store.init();
+  });
+
+  afterEach(() => {
+    store.unmount();
+  });
+
+  test('call onDestroy when invoke store.destroy()', async () => {
+    const spy = jest.fn();
+    const model = defineModel('events' + Math.random(), {
+      initialState: { count: 0 },
+      reducers: {
+        update(state) {
+          state.count += 1;
+        },
+      },
+      events: {
+        onDestroy: spy,
+      },
+    });
+
+    await store.onInitialized();
+
+    model.update();
+    expect(spy).toBeCalledTimes(0);
+    store.removeReducer(model.name);
+    expect(spy).toBeCalledTimes(1);
+    spy.mockRestore();
+  });
+
+  test('should not call onChange', async () => {
+    const destroySpy = jest.fn();
+    const changeSpy = jest.fn();
+    const model = defineModel('events' + Math.random(), {
+      initialState: { count: 0 },
+      reducers: {
+        update(state) {
+          state.count += 1;
+        },
+      },
+      events: {
+        onChange: changeSpy,
+        onDestroy: destroySpy,
+      },
+    });
+
+    await store.onInitialized();
+
+    model.update();
+    expect(destroySpy).toBeCalledTimes(0);
+    expect(changeSpy).toBeCalledTimes(1);
+    store.removeReducer(model.name);
+    expect(destroySpy).toBeCalledTimes(1);
+    expect(changeSpy).toBeCalledTimes(1);
+    destroySpy.mockRestore();
+  });
+});

@@ -220,11 +220,14 @@ export const defineModel = <
         subscriptions.push(
           modelStore.subscribe(() => {
             const nextState = eventCtx.state;
-            if (prevState !== nextState) {
+            if (
               modelStore.isReady &&
-                onChange.call(eventCtx, prevState, nextState);
-              prevState = nextState;
+              prevState !== nextState &&
+              nextState !== void 0
+            ) {
+              onChange.call(eventCtx, prevState, nextState);
             }
+            prevState = nextState;
           }),
         );
       }
@@ -235,7 +238,7 @@ export const defineModel = <
         subscriptions.push(
           modelStore.subscribe(() => {
             if (eventCtx.state === void 0) {
-              subscriptions.forEach((executor) => executor());
+              subscriptions.forEach((unsubscribe) => unsubscribe());
               onDestroy.call(null as never);
             }
           }),
