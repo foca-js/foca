@@ -1,5 +1,9 @@
 ## master
 
+## [1.2.1](https://github.com/foca-js/foca/compare/v1.2.0...v1.2.1)&nbsp;&nbsp;(2022-11-11)
+
+- 销毁模型时可能触发`onChange`勾子
+
 ## [1.2.0](https://github.com/foca-js/foca/compare/v1.1.0...v1.2.0)&nbsp;&nbsp;(2022-11-10)
 
 - 重命名 actions 为 reducers (#29)
