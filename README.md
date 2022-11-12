@@ -231,11 +231,11 @@ Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
 
 #### 网络请求
 
-| 仓库                                                                        | 版本                                                                                                                | 描述                           | 平台      |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------ | --------- |
-| [axios](https://github.com/axios/axios)                                     | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                                   | 当下最流行的请求库             | React, RN |
-| [foca-axios](https://github.com/foca-js/foca-axios)                         | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)                         | axios 适配器，节流、缓存、重试 | React, RN |
-| [foca-miniprogram-axios](https://github.com/foca-js/foca-miniprogram-axios) | [![npm](https://img.shields.io/npm/v/foca-miniprogram-axios)](https://www.npmjs.com/package/foca-miniprogram-axios) | axios 适配器，节流、缓存、重试 | Taro      |
+| 仓库                                                          | 版本                                                                                                  | 描述                           | 平台      |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------ | --------- |
+| [axios](https://github.com/axios/axios)                       | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                     | 当下最流行的请求库             | React, RN |
+| [foca-axios](https://github.com/foca-js/foca-axios)           | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)           | axios 适配器，节流、缓存、重试 | React, RN |
+| [foca-taro-axios](https://github.com/foca-js/foca-taro-axios) | [![npm](https://img.shields.io/npm/v/foca-taro-axios)](https://www.npmjs.com/package/foca-taro-axios) | axios 适配器，节流、缓存、重试 | Taro      |
 
 #### 存储引擎
 
