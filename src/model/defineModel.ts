@@ -141,7 +141,7 @@ export const defineModel = <
   };
 
   const enhancedMethods: {
-    [key in ReturnType<typeof getMethodCategory>]: Record<
+    [K in ReturnType<typeof getMethodCategory>]: Record<
       string,
       EnhancedAction<State> | EnhancedEffect | ComputedValue
     >;
@@ -151,9 +151,12 @@ export const defineModel = <
   };
 
   if (reducers) {
-    Object.keys(reducers).forEach((actionName) => {
-      enhancedMethods[getMethodCategory(actionName)][actionName] =
-        enhanceAction(actionCtx, actionName, reducers[actionName]!);
+    Object.keys(reducers).forEach((key) => {
+      enhancedMethods[getMethodCategory(key)][key] = enhanceAction(
+        actionCtx,
+        key,
+        reducers[key]!,
+      );
     });
   }
 
@@ -162,16 +165,15 @@ export const defineModel = <
       [K in string]?: ComputedValue;
     } = composeGetter({}, getName, getState);
 
-    Object.keys(computed).forEach((computedName) => {
-      computedCtx[computedName] = enhancedMethods[
-        getMethodCategory(computedName)
-      ][computedName] = new ComputedValue(
-        modelStore,
-        uniqueName,
-        computedName,
-        // @ts-expect-error
-        (computed[computedName] as Function).bind(computedCtx),
-      );
+    Object.keys(computed).forEach((key) => {
+      computedCtx[key] = enhancedMethods[getMethodCategory(key)][key] =
+        new ComputedValue(
+          modelStore,
+          uniqueName,
+          key,
+          // @ts-expect-error
+          (computed[key] as Function).bind(computedCtx),
+        );
     });
   }
 

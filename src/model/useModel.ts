@@ -204,7 +204,7 @@ export function useModel(): any {
   // 因为存在闭包，除模型外的所有参数都是旧的，
   // 所以我们只需要保证用到的模型数据不变即可，这样可以减少无意义的计算。
   let hasMemo = false,
-    memoSnapshot: any,
+    snapshot: any,
     memoStates: object[],
     currentStates: object[],
     i: number,
@@ -224,7 +224,7 @@ export function useModel(): any {
     if (hasMemo) {
       // 大部分业务场景，用户只会传入一个模型（符合直觉），所以值得额外的快速对比
       if (onlyOneModel) {
-        if (currentStates[0] === memoStates[0]) return memoSnapshot;
+        if (currentStates[0] === memoStates[0]) return snapshot;
       } else {
         for (i = modelsLength, changed = false; i-- > 0; ) {
           if (currentStates[i] !== memoStates[i]) {
@@ -233,7 +233,7 @@ export function useModel(): any {
           }
         }
 
-        if (!changed) return memoSnapshot;
+        if (!changed) return snapshot;
       }
     }
 
@@ -241,20 +241,20 @@ export function useModel(): any {
     memoStates = currentStates;
 
     if (onlyOneModel) {
-      return (memoSnapshot = selector
+      return (snapshot = selector
         ? selector(currentStates[0])
         : currentStates[0]);
     }
 
     if (selector) {
-      return (memoSnapshot = selector.apply(null, currentStates));
+      return (snapshot = selector.apply(null, currentStates));
     }
 
-    memoSnapshot = {};
+    snapshot = {};
     for (i = modelsLength; i-- > 0; ) {
-      memoSnapshot[reducerNames[i]!] = currentStates[i]!;
+      snapshot[reducerNames[i]!] = currentStates[i]!;
     }
-    return memoSnapshot;
+    return snapshot;
   }, compareFn[algorithm]);
 }
 
