@@ -12,7 +12,6 @@
 [![License](https://img.shields.io/github/license/foca-js/foca?logo=open-source-initiative)](https://github.com/foca-js/foca/blob/master/LICENSE)
 [![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/foca-js/foca?label=code%20quality&logo=lgtm)](https://lgtm.com/projects/g/foca-js/foca)
 [![Code Style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?logo=prettier)](https://github.com/prettier/prettier)
-[![Gitter](https://img.shields.io/gitter/room/foca-js/foca?logo=gitter)](https://gitter.im/foca-js/foca)
 
 <br>
 
