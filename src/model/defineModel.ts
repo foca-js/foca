@@ -231,8 +231,6 @@ export const defineModel = <
         );
       }
 
-      onInit && onInit.call(eventCtx);
-
       if (onDestroy) {
         subscriptions.push(
           modelStore.subscribe(() => {
@@ -243,6 +241,8 @@ export const defineModel = <
           }),
         );
       }
+
+      onInit && onInit.call(eventCtx);
     });
   }
 
