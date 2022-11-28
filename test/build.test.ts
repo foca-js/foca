@@ -15,7 +15,7 @@ function testFile(filename: string, expectCode: number) {
 }
 
 beforeEach(() => {
-  execSync('yarn tsup');
+  execSync('npx tsup');
 }, 10000);
 
 test('ESM with type=module', async () => {

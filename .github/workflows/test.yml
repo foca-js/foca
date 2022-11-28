@@ -10,6 +10,20 @@ on:
     branches:
 
 jobs:
+  formatting:
+    if: "!contains(toJson(github.event.commits), '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.17.1
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: npx --no-install prettier --cache --verbose --check .
+
   type-checking:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
     strategy:
@@ -19,18 +33,22 @@ jobs:
         react-version: ['16.14.0', 16.x, 17.x, 18.x]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
+          version: 7.17.1
+      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
           node-version: ${{ matrix.node-version }}
       - run: |
-          yarn install
-          yarn add --dev \
+          pnpm install
+          pnpm add -D \
             typescript@${{ matrix.ts-version }} \
             react@${{ matrix.react-version }} \
             react-dom@${{ matrix.react-version }}
-      - run: yarn tsc
+      - run: npx --no-install tsc --noEmit
 
   react-16-17:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
@@ -40,19 +58,23 @@ jobs:
         react-version: ['16.14.0', 16.x, 17.x]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
+          version: 7.17.1
+      - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
           node-version: ${{ matrix.node-version }}
       - run: |
-          yarn install
-          yarn add --dev \
+          pnpm install
+          pnpm add -D \
             react@${{ matrix.react-version }} \
             react-dom@${{ matrix.react-version }} \
             react-test-renderer@${{ matrix.react-version }} \
             @testing-library/react@12
-      - run: yarn test  --coverage=false
+      - run: pnpm run test --coverage=false
 
   react-18:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
@@ -62,20 +84,24 @@ jobs:
         react-version: [18.x]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
+          version: 7.17.1
+      - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
           node-version: ${{ matrix.node-version }}
       - run: |
-          yarn install
-          yarn add --dev \
+          pnpm install
+          pnpm add -D \
             react@${{ matrix.react-version }} \
             react-dom@${{ matrix.react-version }} \
             react-test-renderer@${{ matrix.react-version }}
-      - run: yarn test
+      - run: pnpm run test
       - name: Upload Coverage
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: github.ref == 'refs/heads/master'
         with:
           name: coverage
@@ -88,10 +114,10 @@ jobs:
     needs: react-18
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download Coverage
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: coverage
           path: coverage
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3

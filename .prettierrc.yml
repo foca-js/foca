@@ -13,4 +13,4 @@ arrowParens: always
 proseWrap: preserve
 jsxSingleQuote: false
 # Put > on the last line instead of at a new line.
-jsxBracketSameLine: false
+bracketSameLine: false
