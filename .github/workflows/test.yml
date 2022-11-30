@@ -16,10 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
-        with:
-          version: 7.17.1
       - uses: actions/setup-node@v3
         with:
+          node-version-file: 'package.json'
           cache: 'pnpm'
       - run: pnpm install
       - run: npx --no-install prettier --cache --verbose --check .
@@ -35,8 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
-        with:
-          version: 7.17.1
       - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
         uses: actions/setup-node@v3
         with:
@@ -60,8 +57,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
-        with:
-          version: 7.17.1
       - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
         uses: actions/setup-node@v3
         with:
@@ -86,8 +81,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
-        with:
-          version: 7.17.1
       - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
         uses: actions/setup-node@v3
         with:
