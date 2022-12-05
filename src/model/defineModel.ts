@@ -15,7 +15,6 @@ import type {
   EffectCtx,
   DefineModelOptions,
   GetInitialState,
-  GetName,
   GetState,
   Model,
   ComputedCtx,
@@ -94,10 +93,6 @@ export const defineModel = <
     }
   }
 
-  const getName = <T extends object>(obj: T): T & GetName<Name> => {
-    return defineGetter(obj, 'name', () => uniqueName);
-  };
-
   const getState = <T extends object>(obj: T): T & GetState<State> => {
     return defineGetter(obj, 'state', () => {
       const state = modelStore.getState()[uniqueName];
@@ -114,8 +109,9 @@ export const defineModel = <
   };
 
   const actionCtx: ActionCtx<State> = composeGetter(
-    {},
-    getName,
+    {
+      name: uniqueName,
+    },
     getInitialState,
   );
 
@@ -137,7 +133,11 @@ export const defineModel = <
         },
       ),
     };
-    return composeGetter(obj, getName, getState, getInitialState);
+    return composeGetter(
+      Object.assign(obj, { name: uniqueName }),
+      getState,
+      getInitialState,
+    );
   };
 
   const enhancedMethods: {
@@ -163,7 +163,7 @@ export const defineModel = <
   if (computed) {
     const computedCtx: ComputedCtx<State> & {
       [K in string]?: ComputedValue;
-    } = composeGetter({}, getName, getState);
+    } = composeGetter({ name: uniqueName }, getState);
 
     Object.keys(computed).forEach((key) => {
       computedCtx[key] = enhancedMethods[getMethodCategory(key)][key] =
@@ -206,7 +206,7 @@ export const defineModel = <
   if (events) {
     const { onInit, onChange, onDestroy } = events;
     const eventCtx: EventCtx<State> = Object.assign(
-      composeGetter({}, getName, getState),
+      composeGetter({ name: uniqueName }, getState),
       enhancedMethods.external,
       enhancedMethods.internal,
     );
@@ -260,9 +260,9 @@ export const defineModel = <
     Object.assign(
       composeGetter(
         {
+          name: uniqueName,
           _$opts: options,
         },
-        getName,
         getState,
       ),
       enhancedMethods.external,
