@@ -1,5 +1,6 @@
 import { defineModel, getLoading, store } from '../src';
 import { DestroyLodingAction, DESTROY_LOADING } from '../src/actions/loading';
+import { lazyLoad } from '../src/model/lazyLoad';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
@@ -14,6 +15,8 @@ afterEach(() => {
 
 test('dispatch the same state should be intercepted', () => {
   const fn = jest.fn();
+  lazyLoad(basicModel.name);
+  lazyLoad(complexModel.name);
   const unsubscribe = store.subscribe(fn);
 
   expect(fn).toHaveBeenCalledTimes(0);

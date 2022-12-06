@@ -3,6 +3,7 @@ import { DestroyLodingAction, DESTROY_LOADING } from '../actions/loading';
 import { loadingStore } from '../store/loadingStore';
 import { ModelStore, modelStore } from '../store/modelStore';
 import { cloneModel } from './cloneModel';
+import { lazyLoad } from './lazyLoad';
 import { HookModel as HookModel, Model } from './types';
 
 let nameCounter = 0;
@@ -25,7 +26,9 @@ export const useDefined = <
       : useDevName(modelName, initialCount, new Error());
 
   const hookModel = useMemo(() => {
-    return cloneModel(uniqueName, globalModel);
+    const model = cloneModel(uniqueName, globalModel);
+    lazyLoad(uniqueName);
+    return model;
   }, [uniqueName]);
 
   return hookModel as any;
