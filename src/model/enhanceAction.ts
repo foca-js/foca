@@ -1,6 +1,7 @@
 import type { PreModelAction } from '../actions/model';
 import { modelStore } from '../store/modelStore';
 import { toArgs } from '../utils/toArgs';
+import { lazyLoad } from './lazyLoad';
 import type { ActionCtx } from './types';
 
 export interface EnhancedAction<State extends object> {
@@ -26,6 +27,7 @@ export const enhanceAction = <State extends object>(
   };
 
   const fn: EnhancedAction<State> = function () {
+    lazyLoad(modelName);
     return modelStore.dispatch<PreModelAction<State, any[]>>({
       type: actionType,
       model: modelName,

@@ -24,6 +24,7 @@ import type {
 import { isFunction } from '../utils/isType';
 import { Unsubscribe } from 'redux';
 import { original } from 'immer';
+import { lazyLoad } from './lazyLoad';
 
 export const defineModel = <
   Name extends string,
@@ -95,6 +96,7 @@ export const defineModel = <
 
   const getState = <T extends object>(obj: T): T & GetState<State> => {
     return defineGetter(obj, 'state', () => {
+      lazyLoad(uniqueName);
       const state = modelStore.getState()[uniqueName];
       return depsCollector.active
         ? new ObjectDeps(modelStore, uniqueName).start(state)
@@ -203,7 +205,9 @@ export const defineModel = <
     }
   }
 
-  if (events) {
+  const onLazyLoaded = () => {
+    if (!events) return;
+
     const { onInit, onChange, onDestroy } = events;
     const eventCtx: EventCtx<State> = Object.assign(
       composeGetter({ name: uniqueName }, getState),
@@ -211,7 +215,7 @@ export const defineModel = <
       enhancedMethods.internal,
     );
 
-    modelStore.onInitialized().then(() => {
+    {
       const subscriptions: Unsubscribe[] = [];
 
       if (onChange) {
@@ -243,8 +247,8 @@ export const defineModel = <
       }
 
       onInit && onInit.call(eventCtx);
-    });
-  }
+    }
+  };
 
   ModelStore.appendReducer.call(
     modelStore,
@@ -254,6 +258,7 @@ export const defineModel = <
       initialState: parseState(initialStateStr),
       allowRefresh: !skipRefresh,
     }),
+    onLazyLoaded,
   );
 
   const model: InternalModel<Name, State, Action, Effect, Computed> =

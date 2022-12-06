@@ -28,7 +28,7 @@ interface CreateStoreOptions {
   persist?: PersistOptions[];
 }
 
-export class ModelStore extends StoreBasic<Record<string, any>> {
+export class ModelStore<T = Record<string, any>> extends StoreBasic<T> {
   public topic: Topic<{
     init: [];
     ready: [];
@@ -38,6 +38,10 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
   protected _isReady: boolean = false;
   protected consumers: Record<string, Reducer> = {};
   protected reducerKeys: string[] = [];
+  protected lazyKeys: Record<
+    string,
+    { consumer: Reducer; onComplete: () => void }
+  > = {};
   /**
    * @protected
    */
@@ -125,12 +129,16 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     this.topic.publish('unmount');
   }
 
-  onInitialized(): Promise<void> {
+  onInitialized(maybeSync?: () => void): Promise<void> {
     return new Promise((resolve) => {
       if (this._isReady) {
+        maybeSync?.();
         resolve();
       } else {
-        this.topic.subscribeOnce('ready', resolve);
+        this.topic.subscribeOnce('ready', () => {
+          maybeSync?.();
+          resolve();
+        });
       }
     });
   }
@@ -189,11 +197,7 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     };
   }
 
-  public static appendReducer(
-    this: ModelStore,
-    key: string,
-    consumer: Reducer,
-  ): void {
+  protected appendReducer(key: string, consumer: Reducer) {
     const store = this.origin;
     const consumers = this.consumers;
     const exists = store && consumers.hasOwnProperty(key);
@@ -201,6 +205,27 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     consumers[key] = consumer;
     this.reducerKeys = Object.keys(consumers);
     store && !exists && store.replaceReducer(this.reducer);
+  }
+
+  public static appendReducer(
+    this: ModelStore,
+    key: string,
+    consumer: Reducer,
+    onComplete: () => void,
+  ): void {
+    this.lazyKeys[key] = {
+      consumer,
+      onComplete,
+    };
+  }
+
+  public static lazyLoad(this: ModelStore, key: string) {
+    if (this.lazyKeys.hasOwnProperty(key)) {
+      const { consumer, onComplete } = this.lazyKeys[key]!;
+      delete this.lazyKeys[key];
+      this.appendReducer(key, consumer);
+      this.onInitialized(onComplete);
+    }
   }
 
   public static removeReducer(this: ModelStore, key: string): void {

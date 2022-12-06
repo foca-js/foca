@@ -1,4 +1,5 @@
 import { cloneModel, defineModel, engines, store } from '../src';
+import { lazyLoad } from '../src/model/lazyLoad';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { ModelStore } from '../src/store/modelStore';
 
@@ -130,10 +131,8 @@ describe('onChange', () => {
         },
       },
     });
-    model.plus();
-    model.minus();
-    expect(testMessage).toBe('');
 
+    lazyLoad(model.name);
     await store.onInitialized();
 
     expect(testMessage).toBe('onInit-prev-0-next-2-');
