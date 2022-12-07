@@ -6,7 +6,7 @@ import { cloneModel } from './cloneModel';
 import { HookModel as HookModel, Model } from './types';
 
 let nameCounter = 0;
-let timesCounter: Record<string, number> = {};
+const hotReloadCounter: Record<string, number> = {};
 
 export const useDefined = <
   State extends object = object,
@@ -52,15 +52,9 @@ const useProdName = (modelName: string, count: number) => {
  * Warning: Cannot update a component (`XXX`) while rendering a different component (`XXX`)
  */
 const useDevName = (modelName: string, count: number, err: Error) => {
-  const [cache, setCache] = useState({
-    name: modelName,
-    count: count,
-  });
-
   const componentName = useMemo((): string => {
     try {
       const stacks = err.stack!.split('\n');
-
       const innerNamePattern = new RegExp(`at\\s${useDefined.name}\\s\\(`, 'i');
       const componentNamePattern = /at\s(.+?)\s\(/i;
 
@@ -72,31 +66,30 @@ const useDevName = (modelName: string, count: number, err: Error) => {
     } catch {}
 
     return 'Anonymous';
-  }, []);
+  }, [err.stack]);
 
   const uniqueName = `${componentName}:${count}:${modelName}`;
 
   useMemo(() => {
-    timesCounter[uniqueName] ||= 0;
-    ++timesCounter[uniqueName];
+    hotReloadCounter[uniqueName] ||= 0;
+    ++hotReloadCounter[uniqueName];
   }, [uniqueName]);
 
   useEffect(() => {
-    if (cache.name !== modelName || cache.count !== count) {
-      setCache({
-        name: modelName,
-        count: count,
-      });
-    }
-  }, [modelName, count]);
-
-  useEffect(() => {
-    const currentTimes = timesCounter[uniqueName];
+    const prev = hotReloadCounter[uniqueName];
     return () => {
+      /**
+       * 热更新时会重新执行一次useEffect
+       * setTimeout可以让其他useEffect有充分的时间使用model
+       *
+       * 需要卸载模型的场景是：
+       * 1. 组件hooks增减或者调换顺序（initialCount会自增）
+       * 2. 组件卸载
+       * 3. model.name变更
+       */
       setTimeout(() => {
-        if (currentTimes === timesCounter[uniqueName]) {
-          unmountModel(uniqueName);
-        }
+        const active = prev !== hotReloadCounter[uniqueName];
+        active || unmountModel(uniqueName);
       });
     };
   }, [uniqueName]);
