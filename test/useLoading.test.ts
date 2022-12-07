@@ -1,5 +1,4 @@
 import { act } from '@testing-library/react';
-import { expectType } from 'ts-expect';
 import { renderHook } from './helpers/renderHook';
 import { FocaProvider, store, useLoading } from '../src';
 import { basicModel } from './models/basicModel';
@@ -116,30 +115,4 @@ test('Pick loading from loadings', async () => {
 
   expect(result.current.find('m')).toBeFalsy();
   expect(result.current.find('n')).toBeFalsy();
-});
-
-test.skip('type checking', () => {
-  expectType<boolean>(useLoading(basicModel.bar));
-  expectType<boolean>(useLoading(basicModel.foo, basicModel.bar));
-  // @ts-expect-error
-  useLoading(basicModel.minus);
-  // @ts-expect-error
-  useLoading(basicModel);
-  // @ts-expect-error
-  useLoading({});
-
-  expectType<boolean>(useLoading(basicModel.foo.room).find('xx'));
-  expectType<boolean>(useLoading(basicModel.foo.room, 'xx'));
-  // @ts-expect-error
-  useLoading(basicModel.foo.room, basicModel.foo);
-  // @ts-expect-error
-  useLoading(basicModel.foo.room, true);
-  // @ts-expect-error
-  useLoading(basicModel.foo.room, false);
-  // @ts-expect-error
-  useLoading(basicModel.normalMethod.room);
-  // @ts-expect-error
-  useLoading(basicModel.normalMethod.assign);
-  // @ts-expect-error
-  useLoading(basicModel.minus.room);
 });
