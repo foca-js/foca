@@ -1,4 +1,3 @@
-import { expectType } from 'ts-expect';
 import { getLoading, store } from '../src';
 import { basicModel } from './models/basicModel';
 
@@ -27,20 +26,6 @@ test('Collect error message for method', async () => {
   await expect(promise).rejects.toThrowError('my-test');
 
   expect(getLoading(basicModel.hasError)).toBeFalsy();
-});
-
-test('Loading is unsupported for non-async method', () => {
-  expectType<boolean>(getLoading(basicModel.foo));
-  expectType<boolean>(getLoading(basicModel.foo.room).find('xx'));
-  expectType<boolean>(getLoading(basicModel.foo.room, 'xx'));
-  // @ts-expect-error
-  getLoading(basicModel.foo.room, basicModel.foo);
-  // @ts-expect-error
-  getLoading(basicModel.foo.room, true);
-  // @ts-expect-error
-  getLoading(basicModel.foo.room, false);
-  // @ts-expect-error
-  getLoading(basicModel.normalMethod.room);
 });
 
 test('Trace loadings', async () => {

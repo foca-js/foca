@@ -3,13 +3,11 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import sleep from 'sleep-promise';
 import {
-  cloneModel,
   defineModel,
   FocaProvider,
   store,
   useLoading,
   useDefined,
-  useModel,
   Model,
   HookModel,
 } from '../src';
@@ -165,35 +163,4 @@ test('Can get component name in dev mode', () => {
   );
 
   expect(model.name).toMatch('MyApp:');
-});
-
-test.skip('Type checking', () => {
-  const hookModel = useDefined(basicModel);
-
-  useModel(hookModel);
-  useModel(hookModel, (state) => state.count);
-  useLoading(hookModel.pureAsync);
-  useLoading(hookModel.pureAsync.room);
-
-  // @ts-expect-error
-  useModel(basicModel, hookModel);
-  // @ts-expect-error
-  useModel(hookModel, basicModel);
-  // @ts-expect-error
-  useModel(hookModel, basicModel, () => {});
-
-  // @ts-expect-error
-  useDefined(hookModel);
-  // @ts-expect-error
-  cloneModel(hookModel);
-
-  defineModel('local-demo-1', {
-    initialState: {},
-    events: {
-      onDestroy() {
-        // @ts-expect-error
-        this.anything;
-      },
-    },
-  });
 });
