@@ -23,7 +23,7 @@ import type {
 } from './types';
 import { isFunction } from '../utils/isType';
 import { Unsubscribe } from 'redux';
-import { original } from 'immer';
+import { freeze, original } from 'immer';
 
 export const defineModel = <
   Name extends string,
@@ -44,8 +44,15 @@ export const defineModel = <
     skipRefresh,
     events,
   } = options;
-  const isArrayState = Array.isArray(options.initialState);
-  const initialStateStr = stringifyState(options.initialState);
+  /**
+   * 防止初始化数据在外面被修改从而影响到store，
+   * 这属于小概率事件，所以仅需要在开发环境处理，
+   * 而且在严格模式下，runtime修改冻结数据会直接报错，可以提醒开发者修正
+   */
+  const initialState =
+    process.env.NODE_ENV !== 'production'
+      ? freeze(options.initialState, true)
+      : options.initialState;
 
   if (process.env.NODE_ENV !== 'production') {
     if (options.actions) {
@@ -86,7 +93,7 @@ export const defineModel = <
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    if (!deepEqual(parseState(initialStateStr), options.initialState)) {
+    if (!deepEqual(parseState(stringifyState(initialState)), initialState)) {
       throw new Error(
         `[model:${uniqueName}] initialState 包含了不可系列化的数据，允许的类型为：Object, Array, Number, String, Undefined 和 Null`,
       );
@@ -105,7 +112,9 @@ export const defineModel = <
   const getInitialState = <T extends object>(
     obj: T,
   ): T & GetInitialState<State> => {
-    return defineGetter(obj, 'initialState', () => parseState(initialStateStr));
+    return defineGetter(obj, 'initialState', () =>
+      parseState(stringifyState(initialState)),
+    );
   };
 
   const actionCtx: ActionCtx<State> = composeGetter(
@@ -117,7 +126,7 @@ export const defineModel = <
 
   const createEffectCtx = (methodName: string): EffectCtx<State> => {
     type StateCallback = (state: State) => State | void;
-
+    const isArrayState = Array.isArray(initialState);
     const obj: Pick<EffectCtx<State>, 'setState'> = {
       setState: enhanceAction(
         actionCtx,
@@ -127,9 +136,9 @@ export const defineModel = <
             return fn_state(state);
           }
 
-          if (isArrayState) return fn_state;
-
-          return Object.assign({}, original(state), fn_state);
+          return isArrayState
+            ? fn_state
+            : Object.assign({}, original(state), fn_state);
         },
       ),
     };
@@ -251,7 +260,7 @@ export const defineModel = <
     uniqueName,
     createReducer({
       name: uniqueName,
-      initialState: parseState(initialStateStr),
+      initialState,
       allowRefresh: !skipRefresh,
     }),
   );
