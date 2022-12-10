@@ -128,27 +128,20 @@ test('set partial object state in methods', () => {
           hello: 'x',
         });
       },
+      setHelloByFn() {
+        this.setState(() => {
+          return {
+            hello: 'xx',
+          };
+        });
+      },
+      setNothingByFn() {
+        this.setState(() => ({}));
+      },
       override() {
         this.setState({
           // @ts-expect-error
           test: 123,
-        });
-      },
-      doNotSetUndefined() {
-        this.setState({
-          hello: undefined,
-        });
-        this.setState({
-          // @ts-expect-error
-          test: undefined,
-          // @ts-expect-error
-          name: undefined,
-        });
-        this.setState({
-          test: {
-            // @ts-expect-error
-            count: undefined,
-          },
         });
       },
     },
@@ -172,6 +165,18 @@ test('set partial object state in methods', () => {
   });
   expect(model.state.hello).toBe('x');
 
+  model.setHelloByFn();
+  expect(model.state.test).toStrictEqual({
+    count: 2,
+  });
+  expect(model.state.hello).toStrictEqual('xx');
+
+  model.setNothingByFn();
+  expect(model.state.test).toStrictEqual({
+    count: 2,
+  });
+  expect(model.state.hello).toStrictEqual('xx');
+
   model.override();
   expect(model.state.test).toBe(123);
 });
@@ -182,14 +187,6 @@ test('set partial array state in methods', () => {
     methods: {
       set() {
         this.setState(['20', '30']);
-      },
-      doNotUndefined() {
-        // @ts-expect-error
-        this.setState(['20', '30', undefined]);
-        // @ts-expect-error
-        this.setState(undefined);
-        // @ts-expect-error
-        this.setState();
       },
     },
   });

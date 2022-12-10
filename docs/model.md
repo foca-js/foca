@@ -107,42 +107,60 @@ const userModel = defineModel('users', {
 
 瞧见没，你可以在 methods 里自由地使用 async/await 方案，然后通过`this.setState`快速更新 state。
 
-接下来我们说说`setState`，这其实完全就是 reducers 的快捷方式，你可以直接传入数据或者使用匿名函数来操作，十分方便。这不禁让我们想起了 React Component 里的 setState，好吧，我承认此处有抄的成分。
+接下来我们说说`setState`，这其实完全就是 reducers 的快捷方式，你可以直接传入数据或者使用匿名函数来操作，十分方便。这不禁让我们想起了 React Component 里的 setState？咳咳～～读书人的事，那能叫抄吗？
+
+<!-- tabs:start -->
+
+#### ** 直接修改 **
+
+依赖 immer 的能力，你可以直接修改回调函数给的 state 参数，这也是框架最推荐的方式
 
 ```typescript
-// 1. 全量更新，适用于 array, object
-this.setState({
-  a: 1,
-  b: 2,
-});
-this.setState(['a', 'b', 'c']);
-
-// 2. 部分更新，适用于 object
-this.setState({
-  a: 1,
-});
-
-// 3. 回调全量更新，与reducers一致，适用于 array, object
 this.setState((state) => {
-  return {
-    a: 1,
-    b: 2,
-  };
+  state.b = 2;
 });
+
+this.setState((state) => {
+  state.push('a');
+  state.shift();
+});
+```
+
+#### ** 部分更新 **
+
+是的，你可以返回一部分数据，而且这个特性很简洁高效，框架会使用`Object.assign`帮你把剩余的属性加回去。
+
+!> 只针对 object 类型，而且只有第一级属性可以缺省（参考 React Class Component）
+
+```typescript
+this.setState({ a: 1 });
+
+this.setState((state) => {
+  return { a: 1 }; // <==> state.a = 1;
+});
+```
+
+#### ** 全量更新 **
+
+就是重新设置所有数据
+
+```typescript
+this.setState({ a: 1, b: 2 });
+this.setState((state) => {
+  return { a: 1, b: 2 };
+});
+
+this.setState(['a', 'b', 'c']);
 this.setState((state) => {
   return ['a', 'b', 'c'];
 });
 
-// 4. 回调部分更新，与reducers一致，适用于 array, object
-this.setState((state) => {
-  state.b = 2;
-});
-this.setState((state) => {
-  state.push('a');
-});
+this.setState(this.initialState);
 ```
 
-但是你压根就不想用`setState`，你觉得这样看起来很混乱？OK，你突然想起可以使用 reducers 去改变 state 不是吗？
+<!-- tabs:end -->
+
+嗯？你压根就不想用`setState`，你觉得这样看起来很混乱？Hold on，你突然想起可以使用 reducers 去改变 state 不是吗？
 
 ```typescript
 const userModel = defineModel('users', {

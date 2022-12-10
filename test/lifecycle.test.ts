@@ -117,15 +117,6 @@ describe('onChange', () => {
           this._invokeByReadyHook();
         },
         onChange(prevState, nextState) {
-          // type checking
-          this.plus;
-          this._invokeByReadyHook;
-          this.state;
-          // @ts-expect-error
-          this.initialState;
-          // @ts-expect-error
-          this.onInit;
-
           testMessage += `prev-${prevState.count}-next-${nextState.count}-`;
         },
       },

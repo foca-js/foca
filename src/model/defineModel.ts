@@ -20,10 +20,11 @@ import type {
   ComputedCtx,
   EventCtx,
   InternalModel,
+  SetStateCallback,
 } from './types';
 import { isFunction } from '../utils/isType';
 import { Unsubscribe } from 'redux';
-import { freeze, original } from 'immer';
+import { freeze, original, isDraft } from 'immer';
 
 export const defineModel = <
   Name extends string,
@@ -125,20 +126,25 @@ export const defineModel = <
   );
 
   const createEffectCtx = (methodName: string): EffectCtx<State> => {
-    type StateCallback = (state: State) => State | void;
     const isArrayState = Array.isArray(initialState);
     const obj: Pick<EffectCtx<State>, 'setState'> = {
+      // @ts-expect-error
       setState: enhanceAction(
         actionCtx,
         `${methodName}.setState`,
-        (state: State, fn_state: State | StateCallback) => {
-          if (isFunction<StateCallback>(fn_state)) {
-            return fn_state(state);
-          }
+        <K extends keyof State>(
+          state: State,
+          fn_state: SetStateCallback<State, K> | State | Pick<State, K>,
+        ) => {
+          const nextState = isFunction<SetStateCallback<State, K>>(fn_state)
+            ? fn_state(state)
+            : fn_state;
 
-          return isArrayState
-            ? fn_state
-            : Object.assign({}, original(state), fn_state);
+          if (nextState === void 0) return;
+
+          return isArrayState || isDraft(nextState)
+            ? nextState
+            : Object.assign({}, original(state), nextState);
         },
       ),
     };

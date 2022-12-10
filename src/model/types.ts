@@ -9,14 +9,14 @@ export interface GetName<Name extends string> {
   readonly name: Name;
 }
 
-export interface GetState<State> {
+export interface GetState<State extends object> {
   /**
    * 模型的实时状态
    */
   readonly state: State;
 }
 
-export interface GetInitialState<State> {
+export interface GetInitialState<State extends object> {
   /**
    * 模型的初始状态，每次获取该属性都会执行深拷贝操作
    */
@@ -57,7 +57,21 @@ export interface EffectCtx<State extends object>
    *
    * 对于object类型，你可以直接传递 **全部** 或者 **部分** 数据
    * ```typescript
-   * this.setState({ count: 10 });
+   * interface State { id: number; name: string };
+   *
+   * this.setState({}); // 什么也没修改
+   * this.setState({ id: 10 }); // 只修改id
+   * this.setState({ id: 10, name: 'foo' }); // 修改全部
+   *
+   * this.setState((state) => {
+   *   return {}; // 什么也没修改
+   * });
+   * this.setState((state) => {
+   *   return { id: 10 }; // 只修改id
+   * });
+   * this.setState((state) => {
+   *   return { id: 10, name: 'foo' }; // 修改全部
+   * });
    * ```
    *
    * 对于array类型，直接传递数组就行了
@@ -65,12 +79,15 @@ export interface EffectCtx<State extends object>
    * this.setState(['a', 'b', 'c']);
    * ```
    */
-  setState<K extends keyof State>(
-    state:
-      | State
-      | ((draftState: State) => State | void)
-      | (State extends any[] ? never : Pick<State, K>),
-  ): AnyAction;
+  readonly setState: State extends any[]
+    ? (state: State | ((state: State) => State | void)) => AnyAction
+    : <K extends keyof State>(
+        state: SetStateCallback<State, K> | (Pick<State, K> | State),
+      ) => AnyAction;
+}
+
+export interface SetStateCallback<State extends object, K extends keyof State> {
+  (state: State): Pick<State, K> | State | void;
 }
 
 export interface ComputedCtx<State extends object>
