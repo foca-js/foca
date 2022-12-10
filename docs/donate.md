@@ -11,8 +11,19 @@
 <span style="display:inline-block; width: 8%"></span>
 <img src="./wepay.png" width="40%" />
 </center>
-<br><br>
 
-### 记录
+### 鸣谢
 
-共收到匿名捐赠 **10.00** 元
+匿名捐赠为 **5 + 5** 元
+
+<table>
+ <tr>
+  <td align="center">
+    <a target="_blank" href="https://github.com/arcsin1">
+      <img src="https://avatars.githubusercontent.com/u/13724222" width=80 height=80 />
+    </a><br>
+    <a target="_blank" href="https://github.com/arcsin1">arcsin1</a><br>
+&yen;16.66
+  </td>
+ </tr>
+</table>

@@ -266,3 +266,15 @@ Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
 # 捐赠
 
 开源不易，升级维护框架和解决各种 issue 需要十分多的精力和时间。希望能得到你的支持，让项目处于良性发展的状态。捐赠地址：[二维码](https://foca.js.org#donate)
+
+<table>
+ <tr>
+  <td align="center">
+    <a target="_blank" href="https://github.com/arcsin1">
+      <img src="https://avatars.githubusercontent.com/u/13724222" width=80 height=80 />
+    </a><br>
+    <a target="_blank" href="https://github.com/arcsin1">arcsin1</a><br>
+&yen;16.66
+  </td>
+ </tr>
+</table>
