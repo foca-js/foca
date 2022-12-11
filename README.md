@@ -2,15 +2,14 @@
 
 流畅的 react 状态管理库，基于[redux](https://github.com/reduxjs/redux)和[react-redux](https://github.com/reduxjs/react-redux)。简洁、极致、高效。
 
-[![npm peer dependency version](https://img.shields.io/npm/dependency-version/foca/peer/react?logo=react)](https://github.com/facebook/react)
+[![npm peer react version](https://img.shields.io/npm/dependency-version/foca/peer/react?logo=react)](https://github.com/facebook/react)
+[![npm peer typescript version](https://img.shields.io/npm/dependency-version/foca/peer/typescript?logo=typescript)](https://github.com/microsoft/TypeScript)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/foca-js/foca/Test/master?label=test&logo=jest)](https://github.com/foca-js/foca/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/foca-js/foca?logo=codecov)](https://codecov.io/gh/foca-js/foca)
 [![npm](https://img.shields.io/npm/v/foca?logo=npm)](https://www.npmjs.com/package/foca)
 [![npm](https://img.shields.io/npm/dt/foca?logo=codeforces)](https://www.npmjs.com/package/foca)
 [![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/foca?label=bundle+size&cacheSeconds=3600&logo=esbuild)](https://bundlephobia.com/package/foca@latest)
-![GitHub top language](https://img.shields.io/github/languages/top/foca-js/foca?logo=typescript)
 [![License](https://img.shields.io/github/license/foca-js/foca?logo=open-source-initiative)](https://github.com/foca-js/foca/blob/master/LICENSE)
-[![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/foca-js/foca?label=code%20quality&logo=lgtm)](https://lgtm.com/projects/g/foca-js/foca)
 [![Code Style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?logo=prettier)](https://github.com/prettier/prettier)
 
 <br>
