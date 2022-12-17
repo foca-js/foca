@@ -1,5 +1,37 @@
 ## master
 
+## [1.3.0](https://github.com/foca-js/foca/compare/v1.2.1...v1.3.0)&nbsp;&nbsp;(2022-12-17)
+
+- `setState` 的回调模式支持返回不完整数据
+
+```typescript
+defineModel('unique_name', {
+  initialState: { a: 'a', b: 'b' },
+  methods: {
+    test() {
+      this.setState(() => {
+        return { a: 'xxx' };
+      });
+      console.log(this.state); // { a: 'xxx', b: 'b' }
+    },
+  },
+});
+```
+
+- 传给 reducer 的 `initialState` 不再执行深拷贝，而是在开发环境下进行冻结处理以防开发者错误操作
+
+```typescript
+const initialState = { a: 'a', b: 'b' };
+
+defineModel('unique_name', {
+  initialState: initialState,
+});
+
+// 修改失败，严格模式下会报错
+// TypeError: Cannot assign to read only property 'a' of object '#<Object>'
+initialState.a = 'xxx';
+```
+
 ## [1.2.1](https://github.com/foca-js/foca/compare/v1.2.0...v1.2.1)&nbsp;&nbsp;(2022-11-11)
 
 - 销毁模型时可能触发`onChange`勾子
