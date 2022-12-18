@@ -271,7 +271,7 @@ test('Get custom compose', () => {
   process.env.NODE_ENV = prevEnv;
 });
 
-it('rxjs can observe store', () => {
+test('rxjs can observe store', () => {
   store.init();
 
   const observable = from(store);
@@ -314,4 +314,25 @@ it('rxjs can observe store', () => {
       { foo: 2, bar: 0, fromRx: true },
     ]),
   );
+});
+
+test('async callback for onInitialized', () => {
+  let msg = 'a';
+  store.onInitialized(() => {
+    msg += 'b';
+  });
+  msg += 'c';
+  store.init();
+  expect(msg).toBe('acb');
+});
+
+test('sync callback for onInitialized', () => {
+  store.init();
+
+  let msg = 'a';
+  store.onInitialized(() => {
+    msg += 'b';
+  });
+  msg += 'c';
+  expect(msg).toBe('abc');
 });

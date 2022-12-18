@@ -125,12 +125,16 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     this.topic.publish('unmount');
   }
 
-  onInitialized(): Promise<void> {
+  onInitialized(maybeSync?: () => void): Promise<void> {
     return new Promise((resolve) => {
       if (this._isReady) {
+        maybeSync?.();
         resolve();
       } else {
-        this.topic.subscribeOnce('ready', resolve);
+        this.topic.subscribeOnce('ready', () => {
+          maybeSync?.();
+          resolve();
+        });
       }
     });
   }
