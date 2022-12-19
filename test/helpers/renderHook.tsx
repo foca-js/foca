@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import React, { ComponentType, createRef, FC, useEffect } from 'react';
+import { ComponentType, createRef, FC, useEffect } from 'react';
 import { FocaProvider } from '../../src';
 
 interface RenderHookResult<Result, Props> {

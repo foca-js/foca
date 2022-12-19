@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { FocaProvider, store } from '../src';
 import { PersistGateProps } from '../src/persist/PersistGate';

@@ -1,5 +1,5 @@
 import { act, render } from '@testing-library/react';
-import React, { FC, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import sleep from 'sleep-promise';
 import { defineModel, FocaProvider, store, useModel } from '../src';
 

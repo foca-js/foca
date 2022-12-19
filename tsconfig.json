@@ -9,7 +9,7 @@
     "outDir": "./build",
     "rootDir": ".",
     "importHelpers": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
 
     "strict": true,
     "noImplicitAny": true,
