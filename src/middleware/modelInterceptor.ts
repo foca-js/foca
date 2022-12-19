@@ -14,7 +14,7 @@ export const modelInterceptor: Middleware<{}, Record<string, object>> =
       return action.consumer(draft, action);
     });
 
-    action.actionInActionGuard?.();
+    action.actionInActionGuard && action.actionInActionGuard();
 
     if (deepEqual(prev, next)) return action;
 

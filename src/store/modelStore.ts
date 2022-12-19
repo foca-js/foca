@@ -128,11 +128,11 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
   onInitialized(maybeSync?: () => void): Promise<void> {
     return new Promise((resolve) => {
       if (this._isReady) {
-        maybeSync?.();
+        maybeSync && maybeSync();
         resolve();
       } else {
         this.topic.subscribeOnce('ready', () => {
-          maybeSync?.();
+          maybeSync && maybeSync();
           resolve();
         });
       }
