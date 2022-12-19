@@ -166,21 +166,25 @@ export const defineModel = <
   };
 
   if (reducers) {
-    Object.keys(reducers).forEach((key) => {
+    const reducerKeys = Object.keys(reducers);
+    for (let i = reducerKeys.length; i-- > 0; ) {
+      const key = reducerKeys[i]!;
       enhancedMethods[getMethodCategory(key)][key] = enhanceAction(
         actionCtx,
         key,
         reducers[key]!,
       );
-    });
+    }
   }
 
   if (computed) {
     const computedCtx: ComputedCtx<State> & {
       [K in string]?: ComputedValue;
     } = composeGetter({ name: uniqueName }, getState);
+    const computedKeys = Object.keys(computed);
 
-    Object.keys(computed).forEach((key) => {
+    for (let i = computedKeys.length; i-- > 0; ) {
+      const key = computedKeys[i]!;
       computedCtx[key] = enhancedMethods[getMethodCategory(key)][key] =
         new ComputedValue(
           modelStore,
@@ -189,14 +193,16 @@ export const defineModel = <
           // @ts-expect-error
           (computed[key] as Function).bind(computedCtx),
         );
-    });
+    }
   }
 
   if (methods) {
     let ctx: EffectCtx<State>;
     const ctxs: EffectCtx<State>[] = [(ctx = createEffectCtx(''))];
+    const methodKeys = Object.keys(methods);
 
-    Object.keys(methods).forEach((key) => {
+    for (let i = methodKeys.length; i-- > 0; ) {
+      const key = methodKeys[i]!;
       if (process.env.NODE_ENV !== 'production') {
         ctxs.push((ctx = createEffectCtx(key)));
       }
@@ -207,7 +213,7 @@ export const defineModel = <
         // @ts-expect-error
         methods[key],
       );
-    });
+    }
 
     for (let i = ctxs.length; i-- > 0; ) {
       Object.assign(
@@ -250,7 +256,9 @@ export const defineModel = <
         subscriptions.push(
           modelStore.subscribe(() => {
             if (eventCtx.state === void 0) {
-              subscriptions.forEach((unsubscribe) => unsubscribe());
+              for (let i = 0; i < subscriptions.length; ++i) {
+                subscriptions[i]!();
+              }
               onDestroy.call(null as never);
             }
           }),

@@ -95,7 +95,8 @@ export class PersistItem {
 
     this.key = keyPrefix + key;
 
-    models.forEach((model) => {
+    for (let i = models.length; i-- > 0; ) {
+      const model = models[i]!;
       const {
         decode = defaultDecodeFn,
         maxAge: customMaxAge = maxAge,
@@ -110,7 +111,7 @@ export class PersistItem {
           decode,
         },
       };
-    });
+    }
   }
 
   init(): Promise<void> {
@@ -127,8 +128,9 @@ export class PersistItem {
         }
 
         let changed: boolean = false;
-
-        Object.keys(schema.d).forEach((key) => {
+        const schemaKeys = Object.keys(schema.d);
+        for (let i = schemaKeys.length; i-- > 0; ) {
+          const key = schemaKeys[i]!;
           const record = this.records[key];
 
           if (record) {
@@ -145,7 +147,7 @@ export class PersistItem {
           } else {
             changed ||= true;
           }
-        });
+        }
 
         changed && this.dump();
         return;
@@ -196,9 +198,11 @@ export class PersistItem {
 
   protected loop(callback: (record: PersistRecord, key: string) => void) {
     const records = this.records;
-    Object.keys(records).forEach((key) => {
+    const recordKeys = Object.keys(records);
+    for (let i = recordKeys.length; i-- > 0; ) {
+      const key = recordKeys[i]!;
       callback(records[key]!, key);
-    });
+    }
   }
 
   protected dump() {
