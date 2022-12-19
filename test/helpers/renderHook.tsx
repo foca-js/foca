@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import React, { ComponentType, createRef, FC, useEffect } from 'react';
+import { ComponentType, createRef, FC, useEffect } from 'react';
 
 interface RenderHookResult<Result, Props> {
   rerender: (props?: Props) => void;

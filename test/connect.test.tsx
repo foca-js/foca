@@ -1,4 +1,3 @@
-import React from 'react';
 import { FC } from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { store, connect, FocaProvider, getLoading } from '../src';
