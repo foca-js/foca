@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 import { renderHook } from './helpers/renderHook';
-import { FocaProvider, store, useModel } from '../src';
+import { store, useModel } from '../src';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
 
@@ -13,9 +13,7 @@ afterEach(() => {
 });
 
 test('get state from one model', () => {
-  const { result } = renderHook(() => useModel(basicModel), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(() => useModel(basicModel));
 
   expect(result.current.count).toEqual(0);
 
@@ -27,9 +25,7 @@ test('get state from one model', () => {
 });
 
 test('get state from multiple models', () => {
-  const { result } = renderHook(() => useModel(basicModel, complexModel), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(() => useModel(basicModel, complexModel));
 
   expect(result.current).toMatchObject({
     basic: {},
@@ -46,11 +42,8 @@ test('get state from multiple models', () => {
 });
 
 test('get state with selector', () => {
-  const { result } = renderHook(
-    () => useModel(basicModel, (state) => state.count * 10),
-    {
-      wrapper: FocaProvider,
-    },
+  const { result } = renderHook(() =>
+    useModel(basicModel, (state) => state.count * 10),
   );
 
   expect(result.current).toEqual(0);
@@ -69,11 +62,8 @@ test('get state with selector', () => {
 });
 
 test('get multiple state with selector', () => {
-  const { result } = renderHook(
-    () => useModel(basicModel, complexModel, (a, b) => a.count + b.ids.length),
-    {
-      wrapper: FocaProvider,
-    },
+  const { result } = renderHook(() =>
+    useModel(basicModel, complexModel, (a, b) => a.count + b.ids.length),
   );
 
   expect(result.current).toEqual(0);
@@ -88,20 +78,16 @@ test('get multiple state with selector', () => {
 });
 
 test('select compare algorithm', async () => {
-  const hookA = renderHook(
-    () =>
-      useModel(
-        basicModel,
-        complexModel,
-        (a, b) => ({
-          a,
-          b,
-        }),
-        'strictEqual',
-      ),
-    {
-      wrapper: FocaProvider,
-    },
+  const hookA = renderHook(() =>
+    useModel(
+      basicModel,
+      complexModel,
+      (a, b) => ({
+        a,
+        b,
+      }),
+      'strictEqual',
+    ),
   );
   const prevValueA = hookA.result.current;
   act(() => {
@@ -109,20 +95,16 @@ test('select compare algorithm', async () => {
   });
   expect(hookA.result.current !== prevValueA).toBeTruthy();
 
-  const hookB = renderHook(
-    () =>
-      useModel(
-        basicModel,
-        complexModel,
-        (a, b) => ({
-          a,
-          b,
-        }),
-        'shallowEqual',
-      ),
-    {
-      wrapper: FocaProvider,
-    },
+  const hookB = renderHook(() =>
+    useModel(
+      basicModel,
+      complexModel,
+      (a, b) => ({
+        a,
+        b,
+      }),
+      'shallowEqual',
+    ),
   );
   const prevValueB = hookB.result.current;
   act(() => {
@@ -130,20 +112,16 @@ test('select compare algorithm', async () => {
   });
   expect(hookB.result.current === prevValueB).toBeTruthy();
 
-  const hookC = renderHook(
-    () =>
-      useModel(
-        basicModel,
-        complexModel,
-        (a, b) => ({
-          a,
-          b,
-        }),
-        'deepEqual',
-      ),
-    {
-      wrapper: FocaProvider,
-    },
+  const hookC = renderHook(() =>
+    useModel(
+      basicModel,
+      complexModel,
+      (a, b) => ({
+        a,
+        b,
+      }),
+      'deepEqual',
+    ),
   );
   const prevValueC = hookC.result.current;
   act(() => {
@@ -156,29 +134,19 @@ test('Memoize the selector result', () => {
   const fn1 = jest.fn();
   const fn2 = jest.fn();
 
-  const { result: result1 } = renderHook(
-    () => {
-      return useModel(basicModel, (state) => {
-        fn1();
-        return state.count;
-      });
-    },
-    {
-      wrapper: FocaProvider,
-    },
-  );
+  const { result: result1 } = renderHook(() => {
+    return useModel(basicModel, (state) => {
+      fn1();
+      return state.count;
+    });
+  });
 
-  const { result: result2 } = renderHook(
-    () => {
-      return useModel(basicModel, basicSkipRefreshModel, (state1, state2) => {
-        fn2();
-        return state1.count + state2.count;
-      });
-    },
-    {
-      wrapper: FocaProvider,
-    },
-  );
+  const { result: result2 } = renderHook(() => {
+    return useModel(basicModel, basicSkipRefreshModel, (state1, state2) => {
+      fn2();
+      return state1.count + state2.count;
+    });
+  });
 
   expect(fn1).toBeCalledTimes(1);
   expect(fn2).toBeCalledTimes(1);
@@ -231,9 +199,7 @@ test('Memoize the selector result', () => {
 });
 
 test('Hooks keep working after hot reload', async () => {
-  const { result } = renderHook(() => useModel(basicModel), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(() => useModel(basicModel));
 
   expect(result.current.count).toEqual(0);
 

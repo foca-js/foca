@@ -34,9 +34,7 @@ afterEach(() => {
     });
 
     test('can register to modelStore and remove from modelStore', async () => {
-      const { result, unmount } = renderHook(() => useDefined(basicModel), {
-        wrapper: FocaProvider,
-      });
+      const { result, unmount } = renderHook(() => useDefined(basicModel));
 
       expect(result.current).not.toBe(basicModel);
       expect(store.getState()).toHaveProperty(
@@ -50,18 +48,13 @@ afterEach(() => {
     });
 
     test('can register to loadingStore and remove from loadingStore', async () => {
-      const { result, unmount } = renderHook(
-        () => {
-          const model = useDefined(basicModel);
-          useLoading(basicModel.pureAsync);
-          useLoading(model.pureAsync);
+      const { result, unmount } = renderHook(() => {
+        const model = useDefined(basicModel);
+        useLoading(basicModel.pureAsync);
+        useLoading(model.pureAsync);
 
-          return model;
-        },
-        {
-          wrapper: FocaProvider,
-        },
-      );
+        return model;
+      });
 
       const key1 = `${result.current.name}[pureAsync]`;
       const key2 = `${basicModel.name}[pureAsync]`;
@@ -96,9 +89,7 @@ afterEach(() => {
         },
       });
 
-      const { unmount } = renderHook(() => useDefined(globalModel), {
-        wrapper: FocaProvider,
-      });
+      const { unmount } = renderHook(() => useDefined(globalModel));
 
       expect(spy).toBeCalledTimes(0);
       unmount();
@@ -113,24 +104,19 @@ afterEach(() => {
         initialState: {},
       });
 
-      const { result } = renderHook(
-        () => {
-          const [state, setState] = useState<Model>(basicModel);
+      const { result } = renderHook(() => {
+        const [state, setState] = useState<Model>(basicModel);
 
-          const model = useDefined(state);
+        const model = useDefined(state);
 
-          useEffect(() => {
-            setTimeout(() => {
-              setState(globalModel);
-            }, 20);
-          }, []);
+        useEffect(() => {
+          setTimeout(() => {
+            setState(globalModel);
+          }, 20);
+        }, []);
 
-          return model;
-        },
-        {
-          wrapper: FocaProvider,
-        },
-      );
+        return model;
+      });
 
       const name1 = result.current.name;
       expect(name1).toMatch(basicModel.name);

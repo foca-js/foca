@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 import { renderHook } from './helpers/renderHook';
-import { FocaProvider, store, useLoading } from '../src';
+import { store, useLoading } from '../src';
 import { basicModel } from './models/basicModel';
 
 beforeEach(() => {
@@ -12,9 +12,7 @@ afterEach(() => {
 });
 
 test('Trace loading', async () => {
-  const { result } = renderHook(() => useLoading(basicModel.pureAsync), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(() => useLoading(basicModel.pureAsync));
 
   expect(result.current).toBeFalsy();
 
@@ -34,11 +32,8 @@ test('Trace loading', async () => {
 });
 
 test('Compose the loadings', async () => {
-  const { result } = renderHook(
-    () => useLoading(basicModel.pureAsync, basicModel.foo, basicModel.bar),
-    {
-      wrapper: FocaProvider,
-    },
+  const { result } = renderHook(() =>
+    useLoading(basicModel.pureAsync, basicModel.foo, basicModel.bar),
   );
 
   expect(result.current).toBeFalsy();
@@ -68,11 +63,8 @@ test('Compose the loadings', async () => {
 });
 
 test('Trace loadings', async () => {
-  const { result } = renderHook(
-    () => useLoading(basicModel.pureAsync.room, 'x'),
-    {
-      wrapper: FocaProvider,
-    },
+  const { result } = renderHook(() =>
+    useLoading(basicModel.pureAsync.room, 'x'),
   );
 
   expect(result.current).toBeFalsy();
@@ -93,9 +85,7 @@ test('Trace loadings', async () => {
 });
 
 test('Pick loading from loadings', async () => {
-  const { result } = renderHook(() => useLoading(basicModel.pureAsync.room), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(() => useLoading(basicModel.pureAsync.room));
 
   expect(result.current.find('m')).toBeFalsy();
   expect(result.current.find('n')).toBeFalsy();

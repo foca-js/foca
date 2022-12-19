@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 import { renderHook } from './helpers/renderHook';
-import { FocaProvider, store, useComputed } from '../src';
+import { store, useComputed } from '../src';
 import { computedModel } from './models/computedModel';
 
 beforeEach(() => {
@@ -12,9 +12,7 @@ afterEach(() => {
 });
 
 test('get state from computed value', () => {
-  const { result } = renderHook(() => useComputed(computedModel.fullName), {
-    wrapper: FocaProvider,
-  });
+  const { result } = renderHook(() => useComputed(computedModel.fullName));
 
   expect(result.current).toEqual('ticktock');
 

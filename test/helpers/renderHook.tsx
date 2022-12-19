@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import React, { ComponentType, createRef, FC, useEffect } from 'react';
+import { FocaProvider } from '../../src';
 
 interface RenderHookResult<Result, Props> {
   rerender: (props?: Props) => void;
@@ -16,7 +17,8 @@ export function renderHook<Result, Props>(
   renderCallback: (initialProps?: Props) => Result,
   options: RenderHookOptions<Props> = {},
 ): RenderHookResult<Result, Props> {
-  const { initialProps, wrapper } = options;
+  const { initialProps, wrapper = FocaProvider } = options;
+
   const result = createRef<Result>();
 
   const TestComponent: FC<{ renderCallbackProps?: Props }> = (props) => {
