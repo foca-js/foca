@@ -8,7 +8,9 @@ export interface PersistGateProps {
 }
 
 export const PersistGate: FC<PersistGateProps> = (props) => {
-  const [isReady, setIsReady] = useState(() => modelStore.isReady);
+  const state = useState(() => modelStore.isReady),
+    isReady = state[0],
+    setIsReady = state[1];
   const { loading = null, children } = props;
 
   useEffect(() => {
