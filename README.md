@@ -45,11 +45,12 @@
 # 安装
 
 ```bash
-# 如果是 yarn
-yarn add foca
-
-# 如果是 npm
+# npm
 npm install foca
+# yarn
+yarn add foca
+# pnpm
+pnpm add foca
 ```
 
 # 初始化
