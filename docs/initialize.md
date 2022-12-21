@@ -83,73 +83,6 @@ export default class App extends Component {
 
 <!-- tabs:end -->
 
-# 热更新
-
-<small>如果是 React-Native，你可以跳过这一节。</small>
-
-因为 store.ts 需要被入口文件引入，而 store.ts 又引入了部分 model（<small>持久化需要这么做</small>），所以如果相应的 model 做了修改操作时，会导致浏览器页面全量刷新而非热更新。如果你正在使用当前流行的打包工具，强烈建议加上`hot.accept`手动处理模块更新。
-
-<!-- tabs:start -->
-
-#### ** Vite **
-
-```typescript
-// File: store.ts
-
-store.init(...);
-
-// https://cn.vitejs.dev/guide/api-hmr.html#hot-acceptcb
-if (import.meta.hot) {
-  import.meta.hot.accept(() => {
-    console.log('Hot updated: store');
-  });
-}
-```
-
-#### ** Webpack **
-
-```typescript
-// File: store.ts
-
-// ##################################################
-// ######                                     #######
-// ###### yarn add @types/webpack-env --dev   #######
-// ######                                     #######
-// ##################################################
-
-store.init(...);
-
-// https://webpack.docschina.org/api/hot-module-replacement/
-if (module.hot) {
-  module.hot.accept(() => {
-    console.log('Hot updated: store');
-  });
-}
-```
-
-#### ** Webpack ESM **
-
-```typescript
-// File: store.ts
-
-// ##################################################
-// ######                                     #######
-// ###### yarn add @types/webpack-env --dev   #######
-// ######                                     #######
-// ##################################################
-
-store.init(...);
-
-// https://webpack.docschina.org/api/hot-module-replacement/
-if (import.meta.webpackHot) {
-  import.meta.webpackHot.accept(() => {
-    console.log('Hot updated: store');
-  });
-}
-```
-
-<!-- tabs:end -->
-
 # 日志
 
 在开发阶段，如果你想实时查看状态的操作过程以及数据的变化细节，那么开启可视化界面是必不可少的一个环节。
@@ -226,5 +159,72 @@ store.init({
 ```
 
 大功告成，下次你对 store 的数据做操作时，控制台就会有相应的通知输出。
+
+<!-- tabs:end -->
+
+# 开发热更
+
+<small>如果是 React-Native，你可以跳过这一节。</small>
+
+因为 store.ts 需要被入口文件引入，而 store.ts 又引入了部分 model（<small>持久化需要这么做</small>），所以如果相应的 model 做了修改操作时，会导致浏览器页面全量刷新而非热更新。如果你正在使用当前流行的打包工具，强烈建议加上`hot.accept`手动处理模块更新。
+
+<!-- tabs:start -->
+
+#### ** Vite **
+
+```typescript
+// File: store.ts
+
+store.init(...);
+
+// https://cn.vitejs.dev/guide/api-hmr.html#hot-acceptcb
+if (import.meta.hot) {
+  import.meta.hot.accept(() => {
+    console.log('Hot updated: store');
+  });
+}
+```
+
+#### ** Webpack **
+
+```typescript
+// File: store.ts
+
+// ##################################################
+// ######                                     #######
+// ###### yarn add @types/webpack-env --dev   #######
+// ######                                     #######
+// ##################################################
+
+store.init(...);
+
+// https://webpack.docschina.org/api/hot-module-replacement/
+if (module.hot) {
+  module.hot.accept(() => {
+    console.log('Hot updated: store');
+  });
+}
+```
+
+#### ** Webpack ESM **
+
+```typescript
+// File: store.ts
+
+// ##################################################
+// ######                                     #######
+// ###### yarn add @types/webpack-env --dev   #######
+// ######                                     #######
+// ##################################################
+
+store.init(...);
+
+// https://webpack.docschina.org/api/hot-module-replacement/
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept(() => {
+    console.log('Hot updated: store');
+  });
+}
+```
 
 <!-- tabs:end -->
