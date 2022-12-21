@@ -14,16 +14,15 @@
 
 ### 鸣谢
 
-匿名捐赠为 **5 + 5** 元
+匿名捐赠共 `10` 元
 
 <table>
  <tr>
   <td align="center">
-    <a target="_blank" href="https://github.com/arcsin1">
-      <img src="https://avatars.githubusercontent.com/u/13724222" width=80 height=80 />
+    <a target="_blank" href="https://github.com/arcsin1?donate_money=16.66">
+      <img src="https://avatars.githubusercontent.com/u/13724222" width=80 height=80 style="border-radius: 100%;" />
     </a><br>
-    <a target="_blank" href="https://github.com/arcsin1">arcsin1</a><br>
-&yen;16.66
+    <a target="_blank" href="https://github.com/arcsin1?donate_money=16.66">arcsin1</a>
   </td>
  </tr>
 </table>
