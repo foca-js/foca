@@ -18,4 +18,6 @@
 
 - [问题解答](/troubleshooting.md)
 
-* [捐赠](/donate.md)
+* [编写测试](/test.md)
+
+- [捐赠](/donate.md)
