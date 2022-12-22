@@ -1,4 +1,5 @@
 import type { StorageEngine } from '../engines';
+import { lazyLoad } from '../model/lazyLoad';
 import type { InternalModel, Model, ModelPersist } from '../model/types';
 import { isObject, isString } from '../utils/isType';
 import { parseState, stringifyState } from '../utils/serialize';
@@ -97,6 +98,7 @@ export class PersistItem {
 
     for (let i = models.length; i-- > 0; ) {
       const model = models[i]!;
+      lazyLoad(model.name);
       const {
         decode = defaultDecodeFn,
         maxAge: customMaxAge = maxAge,

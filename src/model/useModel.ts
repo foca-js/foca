@@ -4,6 +4,7 @@ import type { HookModel, Model } from './types';
 import { toArgs } from '../utils/toArgs';
 import { useModelSelector } from '../redux/useSelector';
 import { isFunction, isString } from '../utils/isType';
+import { lazyLoad } from './lazyLoad';
 
 /**
  * hooks新旧数据的对比方式：
@@ -212,7 +213,9 @@ export function useModel(): any {
 
   const reducerNames: string[] = [];
   for (i = 0; i < modelsLength; ++i) {
-    reducerNames.push(models[i]!.name);
+    const modelName = models[i]!.name;
+    lazyLoad(modelName);
+    reducerNames.push(modelName);
   }
 
   return useModelSelector((state: Record<string, object>) => {
