@@ -9,7 +9,7 @@ const editableKeys = [
   'skipRefresh',
 ] as const;
 
-type EditableKeys = typeof editableKeys[number];
+type EditableKeys = (typeof editableKeys)[number];
 
 type OverrideOptions<
   State extends object,
