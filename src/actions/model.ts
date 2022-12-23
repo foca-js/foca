@@ -6,7 +6,6 @@ export interface PreModelAction<State extends object = object, Payload = object>
   model: string;
   preModel: true;
   payload: Payload;
-  actionInActionGuard?: () => void;
   consumer(state: State, action: PreModelAction<State, Payload>): State | void;
 }
 

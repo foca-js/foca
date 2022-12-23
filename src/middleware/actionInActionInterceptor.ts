@@ -26,20 +26,10 @@ export const actionInActionInterceptor: Middleware = () => {
     try {
       dispatching = true;
       prevAction = action;
-      /**
-       * react-redux@8 主要服务于react18
-       * 在react17中有可能出现redux遍历subscriber时立即触发dispatch，然后这边来不及设置dispatching=false
-       * @link https://github.com/foca-js/foca/issues/20
-       */
-      action.actionInActionGuard = () => {
-        dispatching = false;
-        prevAction = null;
-      };
       return dispatch(action);
-    } catch (e) {
+    } finally {
       prevAction = null;
       dispatching = false;
-      throw e;
     }
   };
 };

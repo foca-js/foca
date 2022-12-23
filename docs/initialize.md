@@ -30,7 +30,7 @@ store.init();
 
 <!-- tabs:start -->
 
-#### ** React 18+ **
+#### ** React **
 
 ```diff
 + import './store';
@@ -45,24 +45,6 @@ root.render(
 + <FocaProvider>
     <App />
 + </FocaProvider>
-);
-```
-
-#### ** React 16+ **
-
-```diff
-+ import './store';
-+ import { FocaProvider } from 'foca';
-import ReactDOM from 'react-dom';
-import App from './App';
-
-const container = document.getElementById('root');
-
-ReactDOM.render(
-+ <FocaProvider>
-    <App />
-+ </FocaProvider>,
-  container,
 );
 ```
 

@@ -40,13 +40,15 @@ const App: FC = () => {
   return <>{open && <OtherComponent />}</>;
 };
 
-test('useEffect and model.state changed with react@17', async () => {
+test('forceUpdate should not trigger useEffect immediately', async () => {
   render(
     <FocaProvider>
       <App />
     </FocaProvider>,
   );
 
+  // console.error
+  // Warning: You seem to have overlapping act() calls, this is not supported. Be sure to await previous act() calls before making a new one.
   const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
   await expect(

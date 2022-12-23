@@ -29,7 +29,7 @@ jobs:
       matrix:
         node-version: [14.x, 16.x, 18.x]
         ts-version: [4.5.x, 4.6.x, 4.7.x, 4.8.x, 4.9.x]
-        react-version: ['16.14.0', 16.x, 17.x, 18.x]
+        react-version: [18.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -47,31 +47,7 @@ jobs:
             react-dom@${{ matrix.react-version }}
       - run: npx --no-install tsc --noEmit
 
-  react-16-17:
-    if: "!contains(toJson(github.event.commits), '[skip ci]')"
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-        react-version: ['16.14.0', 16.x, 17.x]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
-        uses: actions/setup-node@v3
-        with:
-          cache: 'pnpm'
-          node-version: ${{ matrix.node-version }}
-      - run: |
-          pnpm install
-          pnpm add -D \
-            react@${{ matrix.react-version }} \
-            react-dom@${{ matrix.react-version }} \
-            react-test-renderer@${{ matrix.react-version }} \
-            @testing-library/react@12
-      - run: pnpm run test --coverage=false
-
-  react-18:
+  test:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
     strategy:
       matrix:
@@ -104,7 +80,7 @@ jobs:
 
   coverage:
     if: github.ref == 'refs/heads/master'
-    needs: react-18
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
