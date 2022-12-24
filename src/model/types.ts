@@ -246,10 +246,6 @@ export interface DefineModelOptions<
    */
   reducers?: Action & InternalAction<State> & ThisType<ActionCtx<State>>;
   /**
-   * @deprecated 请使用reducers
-   */
-  actions?: Action & InternalAction<State> & ThisType<ActionCtx<State>>;
-  /**
    * 定义普通方法，异步方法等。
    * 调用effect方法时，一般会伴随异步操作（请求数据、耗时任务），框架会自动收集当前方法的调用状态。
    *
@@ -269,16 +265,6 @@ export interface DefineModelOptions<
    * ```
    */
   methods?: Effect &
-    ThisType<
-      ModelAction<State, Action> &
-        Effect &
-        ModelComputed<Computed> &
-        EffectCtx<State>
-    >;
-  /**
-   * @deprecated 请使用methods
-   */
-  effects?: Effect &
     ThisType<
       ModelAction<State, Action> &
         Effect &

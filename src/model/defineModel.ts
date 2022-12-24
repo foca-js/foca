@@ -38,13 +38,7 @@ export const defineModel = <
 ): Model<Name, State, Action, Effect, Computed> => {
   guard(uniqueName);
 
-  const {
-    reducers = options.actions,
-    methods = options.effects,
-    computed,
-    skipRefresh,
-    events,
-  } = options;
+  const { reducers, methods, computed, skipRefresh, events } = options;
   /**
    * 防止初始化数据在外面被修改从而影响到store，
    * 这属于小概率事件，所以仅需要在开发环境处理，
@@ -54,20 +48,6 @@ export const defineModel = <
     process.env.NODE_ENV !== 'production'
       ? freeze(options.initialState, true)
       : options.initialState;
-
-  if (process.env.NODE_ENV !== 'production') {
-    if (options.actions) {
-      console.warn(
-        `[model:${uniqueName}] 属性actions已经重命名为reducers，建议使用编辑器进行批量替换。该属性将在2.0.0版本发布时删除`,
-      );
-    }
-
-    if (options.effects) {
-      console.warn(
-        `[model:${uniqueName}] 属性effects已经重命名为methods，建议使用编辑器进行批量替换。该属性将在2.0.0版本发布时删除`,
-      );
-    }
-  }
 
   if (process.env.NODE_ENV !== 'production') {
     const items = [
