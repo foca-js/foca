@@ -1,16 +1,12 @@
 {
   "env": {
     "targets": [
-      "ie >= 10",
-      "edge >= 12",
-      "safari >= 9",
-      "chrome >= 45",
-      "opera >= 32",
-      "firefox >= 34",
-      "ios_saf >= 9"
+      "edge >= 13",
+      "safari >= 10",
+      "chrome >= 49",
+      "opera >= 36",
+      "firefox >= 45",
+      "ios_saf >= 10"
     ]
-  },
-  "jsc": {
-    "loose": true
   }
 }
