@@ -244,8 +244,7 @@ test('duplicate init() will replace persistor', async () => {
 });
 
 test('Get custom compose', () => {
-  // @ts-expect-error
-  const get: typeof store.getCompose = store.getCompose.bind(store);
+  const get: (typeof store)['getCompose'] = store['getCompose'].bind(store);
 
   expect(get(void 0)).toBe(compose);
   expect(get(compose)).toBe(compose);
