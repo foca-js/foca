@@ -19,7 +19,9 @@ import { StoreBasic } from './StoreBasic';
 import { actionInActionInterceptor } from '../middleware/actionInActionInterceptor';
 import { freezeStateMiddleware } from '../middleware/freezeStateMiddleware';
 
-type Compose = typeof compose | ((enhancer: StoreEnhancer) => StoreEnhancer);
+type Compose =
+  | typeof compose
+  | ((...funcs: StoreEnhancer<any>[]) => StoreEnhancer<any>);
 
 interface CreateStoreOptions {
   preloadedState?: PreloadedState<any>;
