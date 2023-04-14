@@ -1,3 +1,4 @@
+import sleep from 'sleep-promise';
 import { cloneModel, defineModel, engines, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { ModelStore } from '../src/store/modelStore';
@@ -80,6 +81,57 @@ describe('onInit', () => {
     expect(hookModel.state.count).toBe(101 + 20);
     expect(hook2Model.state.count).toBe(101);
     expect(clonedModel.state.count).toBe(101);
+  });
+
+  test('should call modelPreInit and modelPostInit', async () => {
+    const hookModel = createModel();
+    let publishCount = 0;
+    const token1 = store.topic.subscribe('modelPreInit', (modelName) => {
+      if (modelName === hookModel.name) {
+        publishCount += 1;
+      }
+    });
+    const token2 = store.topic.subscribe('modelPostInit', (modelName) => {
+      if (modelName === hookModel.name) {
+        publishCount += 0.4;
+      }
+    });
+
+    store.init();
+    await store.onInitialized();
+    expect(publishCount).toBe(1 + 0.4);
+    token1.unsubscribe();
+    token2.unsubscribe();
+  });
+
+  test('should call modelPreInit and modelPostInit for promise returning', async () => {
+    const hookModel = defineModel('events' + Math.random(), {
+      initialState: {},
+      events: {
+        async onInit() {
+          await sleep(200);
+        },
+      },
+    });
+    let publishCount = 0;
+    const token1 = store.topic.subscribe('modelPreInit', (modelName) => {
+      if (modelName === hookModel.name) {
+        publishCount += 1;
+      }
+    });
+    const token2 = store.topic.subscribe('modelPostInit', (modelName) => {
+      if (modelName === hookModel.name) {
+        publishCount += 0.4;
+      }
+    });
+
+    store.init();
+    await store.onInitialized();
+    expect(publishCount).toBe(1);
+    await sleep(210);
+    expect(publishCount).toBe(1 + 0.4);
+    token1.unsubscribe();
+    token2.unsubscribe();
   });
 });
 

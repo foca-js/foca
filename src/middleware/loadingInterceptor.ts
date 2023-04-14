@@ -16,7 +16,11 @@ export const loadingInterceptor = (
       payload: { category, loading },
     } = action;
 
-    if (!loadingStore.isActive(model, method)) return;
+    if (loadingStore.isModelInitializing(model)) {
+      loadingStore.activate(model, method);
+    } else if (!loadingStore.isActive(model, method)) {
+      return;
+    }
 
     const record = loadingStore.getItem(model, method);
 

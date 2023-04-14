@@ -1,4 +1,5 @@
-import { getLoading, store } from '../src';
+import sleep from 'sleep-promise';
+import { defineModel, getLoading, store } from '../src';
 import { basicModel } from './models/basicModel';
 
 beforeEach(() => {
@@ -42,4 +43,32 @@ test('Trace loadings', async () => {
   await promise;
   expect(getLoading(basicModel.bos.room, 'x')).toBeFalsy();
   expect(getLoading(basicModel.bos.room).find('x')).toBeFalsy();
+});
+
+test('async method in model.onInit should be activated automatically', async () => {
+  const hookModel = defineModel('loading' + Math.random(), {
+    initialState: {},
+    methods: {
+      async myMethod() {
+        await sleep(200);
+      },
+      async myMethod2() {
+        await sleep(200);
+      },
+    },
+    events: {
+      async onInit() {
+        await this.myMethod();
+        await this.myMethod2();
+      },
+    },
+  });
+  await store.onInitialized();
+  expect(getLoading(hookModel.myMethod)).toBeTruthy();
+  await sleep(220);
+  expect(getLoading(hookModel.myMethod)).toBeFalsy();
+
+  expect(getLoading(hookModel.myMethod2)).toBeTruthy();
+  await sleep(220);
+  expect(getLoading(hookModel.myMethod2)).toBeFalsy();
 });

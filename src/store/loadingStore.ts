@@ -53,6 +53,7 @@ const createDefaultRecord = (): LoadingStoreStateItem => {
 };
 
 export class LoadingStore extends StoreBasic<LoadingStoreState> {
+  protected initializingModels: string[] = [];
   protected status: Partial<{
     [model: string]: Partial<{
       [method: string]: boolean;
@@ -69,6 +70,14 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
     topic.subscribe('init', this.init.bind(this));
     topic.subscribe('refresh', this.refresh.bind(this));
     topic.subscribe('unmount', this.unmount.bind(this));
+    topic.subscribe('modelPreInit', (modelName) => {
+      this.initializingModels.push(modelName);
+    });
+    topic.subscribe('modelPostInit', (modelName) => {
+      this.initializingModels = this.initializingModels.filter(
+        (item) => item !== modelName,
+      );
+    });
   }
 
   init() {
@@ -146,6 +155,13 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
   getItem(model: string, method: string): LoadingStoreStateItem | undefined {
     const level1 = this.getState()[model];
     return level1 && level1[method];
+  }
+
+  isModelInitializing(model: string): boolean {
+    return (
+      this.initializingModels.length > 0 &&
+      this.initializingModels.includes(model)
+    );
   }
 
   isActive(model: string, method: string): boolean {

@@ -25,6 +25,7 @@ import type {
 import { isFunction } from '../utils/isType';
 import { Unsubscribe } from 'redux';
 import { freeze, original, isDraft } from 'immer';
+import { isPromise } from '../utils/isPromise';
 
 export const defineModel = <
   Name extends string,
@@ -265,7 +266,22 @@ export const defineModel = <
         );
       }
 
-      onInit && onInit.call(eventCtx);
+      if (onInit) {
+        /**
+         * 初始化时，用到它的React组件可能还没加载，所以执行async-method时无法判断是否需要保存loading。因此需要一个钩子来处理事件周期
+         * @see https://github.com/foca-js/foca/issues/38
+         */
+        modelStore.topic.publish('modelPreInit', uniqueName);
+        const promiseOrVoid = onInit.call(eventCtx);
+        const postInit = () => {
+          modelStore.topic.publish('modelPostInit', uniqueName);
+        };
+        if (isPromise(promiseOrVoid)) {
+          promiseOrVoid.then(postInit, postInit);
+        } else {
+          postInit();
+        }
+      }
     });
   }
 

@@ -34,6 +34,8 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     ready: [];
     refresh: [];
     unmount: [];
+    modelPreInit: [modelName: string];
+    modelPostInit: [modelName: string];
   }> = new Topic();
   protected _isReady: boolean = false;
   protected consumers: Record<string, Reducer> = {};
