@@ -61,7 +61,7 @@
     }
   },
   "dependencies": {
-    "immer": "^9.0.16",
+    "immer": "^9.0.21",
     "react-redux": "^8.0.5",
     "redux": "^4.2.0",
     "topic": "^3.0.2"

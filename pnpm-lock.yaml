@@ -13,7 +13,7 @@ specifiers:
   browserslist: ^4.21.4
   docsify-cli: ^4.4.4
   husky: ^8.0.2
-  immer: ^9.0.16
+  immer: ^9.0.21
   jest: ^29.3.1
   jest-environment-jsdom: ^29.3.1
   prettier: ^2.8.0
@@ -31,7 +31,7 @@ specifiers:
   typescript: ^4.9.3
 
 dependencies:
-  immer: 9.0.16
+  immer: 9.0.21
   react-redux: 8.0.5_moha6x5fbqoiok2ot63p7hwafm
   redux: 4.2.0
   topic: 3.0.2
@@ -2898,8 +2898,8 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
-  /immer/9.0.16:
-    resolution: {integrity: sha512-qenGE7CstVm1NrHQbMh8YaSzTZTFNP3zPqr3YU0S0UY441j4bJTg4A2Hh5KAhwgaiU6ZZ1Ar6y/2f4TblnMReQ==}
+  /immer/9.0.21:
+    resolution: {integrity: sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==}
     dev: false
 
   /immutable/4.1.0:
