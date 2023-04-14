@@ -1,5 +1,12 @@
 ## master
 
+## [1.3.1](https://github.com/foca-js/foca/compare/v1.3.0...v1.3.1)&nbsp;&nbsp;(2023-04-14)
+
+- 在 onInit 事件内执行的 async method 未储存 loading 状态 (#38)
+- immer 版本从 9.0.16 升级到 9.0.21
+- redux 版本从 4.2.0 升级到 4.2.1
+- 支持 typescript@5
+
 ## [1.3.0](https://github.com/foca-js/foca/compare/v1.2.1...v1.3.0)&nbsp;&nbsp;(2022-12-17)
 
 - `setState` 的回调模式支持返回不完整数据
