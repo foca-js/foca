@@ -21,7 +21,7 @@ specifiers:
   react-dom: ^18.2.0
   react-redux: ^8.0.5
   react-test-renderer: ^18.2.0
-  redux: ^4.2.0
+  redux: ^4.2.1
   rxjs: ^7.5.7
   sleep-promise: ^9.1.0
   topic: ^3.0.2
@@ -32,14 +32,14 @@ specifiers:
 
 dependencies:
   immer: 9.0.21
-  react-redux: 8.0.5_moha6x5fbqoiok2ot63p7hwafm
-  redux: 4.2.0
+  react-redux: 8.0.5_mf75ijjtc77tpoazzqkaxwwqkq
+  redux: 4.2.1
   topic: 3.0.2
 
 devDependencies:
   '@commitlint/cli': 17.3.0_@swc+core@1.3.20
   '@commitlint/config-conventional': 17.3.0
-  '@redux-devtools/extension': 3.2.3_redux@4.2.0
+  '@redux-devtools/extension': 3.2.3_redux@4.2.1
   '@swc/core': 1.3.20
   '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
   '@types/jest': 29.2.3
@@ -897,14 +897,14 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@redux-devtools/extension/3.2.3_redux@4.2.0:
+  /@redux-devtools/extension/3.2.3_redux@4.2.1:
     resolution: {integrity: sha512-y90IIqdQF6kIkP4KfBCfiFrnu9KMrEPUmcnb5A3v12tjfwRJUXecX8vCEbFqqJLjOomvVmis0Aal7QdFjk6CRQ==}
     peerDependencies:
       redux: ^3.1.0 || ^4.0.0
     dependencies:
       '@babel/runtime': 7.20.1
       immutable: 4.1.0
-      redux: 4.2.0
+      redux: 4.2.1
     dev: true
 
   /@sinclair/typebox/0.24.51:
@@ -4494,7 +4494,7 @@ packages:
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
 
-  /react-redux/8.0.5_moha6x5fbqoiok2ot63p7hwafm:
+  /react-redux/8.0.5_mf75ijjtc77tpoazzqkaxwwqkq:
     resolution: {integrity: sha512-Q2f6fCKxPFpkXt1qNRZdEDLlScsDWyrgSj0mliK59qU6W5gvBiKkdMEG2lJzhd1rCctf0hb6EtePPLZ2e0m1uw==}
     peerDependencies:
       '@types/react': ^16.8 || ^17.0 || ^18.0
@@ -4524,7 +4524,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-is: 18.2.0
-      redux: 4.2.0
+      redux: 4.2.1
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
@@ -4598,8 +4598,8 @@ packages:
       strip-indent: 3.0.0
     dev: true
 
-  /redux/4.2.0:
-    resolution: {integrity: sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==}
+  /redux/4.2.1:
+    resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
     dependencies:
       '@babel/runtime': 7.20.1
 
