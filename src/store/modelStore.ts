@@ -42,10 +42,7 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
   protected _isReady: boolean = false;
   protected consumers: Record<string, Reducer> = {};
   protected reducerKeys: string[] = [];
-  /**
-   * @protected
-   */
-  public persistor: PersistManager | null = null;
+  protected persister: PersistManager | null = null;
 
   protected reducer!: Reducer;
 
@@ -72,13 +69,13 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     this.reducer = this.combineReducers();
 
     const persistOptions = options.persist;
-    let persistor = this.persistor;
-    persistor && persistor.destroy();
+    let persister = this.persister;
+    persister && persister.destroy();
     if (persistOptions && persistOptions.length) {
-      persistor = this.persistor = new PersistManager(persistOptions);
-      this.reducer = persistor.combineReducer(this.reducer);
+      persister = this.persister = new PersistManager(persistOptions);
+      this.reducer = persister.combineReducer(this.reducer);
     } else {
-      persistor = this.persistor = null;
+      persister = this.persister = null;
     }
 
     let store: Store;
@@ -106,8 +103,8 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
       store.replaceReducer(this.reducer);
     }
 
-    if (persistor) {
-      persistor.init(store, firstInitialize).then(() => {
+    if (persister) {
+      persister.init(store, firstInitialize).then(() => {
         this.ready();
       });
     } else {

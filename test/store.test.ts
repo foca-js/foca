@@ -79,7 +79,7 @@ test('Delay to restore data when state changed', async () => {
   await store.onInitialized();
 
   // @ts-expect-error
-  const getTimer = () => store.persistor!.timer;
+  const getTimer = () => store['persister']!.timer;
   let prevTimer: ReturnType<typeof getTimer>;
 
   expect(getTimer()).toBeUndefined();
@@ -91,22 +91,22 @@ test('Delay to restore data when state changed', async () => {
   basicModel.plus(1);
   expect(getTimer()).toBe(prevTimer);
 
-  expect(store.persistor?.collect()[basicModel.name]).not.toBe(
+  expect(store['persister']?.collect()[basicModel.name]).not.toBe(
     basicModel.state,
   );
   await sleep(50);
-  expect(store.persistor?.collect()[basicModel.name]).toBe(basicModel.state);
+  expect(store['persister']?.collect()[basicModel.name]).toBe(basicModel.state);
 
   expect(getTimer()).toBeUndefined();
   basicModel.plus(1);
   expect(getTimer()).not.toBeUndefined();
   expect(getTimer()).not.toBe(prevTimer);
 
-  expect(store.persistor?.collect()[basicModel.name]).not.toBe(
+  expect(store['persister']?.collect()[basicModel.name]).not.toBe(
     basicModel.state,
   );
   await sleep(50);
-  expect(store.persistor?.collect()[basicModel.name]).toBe(basicModel.state);
+  expect(store['persister']?.collect()[basicModel.name]).toBe(basicModel.state);
 });
 
 test('Store can define persist with different engine', async () => {
@@ -114,12 +114,12 @@ test('Store can define persist with different engine', async () => {
 
   await store.onInitialized();
 
-  expect(JSON.stringify(store.persistor?.collect())).toBe('{}');
+  expect(JSON.stringify(store['persister']?.collect())).toBe('{}');
 
   basicModel.plus(1);
 
   await sleep(50);
-  expect(store.persistor?.collect()).toMatchObject({
+  expect(store['persister']?.collect()).toMatchObject({
     [basicModel.name]: basicModel.state,
     [persistModel.name]: persistModel.state,
     [hasVersionPersistModel.name]: hasVersionPersistModel.state,
@@ -188,10 +188,10 @@ test('duplicate init() will keep state', () => {
   expect(basicModel.state.count).toEqual(1);
 });
 
-test('duplicate init() will replace persistor', async () => {
+test('duplicate init() will replace persister', async () => {
   store.init();
   await store.onInitialized();
-  expect(store.persistor).toBeNull();
+  expect(store['persister']).toBeNull();
 
   store.init({
     persist: [
@@ -203,11 +203,11 @@ test('duplicate init() will replace persistor', async () => {
       },
     ],
   });
-  expect(store.persistor).toBeInstanceOf(PersistManager);
+  expect(store['persister']).toBeInstanceOf(PersistManager);
   await store.onInitialized();
   basicModel.plus(1);
   await sleep(100);
-  expect(store.persistor!.collect()).toStrictEqual({});
+  expect(store['persister']!.collect()).toStrictEqual({});
 
   store.init({
     persist: [
@@ -222,7 +222,7 @@ test('duplicate init() will replace persistor', async () => {
   await store.onInitialized();
   basicModel.plus(1);
   await sleep(100);
-  expect(store.persistor!.collect()).toStrictEqual({
+  expect(store['persister']!.collect()).toStrictEqual({
     [basicModel.name]: {
       count: 2,
       hello: 'world',
@@ -240,7 +240,7 @@ test('duplicate init() will replace persistor', async () => {
     ],
   });
   await store.onInitialized();
-  expect(store.persistor!.collect()).toStrictEqual({});
+  expect(store['persister']!.collect()).toStrictEqual({});
 });
 
 test('Get custom compose', () => {

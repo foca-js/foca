@@ -407,7 +407,7 @@ test('stop restoring before hydrate (slow engine)', async () => {
     ],
   });
 
-  const persistManager = store.persistor!;
+  const persistManager = store['persister']!;
 
   const promise = persistManager.init(store, true);
   persistModel.plus(6);
