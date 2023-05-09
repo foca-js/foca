@@ -41,7 +41,7 @@ const App: FC = () => {
 };
 
 [true, false].forEach((legacy) => {
-  test(`[legacy: ${legacy}] forceUpdate should not trigger useEffect immediately`, async () => {
+  test(`[legacy: ${legacy}] forceUpdate should not cause action in action error`, async () => {
     render(
       <FocaProvider>
         <App />
