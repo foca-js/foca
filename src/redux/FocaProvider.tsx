@@ -28,7 +28,7 @@ export const FocaProvider: FC<OwnProps> = ({ children, loading }) => {
     <Provider context={ProxyContext} store={proxyStore}>
       <Provider context={LoadingContext} store={loadingStore}>
         <Provider context={ModelContext} store={modelStore}>
-          {modelStore.persistor ? (
+          {modelStore['persister'] ? (
             <PersistGate loading={loading} children={children} />
           ) : isFunction(children) ? (
             children(true)
