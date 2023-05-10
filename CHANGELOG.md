@@ -2,7 +2,7 @@
 
 - 不再兼容 IE 浏览器
 - 最小 React 版本为 18
-- 最小 TypeScript 版本为 4.7
+- 最小 TypeScript 版本为 5.0
 - 删除废弃字段 `actions` 和 `effects`
 
 ## [1.3.1](https://github.com/foca-js/foca/compare/v1.3.0...v1.3.1)&nbsp;&nbsp;(2023-04-14)
