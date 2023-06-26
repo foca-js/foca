@@ -1,4 +1,4 @@
-## v2
+## [2.0.0](https://github.com/foca-js/foca/compare/v1.3.1...v2.0.0)&nbsp;&nbsp;(2023-06-26)
 
 - 不再兼容 IE 浏览器
 - 最小 React 版本为 18
