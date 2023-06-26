@@ -127,7 +127,7 @@ store.init({
   ]
 });
 
-// File: userModel.ts
+// File: user.model.ts
 const userModel = defineModel({
   initialState: [],
   persist: {

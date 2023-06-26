@@ -45,7 +45,7 @@ const user3Model = cloneModel('users3', userModel, (prev) => {
 import { useEffect } from 'react';
 import { defineModel, useDefined } from 'foca';
 
-// testModel.ts
+// test.model.ts
 export const testModel = defineModel('test', {
   initialState: { count: 0 },
   reducers: {

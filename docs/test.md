@@ -29,10 +29,10 @@ afterEach(() => {
 我们假设你已经写好了一个模型
 
 ```typescript
-// src/models/myModel.ts
+// src/models/my-custom.model.ts
 import { defineModel } from 'foca';
 
-export const myModel = defineModel('my-model', {
+export const myCustomModel = defineModel('my-model', {
   initialState: { count: 0 },
   reducers: {
     plus(state, step: number = 1) {
@@ -50,7 +50,7 @@ export const myModel = defineModel('my-model', {
 ```typescript
 // test/model.test.ts
 import { store } from 'foca';
-import { myModel } from '../src/models/myModel.ts';
+import { myCustomModel } from '../src/models/my-custom.model.ts';
 
 beforeEach(() => {
   store.init();
@@ -61,25 +61,25 @@ afterEach(() => {
 });
 
 test('initial state', () => {
-  expect(myModel.state.count).toBe(0);
+  expect(myCustomModel.state.count).toBe(0);
 });
 
-test('myModel.plus', () => {
-  myModel.plus();
-  expect(myModel.state.count).toBe(1);
-  myModel.plus(5);
-  expect(myModel.state.count).toBe(6);
-  myModel.plus(100);
-  expect(myModel.state.count).toBe(106);
+test('myCustomModel.plus', () => {
+  myCustomModel.plus();
+  expect(myCustomModel.state.count).toBe(1);
+  myCustomModel.plus(5);
+  expect(myCustomModel.state.count).toBe(6);
+  myCustomModel.plus(100);
+  expect(myCustomModel.state.count).toBe(106);
 });
 
-test('myModel.minus', () => {
-  myModel.minus();
-  expect(myModel.state.count).toBe(-1);
-  myModel.minus(10);
-  expect(myModel.state.count).toBe(-11);
-  myModel.minus(28);
-  expect(myModel.state.count).toBe(-39);
+test('myCustomModel.minus', () => {
+  myCustomModel.minus();
+  expect(myCustomModel.state.count).toBe(-1);
+  myCustomModel.minus(10);
+  expect(myCustomModel.state.count).toBe(-11);
+  myCustomModel.minus(28);
+  expect(myCustomModel.state.count).toBe(-39);
 });
 ```
 

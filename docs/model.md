@@ -7,7 +7,7 @@
 基于此，我们提出了模型概念，以 state 为核心，任何更改 state 的操作都应该放在一起。
 
 ```typescript
-// models/userModel.ts
+// models/user.model.ts
 import { defineModel } from 'foca';
 
 export interface UserItem {
