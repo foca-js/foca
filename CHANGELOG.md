@@ -1,3 +1,7 @@
+## [2.0.1](https://github.com/foca-js/foca/compare/v2.0.0...v2.0.1)&nbsp;&nbsp;(2023-08-10)
+
+- react-redux 版本从 8.1.1 升级到 8.1.2 (#40)
+
 ## [2.0.0](https://github.com/foca-js/foca/compare/v1.3.1...v2.0.0)&nbsp;&nbsp;(2023-06-26)
 
 - 不再兼容 IE 浏览器
