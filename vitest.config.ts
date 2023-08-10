@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     threads: true,
     coverage: {
+      provider: 'v8',
       enabled: true,
       include: ['src/**'],
       lines: 99,
