@@ -37,43 +37,6 @@ const user3Model = cloneModel('users3', userModel, (prev) => {
 });
 ```
 
-# 局部模型
-
-通过`defineModel`和`cloneModel`创建的模型均为全局类别的模型，数据一直保持在内存中，直到应用关闭或者退出才会释放，对于比较大的项目，这可能会有性能问题。所以有时候你其实想要一种`用完就扔`的模型，即在 React 组件初始化时把模型数据扔到 store 中，当 React 组件被销毁时，模型的数据也跟着销毁。现在局部模型很适合你的需求：
-
-```tsx
-import { useEffect } from 'react';
-import { defineModel, useDefined } from 'foca';
-
-// test.model.ts
-export const testModel = defineModel('test', {
-  initialState: { count: 0 },
-  reducers: {
-    plus(state, value: number) {
-      state.count += value;
-    },
-  },
-});
-
-// App.tsx
-const App: FC = () => {
-  const model = useDefined(testModel);
-  const { count } = useModel(model);
-
-  useEffect(() => {
-    model.plus(1);
-  }, []);
-
-  return <div>{count}</div>;
-};
-```
-
-利用 `useDefined` 函数根据全局模型创建一个新的局部模型，然后就是通用的模型操作，这似乎没有增加工作量（因为只多了一行）。下面我列举了局部函数的几个特点：
-
-- 组件内部使用，不污染全局
-- 数据随组件自动挂载/释放
-- 有效降低内存占用量
-
 # loadings
 
 默认地，methods 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.methodX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数拥有多个状态互不干扰。

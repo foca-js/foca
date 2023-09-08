@@ -1,6 +1,6 @@
 import { shallowEqual } from 'react-redux';
 import { deepEqual } from '../utils/deepEqual';
-import type { HookModel, Model } from './types';
+import type { Model } from './types';
 import { toArgs } from '../utils/toArgs';
 import { useModelSelector } from '../redux/useSelector';
 import { isFunction, isString } from '../utils/isType';
@@ -21,10 +21,10 @@ export type Algorithm = 'strictEqual' | 'shallowEqual' | 'deepEqual';
  * * 最后一个参数如果是**函数**，则为状态过滤函数，过滤函数的结果视为最终返回值。
  */
 export function useModel<State extends object>(
-  model: Model<string, State> | HookModel<string, State>,
+  model: Model<string, State>,
 ): State;
 export function useModel<State extends object, T>(
-  model: Model<string, State> | HookModel<string, State>,
+  model: Model<string, State>,
   selector: (state: State) => T,
   algorithm?: Algorithm,
 ): T;

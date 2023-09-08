@@ -126,10 +126,6 @@ type ModelComputed<Computed extends object> = {
     : never;
 };
 
-class ModelIdentity {
-  private declare readonly _global: true;
-}
-
 export type Model<
   Name extends string = string,
   State extends object = object,
@@ -137,26 +133,6 @@ export type Model<
   Effect extends object = object,
   Computed extends object = object,
 > = BaseModel<Name, State> &
-  ModelIdentity &
-  // [K in keyof Action as K extends `_${string}` ? never : K]
-  // 上面这种看起来简洁，业务代码提示也正常，但是业务代码那边无法点击跳转进模型了。
-  // 所以需要先转换所有的属性，再把私有属性去除。
-  Omit<ModelAction<State, Action>, GetPrivateMethodKeys<Action>> &
-  Omit<ModelEffect<Effect>, GetPrivateMethodKeys<Effect>> &
-  Omit<ModelComputed<Computed>, GetPrivateMethodKeys<Computed>>;
-
-class HookModelIdentity {
-  private declare readonly _hooks: true;
-}
-
-export type HookModel<
-  Name extends string = string,
-  State extends object = object,
-  Action extends object = object,
-  Effect extends object = object,
-  Computed extends object = object,
-> = BaseModel<Name, State> &
-  HookModelIdentity &
   // [K in keyof Action as K extends `_${string}` ? never : K]
   // 上面这种看起来简洁，业务代码提示也正常，但是业务代码那边无法点击跳转进模型了。
   // 所以需要先转换所有的属性，再把私有属性去除。
@@ -193,12 +169,6 @@ export interface Event<State> {
    * 上下文 **this** 可以直接调用actions和effects的函数以及computed计算属性，请谨慎执行修改数据的操作以防止死循环。
    */
   onChange?: (prevState: State, nextState: State) => void;
-  /**
-   * 销毁模型时的回调通知，此时模型已经被销毁。
-   * 该事件仅在局部模型生效
-   * @see useDefined
-   */
-  onDestroy?: (this: never) => void;
 }
 
 export interface EventCtx<State extends object>

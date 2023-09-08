@@ -1,3 +1,7 @@
+## v3
+
+- 删除hooks `useDefined`
+
 ## [2.0.1](https://github.com/foca-js/foca/compare/v2.0.0...v2.0.1)&nbsp;&nbsp;(2023-08-10)
 
 - react-redux 版本从 8.1.1 升级到 8.1.2 (#40)
