@@ -271,5 +271,11 @@ Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
     </a><br>
     <a target="_blank" href="https://github.com/arcsin1?donate_money=16.66">arcsin1</a>
   </td>
+  <td align="center">
+    <a target="_blank" href="https://github.com/xiongxliu?donate_money=50">
+      <img src="https://avatars.githubusercontent.com/u/17661296" width=80 height=80 style="border-radius: 100%;" />
+    </a><br>
+    <a target="_blank" href="https://github.com/xiongxliu?donate_money=50">xiongxliu</a>
+  </td>
  </tr>
 </table>
