@@ -7,7 +7,6 @@ import { createReducer } from '../redux/createReducer';
 import { composeGetter, defineGetter } from '../utils/getter';
 import { getMethodCategory } from '../utils/getMethodCategory';
 import { guard } from './guard';
-import { ComputedValue } from '../reactive/ComputedValue';
 import { depsCollector } from '../reactive/depsCollector';
 import { ObjectDeps } from '../reactive/ObjectDeps';
 import type {
@@ -21,11 +20,13 @@ import type {
   EventCtx,
   InternalModel,
   SetStateCallback,
+  ComputedFlag,
 } from './types';
 import { isFunction } from '../utils/isType';
 import { Unsubscribe } from 'redux';
 import { freeze, original, isDraft } from 'immer';
 import { isPromise } from '../utils/isPromise';
+import { enhanceComputed } from './enhance-computed';
 
 export const defineModel = <
   Name extends string,
@@ -139,7 +140,7 @@ export const defineModel = <
   const enhancedMethods: {
     [K in ReturnType<typeof getMethodCategory>]: Record<
       string,
-      EnhancedAction<State> | EnhancedEffect | ComputedValue
+      EnhancedAction<State> | EnhancedEffect | ComputedFlag
     >;
   } = {
     external: {},
@@ -160,19 +161,19 @@ export const defineModel = <
 
   if (computed) {
     const computedCtx: ComputedCtx<State> & {
-      [K in string]?: ComputedValue;
+      [K in string]?: ComputedFlag;
     } = composeGetter({ name: uniqueName }, getState);
     const computedKeys = Object.keys(computed);
 
     for (let i = computedKeys.length; i-- > 0; ) {
       const key = computedKeys[i]!;
       computedCtx[key] = enhancedMethods[getMethodCategory(key)][key] =
-        new ComputedValue(
-          modelStore,
+        enhanceComputed(
+          computedCtx,
           uniqueName,
           key,
           // @ts-expect-error
-          (computed[key] as Function).bind(computedCtx),
+          computed[key],
         );
     }
   }

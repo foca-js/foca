@@ -205,7 +205,7 @@ export function useModel(): any {
   // 所以我们只需要保证用到的模型数据不变即可，这样可以减少无意义的计算。
   let hasMemo = false,
     snapshot: any,
-    memoStates: object[],
+    prevState: Record<string, object>,
     currentStates: object[],
     i: number,
     changed: boolean;
@@ -216,43 +216,42 @@ export function useModel(): any {
   }
 
   return useModelSelector((state: Record<string, object>) => {
-    currentStates = [];
-    for (i = 0; i < modelsLength; ++i) {
-      currentStates.push(state[reducerNames[i]!]!);
-    }
-
     if (hasMemo) {
-      // 大部分业务场景，用户只会传入一个模型（符合直觉），所以值得额外的快速对比
-      if (onlyOneModel) {
-        if (currentStates[0] === memoStates[0]) return snapshot;
-      } else {
-        for (i = modelsLength, changed = false; i-- > 0; ) {
-          if (currentStates[i] !== memoStates[i]) {
-            changed = true;
-            break;
-          }
+      changed = false;
+      for (i = modelsLength; i-- > 0; ) {
+        const reducerName = reducerNames[i]!;
+        if (state[reducerName] !== prevState[reducerName]) {
+          changed = true;
+          break;
         }
+      }
 
-        if (!changed) return snapshot;
+      if (!changed) {
+        prevState = state;
+        return snapshot;
       }
     }
 
+    prevState = state;
     hasMemo = true;
-    memoStates = currentStates;
 
     if (onlyOneModel) {
-      return (snapshot = selector
-        ? selector(currentStates[0])
-        : currentStates[0]);
+      const firstState = state[reducerNames[0]!];
+      return (snapshot = selector ? selector(firstState) : firstState);
     }
 
     if (selector) {
+      currentStates = [];
+      for (i = modelsLength; i-- > 0; ) {
+        currentStates[i] = state[reducerNames[i]!]!;
+      }
       return (snapshot = selector.apply(null, currentStates));
     }
 
     snapshot = {};
     for (i = modelsLength; i-- > 0; ) {
-      snapshot[reducerNames[i]!] = currentStates[i]!;
+      const reducerName = reducerNames[i]!;
+      snapshot[reducerName] = state[reducerName];
     }
     return snapshot;
   }, compareFn[algorithm]);

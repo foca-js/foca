@@ -27,7 +27,7 @@ export const computedModel = defineModel('computed-model', {
   },
   methods: {
     effectsGetFullName() {
-      return this.fullName.value;
+      return this.fullName();
     },
   },
   computed: {
@@ -39,13 +39,13 @@ export const computedModel = defineModel('computed-model', {
     },
     testDependentOtherComputed() {
       const status =
-        this.fullName.value === 'ticktock'
+        this.fullName() === 'ticktock'
           ? this.state.statusList[0]
           : this.state.statusList[1];
-      return `${this.fullName.value.trim()} [${status}]`;
+      return `${this.fullName().trim()} [${status}]`;
     },
     isOnline() {
-      return this.fullName.value === 'helloworld';
+      return this.fullName() === 'helloworld';
     },
     testArrayLength() {
       return this.state.statusList.length;
@@ -68,14 +68,17 @@ export const computedModel = defineModel('computed-model', {
     testModifyValue() {
       this.state.statusList[0] = 'BALA';
     },
-    a() {
-      this.b.value;
+    withParameter(age: number) {
+      return this.state.firstName + '-age-' + age;
     },
-    b() {
-      this.c.value;
+    withDefaultParameter(age: number = 20) {
+      return this.state.firstName + '-age-' + age;
     },
-    c() {
-      this.a.value;
+    withMultipleParameters(age: number = 20, address: string) {
+      return this.state.firstName + '-age-' + age + '-addr-' + address;
+    },
+    withMultipleAndDefaultParameters(age: number = 20, address?: string) {
+      return this.state.firstName + '-age-' + age + '-addr-' + address;
     },
   },
 });

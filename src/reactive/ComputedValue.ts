@@ -29,6 +29,7 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
     this.active = false;
 
     if (depsCollector.active) {
+      // 作为其他computed的依赖
       depsCollector.prepend(createComputedDeps(this));
     }
 
@@ -42,6 +43,8 @@ export class ComputedValue<T = any> implements ComputedRef<T> {
 
     if (this.root !== rootState) {
       const deps = this.deps;
+      // 前置的元素是createComputedDeps()生成的对象，执行isDirty()会触发ref.value
+      // 后置的元素是state，所以需要从后往前判断
       for (let i = deps.length; i-- > 0; ) {
         if (deps[i]!.isDirty()) return true;
       }

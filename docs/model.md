@@ -190,7 +190,7 @@ const userModel = defineModel('users', {
 const initialState = {
   firstName: 'tick',
   lastName: 'tock',
-  age: 0,
+  country: 0,
 };
 
 const userModel = defineModel('users', {
@@ -199,21 +199,53 @@ const userModel = defineModel('users', {
     fullName() {
       return this.state.firstName + '.' + this.state.lastName;
     },
+    profile(age: number, address?: string) {
+      return this.fullName() + age + (address || 'empty');
+    },
   },
 });
 ```
 
-我们可以在任意地方使用计算属性，也可以在 hooks 中使用：
+恕我直言，有点 Methods 的味道了。味道是这个味道，但是本质不一样，当我们多次执行computed函数时，因为存在缓存的概念，所以不会真正地执行该函数。
 
 ```typescript
-// 实时
-userModel.fullName; // ComputedRef<string>
-userModel.fullName.value; // string
-// hooks
-useComputed(userModel.fullName); // string
+userModel.fullName(); // 执行函数，生成缓存
+userModel.fullName(); // 使用缓存
+userModel.fullName(); // 使用缓存
 ```
 
-计算属性什么时候才会更新？框架自动收集依赖，只有其中某个依赖更新了，计算属性才会更新。上面的例子中，当`firstName`或者`lastName`有变化时，fullName 将被标记为`dirty`状态，下一次访问则会重新计算结果。而当`age`变化时，不影响 fullName 的结果，下一次访问仍使用缓存作为结果。
+带参数的计算属性可以理解为所有参数就是一个key，每个key都会生成一个计算属性实例，互不干扰。
+
+```typescript
+userModel.profile(20); // 执行函数，生成实例1缓存
+userModel.profile(20); // 实例1缓存
+userModel.profile(123); // 执行函数，生成实例2缓存
+userModel.profile(123); // 实例2缓存
+
+userModel.profile(20); // 实例1缓存
+userModel.profile(123); // 实例2缓存
+```
+
+参数尽量使用基本类型，**不建议**使用对象或者数组作为计算属性的实参，因为如果每次都传新建的复合类型，无法起到缓存的效果，执行速度反而变慢，这和`useMemo(callback, deps)`函数的第二个参数（依赖项）是一个原理。如果实在想用复合类型作为参数，不烦考虑一下放到`Methods`里？
+
+---
+
+也可以尝试一下在React组件中用`useComputed`这个hooks函数接入计算属性：
+
+```tsx
+import { FC } from 'react';
+import { useComputed } from 'foca';
+
+const App: FC = () => {
+  const fullName = useComputed(userModel.fullName); // string
+  // 这里会有TS提示你应该传几个参数，以及参数类型
+  const profile = useComputed(useModel.profile, 30, 'my-address'); // string
+
+  return <p>Profile: {profile}</p>;
+};
+```
+
+缓存什么时候才会更新？框架自动收集依赖，只有其中某个依赖更新了，计算属性才会更新。上面的例子中，当`firstName`或者`lastName`有变化时，fullName 将被标记为`dirty`状态，下一次访问则会重新计算结果。而当`country`变化时，不影响 fullName 的结果，下一次访问仍使用缓存作为结果。
 
 !> 可以在 computed 中使用其它 model 的数据。
 

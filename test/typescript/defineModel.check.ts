@@ -1,5 +1,5 @@
 import { expectType } from 'ts-expect';
-import { AnyAction, ComputedRef, defineModel } from '../../src';
+import { AnyAction, defineModel } from '../../src';
 
 // @ts-expect-error
 defineModel('no-initial-state', {});
@@ -227,8 +227,8 @@ defineModel('private-and-context', {
     async _method2() {},
     method3() {
       this._method1();
-      this.xxx.value.endsWith('/');
-      this._fullname.value.endsWith('/');
+      this.xxx().endsWith('/');
+      this._fullname().endsWith('/');
     },
   },
   computed: {
@@ -241,6 +241,10 @@ defineModel('private-and-context', {
       this.method3;
 
       return '';
+    },
+    yyy() {
+      this.xxx();
+      return this._fullname();
     },
     _fullname() {
       return '';
@@ -258,8 +262,7 @@ defineModel('private-and-context', {
       // @ts-expect-error
       this.onInit;
 
-      expectType<ComputedRef<string>>(this._fullname);
-      expectType<string>(this._fullname.value);
+      expectType<string>(this._fullname());
       expectType<() => Promise<void>>(this._method2);
       expectType<() => AnyAction>(this._action1);
       expectType<() => AnyAction>(this._action2);

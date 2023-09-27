@@ -31,3 +31,16 @@ test('get state from computed value', () => {
   });
   expect(result.current).toEqual('tickworld');
 });
+
+test('with parameters', () => {
+  const { result } = renderHook(() =>
+    useComputed(computedModel.withMultipleParameters, 43, 'address'),
+  );
+
+  expect(result.current).toEqual('tick-age-43-addr-address');
+
+  act(() => {
+    computedModel.changeFirstName('musk');
+  });
+  expect(result.current).toEqual('musk-age-43-addr-address');
+});

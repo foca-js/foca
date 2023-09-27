@@ -40,7 +40,7 @@
 
 可以说加入 immer 是非常有必要的，当 reducer 数据多层嵌套时，你不必再忍受更改里层的数据而不断使用 rest/spread(...)扩展符的烦恼，相反地，直接赋值就好了，其他的交给 immer 搞定。
 
-#### 支持 computed 计算属性，自动收集依赖
+#### 支持 computed 计算属性，自动收集依赖，可传参数
 
 现在，redux 家族不需要再羡慕`vue`或者`mobx`等响应式框架，咱也能支持计算属性并且自动收集依赖，而且是时候把[reselect](https://github.com/reduxjs/reselect)**扔进垃圾桶**了。
 

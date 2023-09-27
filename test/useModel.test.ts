@@ -77,57 +77,63 @@ test('get multiple state with selector', () => {
   expect(result.current).toEqual(3);
 });
 
-test('select compare algorithm', async () => {
-  const hookA = renderHook(() =>
-    useModel(
-      basicModel,
-      complexModel,
-      (a, b) => ({
-        a,
-        b,
-      }),
-      'strictEqual',
-    ),
-  );
-  const prevValueA = hookA.result.current;
-  act(() => {
-    hookA.rerender();
-  });
-  expect(hookA.result.current !== prevValueA).toBeTruthy();
+test('specific compare algorithm', async () => {
+  {
+    const hook = renderHook(() =>
+      useModel(
+        basicModel,
+        complexModel,
+        (a, b) => ({
+          a,
+          b,
+        }),
+        'strictEqual',
+      ),
+    );
+    const prevValue = hook.result.current;
+    act(() => {
+      hook.rerender();
+    });
+    expect(hook.result.current !== prevValue).toBeTruthy();
+  }
 
-  const hookB = renderHook(() =>
-    useModel(
-      basicModel,
-      complexModel,
-      (a, b) => ({
-        a,
-        b,
-      }),
-      'shallowEqual',
-    ),
-  );
-  const prevValueB = hookB.result.current;
-  act(() => {
-    hookB.rerender();
-  });
-  expect(hookB.result.current === prevValueB).toBeTruthy();
+  {
+    const hook = renderHook(() =>
+      useModel(
+        basicModel,
+        complexModel,
+        (a, b) => ({
+          a,
+          b,
+        }),
+        'shallowEqual',
+      ),
+    );
+    const prevValue = hook.result.current;
+    act(() => {
+      hook.rerender();
+    });
+    expect(hook.result.current === prevValue).toBeTruthy();
+  }
 
-  const hookC = renderHook(() =>
-    useModel(
-      basicModel,
-      complexModel,
-      (a, b) => ({
-        a,
-        b,
-      }),
-      'deepEqual',
-    ),
-  );
-  const prevValueC = hookC.result.current;
-  act(() => {
-    hookC.rerender();
-  });
-  expect(hookC.result.current === prevValueC).toBeTruthy();
+  {
+    const hook = renderHook(() =>
+      useModel(
+        basicModel,
+        complexModel,
+        (a, b) => ({
+          a,
+          b,
+        }),
+        'deepEqual',
+      ),
+    );
+    const prevValue = hook.result.current;
+    act(() => {
+      hook.rerender();
+    });
+    expect(hook.result.current === prevValue).toBeTruthy();
+  }
 });
 
 test('Memoize the selector result', () => {

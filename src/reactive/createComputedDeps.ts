@@ -1,3 +1,4 @@
+import { shallowEqual } from 'react-redux';
 import type { ComputedValue } from './ComputedValue';
 import type { Deps } from './types';
 
@@ -10,7 +11,7 @@ export const createComputedDeps = (body: ComputedValue): Deps => {
       snapshot = body.snapshot;
     },
     isDirty(): boolean {
-      return snapshot !== body.value;
+      return !shallowEqual(snapshot, body.value);
     },
   };
 };

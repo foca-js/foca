@@ -12,47 +12,55 @@ afterEach(() => {
   store.unmount();
 });
 
-test('Computed function instance of ComputedValue', () => {
-  expect(computedModel.fullName).toBeInstanceOf(ComputedValue);
-  expect(computedModel.isOnline).toBeInstanceOf(ComputedValue);
-});
-
 test('Get computed value', () => {
-  expect(computedModel.fullName.value).toBe('ticktock');
+  expect(computedModel.fullName()).toBe('ticktock');
   computedModel.changeFirstName('hello');
-  expect(computedModel.fullName.value).toBe('hellotock');
+  expect(computedModel.fullName()).toBe('hellotock');
   computedModel.changeLastName('world');
-  expect(computedModel.fullName.value).toBe('helloworld');
+  expect(computedModel.fullName()).toBe('helloworld');
 });
 
 test('Get computed value in computed function', () => {
-  expect(computedModel.testDependentOtherComputed.value).toBe(
-    'ticktock [online]',
-  );
+  expect(computedModel.testDependentOtherComputed()).toBe('ticktock [online]');
 });
 
 test('Can return correct result from Object.keys', () => {
-  expect(computedModel.testObjectKeys.value).toMatchObject(
+  expect(computedModel.testObjectKeys()).toMatchObject(
     expect.arrayContaining(['online', 'offline']),
   );
 });
 
 test('can enum all items for find method', () => {
-  expect(computedModel.testFind.value).toBe('offline');
+  expect(computedModel.testFind()).toBe('offline');
 });
 
 test('can visit array item', () => {
-  expect(computedModel.testVisitArray.value[0]).toBe('online');
+  expect(computedModel.testVisitArray()[0]).toBe('online');
 });
 
 test('can return correct length from array', () => {
-  expect(computedModel.testArrayLength.value).toBe(2);
+  expect(computedModel.testArrayLength()).toBe(2);
 });
 
 test('Can throw error with circularly reference', () => {
-  expect(() => computedModel.a.value).toThrowError('循环引用');
-  expect(() => computedModel.b.value).toThrowError('循环引用');
-  expect(() => computedModel.c.value).toThrowError('循环引用');
+  const model = defineModel('computed-cycle-usage', {
+    initialState: {},
+    computed: {
+      a() {
+        this.b();
+      },
+      b() {
+        this.c();
+      },
+      c() {
+        this.a();
+      },
+    },
+  });
+
+  expect(() => model.a()).toThrowError('循环引用');
+  expect(() => model.b()).toThrowError('循环引用');
+  expect(() => model.c()).toThrowError('循环引用');
 });
 
 test('Can visit compute value from methods', () => {
@@ -183,8 +191,8 @@ test('ComputedValue can remove duplicated deps', () => {
       computedModel.state.firstName;
       computedModel.state.firstName;
       computedModel.state.lastName;
-      computedModel.fullName.value;
-      computedModel.fullName.value;
+      computedModel.fullName();
+      computedModel.fullName();
     },
   );
 
@@ -192,56 +200,6 @@ test('ComputedValue can remove duplicated deps', () => {
   computedValue.value;
 
   expect(computedValue.deps).toHaveLength(3);
-});
-
-test('ComputedValue can be a copy deps', () => {
-  const mockStore = {
-    getState() {
-      return {
-        [computedModel.name]: store.getState()[computedModel.name],
-      };
-    },
-  };
-
-  const computedValue = new ComputedValue(
-    mockStore,
-    computedModel.name,
-    'prop',
-    () => {
-      return computedModel.fullName.value + '-abc';
-    },
-  );
-
-  // Collecting
-  computedValue.value;
-
-  expect(computedValue.deps).toHaveLength(1);
-  expect(computedValue.deps[0]).toHaveProperty('id');
-  expect(computedValue.deps[0]).toHaveProperty('end');
-  expect(computedValue.deps[0]).toHaveProperty('isDirty');
-  expect(computedValue.deps[0]).not.toBe(computedModel.fullName);
-
-  const fullNameAsRef = computedModel.fullName as ComputedValue;
-
-  expect(fullNameAsRef.isDirty()).toBeFalsy();
-
-  computedModel.changeFirstName('z-');
-  expect(fullNameAsRef.isDirty()).toBeTruthy();
-  expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
-  // 上一个ComputedDeps触发了ComputedValue.value
-  expect(fullNameAsRef.isDirty()).toBeFalsy();
-
-  expect(fullNameAsRef.value).toBe('z-tock');
-
-  expect(computedValue.deps[0]!.isDirty()).toBeTruthy();
-  expect(computedValue.value).toBe('z-tock-abc');
-  expect(computedValue.deps[0]!.isDirty()).toBeFalsy();
-
-  computedModel.changeFirstName('z-to');
-  computedModel.changeLastName('ck');
-  expect(fullNameAsRef.isDirty()).toBeTruthy();
-  expect(computedValue.deps[0]!.isDirty()).toBeFalsy();
-  expect(computedValue.isDirty()).toBeFalsy();
 });
 
 test('only execute computed function when deps changed', () => {
@@ -269,31 +227,121 @@ test('only execute computed function when deps changed', () => {
 
   expect(spy).toBeCalledTimes(0);
 
-  model.testa.value;
+  model.testa();
   expect(spy).toBeCalledTimes(1);
 
-  model.testa.value;
+  model.testa();
   expect(spy).toBeCalledTimes(1);
 
   model.updateB();
-  model.testa.value;
+  model.testa();
   expect(spy).toBeCalledTimes(1);
 
   model.updateA();
-  model.testa.value;
+  model.testa();
   expect(spy).toBeCalledTimes(2);
 
-  model.testa.value;
+  model.testa();
   expect(spy).toBeCalledTimes(2);
 });
 
 test('Can handle JSON.stringify', () => {
-  expect(computedModel.testJSON.value).toBe(
-    JSON.stringify(computedModel.state),
-  );
+  expect(computedModel.testJSON()).toBe(JSON.stringify(computedModel.state));
 });
 
 test('Fail to set value on proxy state', () => {
-  expect(() => computedModel.testExtendObject.value).toThrowError();
-  expect(() => computedModel.testModifyValue.value).toThrowError();
+  expect(() => computedModel.testExtendObject()).toThrowError();
+  expect(() => computedModel.testModifyValue()).toThrowError();
+});
+
+test('no private computed value', () => {
+  // @ts-expect-error
+  expect(computedModel._privateFullname).toBeUndefined();
+});
+
+test('support parameters', () => {
+  expect(computedModel.withParameter(31)).toBe('tick-age-31');
+  expect(computedModel.withDefaultParameter()).toBe('tick-age-20');
+  expect(computedModel.withMultipleParameters(50, 'adddddr')).toBe(
+    'tick-age-50-addr-adddddr',
+  );
+  expect(computedModel.withMultipleAndDefaultParameters(50)).toBe(
+    'tick-age-50-addr-undefined',
+  );
+});
+
+test('never re-calculate value with same parameters', () => {
+  const spy = vitest.fn();
+  const model = defineModel('computed-with-params', {
+    initialState: { name: 'x' },
+    computed: {
+      myData(age: number, coding: boolean) {
+        spy();
+        return this.state.name + '-' + age + String(coding);
+      },
+    },
+  });
+
+  model.myData(20, true);
+  expect(spy).toBeCalledTimes(1);
+  model.myData(20, true);
+  model.myData(20, true);
+  model.myData(20, true);
+  expect(spy).toBeCalledTimes(1);
+  model.myData(20, false);
+  expect(spy).toBeCalledTimes(2);
+  model.myData(20, false);
+  expect(spy).toBeCalledTimes(2);
+  model.myData(34, false);
+  expect(spy).toBeCalledTimes(3);
+  model.myData(20, false); // cache
+  expect(spy).toBeCalledTimes(3);
+
+  spy.mockRestore();
+});
+
+test('remove computed value for cache always be skipped', () => {
+  const spy = vitest.fn();
+  const model = defineModel('computed-with-remove-cache', {
+    initialState: { name: 'x' },
+    computed: {
+      myData(age: number, coding: boolean) {
+        spy();
+        return this.state.name + '-' + age + String(coding);
+      },
+    },
+  });
+
+  for (let i = 0; i < 30; ++i) {
+    model.myData(i, true);
+  }
+  expect(spy).toBeCalledTimes(30);
+  spy.mockReset();
+  model.myData(1, true);
+  expect(spy).toBeCalledTimes(1);
+  spy.mockRestore();
+});
+
+test('complex parameter can not hit cache', () => {
+  const spy = vitest.fn();
+  const model = defineModel('computed-with-complex-parameter', {
+    initialState: { name: 'x' },
+    computed: {
+      myData(opts: object) {
+        spy();
+        return this.state.name + '-' + JSON.stringify(opts);
+      },
+    },
+  });
+
+  const obj = {};
+  model.myData(obj);
+  expect(spy).toBeCalledTimes(1);
+  model.myData(obj);
+  expect(spy).toBeCalledTimes(1);
+  model.myData({});
+  expect(spy).toBeCalledTimes(2);
+  model.myData(obj);
+  expect(spy).toBeCalledTimes(2);
+  spy.mockRestore();
 });

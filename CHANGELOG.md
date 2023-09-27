@@ -1,6 +1,58 @@
 ## v3
 
-- 删除hooks `useDefined`
+### 破坏性更新
+
+- 删除hooks函数 `useDefined`
+- 非hooks状态下计算属性使用执行函数的方式获取
+
+```diff
+const model = defineModel('model', {
+  initialState: { firstName: '', lastName: '' },
+  methods: {
+    myMethod() {
+-     return this.fullName.value;
++     return this.fullName();
+    }
+  },
+  computed: {
+   fullName() {
+     return this.state.firstName + this.state.lastName;
+   },
+  }
+});
+```
+
+### 新特性
+
+- 计算属性支持传递参数
+
+```diff
+const model = defineModel('model', {
+  initialState: { firstName: '', lastName: '' },
+  methods: {
+    myMethod() {
++     const profile = this.profile(30, 'addr', false);
+    }
+  },
+  computed: {
+   fullName() {
+     return this.state.firstName + this.state.lastName;
+   },
++  profile(age: number, address: string, coding: boolean = true) {
++    return this.fullName() + '-' + age + address + coding;
++  },
+  }
+});
+
+const App: FC = () => {
+  const fullName = useComputed(model.fullName);
++ const profile = useComputed(model.profile, 20, 'my-address');
+}
+```
+
+### 其它
+
+- npm包转译为ES5语法以兼容更早的浏览器 (#41)
 
 ## [2.0.1](https://github.com/foca-js/foca/compare/v2.0.0...v2.0.1)&nbsp;&nbsp;(2023-08-10)
 

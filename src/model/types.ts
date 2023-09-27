@@ -1,6 +1,9 @@
 import type { AnyAction } from 'redux';
 import type { EnhancedEffect } from './enhanceEffect';
-import type { ComputedRef } from '../reactive/types';
+
+export interface ComputedFlag {
+  readonly _computedFlag: never;
+}
 
 export interface GetName<Name extends string> {
   /**
@@ -121,9 +124,7 @@ type ModelEffect<Effect extends object> = {
 };
 
 type ModelComputed<Computed extends object> = {
-  readonly [K in keyof Computed]: Computed[K] extends () => infer R
-    ? ComputedRef<R>
-    : never;
+  readonly [K in keyof Computed]: Computed[K] & ComputedFlag;
 };
 
 export type Model<
@@ -235,12 +236,7 @@ export interface DefineModelOptions<
    * ```
    */
   methods?: Effect &
-    ThisType<
-      ModelAction<State, Action> &
-        Effect &
-        ModelComputed<Computed> &
-        EffectCtx<State>
-    >;
+    ThisType<ModelAction<State, Action> & Effect & Computed & EffectCtx<State>>;
   /**
    * 定义计算属性。针对需要复杂的计算才能得出结果的场景而设计。如果只是简单的返回，建议使用`methods`
    *
@@ -272,7 +268,7 @@ export interface DefineModelOptions<
    * const fullname = useComputed(model.fullname); // string
    * ```
    */
-  computed?: Computed & ThisType<ModelComputed<Computed> & ComputedCtx<State>>;
+  computed?: Computed & ThisType<Computed & ComputedCtx<State>>;
   /**
    * 是否阻止刷新数据时跳过当前模型，默认即不跳过。
    *
@@ -292,10 +288,5 @@ export interface DefineModelOptions<
    * @since 0.11.1
    */
   events?: Event<State> &
-    ThisType<
-      ModelAction<State, Action> &
-        ModelComputed<Computed> &
-        Effect &
-        EventCtx<State>
-    >;
+    ThisType<ModelAction<State, Action> & Computed & Effect & EventCtx<State>>;
 }
