@@ -24,14 +24,23 @@
 
 状态数据使用独立的内部 store 存储，任何变动都不会触发模型数据(useModel, connect)的重新检查。
 
+# 浏览器兼容性如何
+
+npm包已经转译成ES5的语法，适用于大部分新旧浏览器（符合中国国情），但是仍有两个ES6的API `Promise` 和`Object.assign`。对于webpack、vite、rollup等一众打包工具，这两个API都会使用垫片(polyfill)处理，所以无需担心。
+
 # 为什么不支持 SSR
 
-因为 foca 是遵循单一 store 存储，它的优点就是 model 创建后无需手动注册，在 CSR(Client-Side-Rendering) 中用起来很流畅。而 SSR(Server-Side-Rendering) 方案中，node 进程常驻于内存，这意味着所有的请求都会共享同一个 store，数据也必然会乱套。所以一些 SSR 框架比如 next.js, remix 都无法使用了。
+因为 foca 是遵循单一 store 存储（单例），它的优点就是 model 创建后无需手动注册，在 CSR(Client-Side-Rendering) 中用起来很流畅。而 SSR(Server-Side-Rendering) 方案中，node 进程常驻于内存，这意味着所有的请求都会共享同一个 store，数据也必然会乱套。所以一些 SSR 框架比如 next.js, remix 都无法使用了。
 
-CSR 的需求量远远大于 SSR，为了用户体验，宁缺毋滥。并且 SSR 其实也不是唯一的`SEO`优化方案，利用 user-agent 配合服务端动态渲染一样可以搞定，参考文章：https://segmentfault.com/a/1190000023481810
+再者，需要SSR的页面，一般是需要 SEO 的展示页，这种项目也用不上状态管理。并且 SSR 其实不是唯一的 SEO 优化方案，利用 user-agent 配合服务端动态渲染一样可以搞定，参考文章：https://segmentfault.com/a/1190000023481810
 
 # this.initialState 是否多余
 
 大部分情况下你会觉得多余，直到你使用`cloneModel`复制出一个新的模型。我们允许复制模型的同时修改初始值，所以`this.initialState`就和`this.state`一样能明确自己归属于哪个模型。
 
 同时，每次获取`this.initialState`，框架都会返回给你一份全新的数据（deep clone)，这样再也不怕你会改动初始值了。
+
+# 命名有什么建议
+
+模型文件名建议采用 `some-word.model.ts` 这种命名方式，可读性好。<br/>
+模型内容建议采用 `export const someWordModel = defineModel('some-word')` 驼峰的方式来创建，变量名和模型名具有一定的关联性，也不容易与其它模型冲突。
