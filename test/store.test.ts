@@ -8,7 +8,7 @@ import { PersistManager } from '../src/persist/PersistManager';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
 import {
-  hasDecodePersistModel,
+  hasFilterPersistModel,
   hasVersionPersistModel,
   persistModel,
 } from './models/persistModel';
@@ -20,7 +20,7 @@ afterEach(() => {
   engines.sessionStorage.clear();
 });
 
-const initializeStoreWithPersist = () => {
+const initializeStoreWithMultiplePersist = () => {
   return store.init({
     persist: [
       {
@@ -42,7 +42,7 @@ const initializeStoreWithPersist = () => {
         keyPrefix: 'Test:',
         version: 1,
         engine: engines.memoryStorage,
-        models: [hasVersionPersistModel, hasDecodePersistModel],
+        models: [hasVersionPersistModel, hasFilterPersistModel],
       },
     ],
   });
@@ -73,85 +73,109 @@ test('Store can initialize many times except production env', async () => {
   await store.onInitialized();
 });
 
-test('Delay to restore data when state changed', async () => {
-  initializeStoreWithPersist();
+describe('persist', () => {
+  test('Delay to dump data when state changed', async () => {
+    initializeStoreWithMultiplePersist();
 
-  await store.onInitialized();
+    await store.onInitialized();
 
-  // @ts-expect-error
-  const getTimer = () => store['persister']!.timer;
-  let prevTimer: ReturnType<typeof getTimer>;
+    // @ts-expect-error
+    const getTimer = () => store['persister']!.timer;
+    let prevTimer: ReturnType<typeof getTimer>;
 
-  expect(getTimer()).toBeUndefined();
-  basicModel.plus(1);
-  expect(getTimer()).not.toBeUndefined();
-  prevTimer = getTimer();
-  basicModel.plus(20);
-  expect(getTimer()).toBe(prevTimer);
-  basicModel.plus(1);
-  expect(getTimer()).toBe(prevTimer);
+    expect(getTimer()).toBeUndefined();
+    basicModel.plus(1);
+    expect(getTimer()).not.toBeUndefined();
+    prevTimer = getTimer();
+    basicModel.plus(20);
+    expect(getTimer()).toBe(prevTimer);
+    basicModel.plus(1);
+    expect(getTimer()).toBe(prevTimer);
 
-  expect(store['persister']?.collect()[basicModel.name]).not.toBe(
-    basicModel.state,
-  );
-  await sleep(50);
-  expect(store['persister']?.collect()[basicModel.name]).toBe(basicModel.state);
+    expect(store['persister']?.collect()[basicModel.name]).not.toBe(
+      basicModel.state,
+    );
+    await sleep(50);
+    expect(store['persister']?.collect()[basicModel.name]).toBe(
+      basicModel.state,
+    );
 
-  expect(getTimer()).toBeUndefined();
-  basicModel.plus(1);
-  expect(getTimer()).not.toBeUndefined();
-  expect(getTimer()).not.toBe(prevTimer);
+    expect(getTimer()).toBeUndefined();
+    basicModel.plus(1);
+    expect(getTimer()).not.toBeUndefined();
+    expect(getTimer()).not.toBe(prevTimer);
 
-  expect(store['persister']?.collect()[basicModel.name]).not.toBe(
-    basicModel.state,
-  );
-  await sleep(50);
-  expect(store['persister']?.collect()[basicModel.name]).toBe(basicModel.state);
-});
-
-test('Store can define persist with different engine', async () => {
-  initializeStoreWithPersist();
-
-  await store.onInitialized();
-
-  expect(JSON.stringify(store['persister']?.collect())).toBe('{}');
-
-  basicModel.plus(1);
-
-  await sleep(50);
-  expect(store['persister']?.collect()).toMatchObject({
-    [basicModel.name]: basicModel.state,
-    [persistModel.name]: persistModel.state,
-    [hasVersionPersistModel.name]: hasVersionPersistModel.state,
-    [hasDecodePersistModel.name]: hasDecodePersistModel.state,
+    expect(store['persister']?.collect()[basicModel.name]).not.toBe(
+      basicModel.state,
+    );
+    await sleep(50);
+    expect(store['persister']?.collect()[basicModel.name]).toBe(
+      basicModel.state,
+    );
   });
-});
 
-test('Store can hydrate persist state', async () => {
-  await engines.memoryStorage.setItem(
-    'Test:test1',
-    JSON.stringify(<PersistSchema>{
-      v: 1,
-      d: {
-        [basicModel.name]: {
-          v: 0,
-          t: Date.now(),
-          d: JSON.stringify({
-            count: 123,
-            hello: 'earth',
-          }),
-        },
+  test('Store can define persist with multiple engines', async () => {
+    initializeStoreWithMultiplePersist();
+
+    await store.onInitialized();
+
+    expect(JSON.stringify(store['persister']?.collect())).toMatchInlineSnapshot(
+      '"{"basic":{"count":0,"hello":"world"},"complex":{"users":{},"ids":[]},"persist":{"counter":0},"persist1":{"counter":56},"persist2":{"counter":1}}"',
+    );
+
+    basicModel.plus(1);
+    persistModel.plus(103);
+
+    await sleep(50);
+    expect(store['persister']?.collect()).toMatchInlineSnapshot(`
+    {
+      "basic": {
+        "count": 1,
+        "hello": "world",
       },
-    }),
-  );
+      "complex": {
+        "ids": [],
+        "users": {},
+      },
+      "persist": {
+        "counter": 103,
+      },
+      "persist1": {
+        "counter": 56,
+      },
+      "persist2": {
+        "counter": 1,
+      },
+    }
+  `);
+  });
 
-  initializeStoreWithPersist();
+  test('Store can load persist state', async () => {
+    await engines.memoryStorage.setItem(
+      'Test:test1',
+      JSON.stringify(<PersistSchema>{
+        v: 1,
+        d: {
+          [basicModel.name]: {
+            v: 0,
+            t: Date.now(),
+            d: JSON.stringify({
+              count: 123,
+              hello: 'earth',
+            }),
+          },
+        },
+      }),
+    );
 
-  await store.onInitialized();
+    initializeStoreWithMultiplePersist();
 
-  expect(basicModel.state).toMatchObject({
-    count: 123,
-    hello: 'earth',
+    await store.onInitialized();
+
+    expect(basicModel.state).toMatchObject({
+      count: 123,
+      hello: 'earth',
+    });
   });
 });
 

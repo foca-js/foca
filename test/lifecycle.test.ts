@@ -48,7 +48,6 @@ describe('onInit', () => {
         v: 1,
         d: {
           [hookModel.name]: {
-            t: Date.now(),
             v: 0,
             d: JSON.stringify({ count: 20 }),
           },

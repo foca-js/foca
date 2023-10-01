@@ -34,9 +34,10 @@ export const defineModel = <
   Action extends object,
   Effect extends object,
   Computed extends object,
+  PersistDump,
 >(
   uniqueName: Name,
-  options: DefineModelOptions<State, Action, Effect, Computed>,
+  options: DefineModelOptions<State, Action, Effect, Computed, PersistDump>,
 ): Model<Name, State, Action, Effect, Computed> => {
   guard(uniqueName);
 
@@ -269,6 +270,7 @@ export const defineModel = <
         {
           name: uniqueName,
           _$opts: options,
+          _$persistCtx: getInitialState({}),
         },
         getState,
       ),

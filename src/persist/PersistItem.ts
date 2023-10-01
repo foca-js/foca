@@ -1,6 +1,11 @@
 import type { StorageEngine } from '../engines';
-import type { InternalModel, Model, ModelPersist } from '../model/types';
-import { isObject, isString } from '../utils/isType';
+import type {
+  GetInitialState,
+  InternalModel,
+  Model,
+  ModelPersist,
+} from '../model/types';
+import { isObject, isPlainObject, isString } from '../utils/isType';
 import { parseState, stringifyState } from '../utils/serialize';
 
 export interface PersistSchema {
@@ -22,28 +27,33 @@ export interface PersistItemSchema {
    */
   v: number | string;
   /**
-   * 存储时间
-   */
-  t: number;
-  /**
    * 数据
    */
   d: string;
 }
 
+export type PersistMergeMode = 'replace' | 'merge' | 'deep-merge';
+
 export interface PersistOptions {
-  /**
-   * 每个模型的最大持久化时间，默认：Infinity。
-   */
-  maxAge?: number;
   /**
    * 存储唯一标识名称
    */
   key: string;
   /**
-   * 存储名称前缀，默认值：@@foca.persist:
+   * 存储名称前缀，默认值：`@@foca.persist:`
    */
   keyPrefix?: string;
+  /**
+   * 持久化数据与初始数据的合并方式。默认值：`merge`
+   *
+   * - replace - 覆盖模式。数据从存储引擎取出后直接覆盖初始数据
+   * - merge - 合并模式。数据从存储引擎取出后，与初始数据多余部分进行合并，可以理解为`Object.assign()`操作
+   * - deep-merge - 二级合并模式。在合并模式的基础上，如果某个key的值为对象，则该对象也会执行合并操作
+   *
+   * 注意：当数据为数组格式时该配置无效。
+   * @since 3.0.0
+   */
+  merge?: PersistMergeMode;
   /**
    * 版本号
    */
@@ -58,9 +68,11 @@ export interface PersistOptions {
   models: Model[];
 }
 
-type CustomModelPersistOptions = Required<ModelPersist<object>>;
+type CustomModelPersistOptions = Required<ModelPersist<object, any>> & {
+  ctx: GetInitialState<object>;
+};
 
-const defaultDecodeFn = (value: any) => value;
+const defaultDumpOrLoadFn = (value: any) => value;
 
 interface PersistRecord {
   model: Model;
@@ -90,7 +102,7 @@ export class PersistItem {
       models,
       keyPrefix = '@@foca.persist:',
       key,
-      maxAge = Infinity,
+      merge = 'merge' satisfies PersistMergeMode,
     } = options;
 
     this.key = keyPrefix + key;
@@ -98,17 +110,20 @@ export class PersistItem {
     for (let i = models.length; i-- > 0; ) {
       const model = models[i]!;
       const {
-        decode = defaultDecodeFn,
-        maxAge: customMaxAge = maxAge,
+        load = defaultDumpOrLoadFn,
+        dump = defaultDumpOrLoadFn,
         version: customVersion = 0,
+        merge: customMerge = merge,
       } = (model as unknown as InternalModel)._$opts.persist || {};
 
       this.records[model.name] = {
         model,
         opts: {
           version: customVersion,
-          maxAge: customMaxAge,
-          decode,
+          merge: customMerge,
+          load,
+          dump,
+          ctx: (model as unknown as InternalModel)._$persistCtx,
         },
       };
     }
@@ -117,6 +132,7 @@ export class PersistItem {
   init(): Promise<void> {
     return this.options.engine.getItem(this.key).then((data) => {
       if (!data) {
+        this.loadMissingState();
         return this.dump();
       }
 
@@ -124,38 +140,82 @@ export class PersistItem {
         const schema = JSON.parse(data);
 
         if (!this.validateSchema(schema)) {
+          this.loadMissingState();
           return this.dump();
         }
 
-        let changed: boolean = false;
         const schemaKeys = Object.keys(schema.d);
         for (let i = schemaKeys.length; i-- > 0; ) {
           const key = schemaKeys[i]!;
           const record = this.records[key];
 
           if (record) {
+            const { opts } = record;
             const itemSchema = schema.d[key]!;
-
-            if (this.validateItemSchema(itemSchema, record.opts)) {
-              const state: object = parseState(itemSchema.d);
-              const decodedState = record.opts.decode.call(null, state);
+            if (this.validateItemSchema(itemSchema, opts)) {
+              const dumpData = parseState(itemSchema.d);
+              record.prev = this.merge(
+                opts.load.call(opts.ctx, dumpData),
+                opts.ctx.initialState,
+                opts.merge,
+              );
               record.schema = itemSchema;
-              record.prev = decodedState === void 0 ? state : decodedState;
-            } else {
-              changed ||= true;
             }
-          } else {
-            changed ||= true;
           }
         }
 
-        changed && this.dump();
-        return;
-      } catch {
+        this.loadMissingState();
+        return this.dump();
+      } catch (e) {
         this.dump();
-        throw new Error('[persist] 无法解析持久化数据，已重置');
+        throw e;
       }
     });
+  }
+
+  loadMissingState() {
+    this.loop((record) => {
+      const { prev, opts, schema } = record;
+      if (!schema || !prev) {
+        const dumpData = opts.dump.call(null, opts.ctx.initialState);
+        record.prev = this.merge(
+          opts.load.call(opts.ctx, dumpData),
+          opts.ctx.initialState,
+          opts.merge,
+        );
+        record.schema = {
+          v: opts.version,
+          d: stringifyState(dumpData),
+        };
+      }
+    });
+  }
+
+  merge(persistState: any, initialState: any, mode: PersistMergeMode) {
+    const isStateArray = Array.isArray(persistState);
+    const isInitialStateArray = Array.isArray(initialState);
+    if (isStateArray && isInitialStateArray) return persistState;
+    if (isStateArray || isInitialStateArray) return initialState;
+
+    if (mode === 'replace') return persistState;
+
+    const state = Object.assign({}, initialState, persistState);
+
+    if (mode === 'deep-merge') {
+      const keys = Object.keys(persistState);
+      for (let i = 0; i < keys.length; ++i) {
+        const key = keys[i]!;
+        if (
+          Object.prototype.hasOwnProperty.call(initialState, key) &&
+          isPlainObject(state[key]) &&
+          isPlainObject(initialState[key])
+        ) {
+          state[key] = Object.assign({}, initialState[key], state[key]);
+        }
+      }
+    }
+
+    return state;
   }
 
   collect(): Record<string, object> {
@@ -169,21 +229,19 @@ export class PersistItem {
   }
 
   update(nextState: Record<string, object>) {
-    const now = Date.now();
     let changed = false;
 
     this.loop((record) => {
       const { model, prev, opts, schema } = record;
-      const nextStateForKey = nextState[model.name];
+      const nextStateForKey = nextState[model.name]!;
 
       // 状态不变的情况下，即使过期了也无所谓，下次初始化时会自动剔除。
       // 版本号改动的话一定会触发页面刷新。
       if (nextStateForKey !== prev) {
         record.prev = nextStateForKey;
-        const nextSchema = {
-          t: now,
+        const nextSchema: PersistItemSchema = {
           v: opts.version,
-          d: stringifyState(nextStateForKey),
+          d: stringifyState(opts.dump.call(null, nextStateForKey)),
         };
 
         if (!schema || nextSchema.d !== schema.d) {
@@ -221,12 +279,7 @@ export class PersistItem {
     schema: PersistItemSchema | undefined,
     options: CustomModelPersistOptions,
   ) {
-    return (
-      schema &&
-      schema.v === options.version &&
-      isString(schema.d) &&
-      schema.t + options.maxAge >= Date.now()
-    );
+    return schema && schema.v === options.version && isString(schema.d);
   }
 
   protected toJSON(): PersistSchema {

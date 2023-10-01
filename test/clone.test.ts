@@ -54,8 +54,8 @@ test('Override persist', () => {
   const model1 = defineModel('model' + ++modelIndex, {
     initialState: {},
     persist: {
-      maxAge: 20,
-      decode: (state) => state,
+      dump: (state) => state,
+      load: (state) => state,
     },
     methods: {
       cc() {
@@ -80,7 +80,8 @@ test('Override persist', () => {
   }) as unknown as InternalModel;
 
   expect(model3._$opts.persist).toHaveProperty('maxAge');
-  expect(model3._$opts.persist).toHaveProperty('decode');
+  expect(model3._$opts.persist).toHaveProperty('dump');
+  expect(model3._$opts.persist).toHaveProperty('load');
 });
 
 test('override methods or unknown option can cause error', () => {

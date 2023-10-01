@@ -1,5 +1,6 @@
 import type { AnyAction } from 'redux';
 import type { EnhancedEffect } from './enhanceEffect';
+import type { PersistMergeMode } from '../persist/PersistItem';
 
 export interface ComputedFlag {
   readonly _computedFlag: never;
@@ -26,21 +27,61 @@ export interface GetInitialState<State extends object> {
   readonly initialState: State;
 }
 
-export interface ModelPersist<State extends object> {
+export type ModelPersist<State extends object, PersistDump> = {
   /**
-   * 持久化版本号，数据结构变化后建议立即升级该版本。默认值：0
+   * 持久化版本号，数据结构变化后建议立即升级该版本。默认值：`0`
    */
   version?: number | string;
+
   /**
-   * 持久化数据活跃时间（ms)，默认：Infinity
+   * 持久化数据与初始数据的合并方式。默认值以全局配置为准
+   *
+   * - replace - 覆盖模式。直接用持久化数据替换初始数据
+   * - merge - 合并模式。持久化数据与初始数据新增的key进行合并，可理解为`Object.assign`
+   * - deep-merge - 二级合并模式。在合并模式的基础上，如果某个key的值为对象，则该对象也会执行合并操作
+   *
+   * 注意：当数据为数组格式时该配置无效。
+   * @since 3.0.0
    */
-  maxAge?: number;
-  /**
-   * 持久化数据恢复到模型时的过滤函数，此时可修改数据以满足业务需求。
-   * 如果数据结构变化，则建议直接更新版本号。
-   */
-  decode?: (state: State) => State | void;
-}
+  merge?: PersistMergeMode;
+} & (
+  | {
+      /**
+       * 模型数据从内存存储到持久化引擎时的过滤函数，允许你只持久化部分数据。
+       * ```typescript
+       *
+       * // state = { firstName: 'tick', lastName: 'tock' }
+       * dump: (state) => state
+       * dump: (state) => state.firstName
+       * dump: (state) => ({ name: state.lastName })
+       * ```
+       *
+       * @since 3.0.0
+       */
+      dump: (state: State) => PersistDump;
+      /**
+       * 持久化数据恢复到模型内存时的过滤函数，参数为`dump`返回的值。
+       * ```typescript
+       * // state = { firstName: 'tick', lastName: 'tock' }
+       * {
+       *   dump(state) {
+       *     return state.firstName
+       *   },
+       *   load(firstName) {
+       *     return { ...this.initialState, firstName: firstName };
+       *   }
+       * }
+       * ```
+       *
+       * @since 3.0.0
+       */
+      load: (this: GetInitialState<State>, dumpData: PersistDump) => State;
+    }
+  | {
+      dump?: never;
+      load?: never;
+    }
+);
 
 export interface ActionCtx<State extends object>
   extends GetName<string>,
@@ -148,7 +189,8 @@ export type InternalModel<
   Effect extends object = object,
   Computed extends object = object,
 > = BaseModel<Name, State> & {
-  readonly _$opts: DefineModelOptions<State, Action, Effect, Computed>;
+  readonly _$opts: DefineModelOptions<State, Action, Effect, Computed, any>;
+  readonly _$persistCtx: GetInitialState<State>;
 };
 
 export type InternalAction<State extends object> = {
@@ -181,6 +223,7 @@ export interface DefineModelOptions<
   Action extends object,
   Effect extends object,
   Computed extends object,
+  PersistDump,
 > {
   /**
    * 初始状态
@@ -282,7 +325,7 @@ export interface DefineModelOptions<
    *
    * @see store.init()
    */
-  persist?: ModelPersist<State> & ThisType<null>;
+  persist?: ModelPersist<State, PersistDump> & ThisType<null>;
   /**
    * 生命周期
    * @since 0.11.1

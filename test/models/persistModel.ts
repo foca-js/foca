@@ -16,27 +16,25 @@ export const persistModel = defineModel('persist', {
       state.counter -= step;
     },
   },
-  persist: {
-    decode(state) {
-      state.counter = state.counter;
-    },
-  },
+  persist: {},
 });
 
-export const hasVersionPersistModel = cloneModel('persit1', persistModel, {
+export const hasVersionPersistModel = cloneModel('persist1', persistModel, {
   initialState: {
     counter: 56,
   },
   persist: {
-    maxAge: 300,
     version: 10,
   },
 });
 
-export const hasDecodePersistModel = cloneModel('persist2', persistModel, {
+export const hasFilterPersistModel = cloneModel('persist2', persistModel, {
   persist: {
-    decode(state) {
-      state.counter = 57;
+    dump(state) {
+      return state.counter;
+    },
+    load(counter) {
+      return { ...this.initialState, counter: counter + 1 };
     },
   },
 });

@@ -1,5 +1,5 @@
 import { expectType } from 'ts-expect';
-import { defineModel, useComputed } from '../../src';
+import { cloneModel, defineModel, useComputed } from '../../src';
 import { ComputedFlag } from '../../src/model/types';
 
 const model = defineModel('test', {
@@ -62,3 +62,9 @@ useComputed(model.withMultipleParameter, '');
 useComputed(model.withMultipleParameter, 0);
 useComputed(model.withMultipleParameter, '', 0);
 useComputed(model.withMultipleParameter, '', 0, false);
+
+{
+  const model1 = cloneModel('clone-model', model);
+  model1.fullName();
+  model1.withMultipleParameter('', 20);
+}

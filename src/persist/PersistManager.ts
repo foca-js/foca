@@ -6,14 +6,14 @@ export class PersistManager {
   protected initialized: boolean = false;
   protected readonly list: PersistItem[];
   protected timer?: ReturnType<typeof setTimeout>;
-  protected unsubscrbeStore!: Unsubscribe;
+  protected unsubscribeStore!: Unsubscribe;
 
   constructor(options: PersistOptions[]) {
     this.list = options.map((option) => new PersistItem(option));
   }
 
   init(store: Store, hydrate: boolean) {
-    this.unsubscrbeStore = store.subscribe(() => {
+    this.unsubscribeStore = store.subscribe(() => {
       this.initialized && this.update(store);
     });
 
@@ -24,7 +24,7 @@ export class PersistManager {
   }
 
   destroy() {
-    this.unsubscrbeStore();
+    this.unsubscribeStore();
     this.initialized = false;
   }
 
@@ -36,9 +36,7 @@ export class PersistManager {
 
   combineReducer(original: Reducer): Reducer<Record<string, object>> {
     return (state, action) => {
-      if (state === void 0) {
-        state = {};
-      }
+      if (state === void 0) state = {};
 
       if (isHydrateAction(action)) {
         return Object.assign({}, state, action.payload);

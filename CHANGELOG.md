@@ -3,6 +3,22 @@
 ### 破坏性更新
 
 - 删除hooks函数 `useDefined`
+- 模型删除`onDestroy`事件钩子
+- 持久化删除`maxAge`配置
+
+```diff
+store.init({
+  persist: [
+    {
+      key: 'key',
+-     maxAge: 3600,
+      engines: engines.localStorage,
+      models: [],
+    }
+  ]
+})
+```
+
 - 非hooks状态下计算属性使用执行函数的方式获取
 
 ```diff
@@ -50,9 +66,42 @@ const App: FC = () => {
 }
 ```
 
+- 持久化增加 **dump** 和 **load** 两个过滤函数
+
+```diff
+const model = defineModel('model', {
+  initialState: { firstName: 'tick', lastName: 'tock' },
+  persist: {
++   dump(state) {
++     return state.firstName;
++   },
++   load(dumpData) {
++     return { ...this.initialState, firstName: dumpData };
++   },
+  }
+});
+```
+
+- 持久化新增合并模式 `replace`, `merge`<small>(默认)</small>, `deep-merge`
+
+```diff
+store.init({
+  persist: [
+    {
+      key: 'item1',
+      version: '1.0',
++     merge: 'deep-merge',
+      engine: engines.localStorage,
+      models: [],
+    },
+  ]
+})
+```
+
 ### 其它
 
 - npm包转译为ES5语法以兼容更早的浏览器 (#41)
+- immer版本从 10.0.2 降级为 9.0.21
 
 ## [2.0.1](https://github.com/foca-js/foca/compare/v2.0.0...v2.0.1)&nbsp;&nbsp;(2023-08-10)
 

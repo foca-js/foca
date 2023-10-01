@@ -16,7 +16,11 @@ type OverrideOptions<
   Action extends object,
   Effect extends object,
   Computed extends object,
-> = Pick<DefineModelOptions<State, Action, Effect, Computed>, EditableKeys>;
+  PersistDump,
+> = Pick<
+  DefineModelOptions<State, Action, Effect, Computed, PersistDump>,
+  EditableKeys
+>;
 
 export const cloneModel = <
   Name extends string,
@@ -24,20 +28,24 @@ export const cloneModel = <
   Action extends object,
   Effect extends object,
   Computed extends object,
+  PersistDump,
 >(
   uniqueName: Name,
-  model: Model<string, State, Action, Effect>,
+  model: Model<string, State, Action, Effect, Computed>,
   options?:
-    | Partial<OverrideOptions<State, Action, Effect, Computed>>
+    | Partial<OverrideOptions<State, Action, Effect, Computed, PersistDump>>
     | ((
-        prev: OverrideOptions<State, Action, Effect, Computed>,
-      ) => Partial<OverrideOptions<State, Action, Effect, Computed>>),
-): Model<Name, State, Action, Effect> => {
+        prev: OverrideOptions<State, Action, Effect, Computed, PersistDump>,
+      ) => Partial<
+        OverrideOptions<State, Action, Effect, Computed, PersistDump>
+      >),
+): Model<Name, State, Action, Effect, Computed> => {
   const realModel = model as unknown as InternalModel<
     string,
     State,
     Action,
-    Effect
+    Effect,
+    Computed
   >;
 
   const prevOpts = realModel._$opts;
