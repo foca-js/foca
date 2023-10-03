@@ -3,8 +3,8 @@
 ### 破坏性更新
 
 - 删除hooks函数 `useDefined`
-- 模型删除`onDestroy`事件钩子
-- 持久化删除`maxAge`配置
+- 删除模型`onDestroy`事件钩子
+- 删除持久化`maxAge`配置
 
 ```diff
 store.init({
@@ -40,6 +40,7 @@ const model = defineModel('model', {
 
 ### 新特性
 
+- 开启持久化的模型会立即存储initialState
 - 计算属性支持传递参数
 
 ```diff
@@ -66,7 +67,7 @@ const App: FC = () => {
 }
 ```
 
-- 持久化增加 **dump** 和 **load** 两个过滤函数
+- 持久化增加 **dump** 和 **load** 两个系列化函数
 
 ```diff
 const model = defineModel('model', {
@@ -90,7 +91,7 @@ store.init({
     {
       key: 'item1',
       version: '1.0',
-+     merge: 'deep-merge',
++     merge: 'replace',
       engine: engines.localStorage,
       models: [],
     },
@@ -101,7 +102,8 @@ store.init({
 ### 其它
 
 - npm包转译为ES5语法以兼容更早的浏览器 (#41)
-- immer版本从 10.0.2 降级为 9.0.21
+- immer版本降级：10.0.2 -> 9.0.21
+- react-redux版本升级：8.1.2 -> 8.1.3
 
 ## [2.0.1](https://github.com/foca-js/foca/compare/v2.0.0...v2.0.1)&nbsp;&nbsp;(2023-08-10)
 
