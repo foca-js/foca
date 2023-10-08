@@ -64,28 +64,26 @@
 
 #### 网络请求
 
-| 仓库                                                          | 版本                                                                                                  | 描述                           | 平台      |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------ | --------- |
-| [axios](https://github.com/axios/axios)                       | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)                     | 当下最流行的请求库             | React, RN |
-| [foca-axios](https://github.com/foca-js/foca-axios)           | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)           | axios 适配器，节流、缓存、重试 | React, RN |
-| [foca-taro-axios](https://github.com/foca-js/foca-taro-axios) | [![npm](https://img.shields.io/npm/v/foca-taro-axios)](https://www.npmjs.com/package/foca-taro-axios) | axios 适配器，节流、缓存、重试 | Taro      |
+| 仓库                                                | 版本                                                                                        | 描述                           |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------ |
+| [axios](https://github.com/axios/axios)             | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)           | 当下最流行的请求库             |
+| [foca-axios](https://github.com/foca-js/foca-axios) | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios) | axios 适配器，节流、缓存、重试 |
 
-#### 存储引擎
+#### 持久化存储引擎
 
-| 仓库                                                                                      | 版本                                                                                                                                                      | 描述                                       | 平台  |
-| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ----- |
-| [react-native-async-storage](https://github.com/react-native-async-storage/async-storage) | [![npm](https://img.shields.io/npm/v/@react-native-async-storage/async-storage)](https://www.npmjs.com/package/@react-native-async-storage/async-storage) | React-Native 持久化引擎                    | RN    |
-| [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)                         | [![npm](https://img.shields.io/npm/v/foca-taro-storage)](https://www.npmjs.com/package/foca-taro-storage)                                                 | Taro 持久化引擎                            | Taro  |
-| [localforage](https://github.com/localForage/localForage)                                 | [![npm](https://img.shields.io/npm/v/localforage)](https://www.npmjs.com/package/localforage)                                                             | 浏览器端持久化引擎，支持 IndexedDB, WebSQL | React |
-| [foca-cookie-storage](https://github.com/foca-js/foca-cookie-storage)                     | [![npm](https://img.shields.io/npm/v/foca-cookie-storage)](https://www.npmjs.com/package/foca-cookie-storage)                                             | Cookie 持久化引擎                          | React |
+| 仓库                                                                                      | 版本                                                                                                                                                      | 描述                                       | 平台     |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | -------- |
+| [react-native-async-storage](https://github.com/react-native-async-storage/async-storage) | [![npm](https://img.shields.io/npm/v/@react-native-async-storage/async-storage)](https://www.npmjs.com/package/@react-native-async-storage/async-storage) | React-Native 持久化引擎                    | RN       |
+| [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)                         | [![npm](https://img.shields.io/npm/v/foca-taro-storage)](https://www.npmjs.com/package/foca-taro-storage)                                                 | Taro 持久化引擎                            | Taro     |
+| [localforage](https://github.com/localForage/localForage)                                 | [![npm](https://img.shields.io/npm/v/localforage)](https://www.npmjs.com/package/localforage)                                                             | 浏览器端持久化引擎，支持 IndexedDB, WebSQL | Web      |
+| [foca-electron-storage](https://github.com/foca-js/foca-electron-storage)                 | [![npm](https://img.shields.io/npm/v/foca-electron-storage)](https://www.npmjs.com/package/foca-electron-storage)                                         | Electron 持久化引擎                        | Electron |
+| [foca-cookie-storage](https://github.com/foca-js/foca-cookie-storage)                     | [![npm](https://img.shields.io/npm/v/foca-cookie-storage)](https://www.npmjs.com/package/foca-cookie-storage)                                             | Cookie 持久化引擎                          | Web      |
 
-#### 日志
-
-| 仓库                                                                       | 版本                                                                                                                      | 描述           | 平台            |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | --------------- |
-| [@redux-devtools/extension](https://github.com/reduxjs/redux-devtools)     | [![npm](https://img.shields.io/npm/v/@redux-devtools/extension)](https://www.npmjs.com/package/@redux-devtools/extension) | 浏览器日志插件 | React, RN       |
-| [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | [![npm](https://img.shields.io/npm/v/react-native-debugger)](https://www.npmjs.com/package/react-native-debugger)         | 日志应用程序   | RN              |
-| [redux-logger](https://github.com/LogRocket/redux-logger)                  | [![npm](https://img.shields.io/npm/v/redux-logger)](https://www.npmjs.com/package/redux-logger)                           | 控制台输出日志 | React, RN, Taro |
+| 仓库                                                                       | 版本                                                                                                                      | 描述           | 平台          |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | ------------- |
+| [@redux-devtools/extension](https://github.com/reduxjs/redux-devtools)     | [![npm](https://img.shields.io/npm/v/@redux-devtools/extension)](https://www.npmjs.com/package/@redux-devtools/extension) | 浏览器日志插件 | Web, RN       |
+| [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | [![npm](https://img.shields.io/npm/v/react-native-debugger)](https://www.npmjs.com/package/react-native-debugger)         | 日志应用程序   | RN            |
+| [redux-logger](https://github.com/LogRocket/redux-logger)                  | [![npm](https://img.shields.io/npm/v/redux-logger)](https://www.npmjs.com/package/redux-logger)                           | 控制台输出日志 | Web, RN, Taro |
 
 # 例子
 
