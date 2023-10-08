@@ -107,12 +107,17 @@ const userModel = defineModel('user', {
     fullName() {
       return this.state.firstName + '.' + this.state.lastName;
     },
+    profile(state, age: number) {
+      return this.fullName() + '-' + age;
+    },
   },
 });
 
 const App: FC = () => {
   // 只有当 firstName 或者 lastName 变化，才会重新刷新该组件
   const fullName = useComputed(userModel.fullName);
+  // 这里会有TS提示你应该传几个参数，以及参数类型
+  const profile = useComputed(userModel.profile, 24);
 
   return <div>{fullName}</div>;
 };

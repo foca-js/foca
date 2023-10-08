@@ -1,9 +1,9 @@
-## v3
+## [3.0.0](https://github.com/foca-js/foca/compare/v2.0.1...v3.0.0)&nbsp;&nbsp;(2023-10-08)
 
 ### 破坏性更新
 
 - 删除hooks函数 `useDefined`
-- 删除模型`onDestroy`事件钩子
+- 删除模型内`onDestroy`事件钩子
 - 删除持久化`maxAge`配置
 
 ```diff

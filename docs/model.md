@@ -230,21 +230,6 @@ userModel.profile(123); // 实例2缓存
 
 ---
 
-也可以尝试一下在React组件中用`useComputed`这个hooks函数接入计算属性：
-
-```tsx
-import { FC } from 'react';
-import { useComputed } from 'foca';
-
-const App: FC = () => {
-  const fullName = useComputed(userModel.fullName); // string
-  // 这里会有TS提示你应该传几个参数，以及参数类型
-  const profile = useComputed(useModel.profile, 30, 'my-address'); // string
-
-  return <p>Profile: {profile}</p>;
-};
-```
-
 缓存什么时候才会更新？框架自动收集依赖，只有其中某个依赖更新了，计算属性才会更新。上面的例子中，当`firstName`或者`lastName`有变化时，fullName 将被标记为`dirty`状态，下一次访问则会重新计算结果。而当`country`变化时，不影响 fullName 的结果，下一次访问仍使用缓存作为结果。
 
 !> 可以在 computed 中使用其它 model 的数据。
