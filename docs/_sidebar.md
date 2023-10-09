@@ -6,14 +6,13 @@
 
 - [模型](/model.md)
 
-* [数据对接](/react.md)
+* [接口](/api.md)
 
 - [事件钩子](/events.md)
 
 * [持久化](/persist.md)
 
 - [进阶用法](/advanced.md)
-
 
 * [问题解答](/troubleshooting.md)
 
