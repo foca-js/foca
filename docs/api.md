@@ -100,7 +100,7 @@ const loading = useLoading(userModel.create, userModel.update, ...);
 
 使用频率：:star2::star2::star2:
 
-配合 computed 计算属性使用。
+配合 computed 计算属性使用。携带参数的情况下，则从第二个参数开始依次传入
 
 ```tsx
 import { useComputed } from 'foca';
@@ -115,7 +115,7 @@ const userModel = defineModel('user', {
     fullName() {
       return this.state.firstName + '.' + this.state.lastName;
     },
-    profile(state, age: number) {
+    profile(age: number) {
       return this.fullName() + '-' + age;
     },
   },
