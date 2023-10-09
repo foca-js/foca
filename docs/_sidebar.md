@@ -14,10 +14,9 @@
 
 - [进阶用法](/advanced.md)
 
-* [API一览](/api.md)
 
-- [问题解答](/troubleshooting.md)
+* [问题解答](/troubleshooting.md)
 
-* [编写测试](/test.md)
+- [编写测试](/test.md)
 
-- [捐赠](/donate.md)
+* [捐赠](/donate.md)

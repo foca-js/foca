@@ -2,6 +2,8 @@
 
 # useModel
 
+使用频率：:star2::star2::star2::star2::star2:
+
 你绝对想不到在 React 组件中获取一个模型的数据有多简单，试试：
 
 ```tsx
@@ -64,6 +66,8 @@ const count = useModel(
 
 # useLoading
 
+使用频率：:star2::star2::star2::star2::star2:
+
 methods 函数大部分是异步的，你可能正在函数里执行一个请求 api 的操作。在用户等待期间，你需要为用户渲染`loading...`之类的字样或者图标以缓解用户的焦虑心情。利用 foca 提供的逻辑，你可以轻松地知道某个函数是否正在执行：
 
 ```tsx
@@ -91,6 +95,8 @@ const loading = useLoading(userModel.create, userModel.update, ...);
 ```
 
 # useComputed
+
+使用频率：:star2::star2::star2:
 
 配合 computed 计算属性使用。
 
@@ -123,7 +129,19 @@ const App: FC = () => {
 };
 ```
 
+# getLoading
+
+使用频率：:star2:
+
+如果想实时获取异步函数的执行状态，则可以通过 `getLoading(...)` 的方式获取。它与 **useLoading** 的唯一区别就是是否hooks。
+
+```typescript
+const loading = getLoading(userModel.create);
+```
+
 # connect
+
+使用频率：:star2:
 
 如果你写烦了函数式组件，偶尔想写一下 class 组件，那么 foca 已经为你准备好了`connect()`函数。如果不知道这是什么，可以参考[react-redux](https://github.com/reduxjs/react-redux)的文档。事实上，我们内置了这个库并对其做了一些封装。
 

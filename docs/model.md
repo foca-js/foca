@@ -23,24 +23,24 @@ export const userModel = defineModel('users', {
 });
 ```
 
-你已经定义了一个简单的可用的模型，通过 **export** 关键字，你已经可以在 react 组件中导入并使用它了。
+你已`defineModel`经定义了一个最基础的模型，其中第一个字符串参数为redux中的`唯一标识`，请确保其它模型不会再使用这个名字。
 
-!> foca 会自动把模型注册到 store 中心，这就是你能在组件中直接导入使用的秘密。
+对了，怎么注册到store？躺着别动！foca 已经自动把模型注册到 store 中心，也让你享受一下 **DRY** <small>(Don't Repeat Yourself)</small> 原则，因此在业务文件内直接导入模型就能使用。
 
 # State
 
 foca 基于 redux 深度定制，所以 state 必须是个纯对象或者数组。
 
 ```typescript
-// 1
-cosnt initialState: { [K: string]: string } = {};
-defineModel('model-object', {
+// 对象
+const initialState: { [K: string]: string } = {};
+const objModel = defineModel('model-object', {
   initialState,
 });
 
-// 2
-cosnt initialState: number[] = [];
-defineModel('model-array', {
+// 数组
+const initialState: number[] = [];
+const arrayModel = defineModel('model-array', {
   initialState,
 });
 ```
@@ -69,6 +69,7 @@ export const userModel = defineModel('users', {
       }
     },
     clear() {
+      // 返回初始值
       return this.initialState;
     },
   },
@@ -155,6 +156,7 @@ this.setState((state) => {
   return ['a', 'b', 'c'];
 });
 
+// 重新设置成初始值
 this.setState(this.initialState);
 ```
 
@@ -233,21 +235,3 @@ userModel.profile(123); // 实例2缓存
 缓存什么时候才会更新？框架自动收集依赖，只有其中某个依赖更新了，计算属性才会更新。上面的例子中，当`firstName`或者`lastName`有变化时，fullName 将被标记为`dirty`状态，下一次访问则会重新计算结果。而当`country`变化时，不影响 fullName 的结果，下一次访问仍使用缓存作为结果。
 
 !> 可以在 computed 中使用其它 model 的数据。
-
-# 通用属性
-
-## name
-
-模型的名称，也是 reducer 的名称，通过`model.name`获取。每个模型的名称必须是**唯一的**字符串，否则会出现数据被覆盖的情况。
-
-## state
-
-模型的实时状态，通过`model.state`获取。你可以在任何地方使用，没有限制。但如果你想在组件里动态更新数据，就得配合 hooks 和 connect 了。
-
-## loading
-
-模型异步函数的当前状态，通过`getLoading(model.asyncXXX)`获取。
-
-## initialState
-
-只有在 reducers 和 methods 方法内部才能使用。通过`this.initialState`获取。
