@@ -18,11 +18,10 @@
 
 # 使用环境
 
-- 现代化浏览器
+- Browser
 - React Native
 - Taro
 - Electron
-- ios 8+
 
 # 特性
 
@@ -56,9 +55,9 @@
 
 某些数据在一个时间段内可能是不变的，比如登录凭证 token。所以你想着先把数据存到本地，下次自动恢复到模型中，这样用户就不需要频繁登录了。
 
-# 缺陷
+#### 使用ES5语法，超强兼容性
 
-- [不支持 SSR](/troubleshooting?id=为什么不支持-ssr)
+npm包已经转译成ES5的语法和特性，适用于各种新旧浏览器甚至IE11（符合中国国情）。而且API方面我们只用了 `Promise` 和 `Object.assign` 这两个ES6的特性。
 
 # 生态
 
@@ -84,6 +83,10 @@
 | [@redux-devtools/extension](https://github.com/reduxjs/redux-devtools)     | [![npm](https://img.shields.io/npm/v/@redux-devtools/extension)](https://www.npmjs.com/package/@redux-devtools/extension) | 浏览器日志插件 | Web, RN       |
 | [react-native-debugger](https://github.com/jhen0409/react-native-debugger) | [![npm](https://img.shields.io/npm/v/react-native-debugger)](https://www.npmjs.com/package/react-native-debugger)         | 日志应用程序   | RN            |
 | [redux-logger](https://github.com/LogRocket/redux-logger)                  | [![npm](https://img.shields.io/npm/v/redux-logger)](https://www.npmjs.com/package/redux-logger)                           | 控制台输出日志 | Web, RN, Taro |
+
+# 缺陷
+
+- [不支持 SSR](/troubleshooting?id=为什么不支持-ssr)
 
 # 例子
 

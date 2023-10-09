@@ -24,10 +24,6 @@
 
 状态数据使用独立的内部 store 存储，任何变动都不会触发模型数据(useModel, connect)的重新检查。
 
-# 浏览器兼容性如何
-
-npm包已经转译成ES5的语法，适用于大部分新旧浏览器（符合中国国情），但是仍有两个ES6的API `Promise` 和`Object.assign`。对于webpack、vite、rollup等一众打包工具，这两个API都会使用垫片(polyfill)处理，所以无需担心。
-
 # 为什么不支持 SSR
 
 因为 foca 是遵循单一 store 存储（单例），它的优点就是 model 创建后无需手动注册，在 CSR(Client-Side-Rendering) 中用起来很流畅。而 SSR(Server-Side-Rendering) 方案中，node 进程常驻于内存，这意味着所有的请求都会共享同一个 store，数据也必然会乱套。所以一些 SSR 框架比如 next.js, remix 都无法使用了。

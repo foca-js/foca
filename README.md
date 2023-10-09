@@ -25,18 +25,14 @@
 - 支持私有方法
 - 自动管理异步函数的 loading 状态
 - 可定制的多引擎数据持久化
-
-# 缺陷
-
-- [不支持 SSR](https://foca.js.org/#/troubleshooting?id=为什么不支持-ssr)
+- 使用ES5语法，超强兼容性
 
 # 使用环境
 
-- 现代化浏览器
+- Browser
 - React Native
 - Taro
 - Electron
-- ios 8+
 
 # 安装
 
@@ -258,6 +254,10 @@ Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
 ---
 
 更多答案请[查看文档](https://foca.js.org/#/troubleshooting)
+
+# 缺陷
+
+- [不支持 SSR](https://foca.js.org/#/troubleshooting?id=为什么不支持-ssr)
 
 # 捐赠
 
