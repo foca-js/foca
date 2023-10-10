@@ -95,6 +95,7 @@ const userModel = defineModel('users', {
     async get() {
       const users = await http.get<UserItem[]>('/users');
       this.setState(users);
+      return users;
     },
     async retrieve(id: number) {
       const user = await http.get<UserItem>(`/users/${id}`);
@@ -102,11 +103,15 @@ const userModel = defineModel('users', {
         state.push(user);
       });
     },
+    // 也可以是非异步的普通函数
+    findUser(id: number) {
+      return this.state.users.find((user) => user.id === id);
+    },
   },
 });
 ```
 
-瞧见没，你可以在 methods 里自由地使用 async/await 方案，然后通过`this.setState`快速更新 state。
+瞧见没，你可以在 methods 里自由地使用 async/await 方案，然后通过上下文`this.setState`快速更新 state。
 
 接下来我们说说`setState`，这其实完全就是 reducers 的快捷方式，你可以直接传入数据或者使用匿名函数来操作，十分方便。这不禁让我们想起了 React Component 里的 setState？咳咳～～读书人的事，那能叫抄吗？
 

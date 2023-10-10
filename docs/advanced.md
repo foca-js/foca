@@ -149,26 +149,3 @@ userModel._fullname; // 报错了，找不到属性 _fullname
 ```
 
 对外接口变得十分清爽，减少出错概率的同时，也提升了数据的安全性。
-
-# 同步函数
-
-没有人规定 methods 里的方法就必须是异步的，你可以随意写，只要是函数就行了。比如有时候一个模型里重复代码太多，提取通用的部分代码到 methods 里就很合适。或者组件里经常需要大量操作才能获得 state 里的一个数据，那么也建议放到 methods 里节省工作量。
-
-```typescript
-export const userModel = defineModel('users', {
-  initialState,
-  methods: {
-    getUsersAmount() {
-      return this.state.length;
-    },
-    getOther() {
-      return {
-        amount: this.getUsersAmount(),
-        other: 'xyz',
-      };
-    },
-  },
-});
-
-// const count = userModel.getUsersAmount();
-```
