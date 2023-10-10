@@ -1,57 +1,69 @@
+import 'fake-indexeddb/auto';
+import localforage from 'localforage';
+import ReactNativeStorage from '@react-native-async-storage/async-storage';
 import { engines } from '../src';
+import { toPromise } from '../src/utils/to-promise';
 
 const storages = [
   [engines.localStorage, localStorage, 'local'],
   [engines.sessionStorage, sessionStorage, 'session'],
   [engines.memoryStorage, undefined, 'memory'],
+  [
+    localforage.createInstance({ driver: localforage.LOCALSTORAGE }),
+    undefined,
+    'localforage local',
+  ],
+  [
+    localforage.createInstance({ driver: localforage.INDEXEDDB }),
+    undefined,
+    'localforage indexedDb',
+  ],
+  [ReactNativeStorage, undefined, 'react-native'],
 ] as const;
 
-beforeEach(() => {
-  storages.forEach(([storage]) => {
-    storage.clear();
-  });
-});
+describe.each(storages)('storage io', (storage, syncOrigin, name) => {
+  beforeEach(() => storage.clear());
+  afterEach(() => storage.clear());
 
-afterEach(() => {
-  storages.forEach(([storage]) => {
-    storage.clear();
-  });
-});
-
-for (let [storage, origin, name] of storages) {
   test(`[${name}] Get and set data`, async () => {
-    if (origin) {
-      expect(origin.getItem('test1')).toBeNull();
+    if (syncOrigin) {
+      expect(syncOrigin.getItem('test1')).toBeNull();
     }
 
-    await expect(storage.getItem('test1')).resolves.toBeNull();
+    await expect(toPromise(() => storage.getItem('test1'))).resolves.toBeNull();
     await storage.setItem('test1', 'yes');
-    await expect(storage.getItem('test1')).resolves.toBe('yes');
+    await expect(toPromise(() => storage.getItem('test1'))).resolves.toBe(
+      'yes',
+    );
 
-    if (origin) {
-      expect(origin.getItem('test1')).toBe('yes');
+    if (syncOrigin) {
+      expect(syncOrigin.getItem('test1')).toBe('yes');
     }
   });
 
   test(`[${name}] Update data`, async () => {
     await storage.setItem('test2', 'yes');
-    await expect(storage.getItem('test2')).resolves.toBe('yes');
+    await expect(toPromise(() => storage.getItem('test2'))).resolves.toBe(
+      'yes',
+    );
     await storage.setItem('test2', 'no');
-    await expect(storage.getItem('test2')).resolves.toBe('no');
+    await expect(toPromise(() => storage.getItem('test2'))).resolves.toBe('no');
 
-    if (origin) {
-      expect(origin.getItem('test2')).toBe('no');
+    if (syncOrigin) {
+      expect(syncOrigin.getItem('test2')).toBe('no');
     }
   });
 
   test(`[${name}] Delete data`, async () => {
     await storage.setItem('test3', 'yes');
-    await expect(storage.getItem('test3')).resolves.toBe('yes');
+    await expect(toPromise(() => storage.getItem('test3'))).resolves.toBe(
+      'yes',
+    );
     await storage.removeItem('test3');
-    await expect(storage.getItem('test3')).resolves.toBeNull();
+    await expect(toPromise(() => storage.getItem('test3'))).resolves.toBeNull();
 
-    if (origin) {
-      expect(origin.getItem('test3')).toBeNull();
+    if (syncOrigin) {
+      expect(syncOrigin.getItem('test3')).toBeNull();
     }
   });
 
@@ -61,12 +73,12 @@ for (let [storage, origin, name] of storages) {
 
     await storage.clear();
 
-    await expect(storage.getItem('test4')).resolves.toBeNull();
-    await expect(storage.getItem('test5')).resolves.toBeNull();
+    await expect(toPromise(() => storage.getItem('test4'))).resolves.toBeNull();
+    await expect(toPromise(() => storage.getItem('test5'))).resolves.toBeNull();
 
-    if (origin) {
-      expect(origin.getItem('test4')).toBeNull();
-      expect(origin.getItem('test5')).toBeNull();
+    if (syncOrigin) {
+      expect(syncOrigin.getItem('test4')).toBeNull();
+      expect(syncOrigin.getItem('test5')).toBeNull();
     }
   });
-}
+});

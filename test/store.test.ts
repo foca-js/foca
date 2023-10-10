@@ -2,7 +2,7 @@ import { compose, StoreEnhancer } from 'redux';
 import sleep from 'sleep-promise';
 import { from, map } from 'rxjs';
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { defineModel, engines, store } from '../src';
+import { defineModel, memoryStorage, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
 import { PersistManager } from '../src/persist/PersistManager';
 import { basicModel, basicSkipRefreshModel } from './models/basicModel';
@@ -15,9 +15,9 @@ import {
 
 afterEach(() => {
   store.unmount();
-  engines.memoryStorage.clear();
-  engines.localStorage.clear();
-  engines.sessionStorage.clear();
+  memoryStorage.clear();
+  localStorage.clear();
+  sessionStorage.clear();
 });
 
 const initializeStoreWithMultiplePersist = () => {
@@ -27,21 +27,21 @@ const initializeStoreWithMultiplePersist = () => {
         key: 'test1',
         keyPrefix: 'Test:',
         version: 1,
-        engine: engines.memoryStorage,
+        engine: memoryStorage,
         models: [basicModel, complexModel],
       },
       {
         key: 'test1',
         keyPrefix: 'Test:',
         version: 1,
-        engine: engines.localStorage,
+        engine: localStorage,
         models: [persistModel],
       },
       {
         key: 'test2',
         keyPrefix: 'Test:',
         version: 1,
-        engine: engines.memoryStorage,
+        engine: memoryStorage,
         models: [hasVersionPersistModel, hasFilterPersistModel],
       },
     ],
@@ -151,7 +151,7 @@ describe('persist', () => {
   });
 
   test('Store can load persist state', async () => {
-    await engines.memoryStorage.setItem(
+    await memoryStorage.setItem(
       'Test:test1',
       JSON.stringify(<PersistSchema>{
         v: 1,
@@ -222,7 +222,7 @@ test('duplicate init() will replace persister', async () => {
       {
         key: 'test',
         version: 2,
-        engine: engines.memoryStorage,
+        engine: memoryStorage,
         models: [],
       },
     ],
@@ -238,7 +238,7 @@ test('duplicate init() will replace persister', async () => {
       {
         key: 'test',
         version: 2,
-        engine: engines.memoryStorage,
+        engine: memoryStorage,
         models: [basicModel],
       },
     ],
@@ -258,7 +258,7 @@ test('duplicate init() will replace persister', async () => {
       {
         key: 'test',
         version: 2,
-        engine: engines.memoryStorage,
+        engine: memoryStorage,
         models: [],
       },
     ],

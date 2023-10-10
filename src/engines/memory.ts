@@ -1,25 +1,18 @@
-import { resolve } from '../utils/resolve';
 import type { StorageEngine } from './StorageEngine';
 
 let cache: Partial<Record<string, string>> = {};
 
-export const memory: StorageEngine = {
+export const memoryStorage: StorageEngine = {
   getItem(key) {
-    return resolve(() => (cache[key] === void 0 ? null : cache[key]!));
+    return cache[key] === void 0 ? null : cache[key]!;
   },
   setItem(key, value) {
-    return resolve(() => {
-      cache[key] = value;
-    });
+    cache[key] = value;
   },
   removeItem(key) {
-    return resolve(() => {
-      cache[key] = void 0;
-    });
+    cache[key] = void 0;
   },
   clear() {
-    return resolve(() => {
-      cache = {};
-    });
+    cache = {};
   },
 };

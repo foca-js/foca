@@ -1,5 +1,5 @@
 import sleep from 'sleep-promise';
-import { cloneModel, defineModel, engines, store } from '../src';
+import { cloneModel, defineModel, memoryStorage, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
 
 describe('onInit', () => {
@@ -42,7 +42,7 @@ describe('onInit', () => {
   test('trigger ready events on store and persist ready', async () => {
     const hookModel = createModel();
 
-    await engines.memoryStorage.setItem(
+    await memoryStorage.setItem(
       'mm:z',
       JSON.stringify(<PersistSchema>{
         v: 1,
@@ -61,7 +61,7 @@ describe('onInit', () => {
           key: 'z',
           keyPrefix: 'mm:',
           version: 1,
-          engine: engines.memoryStorage,
+          engine: memoryStorage,
           models: [hookModel],
         },
       ],

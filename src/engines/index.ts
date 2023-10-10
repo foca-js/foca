@@ -1,20 +1,26 @@
 import { local } from './local';
-import { memory } from './memory';
+import { memoryStorage } from './memory';
 import { session } from './session';
 
-export type { StorageEngine } from './StorageEngine';
-
+/**
+ * @deprecated
+ */
 export const engines = {
   /**
-   * 适用于浏览器的localStorage存储引擎
+   * @deprecated 请直接使用浏览器内置的 localStorage
    */
   localStorage: local,
   /**
    * 适用于测试的memoryStorage存储引擎
+   *
+   * @deprecated 请从foca直接引入
+   * ```typescript
+   * import { memoryStorage } from 'foca';
+   * ```
    */
-  memoryStorage: memory,
+  memoryStorage: memoryStorage,
   /**
-   * 适用于浏览器的sessionStorage存储引擎
+   * @deprecated 请直接使用浏览器内置的 sessionStorage
    */
   sessionStorage: session,
 } as const;

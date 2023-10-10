@@ -14,6 +14,7 @@ export { compose } from 'redux';
 export { modelStore as store } from './store/modelStore';
 export { FocaProvider } from './redux/FocaProvider';
 export { engines } from './engines';
+export { memoryStorage } from './engines/memory';
 
 // 可能用到的TS类型
 export type {
@@ -27,5 +28,5 @@ export type {
   Unsubscribe,
 } from 'redux';
 export type { Model } from './model/types';
-export type { StorageEngine } from './engines';
+export type { StorageEngine } from './engines/StorageEngine';
 export type { ComputedRef } from './reactive/types';

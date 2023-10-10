@@ -10,7 +10,7 @@
 
 ```typescript
 // File: store.ts
-import { store, engines } from 'foca';
+import { store } from 'foca';
 import { userModel } from './userModel';
 import { agentModel } from './agentModel';
 
@@ -19,7 +19,7 @@ store.init({
     {
       key: '$PROJECT_$ENV',
       version: 1,
-      engine: engines.localStorage,
+      engine: localStorage,
       // 模型白名单列表
       models: [userModel, agentModel],
     },
@@ -33,15 +33,11 @@ store.init({
 
 # 存储引擎
 
-不同的引擎会把数据存储到不同的空间，使用哪个引擎取决于项目跑在什么环境。为了统一操作，引擎操作都是异步的，目前内置的引擎有：
+不同的引擎会把数据存储到不同的位置，使用哪个引擎取决于项目跑在什么环境。引擎操作可以是同步的也可以是异步的。下面列举的第三方库也可以**直接当作**存储引擎：
 
-- localStorage
-- sessionStorage
-- memoryStorage
-
-如果内置引擎无法满足，那么安装下面列举的第三方库也可以**直接当作**存储引擎：
-
-- [localforage](https://www.npmjs.com/package/localforage) (localStorage, IndexedDB, WebSQL) - 浏览器专用
+- window.localStorage - 浏览器自带
+- window.sessionStorage - 浏览器自带
+- [localforage](https://www.npmjs.com/package/localforage) (IndexedDB, WebSQL) - 浏览器专用
 - [@react-native-async-storage/async-storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage) - React-Native专用
 - [foca-taro-storage](https://github.com/foca-js/foca-taro-storage) - Taro专用
 - [foca-electron-storage](https://github.com/foca-js/foca-taro-storage) - Electron专用
@@ -50,14 +46,20 @@ store.init({
 如果有必要，你也可以自己实现一个引擎：
 
 ```typescript
-import { StorageEngine } from 'foca';
+// import { StorageEngine } from 'foca';
 
-export const customEngine: StorageEngine = {
-  getItem(key) {},
-  setItem(key, value) {},
-  removeItem(key) {},
-  clear() {},
-};
+interface StorageEngine {
+  getItem(key: string): string | null | Promise<string | null>;
+  setItem(key: string, value: string): any;
+  removeItem(key: string): any;
+  clear(): any;
+}
+```
+
+如果是在测试环境，也可以尝试使用内置的内存引擎
+
+```typescript
+import { memoryStorage } from 'foca';
 ```
 
 # 设置版本号

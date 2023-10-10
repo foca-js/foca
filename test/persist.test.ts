@@ -1,11 +1,16 @@
 import sleep from 'sleep-promise';
-import { defineModel, engines, Model, StorageEngine, store } from '../src';
+import {
+  defineModel,
+  memoryStorage,
+  Model,
+  StorageEngine,
+  store,
+} from '../src';
 import {
   PersistItem,
   PersistMergeMode,
   PersistSchema,
 } from '../src/persist/PersistItem';
-import { resolve } from '../src/utils/resolve';
 import { stringifyState } from '../src/utils/serialize';
 import { basicModel } from './models/basicModel';
 import {
@@ -13,6 +18,7 @@ import {
   hasVersionPersistModel,
   persistModel,
 } from './models/persistModel';
+import { slowEngine } from './helpers/slowEngine';
 
 const stringifyTwice = (model: Model) => {
   return JSON.stringify(JSON.stringify(model.state));
@@ -22,7 +28,7 @@ const createDefaultInstance = () => {
   return new PersistItem({
     version: 1,
     key: 'test-' + Math.random(),
-    engine: engines.memoryStorage,
+    engine: memoryStorage,
     models: [persistModel],
   });
 };
@@ -41,7 +47,7 @@ const storageDump = (opts: {
     state = model.state,
     persistVersion = 1,
     modelVersion = 0,
-    engine = engines.memoryStorage,
+    engine = memoryStorage,
   } = opts;
   return engine.setItem(
     key,
@@ -63,20 +69,18 @@ beforeEach(() => {
 
 afterEach(async () => {
   store.unmount();
-  await engines.memoryStorage.clear();
+  memoryStorage.clear();
 });
 
 test('dump state', async () => {
   const persist = createDefaultInstance();
 
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBeNull();
+  expect(memoryStorage.getItem(persist.key)).toBeNull();
 
   await persist.init();
 
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toBe(
-    JSON.stringify(persist),
-  );
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toContain(
+  expect(memoryStorage.getItem(persist.key)).toBe(JSON.stringify(persist));
+  expect(memoryStorage.getItem(persist.key)).toContain(
     stringifyTwice(persistModel),
   );
 
@@ -89,7 +93,7 @@ test('dump state', async () => {
 
   await sleep(1);
 
-  const value = await engines.memoryStorage.getItem(persist.key);
+  const value = await memoryStorage.getItem(persist.key);
   expect(value).toBe(JSON.stringify(persist));
   expect(value).toContain(stringifyTwice(persistModel));
 });
@@ -169,7 +173,7 @@ test('load failed due to invalid JSON literal', async () => {
   });
 
   persist = createDefaultInstance();
-  await engines.memoryStorage.setItem(
+  await memoryStorage.setItem(
     persist.key,
     JSON.stringify(<PersistSchema>{
       v: 1,
@@ -196,11 +200,11 @@ test('get rid of unregistered model', async () => {
   const persist = new PersistItem({
     version: 1,
     key: 'test1',
-    engine: engines.memoryStorage,
+    engine: memoryStorage,
     models: [basicModel],
   });
 
-  await engines.memoryStorage.setItem(
+  await memoryStorage.setItem(
     persist.key,
     JSON.stringify(<PersistSchema>{
       v: 1,
@@ -228,7 +232,7 @@ test('get rid of unregistered model', async () => {
     [persistModel.name]: persistModel.state,
   });
 
-  const storageValue = await engines.memoryStorage.getItem(persist.key);
+  const storageValue = await memoryStorage.getItem(persist.key);
   expect(storageValue).toContain(stringifyTwice(basicModel));
   expect(storageValue).not.toContain(stringifyTwice(persistModel));
 });
@@ -237,7 +241,7 @@ test('model can specific persist version', async () => {
   const persist = new PersistItem({
     version: 1,
     key: 'test1',
-    engine: engines.memoryStorage,
+    engine: memoryStorage,
     models: [persistModel, hasVersionPersistModel],
   });
 
@@ -258,11 +262,11 @@ test('model can specific persist filter function', async () => {
   const persist = new PersistItem({
     version: 1,
     key: 'test1',
-    engine: engines.memoryStorage,
+    engine: memoryStorage,
     models: [persistModel, hasFilterPersistModel],
   });
 
-  await engines.memoryStorage.setItem(
+  await memoryStorage.setItem(
     persist.key,
     JSON.stringify(<PersistSchema>{
       v: 1,
@@ -289,41 +293,14 @@ test('model can specific persist filter function', async () => {
     [hasFilterPersistModel.name]: hasFilterPersistModel.state,
   });
 
-  await sleep(1);
-  await expect(engines.memoryStorage.getItem(persist.key)).resolves.toContain(
-    '"d":"105"',
-  );
+  expect(memoryStorage.getItem(persist.key)).toContain('"d":"105"');
 });
 
 test('no dump happen before load finished', async () => {
-  let cache: Partial<Record<string, string>> = {};
-  const customEngine: StorageEngine = {
-    async getItem(key) {
-      const result = cache[key] === void 0 ? null : cache[key]!;
-      await sleep(200);
-      return result;
-    },
-    async setItem(key, value) {
-      return resolve(() => {
-        cache[key] = value;
-      });
-    },
-    async removeItem(key) {
-      return resolve(() => {
-        cache[key] = void 0;
-      });
-    },
-    async clear() {
-      return resolve(() => {
-        cache = {};
-      });
-    },
-  };
-
   await storageDump({
     key: '@test1',
     model: persistModel,
-    engine: customEngine,
+    engine: slowEngine,
   });
 
   store.unmount();
@@ -333,7 +310,7 @@ test('no dump happen before load finished', async () => {
         version: 1,
         keyPrefix: '@',
         key: 'test1',
-        engine: customEngine,
+        engine: slowEngine,
         models: [persistModel],
       },
     ],
@@ -347,14 +324,14 @@ test('no dump happen before load finished', async () => {
   await promise;
 
   expect(persistModel.state.counter).toBe(0);
-  await expect(customEngine.getItem('@test1')).resolves.toContain(
+  await expect(slowEngine.getItem('@test1')).resolves.toContain(
     stringifyTwice(persistModel),
   );
 
   await sleep(100);
 
   expect(persistModel.state.counter).toBe(0);
-  await expect(customEngine.getItem('@test1')).resolves.toContain(
+  await expect(slowEngine.getItem('@test1')).resolves.toContain(
     stringifyTwice(persistModel),
   );
   expect(persistManager.collect()).toMatchObject({
@@ -387,7 +364,7 @@ test('set merge mode to `replace`', async () => {
   const persist = new PersistItem({
     version: 1,
     key: 'test-' + Math.random(),
-    engine: engines.memoryStorage,
+    engine: memoryStorage,
     models: [persistModel],
     merge: 'replace',
   });
@@ -415,7 +392,7 @@ test('set merge mode to `deep-merge`', async () => {
   const persist = new PersistItem({
     version: 1,
     key: 'test-' + Math.random(),
-    engine: engines.memoryStorage,
+    engine: memoryStorage,
     models: [model],
     merge: 'deep-merge',
   });
@@ -464,7 +441,7 @@ test('through dump and load function without storage data', async () => {
   store.init({
     persist: [
       {
-        engine: engines.memoryStorage,
+        engine: memoryStorage,
         key: 'test-initial-state-dump-and-load',
         version: 1,
         models: [model],
@@ -498,7 +475,7 @@ test('context of load function contains initialState', async () => {
   store.init({
     persist: [
       {
-        engine: engines.memoryStorage,
+        engine: memoryStorage,
         key: 'test-initialState-context',
         version: 1,
         models: [model],
@@ -520,7 +497,7 @@ describe('merge method', () => {
   const persistItem = new PersistItem({
     key: '',
     version: '',
-    engine: engines.memoryStorage,
+    engine: memoryStorage,
     models: [],
   });
 

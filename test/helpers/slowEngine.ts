@@ -1,5 +1,5 @@
 import type { StorageEngine } from '../../src';
-import { resolve } from '../../src/utils/resolve';
+import { toPromise } from '../../src/utils/to-promise';
 
 let cache: Partial<Record<string, string>> = {};
 
@@ -12,17 +12,17 @@ export const slowEngine: StorageEngine = {
     });
   },
   setItem(key, value) {
-    return resolve(() => {
+    return toPromise(() => {
       cache[key] = value;
     });
   },
   removeItem(key) {
-    return resolve(() => {
+    return toPromise(() => {
       cache[key] = void 0;
     });
   },
   clear() {
-    return resolve(() => {
+    return toPromise(() => {
       cache = {};
     });
   },

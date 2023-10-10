@@ -1,4 +1,4 @@
-import type { StorageEngine } from '../engines';
+import type { StorageEngine } from '../engines/StorageEngine';
 import type {
   GetInitialState,
   InternalModel,
@@ -6,6 +6,7 @@ import type {
   ModelPersist,
 } from '../model/types';
 import { isObject, isPlainObject, isString } from '../utils/isType';
+import { toPromise } from '../utils/to-promise';
 import { parseState, stringifyState } from '../utils/serialize';
 
 export interface PersistSchema {
@@ -130,47 +131,49 @@ export class PersistItem {
   }
 
   init(): Promise<void> {
-    return this.options.engine.getItem(this.key).then((data) => {
-      if (!data) {
-        this.loadMissingState();
-        return this.dump();
-      }
-
-      try {
-        const schema = JSON.parse(data);
-
-        if (!this.validateSchema(schema)) {
+    return toPromise(() => this.options.engine.getItem(this.key)).then(
+      (data) => {
+        if (!data) {
           this.loadMissingState();
           return this.dump();
         }
 
-        const schemaKeys = Object.keys(schema.d);
-        for (let i = schemaKeys.length; i-- > 0; ) {
-          const key = schemaKeys[i]!;
-          const record = this.records[key];
+        try {
+          const schema = JSON.parse(data);
 
-          if (record) {
-            const { opts } = record;
-            const itemSchema = schema.d[key]!;
-            if (this.validateItemSchema(itemSchema, opts)) {
-              const dumpData = parseState(itemSchema.d);
-              record.prev = this.merge(
-                opts.load.call(opts.ctx, dumpData),
-                opts.ctx.initialState,
-                opts.merge,
-              );
-              record.schema = itemSchema;
+          if (!this.validateSchema(schema)) {
+            this.loadMissingState();
+            return this.dump();
+          }
+
+          const schemaKeys = Object.keys(schema.d);
+          for (let i = schemaKeys.length; i-- > 0; ) {
+            const key = schemaKeys[i]!;
+            const record = this.records[key];
+
+            if (record) {
+              const { opts } = record;
+              const itemSchema = schema.d[key]!;
+              if (this.validateItemSchema(itemSchema, opts)) {
+                const dumpData = parseState(itemSchema.d);
+                record.prev = this.merge(
+                  opts.load.call(opts.ctx, dumpData),
+                  opts.ctx.initialState,
+                  opts.merge,
+                );
+                record.schema = itemSchema;
+              }
             }
           }
-        }
 
-        this.loadMissingState();
-        return this.dump();
-      } catch (e) {
-        this.dump();
-        throw e;
-      }
-    });
+          this.loadMissingState();
+          return this.dump();
+        } catch (e) {
+          this.dump();
+          throw e;
+        }
+      },
+    );
   }
 
   loadMissingState() {
