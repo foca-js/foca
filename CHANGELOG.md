@@ -1,6 +1,6 @@
-## 3.1
+## [3.1.0](https://github.com/foca-js/foca/compare/v3.0.0...v3.1.0)&nbsp;&nbsp;(2023-10-10)
 
-- 持久化引擎可直接使用浏览器内置的 localStorage 和 sessionStorage 接口
+- 持久化引擎支持`同步`引擎。因此可以直接使用浏览器内置的 localStorage 和 sessionStorage 接口
 
 ## [3.0.0](https://github.com/foca-js/foca/compare/v2.0.1...v3.0.0)&nbsp;&nbsp;(2023-10-08)
 
