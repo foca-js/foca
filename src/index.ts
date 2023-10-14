@@ -6,8 +6,8 @@ export { cloneModel } from './model/cloneModel';
 export { useModel } from './model/useModel';
 export { useLoading } from './api/useLoading';
 export { getLoading } from './api/getLoading';
+export { useComputed } from './api/use-computed';
 export { connect } from './redux/connect';
-export { useComputed } from './reactive/useComputed';
 
 // 入口使用
 export { compose } from 'redux';
