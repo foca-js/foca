@@ -1,3 +1,8 @@
+## [3.1.1](https://github.com/foca-js/foca/compare/v3.1.0...v3.1.1)&nbsp;&nbsp;(2023-10-14)
+
+- computed内使用数组状态数据时，更新数组不会触发重新计算
+- 删除无用类型 `ComputedRef`
+
 ## [3.1.0](https://github.com/foca-js/foca/compare/v3.0.0...v3.1.0)&nbsp;&nbsp;(2023-10-10)
 
 - 持久化引擎支持`同步`引擎。因此可以直接使用浏览器内置的 localStorage 和 sessionStorage 接口
