@@ -59,11 +59,15 @@ export class ObjectDeps<T = any> implements Deps {
   }
 
   protected proxy(currentState: Record<string, any>): any {
-    if (currentState === null || !isObject<Record<string, any>>(currentState)) {
+    if (
+      currentState === null ||
+      !isObject<Record<string, any>>(currentState) ||
+      Array.isArray(currentState)
+    ) {
       return currentState;
     }
 
-    const nextState: object | any[] = Array.isArray(currentState) ? [] : {};
+    const nextState = {};
     const keys = Object.keys(currentState);
     const currentDeps = this.deps.slice();
     let visited = false;

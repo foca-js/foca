@@ -345,3 +345,37 @@ test('complex parameter can not hit cache', () => {
   expect(spy).toBeCalledTimes(2);
   spy.mockRestore();
 });
+
+test('array should always be deps', () => {
+  const spy = vitest.fn();
+
+  const model = defineModel('computed-from-array', {
+    initialState: {
+      x: [{ foo: 'bar' } as { foo: string; other?: string }],
+      y: {},
+    },
+    reducers: {
+      update(state, other: string) {
+        state.x = [{ foo: 'bar' }, { foo: 'baz', other }];
+      },
+    },
+    computed: {
+      myData() {
+        spy();
+        return this.state.x.filter((item) => item.foo === 'bar');
+      },
+    },
+  });
+
+  model.myData();
+  expect(spy).toBeCalledTimes(1);
+  model.update('baz');
+  model.myData();
+  expect(spy).toBeCalledTimes(2);
+  model.update('x');
+  model.myData();
+  expect(spy).toBeCalledTimes(3);
+  model.update('y');
+  model.myData();
+  expect(spy).toBeCalledTimes(4);
+});
