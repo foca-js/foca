@@ -1,9 +1,9 @@
 import type { Store } from 'redux';
-import type { ComputedRef, Deps } from './types';
 import { depsCollector } from './depsCollector';
 import { createComputedDeps } from './createComputedDeps';
+import type { Deps } from './ObjectDeps';
 
-export class ComputedValue<T = any> implements ComputedRef<T> {
+export class ComputedValue<T = any> {
   public deps: Deps[] = [];
   public snapshot: any;
 

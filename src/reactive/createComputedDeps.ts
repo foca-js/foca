@@ -1,6 +1,6 @@
 import { shallowEqual } from 'react-redux';
 import type { ComputedValue } from './ComputedValue';
-import type { Deps } from './types';
+import type { Deps } from './ObjectDeps';
 
 export const createComputedDeps = (body: ComputedValue): Deps => {
   let snapshot: any;

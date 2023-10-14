@@ -1,4 +1,4 @@
-import type { Deps } from './types';
+import type { Deps } from './ObjectDeps';
 
 const deps: Deps[][] = [];
 let level = -1;

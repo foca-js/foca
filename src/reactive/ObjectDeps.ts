@@ -1,7 +1,12 @@
 import type { Store } from 'redux';
 import { isObject } from '../utils/isType';
 import { depsCollector } from './depsCollector';
-import type { Deps } from './types';
+
+export interface Deps {
+  id: string;
+  end(): void;
+  isDirty(): boolean;
+}
 
 export class ObjectDeps<T = any> implements Deps {
   protected active: boolean = true;
