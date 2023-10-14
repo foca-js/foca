@@ -48,6 +48,24 @@ root.render(
 );
 ```
 
+#### ** React-Native **
+
+```diff
++ import './store';
++ import { FocaProvider } from 'foca';
+import { Text, View } from 'react-native';
+
+export default function App() {
+  return (
++   <FocaProvider>
+      <View>
+        <Text>Hello World</Text>
+      </View>
++   </FocaProvider>
+  )
+}
+```
+
 #### ** Taro.js **
 
 ```diff
