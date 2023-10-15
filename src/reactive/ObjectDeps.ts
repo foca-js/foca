@@ -23,15 +23,11 @@ export class ObjectDeps<T = any> implements Deps {
 
   isDirty(): boolean {
     const rootState = this.getState();
-
     if (this.root === rootState) return false;
-
-    if (this.snapshot === this.getSnapshot(rootState)) {
-      this.root = rootState;
-      return false;
-    }
-
-    return true;
+    const { pathChanged, snapshot: nextSnapshot } = this.getSnapshot(rootState);
+    if (pathChanged || this.snapshot !== nextSnapshot) return true;
+    this.root = rootState;
+    return false;
   }
 
   get id(): string {
@@ -51,16 +47,17 @@ export class ObjectDeps<T = any> implements Deps {
     return this.store.getState()[this.model];
   }
 
-  protected getSnapshot(state: any) {
+  protected getSnapshot(state: any): { pathChanged: boolean; snapshot: any } {
     const deps = this.deps;
     let snapshot = state;
-
     for (let i = 0; i < deps.length; ++i) {
-      if (!isObject<Record<string, any>>(snapshot)) break;
+      if (!isObject<Record<string, any>>(snapshot)) {
+        return { pathChanged: true, snapshot };
+      }
       snapshot = snapshot[deps[i]!];
     }
 
-    return snapshot;
+    return { pathChanged: false, snapshot };
   }
 
   protected proxy(currentState: Record<string, any>): any {

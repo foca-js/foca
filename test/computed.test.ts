@@ -379,3 +379,41 @@ test('array should always be deps', () => {
   model.myData();
   expect(spy).toBeCalledTimes(4);
 });
+
+test('re-calculate when path changed', () => {
+  const spy = vitest.fn();
+
+  const model = defineModel('re-calculate-path-changed', {
+    initialState: {
+      foo: { bar: undefined } as undefined | { bar: string | undefined },
+      baz: '123',
+    },
+    reducers: {
+      updateFoo(state, foo: undefined | { bar: string | undefined }) {
+        state.foo = foo;
+      },
+    },
+    computed: {
+      myData() {
+        const foo = this.state.foo;
+        spy();
+        return foo ? foo.bar : this.state.baz;
+      },
+    },
+  });
+
+  expect(model.myData()).toBeUndefined();
+  expect(spy).toBeCalledTimes(1);
+  model.updateFoo(undefined);
+  expect(model.myData()).toBe('123');
+  expect(spy).toBeCalledTimes(2);
+  model.updateFoo({ bar: undefined });
+  expect(model.myData()).toBeUndefined();
+  expect(spy).toBeCalledTimes(3);
+  model.updateFoo({ bar: 'abc' });
+  expect(model.myData()).toBe('abc');
+  expect(spy).toBeCalledTimes(4);
+  model.updateFoo({ bar: undefined });
+  expect(model.myData()).toBeUndefined();
+  expect(spy).toBeCalledTimes(5);
+});
