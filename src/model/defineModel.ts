@@ -208,7 +208,7 @@ export const defineModel = <
   }
 
   if (events) {
-    const { onInit, onChange } = events;
+    const { onInit, onChange, onDestroy } = events;
     const eventCtx: EventCtx<State> = Object.assign(
       composeGetter({ name: uniqueName }, getState),
       enhancedMethods.external,
@@ -231,6 +231,19 @@ export const defineModel = <
               onChange.call(eventCtx, prevState, nextState);
             }
             prevState = nextState;
+          }),
+        );
+      }
+
+      if (onDestroy) {
+        subscriptions.push(
+          modelStore.subscribe(() => {
+            if (eventCtx.state === void 0) {
+              for (let i = 0; i < subscriptions.length; ++i) {
+                subscriptions[i]!();
+              }
+              onDestroy.call(null as never, uniqueName);
+            }
           }),
         );
       }

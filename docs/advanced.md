@@ -112,6 +112,56 @@ defineModel('my-global-model', {
 store.refresh(true);
 ```
 
+# 局部模型
+
+通过`defineModel`和`cloneModel`创建的模型均为全局类别的模型，数据一直保持在内存中，直到应用关闭或者退出才会释放，对于比较大的项目，这可能会有性能问题。所以有时候你其实想要一种`用完就扔`的模型，即在 React 组件初始化时把模型数据扔到 store 中，当 React 组件被销毁时，模型的数据也跟着销毁。现在，局部模型很适合你的需求：
+
+```diff
+import { useEffect } from 'react';
+import { defineModel, useIsolate } from 'foca';
+
+// test.model.ts
+export const testModel = defineModel('test', {
+  initialState: { count: 0 },
+  reducers: {
+    plus(state, value: number) {
+      state.count += value;
+    },
+  },
+});
+
+// App.tsx
+const App: FC = () => {
++ const model = useIsolate(testModel);
+  const { count } = useModel(model);
+
+  useEffect(() => {
+    model.plus(1);
+  }, []);
+
+  return <div>{count}</div>;
+};
+```
+
+只需增加一行代码的工作量，利用 `useIsolate` 函数根据全局模型创建一个新的局部模型。局部模型拥有一份独立的状态数据，任何操作都不会影响到原来的全局模型，而且会随着组件一起 `挂载/销毁`，能有效降低内存占用。
+
+另外，别忘了模型上还有两个对应的事件`onInit`和`onDestroy`可以使用
+
+```typescript
+export const testModel = defineModel('test', {
+  initialState: { count: 0 },
+  events: {
+    onInit() {
+      // 全局模型创建时触发
+      // 局部模型随组件一起挂载时触发
+    },
+    onDestroy() {
+      // 局部模型随组件一起销毁时触发
+    },
+  },
+});
+```
+
 # 私有方法
 
 我们总是会想抽出一些逻辑作为独立的方法调用，但又不想暴露给模型外部使用，而且方法一多，调用方法时 TS 会提示长长的一串方法列表，显得十分混乱。是时候声明一些私有方法了，foca 使用约定俗成的`前置下划线(_)`来代表私有方法

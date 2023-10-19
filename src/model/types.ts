@@ -212,6 +212,12 @@ export interface Event<State> {
    * 上下文 **this** 可以直接调用actions和effects的函数以及computed计算属性，请谨慎执行修改数据的操作以防止死循环。
    */
   onChange?: (prevState: State, nextState: State) => void;
+  /**
+   * 销毁模型时的回调通知，此时模型已经被销毁。
+   * 该事件仅在局部模型生效
+   * @see useIsolate
+   */
+  onDestroy?: (this: never, modelName: string) => void;
 }
 
 export interface EventCtx<State extends object>

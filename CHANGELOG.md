@@ -1,3 +1,7 @@
+## [3.2.0](https://github.com/foca-js/foca/compare/v3.1.1...v3.2.0)&nbsp;&nbsp;(2023-10-20)
+
+- 增加局部模型钩子 `useIsolate`
+
 ## [3.1.1](https://github.com/foca-js/foca/compare/v3.1.0...v3.1.1)&nbsp;&nbsp;(2023-10-14)
 
 - computed内使用数组状态数据时，更新数组不会触发重新计算

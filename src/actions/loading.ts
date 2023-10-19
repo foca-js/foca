@@ -25,13 +25,13 @@ export const isLoadingAction = (action: AnyAction): action is LoadingAction => {
   );
 };
 
-export interface DestroyLodingAction extends Action<typeof DESTROY_LOADING> {
+export interface DestroyLoadingAction extends Action<typeof DESTROY_LOADING> {
   model: string;
 }
 
 export const isDestroyLoadingAction = (
   action: AnyAction,
-): action is DestroyLodingAction => {
-  const tester = action as DestroyLodingAction;
+): action is DestroyLoadingAction => {
+  const tester = action as DestroyLoadingAction;
   return tester.type === DESTROY_LOADING && !!tester.model;
 };

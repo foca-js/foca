@@ -1,5 +1,5 @@
 import { defineModel, getLoading, store } from '../src';
-import { DestroyLodingAction, DESTROY_LOADING } from '../src/actions/loading';
+import { DestroyLoadingAction, DESTROY_LOADING } from '../src/actions/loading';
 import { loadingStore } from '../src/store/loadingStore';
 import { basicModel } from './models/basicModel';
 import { complexModel } from './models/complexModel';
@@ -68,7 +68,7 @@ test('dispatch the same loading should be intercepted', async () => {
 test('destroy model will not trigger reducer without method called', () => {
   const spy = vitest.fn();
   loadingStore.subscribe(spy);
-  loadingStore.dispatch<DestroyLodingAction>({
+  loadingStore.dispatch<DestroyLoadingAction>({
     type: DESTROY_LOADING,
     model: basicModel.name,
   });
@@ -80,7 +80,7 @@ test('destroy model will trigger reducer with method called', async () => {
   await basicModel.pureAsync();
   const spy = vitest.fn();
   loadingStore.subscribe(spy);
-  loadingStore.dispatch<DestroyLodingAction>({
+  loadingStore.dispatch<DestroyLoadingAction>({
     type: DESTROY_LOADING,
     model: basicModel.name,
   });

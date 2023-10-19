@@ -63,3 +63,22 @@ export const testModel = defineModel('test', {
   },
 });
 ```
+
+## onDestroy
+
+模型数据从 store 卸载时的回调通知。onDestroy 事件只针对[局部模型](/advanced?id=局部模型)，即通过`useIsolate`这个 hooks api 创建的模型才会触发，因为局部模型是跟随组件一起创建和销毁的。
+
+注意，当触发 onDestroy 回调时，模型已经被卸载了，所以无法再拿到当前数据，而且`this`上下文也被限制使用了。
+
+```typescript
+import { defineModel } from 'foca';
+
+export const testModel = defineModel('test', {
+  initialState: { count: 0 },
+  events: {
+    onDestroy(modelName) {
+      console.log('Destroyed', modelName);
+    },
+  },
+});
+```
