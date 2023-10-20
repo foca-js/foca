@@ -195,11 +195,7 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     };
   }
 
-  public static appendReducer(
-    this: ModelStore,
-    key: string,
-    consumer: Reducer,
-  ): void {
+  protected appendReducer(key: string, consumer: Reducer): void {
     const store = this.origin;
     const consumers = this.consumers;
     const exists = store && consumers.hasOwnProperty(key);
@@ -209,7 +205,7 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
     store && !exists && store.replaceReducer(this.reducer);
   }
 
-  public static removeReducer(this: ModelStore, key: string): void {
+  protected removeReducer(key: string): void {
     const store = this.origin;
     const consumers = this.consumers;
 

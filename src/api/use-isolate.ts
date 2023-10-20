@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { DestroyLoadingAction, DESTROY_LOADING } from '../actions/loading';
 import { loadingStore } from '../store/loadingStore';
-import { ModelStore, modelStore } from '../store/modelStore';
+import { modelStore } from '../store/modelStore';
 import { cloneModel } from '../model/cloneModel';
 import { Model } from '../model/types';
 
@@ -141,7 +141,7 @@ const useDevName = (model: Model, count: number, err: Error) => {
 };
 
 const unmountModel = (modelName: string) => {
-  ModelStore.removeReducer.call(modelStore, modelName);
+  modelStore['removeReducer'](modelName);
   loadingStore.dispatch<DestroyLoadingAction>({
     type: DESTROY_LOADING,
     model: modelName,

@@ -1,7 +1,6 @@
 import sleep from 'sleep-promise';
 import { cloneModel, defineModel, memoryStorage, store } from '../src';
 import { PersistSchema } from '../src/persist/PersistItem';
-import { ModelStore } from '../src/store/modelStore';
 
 describe('onInit', () => {
   afterEach(() => {
@@ -215,7 +214,7 @@ describe('onDestroy', () => {
 
     model.update();
     expect(spy).toBeCalledTimes(0);
-    ModelStore.removeReducer.call(store, model.name);
+    store['removeReducer'](model.name);
     expect(spy).toBeCalledTimes(1);
     spy.mockRestore();
   });
@@ -241,7 +240,7 @@ describe('onDestroy', () => {
     model.update();
     expect(destroySpy).toBeCalledTimes(0);
     expect(changeSpy).toBeCalledTimes(1);
-    ModelStore.removeReducer.call(store, model.name);
+    store['removeReducer'](model.name);
     expect(destroySpy).toBeCalledTimes(1);
     expect(changeSpy).toBeCalledTimes(1);
     destroySpy.mockRestore();

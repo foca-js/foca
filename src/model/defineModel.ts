@@ -2,7 +2,7 @@ import { parseState, stringifyState } from '../utils/serialize';
 import { deepEqual } from '../utils/deepEqual';
 import { EnhancedAction, enhanceAction } from './enhanceAction';
 import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
-import { ModelStore, modelStore } from '../store/modelStore';
+import { modelStore } from '../store/modelStore';
 import { createReducer } from '../redux/createReducer';
 import { composeGetter, defineGetter } from '../utils/getter';
 import { getMethodCategory } from '../utils/getMethodCategory';
@@ -267,8 +267,7 @@ export const defineModel = <
     });
   }
 
-  ModelStore.appendReducer.call(
-    modelStore,
+  modelStore['appendReducer'](
     uniqueName,
     createReducer({
       name: uniqueName,
