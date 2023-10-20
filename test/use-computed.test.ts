@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
-import { renderHook } from './helpers/renderHook';
+import { renderHook } from './helpers/render-hook';
 import { store, useComputed } from '../src';
-import { computedModel } from './models/computedModel';
+import { computedModel } from './models/computed.model';
 
 beforeEach(() => {
   store.init();

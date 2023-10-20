@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { FocaProvider, store } from '../src';
-import { PersistGateProps } from '../src/persist/PersistGate';
-import { basicModel } from './models/basicModel';
-import { slowEngine } from './helpers/slowEngine';
+import { PersistGateProps } from '../src/persist/persist-gate';
+import { basicModel } from './models/basic.model';
+import { slowEngine } from './helpers/slow-engine';
 
 const Loading: FC = () => <div data-testid="gateLoading">Yes</div>;
 

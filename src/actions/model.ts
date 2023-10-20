@@ -1,5 +1,5 @@
 import type { Action, AnyAction } from 'redux';
-import { isFunction } from '../utils/isType';
+import { isFunction } from '../utils/is-type';
 
 export interface PreModelAction<State extends object = object, Payload = object>
   extends Action<string> {

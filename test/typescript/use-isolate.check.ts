@@ -1,6 +1,6 @@
 import { TypeEqual, expectType } from 'ts-expect';
 import { defineModel, useIsolate, useLoading, useModel } from '../../src';
-import { basicModel } from '../models/basicModel';
+import { basicModel } from '../models/basic.model';
 
 const isolatedModel = useIsolate(basicModel);
 

@@ -1,7 +1,7 @@
-import { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
-import { FindLoading } from '../store/loadingStore';
-import { useLoadingSelector } from '../redux/useSelector';
-import { getLoading } from './getLoading';
+import { PromiseRoomEffect, PromiseEffect } from '../model/enhance-effect';
+import { FindLoading } from '../store/loading-store';
+import { useLoadingSelector } from '../redux/use-selector';
+import { getLoading } from './get-loading';
 
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。

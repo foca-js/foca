@@ -1,5 +1,5 @@
 import type { AnyAction, Middleware } from 'redux';
-import type { LoadingStore, LoadingStoreState } from '../store/loadingStore';
+import type { LoadingStore, LoadingStoreState } from '../store/loading-store';
 import { isLoadingAction } from '../actions/loading';
 
 export const loadingInterceptor = (

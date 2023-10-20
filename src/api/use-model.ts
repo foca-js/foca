@@ -1,9 +1,9 @@
 import { shallowEqual } from 'react-redux';
-import { deepEqual } from '../utils/deepEqual';
-import type { Model } from './types';
-import { toArgs } from '../utils/toArgs';
-import { useModelSelector } from '../redux/useSelector';
-import { isFunction, isString } from '../utils/isType';
+import { deepEqual } from '../utils/deep-equal';
+import type { Model } from '../model/types';
+import { toArgs } from '../utils/to-args';
+import { useModelSelector } from '../redux/use-selector';
+import { isFunction, isString } from '../utils/is-type';
 
 /**
  * hooks新旧数据的对比方式：

@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { Provider } from 'react-redux';
 import { ProxyContext, ModelContext, LoadingContext } from './contexts';
-import { modelStore } from '../store/modelStore';
-import { PersistGate, PersistGateProps } from '../persist/PersistGate';
-import { proxyStore } from '../store/proxyStore';
-import { loadingStore } from '../store/loadingStore';
-import { isFunction } from '../utils/isType';
+import { modelStore } from '../store/model-store';
+import { PersistGate, PersistGateProps } from '../persist/persist-gate';
+import { proxyStore } from '../store/proxy-store';
+import { loadingStore } from '../store/loading-store';
+import { isFunction } from '../utils/is-type';
 
 interface OwnProps extends PersistGateProps {}
 

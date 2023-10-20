@@ -1,6 +1,6 @@
 import type { Reducer, Store, Unsubscribe } from 'redux';
 import { actionHydrate, isHydrateAction } from '../actions/persist';
-import { PersistItem, PersistOptions } from './PersistItem';
+import { PersistItem, PersistOptions } from './persist-item';
 
 export class PersistManager {
   protected initialized: boolean = false;

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { DestroyLoadingAction, DESTROY_LOADING } from '../actions/loading';
-import { loadingStore } from '../store/loadingStore';
-import { modelStore } from '../store/modelStore';
-import { cloneModel } from '../model/cloneModel';
+import { loadingStore } from '../store/loading-store';
+import { modelStore } from '../store/model-store';
+import { cloneModel } from '../model/clone-model';
 import { Model } from '../model/types';
 
 let globalCounter = 0;

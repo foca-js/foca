@@ -1,19 +1,19 @@
 // 模型中使用
-export { defineModel } from './model/defineModel';
-export { cloneModel } from './model/cloneModel';
+export { defineModel } from './model/define-model';
+export { cloneModel } from './model/clone-model';
 
 // 组件中使用
-export { useModel } from './model/useModel';
-export { useLoading } from './api/useLoading';
-export { getLoading } from './api/getLoading';
+export { useModel } from './api/use-model';
+export { useLoading } from './api/use-loading';
+export { getLoading } from './api/get-loading';
 export { useComputed } from './api/use-computed';
 export { useIsolate } from './api/use-isolate';
 export { connect } from './redux/connect';
 
 // 入口使用
 export { compose } from 'redux';
-export { modelStore as store } from './store/modelStore';
-export { FocaProvider } from './redux/FocaProvider';
+export { modelStore as store } from './store/model-store';
+export { FocaProvider } from './redux/foca-provider';
 export { engines } from './engines';
 export { memoryStorage } from './engines/memory';
 
@@ -29,4 +29,4 @@ export type {
   Unsubscribe,
 } from 'redux';
 export type { Model } from './model/types';
-export type { StorageEngine } from './engines/StorageEngine';
+export type { StorageEngine } from './engines/storage-engine';

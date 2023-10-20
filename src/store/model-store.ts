@@ -10,14 +10,14 @@ import {
 } from 'redux';
 import { Topic } from 'topic';
 import { actionRefresh, RefreshAction } from '../actions/refresh';
-import { modelInterceptor } from '../middleware/modelInterceptor';
-import type { PersistOptions } from '../persist/PersistItem';
-import { PersistManager } from '../persist/PersistManager';
-import { combine } from './proxyStore';
-import { OBJECT } from '../utils/isType';
-import { StoreBasic } from './StoreBasic';
-import { actionInActionInterceptor } from '../middleware/actionInActionInterceptor';
-import { freezeStateMiddleware } from '../middleware/freezeStateMiddleware';
+import { modelInterceptor } from '../middleware/model.interceptor';
+import type { PersistOptions } from '../persist/persist-item';
+import { PersistManager } from '../persist/persist-manager';
+import { combine } from './proxy-store';
+import { OBJECT } from '../utils/is-type';
+import { StoreBasic } from './store-basic';
+import { actionInActionInterceptor } from '../middleware/action-in-action.interceptor';
+import { freezeStateMiddleware } from '../middleware/freeze-state.middleware';
 
 type Compose =
   | typeof compose

@@ -1,5 +1,5 @@
 import { defineModel, store } from '../src';
-import { basicModel } from './models/basicModel';
+import { basicModel } from './models/basic.model';
 
 beforeEach(() => {
   store.init();

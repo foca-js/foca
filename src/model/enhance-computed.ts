@@ -1,6 +1,6 @@
-import { ComputedValue } from '../reactive/ComputedValue';
-import { modelStore } from '../store/modelStore';
-import { toArgs } from '../utils/toArgs';
+import { ComputedValue } from '../reactive/computed-value';
+import { modelStore } from '../store/model-store';
+import { toArgs } from '../utils/to-args';
 import { ComputedCtx, ComputedFlag } from './types';
 
 export const enhanceComputed = <State extends object>(

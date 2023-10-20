@@ -1,6 +1,6 @@
 import type { AnyAction } from 'redux';
-import type { EnhancedEffect } from './enhanceEffect';
-import type { PersistMergeMode } from '../persist/PersistItem';
+import type { EnhancedEffect } from './enhance-effect';
+import type { PersistMergeMode } from '../persist/persist-item';
 
 export interface ComputedFlag {
   readonly _computedFlag: never;

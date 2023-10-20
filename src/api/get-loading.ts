@@ -1,7 +1,7 @@
 import { LOADING_CATEGORY } from '../actions/loading';
-import { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
-import { loadingStore, FindLoading } from '../store/loadingStore';
-import { isFunction } from '../utils/isType';
+import { PromiseRoomEffect, PromiseEffect } from '../model/enhance-effect';
+import { loadingStore, FindLoading } from '../store/loading-store';
+import { isFunction } from '../utils/is-type';
 
 /**
  * 检测给定的effect方法中是否有正在执行的。支持多个方法同时传入。

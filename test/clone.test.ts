@@ -1,6 +1,6 @@
 import { defineModel, cloneModel, store } from '../src';
 import type { InternalModel } from '../src/model/types';
-import { basicModel } from './models/basicModel';
+import { basicModel } from './models/basic.model';
 
 let modelIndex = 0;
 

@@ -1,6 +1,6 @@
 import { ComputedFlag } from '../model/types';
-import { useModelSelector } from '../redux/useSelector';
-import { toArgs } from '../utils/toArgs';
+import { useModelSelector } from '../redux/use-selector';
+import { toArgs } from '../utils/to-args';
 
 export interface UseComputedFlag extends ComputedFlag {
   (...args: any[]): any;

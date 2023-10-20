@@ -1,7 +1,7 @@
 import { expectType } from 'ts-expect';
 import { useModel } from '../../src';
-import { basicModel } from '../models/basicModel';
-import { complexModel } from '../models/complexModel';
+import { basicModel } from '../models/basic.model';
+import { complexModel } from '../models/complex.model';
 
 const basic = useModel(basicModel);
 

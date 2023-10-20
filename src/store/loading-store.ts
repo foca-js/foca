@@ -4,17 +4,17 @@ import {
   legacy_createStore as createStore,
   Middleware,
 } from 'redux';
-import type { PromiseRoomEffect, PromiseEffect } from '../model/enhanceEffect';
-import { loadingInterceptor } from '../middleware/loadingInterceptor';
+import type { PromiseRoomEffect, PromiseEffect } from '../model/enhance-effect';
+import { loadingInterceptor } from '../middleware/loading.interceptor';
 import { isDestroyLoadingAction, isLoadingAction } from '../actions/loading';
 import { actionRefresh, isRefreshAction } from '../actions/refresh';
-import { combine } from './proxyStore';
-import { destroyLoadingInterceptor } from '../middleware/destroyLoadingInterceptor';
+import { combine } from './proxy-store';
+import { destroyLoadingInterceptor } from '../middleware/destroy-loading.interceptor';
 import { immer } from '../utils/immer';
-import { StoreBasic } from './StoreBasic';
-import { modelStore } from './modelStore';
+import { StoreBasic } from './store-basic';
+import { modelStore } from './model-store';
 import { freeze } from 'immer';
-import { freezeStateMiddleware } from '../middleware/freezeStateMiddleware';
+import { freezeStateMiddleware } from '../middleware/freeze-state.middleware';
 
 export interface FindLoading {
   find(category: number | string): boolean;

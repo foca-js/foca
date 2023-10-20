@@ -1,14 +1,14 @@
 import { parseState, stringifyState } from '../utils/serialize';
-import { deepEqual } from '../utils/deepEqual';
-import { EnhancedAction, enhanceAction } from './enhanceAction';
-import { EnhancedEffect, enhanceEffect } from './enhanceEffect';
-import { modelStore } from '../store/modelStore';
-import { createReducer } from '../redux/createReducer';
+import { deepEqual } from '../utils/deep-equal';
+import { EnhancedAction, enhanceAction } from './enhance-action';
+import { EnhancedEffect, enhanceEffect } from './enhance-effect';
+import { modelStore } from '../store/model-store';
+import { createReducer } from '../redux/create-reducer';
 import { composeGetter, defineGetter } from '../utils/getter';
-import { getMethodCategory } from '../utils/getMethodCategory';
+import { getMethodCategory } from '../utils/get-method-category';
 import { guard } from './guard';
-import { depsCollector } from '../reactive/depsCollector';
-import { ObjectDeps } from '../reactive/ObjectDeps';
+import { depsCollector } from '../reactive/deps-collector';
+import { ObjectDeps } from '../reactive/object-deps';
 import type {
   ActionCtx,
   EffectCtx,
@@ -22,10 +22,10 @@ import type {
   SetStateCallback,
   ComputedFlag,
 } from './types';
-import { isFunction } from '../utils/isType';
+import { isFunction } from '../utils/is-type';
 import { Unsubscribe } from 'redux';
 import { freeze, original, isDraft } from 'immer';
-import { isPromise } from '../utils/isPromise';
+import { isPromise } from '../utils/is-promise';
 import { enhanceComputed } from './enhance-computed';
 
 export const defineModel = <

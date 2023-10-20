@@ -1,8 +1,8 @@
 import { defineModel, store } from '../src';
-import { ComputedValue } from '../src/reactive/ComputedValue';
-import { depsCollector } from '../src/reactive/depsCollector';
-import { ObjectDeps } from '../src/reactive/ObjectDeps';
-import { computedModel } from './models/computedModel';
+import { ComputedValue } from '../src/reactive/computed-value';
+import { depsCollector } from '../src/reactive/deps-collector';
+import { ObjectDeps } from '../src/reactive/object-deps';
+import { computedModel } from './models/computed.model';
 
 beforeEach(() => {
   store.init();

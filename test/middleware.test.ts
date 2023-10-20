@@ -1,8 +1,8 @@
 import { defineModel, getLoading, store } from '../src';
 import { DestroyLoadingAction, DESTROY_LOADING } from '../src/actions/loading';
-import { loadingStore } from '../src/store/loadingStore';
-import { basicModel } from './models/basicModel';
-import { complexModel } from './models/complexModel';
+import { loadingStore } from '../src/store/loading-store';
+import { basicModel } from './models/basic.model';
+import { complexModel } from './models/complex.model';
 
 beforeEach(() => {
   store.init();

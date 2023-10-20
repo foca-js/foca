@@ -1,7 +1,7 @@
 import type { Store } from 'redux';
-import { depsCollector } from './depsCollector';
-import { createComputedDeps } from './createComputedDeps';
-import type { Deps } from './ObjectDeps';
+import { depsCollector } from './deps-collector';
+import { createComputedDeps } from './create-computed-deps';
+import type { Deps } from './object-deps';
 
 export class ComputedValue<T = any> {
   public deps: Deps[] = [];

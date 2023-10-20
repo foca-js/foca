@@ -1,4 +1,4 @@
-import { isObject } from './isType';
+import { isObject } from './is-type';
 
 const JSON_UNDEFINED = '__JSON_UNDEFINED__';
 

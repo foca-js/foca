@@ -4,9 +4,9 @@ import {
   TYPE_SET_LOADING,
 } from '../actions/loading';
 import type { EffectCtx } from './types';
-import { isPromise } from '../utils/isPromise';
-import { toArgs } from '../utils/toArgs';
-import { loadingStore } from '../store/loadingStore';
+import { isPromise } from '../utils/is-promise';
+import { toArgs } from '../utils/to-args';
+import { loadingStore } from '../store/loading-store';
 
 interface RoomFunc<P extends any[] = any[], R = Promise<any>> {
   (category: number | string): {

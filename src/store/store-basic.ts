@@ -1,5 +1,5 @@
 import { Store } from 'redux';
-import { $$observable } from '../utils/symbolObservable';
+import { $$observable } from '../utils/symbol-observable';
 
 export abstract class StoreBasic<T> implements Store<T> {
   protected origin: Store<T> | null = null;

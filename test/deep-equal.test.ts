@@ -1,6 +1,6 @@
-import { deepEqual } from '../src/utils/deepEqual';
+import { deepEqual } from '../src/utils/deep-equal';
 import { equals } from './fixtures/equals';
-import { notEquals } from './fixtures/notEquals';
+import { notEquals } from './fixtures/not-equals';
 
 Object.entries(equals).map(([title, { a, b }]) => {
   test(`[equal] ${title}`, () => {

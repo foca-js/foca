@@ -1,11 +1,11 @@
-import type { StorageEngine } from '../engines/StorageEngine';
+import type { StorageEngine } from '../engines/storage-engine';
 import type {
   GetInitialState,
   InternalModel,
   Model,
   ModelPersist,
 } from '../model/types';
-import { isObject, isPlainObject, isString } from '../utils/isType';
+import { isObject, isPlainObject, isString } from '../utils/is-type';
 import { toPromise } from '../utils/to-promise';
 import { parseState, stringifyState } from '../utils/serialize';
 

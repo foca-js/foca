@@ -1,4 +1,4 @@
-import { toArgs } from './toArgs';
+import { toArgs } from './to-args';
 
 export function composeGetter<
   T extends object,

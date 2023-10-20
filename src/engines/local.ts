@@ -1,4 +1,4 @@
-import type { StorageEngine } from './StorageEngine';
+import type { StorageEngine } from './storage-engine';
 
 export const local: StorageEngine = {
   getItem(key) {

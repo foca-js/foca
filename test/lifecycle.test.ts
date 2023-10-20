@@ -1,6 +1,6 @@
 import sleep from 'sleep-promise';
 import { cloneModel, defineModel, memoryStorage, store } from '../src';
-import { PersistSchema } from '../src/persist/PersistItem';
+import { PersistSchema } from '../src/persist/persist-item';
 
 describe('onInit', () => {
   afterEach(() => {

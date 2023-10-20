@@ -1,6 +1,6 @@
 import { expectType } from 'ts-expect';
 import { useLoading } from '../../src';
-import { basicModel } from '../models/basicModel';
+import { basicModel } from '../models/basic.model';
 
 expectType<boolean>(useLoading(basicModel.bar));
 expectType<boolean>(useLoading(basicModel.foo, basicModel.bar));

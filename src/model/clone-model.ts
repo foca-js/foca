@@ -1,5 +1,5 @@
-import { isFunction } from '../utils/isType';
-import { defineModel } from './defineModel';
+import { isFunction } from '../utils/is-type';
+import { defineModel } from './define-model';
 import type { DefineModelOptions, InternalModel, Model } from './types';
 
 const editableKeys = [

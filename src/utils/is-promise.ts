@@ -1,4 +1,4 @@
-import { FUNCTION, isFunction, isObject } from './isType';
+import { FUNCTION, isFunction, isObject } from './is-type';
 
 const hasPromise = typeof Promise === FUNCTION;
 

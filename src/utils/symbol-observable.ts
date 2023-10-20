@@ -1,4 +1,4 @@
-import { FUNCTION } from './isType';
+import { FUNCTION } from './is-type';
 
 /**
  * Inlined version of the `symbol-observable` polyfill

@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { store, connect, FocaProvider, getLoading } from '../src';
-import { basicModel } from './models/basicModel';
-import { complexModel } from './models/complexModel';
+import { basicModel } from './models/basic.model';
+import { complexModel } from './models/complex.model';
 
 let App: FC<ReturnType<typeof mapStateToProps>> = ({ count, loading }) => {
   return (

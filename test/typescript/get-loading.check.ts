@@ -1,6 +1,6 @@
 import { expectType } from 'ts-expect';
 import { getLoading } from '../../src';
-import { basicModel } from '../models/basicModel';
+import { basicModel } from '../models/basic.model';
 
 expectType<boolean>(getLoading(basicModel.foo));
 expectType<boolean>(getLoading(basicModel.foo.room).find('xx'));

@@ -1,6 +1,6 @@
 import { Connect, connect as originalConnect } from 'react-redux';
 import { ProxyContext } from './contexts';
-import { toArgs } from '../utils/toArgs';
+import { toArgs } from '../utils/to-args';
 
 export const connect: Connect = function () {
   const args = toArgs<Parameters<Connect>>(arguments);

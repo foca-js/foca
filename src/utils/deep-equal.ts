@@ -1,4 +1,4 @@
-import { OBJECT } from './isType';
+import { OBJECT } from './is-type';
 
 export const deepEqual = (a: any, b: any): boolean => {
   if (a === b) return true;

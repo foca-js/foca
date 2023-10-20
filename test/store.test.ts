@@ -3,15 +3,15 @@ import sleep from 'sleep-promise';
 import { from, map } from 'rxjs';
 import { composeWithDevTools } from '@redux-devtools/extension';
 import { defineModel, memoryStorage, store } from '../src';
-import { PersistSchema } from '../src/persist/PersistItem';
-import { PersistManager } from '../src/persist/PersistManager';
-import { basicModel, basicSkipRefreshModel } from './models/basicModel';
-import { complexModel } from './models/complexModel';
+import { PersistSchema } from '../src/persist/persist-item';
+import { PersistManager } from '../src/persist/persist-manager';
+import { basicModel, basicSkipRefreshModel } from './models/basic.model';
+import { complexModel } from './models/complex.model';
 import {
   hasFilterPersistModel,
   hasVersionPersistModel,
   persistModel,
-} from './models/persistModel';
+} from './models/persist.model';
 
 afterEach(() => {
   store.unmount();

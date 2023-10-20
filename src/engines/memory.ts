@@ -1,4 +1,4 @@
-import type { StorageEngine } from './StorageEngine';
+import type { StorageEngine } from './storage-engine';
 
 let cache: Partial<Record<string, string>> = {};
 

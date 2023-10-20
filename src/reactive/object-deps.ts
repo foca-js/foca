@@ -1,6 +1,6 @@
 import type { Store } from 'redux';
-import { isObject } from '../utils/isType';
-import { depsCollector } from './depsCollector';
+import { isObject } from '../utils/is-type';
+import { depsCollector } from './deps-collector';
 
 export interface Deps {
   id: string;

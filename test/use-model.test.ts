@@ -1,8 +1,8 @@
 import { act } from '@testing-library/react';
-import { renderHook } from './helpers/renderHook';
+import { renderHook } from './helpers/render-hook';
 import { store, useModel } from '../src';
-import { basicModel, basicSkipRefreshModel } from './models/basicModel';
-import { complexModel } from './models/complexModel';
+import { basicModel, basicSkipRefreshModel } from './models/basic.model';
+import { complexModel } from './models/complex.model';
 
 beforeEach(() => {
   store.init();

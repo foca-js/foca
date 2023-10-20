@@ -1,6 +1,6 @@
 import { ReactNode, FC, useState, useEffect } from 'react';
-import { modelStore } from '../store/modelStore';
-import { isFunction } from '../utils/isType';
+import { modelStore } from '../store/model-store';
+import { isFunction } from '../utils/is-type';
 
 export interface PersistGateProps {
   loading?: ReactNode;

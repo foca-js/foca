@@ -10,9 +10,9 @@ import {
   Model,
   useModel,
 } from '../src';
-import { loadingStore } from '../src/store/loadingStore';
-import { renderHook } from './helpers/renderHook';
-import { basicModel } from './models/basicModel';
+import { loadingStore } from '../src/store/loading-store';
+import { renderHook } from './helpers/render-hook';
+import { basicModel } from './models/basic.model';
 
 (['development', 'production'] as const).forEach((env) => {
   describe(`[${env} mode]`, () => {

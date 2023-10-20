@@ -10,15 +10,15 @@ import {
   PersistItem,
   PersistMergeMode,
   PersistSchema,
-} from '../src/persist/PersistItem';
+} from '../src/persist/persist-item';
 import { stringifyState } from '../src/utils/serialize';
-import { basicModel } from './models/basicModel';
+import { basicModel } from './models/basic.model';
 import {
   hasFilterPersistModel,
   hasVersionPersistModel,
   persistModel,
-} from './models/persistModel';
-import { slowEngine } from './helpers/slowEngine';
+} from './models/persist.model';
+import { slowEngine } from './helpers/slow-engine';
 
 const stringifyTwice = (model: Model) => {
   return JSON.stringify(JSON.stringify(model.state));
