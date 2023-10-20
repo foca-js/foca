@@ -37,6 +37,58 @@ const user3Model = cloneModel('users3', userModel, (prev) => {
 });
 ```
 
+# 局部模型
+
+通过`defineModel`和`cloneModel`创建的模型均为全局类别的模型，数据一直保持在内存中，直到应用关闭或者退出才会释放，对于比较大的项目，这可能会有性能问题。所以有时候你其实想要一种`用完就扔`的模型，即在 React 组件初始化时把模型数据扔到 store 中，当 React 组件被销毁时，模型的数据也跟着销毁。现在，局部模型很适合你的需求：
+
+```diff
+import { useEffect } from 'react';
+import { defineModel, useIsolate } from 'foca';
+
+// test.model.ts
+export const testModel = defineModel('test', {
+  initialState: { count: 0 },
+  reducers: {
+    plus(state, value: number) {
+      state.count += value;
+    },
+  },
+});
+
+// App.tsx
+const App: FC = () => {
++ const model = useIsolate(testModel);
+  const { count } = useModel(model);
+
+  useEffect(() => {
+    model.plus(1);
+  }, []);
+
+  return <div>{count}</div>;
+};
+```
+
+只需增加一行代码的工作量，利用 `useIsolate` 函数根据全局模型创建一个新的局部模型。局部模型拥有一份独立的状态数据，任何操作都不会影响到原来的全局模型，而且会随着组件一起 `挂载/销毁`，能有效降低内存占用。
+
+另外，别忘了模型上还有两个对应的事件`onInit`和`onDestroy`可以使用
+
+```typescript
+export const testModel = defineModel('test', {
+  initialState: { count: 0 },
+  events: {
+    onInit() {
+      // 全局模型创建时触发
+      // 局部模型随组件一起挂载时触发
+    },
+    onDestroy() {
+      // 局部模型随组件一起销毁时触发
+    },
+  },
+});
+```
+
+!> 如果不需要持久化，那么它可以完全代替克隆模型
+
 # loadings
 
 默认地，methods 函数只会保存一份执行状态，如果你在同一时间多次执行同一个函数，那么状态就会互相覆盖，产生错乱的数据。如果现在有 10 个按钮，点击每个按钮都会执行`model.methodX(id)`，那么我们如何知道是哪个按钮执行的呢？这时候我们需要为执行状态开辟一个独立的存储空间，让同一个函数拥有多个状态互不干扰。
@@ -110,56 +162,6 @@ defineModel('my-global-model', {
 
 ```typescript
 store.refresh(true);
-```
-
-# 局部模型
-
-通过`defineModel`和`cloneModel`创建的模型均为全局类别的模型，数据一直保持在内存中，直到应用关闭或者退出才会释放，对于比较大的项目，这可能会有性能问题。所以有时候你其实想要一种`用完就扔`的模型，即在 React 组件初始化时把模型数据扔到 store 中，当 React 组件被销毁时，模型的数据也跟着销毁。现在，局部模型很适合你的需求：
-
-```diff
-import { useEffect } from 'react';
-import { defineModel, useIsolate } from 'foca';
-
-// test.model.ts
-export const testModel = defineModel('test', {
-  initialState: { count: 0 },
-  reducers: {
-    plus(state, value: number) {
-      state.count += value;
-    },
-  },
-});
-
-// App.tsx
-const App: FC = () => {
-+ const model = useIsolate(testModel);
-  const { count } = useModel(model);
-
-  useEffect(() => {
-    model.plus(1);
-  }, []);
-
-  return <div>{count}</div>;
-};
-```
-
-只需增加一行代码的工作量，利用 `useIsolate` 函数根据全局模型创建一个新的局部模型。局部模型拥有一份独立的状态数据，任何操作都不会影响到原来的全局模型，而且会随着组件一起 `挂载/销毁`，能有效降低内存占用。
-
-另外，别忘了模型上还有两个对应的事件`onInit`和`onDestroy`可以使用
-
-```typescript
-export const testModel = defineModel('test', {
-  initialState: { count: 0 },
-  events: {
-    onInit() {
-      // 全局模型创建时触发
-      // 局部模型随组件一起挂载时触发
-    },
-    onDestroy() {
-      // 局部模型随组件一起销毁时触发
-    },
-  },
-});
 ```
 
 # 私有方法
