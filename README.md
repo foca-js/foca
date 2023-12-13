@@ -236,6 +236,7 @@ Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
 | [foca-taro-storage](https://github.com/foca-js/foca-taro-storage)                         | [![npm](https://img.shields.io/npm/v/foca-taro-storage)](https://www.npmjs.com/package/foca-taro-storage)                                                 | Taro 持久化引擎                            | Taro     |
 | [localforage](https://github.com/localForage/localForage)                                 | [![npm](https://img.shields.io/npm/v/localforage)](https://www.npmjs.com/package/localforage)                                                             | 浏览器端持久化引擎，支持 IndexedDB, WebSQL | Web      |
 | [foca-electron-storage](https://github.com/foca-js/foca-electron-storage)                 | [![npm](https://img.shields.io/npm/v/foca-electron-storage)](https://www.npmjs.com/package/foca-electron-storage)                                         | Electron 持久化引擎                        | Electron |
+| [foca-mmkv-storage](https://github.com/foca-js/foca-mmkv-storage)                         | [![npm](https://img.shields.io/npm/v/foca-mmkv-storage)](https://www.npmjs.com/package/foca-mmkv-storage)                                                 | 基于 mmkv 的持久化引擎                     | RN       |
 | [foca-cookie-storage](https://github.com/foca-js/foca-cookie-storage)                     | [![npm](https://img.shields.io/npm/v/foca-cookie-storage)](https://www.npmjs.com/package/foca-cookie-storage)                                             | Cookie 持久化引擎                          | Web      |
 
 #### 日志

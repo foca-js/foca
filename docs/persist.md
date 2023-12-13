@@ -39,6 +39,7 @@ store.init({
 - window.sessionStorage - 浏览器自带
 - [localforage](https://www.npmjs.com/package/localforage) (IndexedDB, WebSQL) - 浏览器专用
 - [@react-native-async-storage/async-storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage) - React-Native专用
+- [foca-mmkv-storage](https://github.com/foca-js/foca-mmkv-storage) - React-Native专用
 - [foca-taro-storage](https://github.com/foca-js/foca-taro-storage) - Taro专用
 - [foca-electron-storage](https://github.com/foca-js/foca-taro-storage) - Electron专用
 - [foca-cookie-storage](https://github.com/foca-js/foca-cookie-storage) - 浏览器专用，存储到cookie
