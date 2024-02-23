@@ -38,10 +38,30 @@
         vertical-align: text-top;
       }
 
-      @media screen and (max-width: 1000px) {
-        .markdown-section {
-          max-width: 93%;
-        }
+      .sidebar {
+        width: 260px;
+      }
+
+      section.content {
+        left: 260px;
+      }
+
+      .markdown-section {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .markdown-section tr {
+        background: transparent !important;
+      }
+
+      .markdown-section table pre {
+        padding: 0 0.5em;
+      }
+
+      .markdown-section table pre > code {
+        padding: 1.5em 0;
       }
     </style>
   </head>
