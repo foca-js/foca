@@ -8,7 +8,7 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   platform: 'node',
   tsconfig: './tsconfig.json',
-  target: 'es5',
+  target: 'es2015',
   legacyOutput: true,
   shims: false,
   dts: true,
