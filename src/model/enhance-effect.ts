@@ -56,10 +56,8 @@ interface EffectFunc<P extends any[] = any[], R = Promise<any>> {
   (...args: P): R;
 }
 
-export type EnhancedEffect<
-  P extends any[] = any[],
-  R = Promise<any>,
-> = R extends Promise<any> ? AsyncEffect<P, R> : EffectFunc<P, R>;
+export type EnhancedEffect<P extends any[] = any[], R = Promise<any>> =
+  R extends Promise<any> ? AsyncEffect<P, R> : EffectFunc<P, R>;
 
 type NonReadonly<T extends object> = {
   -readonly [K in keyof T]: T[K];

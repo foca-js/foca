@@ -154,8 +154,8 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
           (typeof window === OBJECT
             ? window
             : typeof global === OBJECT
-            ? global
-            : {})['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
+              ? global
+              : {})['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
         );
       }
 
