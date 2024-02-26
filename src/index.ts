@@ -14,7 +14,6 @@ export { connect } from './redux/connect';
 export { compose } from 'redux';
 export { modelStore as store } from './store/model-store';
 export { FocaProvider } from './redux/foca-provider';
-export { engines } from './engines';
 export { memoryStorage } from './engines/memory';
 
 // 可能用到的TS类型

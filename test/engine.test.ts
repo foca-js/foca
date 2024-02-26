@@ -1,44 +1,34 @@
 import 'fake-indexeddb/auto';
 import localforage from 'localforage';
 import ReactNativeStorage from '@react-native-async-storage/async-storage';
-import { engines } from '../src';
 import { toPromise } from '../src/utils/to-promise';
+import { memoryStorage } from '../src';
 
 const storages = [
-  [engines.localStorage, localStorage, 'local'],
-  [engines.sessionStorage, sessionStorage, 'session'],
-  [engines.memoryStorage, undefined, 'memory'],
+  [localStorage, 'local'],
+  [sessionStorage, 'session'],
+  [memoryStorage, 'memory'],
   [
     localforage.createInstance({ driver: localforage.LOCALSTORAGE }),
-    undefined,
     'localforage local',
   ],
   [
     localforage.createInstance({ driver: localforage.INDEXEDDB }),
-    undefined,
     'localforage indexedDb',
   ],
-  [ReactNativeStorage, undefined, 'react-native'],
+  [ReactNativeStorage, 'react-native'],
 ] as const;
 
-describe.each(storages)('storage io', (storage, syncOrigin, name) => {
+describe.each(storages)('storage io', (storage, name) => {
   beforeEach(() => storage.clear());
   afterEach(() => storage.clear());
 
   test(`[${name}] Get and set data`, async () => {
-    if (syncOrigin) {
-      expect(syncOrigin.getItem('test1')).toBeNull();
-    }
-
     await expect(toPromise(() => storage.getItem('test1'))).resolves.toBeNull();
     await storage.setItem('test1', 'yes');
     await expect(toPromise(() => storage.getItem('test1'))).resolves.toBe(
       'yes',
     );
-
-    if (syncOrigin) {
-      expect(syncOrigin.getItem('test1')).toBe('yes');
-    }
   });
 
   test(`[${name}] Update data`, async () => {
@@ -48,10 +38,6 @@ describe.each(storages)('storage io', (storage, syncOrigin, name) => {
     );
     await storage.setItem('test2', 'no');
     await expect(toPromise(() => storage.getItem('test2'))).resolves.toBe('no');
-
-    if (syncOrigin) {
-      expect(syncOrigin.getItem('test2')).toBe('no');
-    }
   });
 
   test(`[${name}] Delete data`, async () => {
@@ -61,10 +47,6 @@ describe.each(storages)('storage io', (storage, syncOrigin, name) => {
     );
     await storage.removeItem('test3');
     await expect(toPromise(() => storage.getItem('test3'))).resolves.toBeNull();
-
-    if (syncOrigin) {
-      expect(syncOrigin.getItem('test3')).toBeNull();
-    }
   });
 
   test(`[${name}] Clear all data`, async () => {
@@ -75,10 +57,5 @@ describe.each(storages)('storage io', (storage, syncOrigin, name) => {
 
     await expect(toPromise(() => storage.getItem('test4'))).resolves.toBeNull();
     await expect(toPromise(() => storage.getItem('test5'))).resolves.toBeNull();
-
-    if (syncOrigin) {
-      expect(syncOrigin.getItem('test4')).toBeNull();
-      expect(syncOrigin.getItem('test5')).toBeNull();
-    }
   });
 });
