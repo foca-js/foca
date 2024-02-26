@@ -1,4 +1,4 @@
-import type { AnyAction } from 'redux';
+import type { UnknownAction } from 'redux';
 import type { EnhancedEffect } from './enhance-effect';
 import type { PersistMergeMode } from '../persist/persist-item';
 
@@ -124,10 +124,10 @@ export interface EffectCtx<State extends object>
    * ```
    */
   readonly setState: State extends any[]
-    ? (state: State | ((state: State) => State | void)) => AnyAction
+    ? (state: State | ((state: State) => State | void)) => UnknownAction
     : <K extends keyof State>(
         state: SetStateCallback<State, K> | (Pick<State, K> | State),
-      ) => AnyAction;
+      ) => UnknownAction;
 }
 
 export interface SetStateCallback<State extends object, K extends keyof State> {
@@ -147,7 +147,7 @@ type ModelActionItem<
   Action extends object,
   K extends keyof Action,
 > = Action[K] extends (state: State, ...args: infer P) => State | void
-  ? (...args: P) => AnyAction
+  ? (...args: P) => UnknownAction
   : never;
 
 type ModelAction<State extends object, Action extends object> = {

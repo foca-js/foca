@@ -1,11 +1,11 @@
-import type { AnyAction, Middleware } from 'redux';
+import type { Middleware } from 'redux';
 import type { LoadingStore, LoadingStoreState } from '../store/loading-store';
 import { isLoadingAction } from '../actions/loading';
 
 export const loadingInterceptor = (
   loadingStore: LoadingStore,
 ): Middleware<{}, LoadingStoreState> => {
-  return () => (dispatch) => (action: AnyAction) => {
+  return () => (dispatch) => (action) => {
     if (!isLoadingAction(action)) {
       return dispatch(action);
     }

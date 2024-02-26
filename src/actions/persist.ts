@@ -1,8 +1,8 @@
-import type { AnyAction } from 'redux';
+import type { UnknownAction } from 'redux';
 
 const TYPE_PERSIST_HYDRATE = '@@persist/hydrate';
 
-export interface PersistHydrateAction {
+export interface PersistHydrateAction extends UnknownAction {
   type: typeof TYPE_PERSIST_HYDRATE;
   payload: Record<string, object>;
 }
@@ -17,7 +17,7 @@ export const actionHydrate = (
 };
 
 export const isHydrateAction = (
-  action: AnyAction,
+  action: UnknownAction,
 ): action is PersistHydrateAction => {
   return (action as PersistHydrateAction).type === TYPE_PERSIST_HYDRATE;
 };

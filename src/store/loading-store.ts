@@ -1,5 +1,5 @@
 import {
-  AnyAction,
+  UnknownAction,
   applyMiddleware,
   legacy_createStore as createStore,
   Middleware,
@@ -104,7 +104,7 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
 
   reducer(
     state: LoadingStoreState | undefined,
-    action: AnyAction,
+    action: UnknownAction,
   ): LoadingStoreState {
     if (state === void 0) {
       state = {};

@@ -1,5 +1,5 @@
 import { expectType } from 'ts-expect';
-import { AnyAction, defineModel } from '../../src';
+import { UnknownAction, defineModel } from '../../src';
 
 // @ts-expect-error
 defineModel('no-initial-state', {});
@@ -264,8 +264,8 @@ defineModel('private-and-context', {
 
       expectType<string>(this._fullname());
       expectType<() => Promise<void>>(this._method2);
-      expectType<() => AnyAction>(this._action1);
-      expectType<() => AnyAction>(this._action2);
+      expectType<() => UnknownAction>(this._action1);
+      expectType<() => UnknownAction>(this._action2);
     },
   },
 });

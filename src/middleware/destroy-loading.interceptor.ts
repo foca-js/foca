@@ -1,8 +1,8 @@
-import type { Middleware, AnyAction } from 'redux';
+import type { Middleware } from 'redux';
 import { isDestroyLoadingAction } from '../actions/loading';
 
 export const destroyLoadingInterceptor: Middleware =
-  (api) => (dispatch) => (action: AnyAction) => {
+  (api) => (dispatch) => (action) => {
     if (
       !isDestroyLoadingAction(action) ||
       api.getState().hasOwnProperty(action.model)

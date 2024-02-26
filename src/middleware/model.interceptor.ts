@@ -1,10 +1,10 @@
-import type { AnyAction, Middleware } from 'redux';
+import type { Middleware } from 'redux';
 import { deepEqual } from '../utils/deep-equal';
 import { isPreModelAction, PostModelAction } from '../actions/model';
 import { immer } from '../utils/immer';
 
 export const modelInterceptor: Middleware<{}, Record<string, object>> =
-  (api) => (dispatch) => (action: AnyAction) => {
+  (api) => (dispatch) => (action) => {
     if (!isPreModelAction(action)) {
       return dispatch(action);
     }
@@ -18,10 +18,10 @@ export const modelInterceptor: Middleware<{}, Record<string, object>> =
 
     if (deepEqual(prev, next)) return action;
 
-    return dispatch<PostModelAction>({
+    return dispatch({
       type: action.type,
       model: action.model,
       postModel: true,
       next: next,
-    });
+    } satisfies PostModelAction);
   };

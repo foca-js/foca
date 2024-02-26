@@ -3,7 +3,6 @@ import {
   compose,
   legacy_createStore as createStore,
   Middleware,
-  PreloadedState,
   Reducer,
   Store,
   StoreEnhancer,
@@ -24,7 +23,7 @@ type Compose =
   | ((...funcs: StoreEnhancer<any>[]) => StoreEnhancer<any>);
 
 interface CreateStoreOptions {
-  preloadedState?: PreloadedState<any>;
+  preloadedState?: Record<string, any>;
   compose?: 'redux-devtools' | Compose;
   middleware?: Middleware[];
   persist?: PersistOptions[];

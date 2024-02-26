@@ -20,11 +20,10 @@ export { memoryStorage } from './engines/memory';
 // 可能用到的TS类型
 export type {
   Action,
-  AnyAction,
+  UnknownAction,
   Dispatch,
   MiddlewareAPI,
   Middleware,
-  PreloadedState,
   StoreEnhancer,
   Unsubscribe,
 } from 'redux';
