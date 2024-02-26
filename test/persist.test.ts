@@ -501,28 +501,29 @@ describe('merge method', () => {
     models: [],
   });
 
-  test.each(['replace', 'merge', 'deep-merge'] satisfies PersistMergeMode[])(
-    'array type',
-    (mode) => {
-      test('object + array', () => {
-        expect(
-          persistItem.merge({ hello: 'world' }, [{ foo: 'bar' }, {}], mode),
-        ).toStrictEqual([{ foo: 'bar' }, {}]);
+  describe.each([
+    'replace',
+    'merge',
+    'deep-merge',
+  ] satisfies PersistMergeMode[])('array type', (mode) => {
+    test('object + array', () => {
+      expect(
+        persistItem.merge({ hello: 'world' }, [{ foo: 'bar' }, {}], mode),
+      ).toStrictEqual([{ foo: 'bar' }, {}]);
+    });
+    test('array + array', () => {
+      expect(
+        persistItem.merge([{ tick: 'tock' }], [{ foo: 'bar' }, {}], mode),
+      ).toStrictEqual([{ tick: 'tock' }]);
+    });
+    test('array + object', () => {
+      expect(
+        persistItem.merge([{ tick: 'tock' }], { hello: 'world' }, mode),
+      ).toStrictEqual({
+        hello: 'world',
       });
-      test('array + array', () => {
-        expect(
-          persistItem.merge([{ tick: 'tock' }], [{ foo: 'bar' }, {}], mode),
-        ).toStrictEqual([{ tick: 'tock' }]);
-      });
-      test('array + object', () => {
-        expect(
-          persistItem.merge([{ tick: 'tock' }], { hello: 'world' }, mode),
-        ).toStrictEqual({
-          hello: 'world',
-        });
-      });
-    },
-  );
+    });
+  });
 
   test('replace', () => {
     expect(

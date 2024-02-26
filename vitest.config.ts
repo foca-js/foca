@@ -3,15 +3,16 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    threads: true,
     coverage: {
-      provider: 'v8',
+      provider: 'istanbul',
       enabled: true,
       include: ['src/**'],
-      lines: 99,
-      functions: 99,
-      branches: 99,
-      statements: 99,
+      thresholds: {
+        lines: 99,
+        functions: 99,
+        branches: 99,
+        statements: 99,
+      },
       reporter: ['html', 'lcovonly', 'text-summary'],
     },
     environment: 'jsdom',

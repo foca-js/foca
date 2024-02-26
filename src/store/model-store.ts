@@ -81,6 +81,7 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
 
     if (firstInitialize) {
       const middleware = (options.middleware || []).concat(modelInterceptor);
+      /* istanbul ignore else -- @preserve */
       if (process.env.NODE_ENV !== 'production') {
         middleware.unshift(actionInActionInterceptor);
         middleware.push(freezeStateMiddleware);
@@ -146,7 +147,7 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
 
   protected getCompose(customCompose: CreateStoreOptions['compose']): Compose {
     if (customCompose === 'redux-devtools') {
-      /* c8 ignore start */
+      /* istanbul ignore if -- @preserve */
       if (process.env.NODE_ENV !== 'production') {
         return (
           /** @ts-expect-error */
@@ -157,7 +158,6 @@ export class ModelStore extends StoreBasic<Record<string, any>> {
             : {})['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
         );
       }
-      /* c8 ignore end */
 
       return compose;
     }

@@ -86,6 +86,7 @@ export class LoadingStore extends StoreBasic<LoadingStoreState> {
       destroyLoadingInterceptor,
     ];
 
+    /* istanbul ignore else -- @preserve */
     if (process.env.NODE_ENV !== 'production') {
       middleware.push(freezeStateMiddleware);
     }

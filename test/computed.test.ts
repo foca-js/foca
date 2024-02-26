@@ -202,6 +202,30 @@ test('ComputedValue can remove duplicated deps', () => {
   expect(computedValue.deps).toHaveLength(3);
 });
 
+test('计算属性包含子计算属性时，子计算属性被作为一个整体', () => {
+  const mockStore = {
+    getState() {
+      return {
+        [computedModel.name]: store.getState()[computedModel.name],
+      };
+    },
+  };
+
+  const computedValue = new ComputedValue(
+    mockStore,
+    computedModel.name,
+    'prop',
+    () => {
+      return computedModel.fullName() + 1;
+    },
+  );
+
+  expect(computedValue.value).toBe('ticktock1');
+  computedModel.changeFirstName('hello-');
+  expect(computedValue.isDirty()).toBeTruthy();
+  expect(computedValue.value).toBe('hello-tock1');
+});
+
 test('only execute computed function when deps changed', () => {
   const spy = vitest.fn().mockImplementation(() => {
     model.state.a;

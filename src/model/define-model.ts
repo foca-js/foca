@@ -52,6 +52,7 @@ export const defineModel = <
       ? freeze(options.initialState, true)
       : options.initialState;
 
+  /* istanbul ignore else -- @preserve  */
   if (process.env.NODE_ENV !== 'production') {
     const items = [
       { name: 'reducers', value: reducers },
@@ -76,6 +77,7 @@ export const defineModel = <
     validateUniqueMethod(1, 2);
   }
 
+  /* istanbul ignore else -- @preserve  */
   if (process.env.NODE_ENV !== 'production') {
     if (!deepEqual(parseState(stringifyState(initialState)), initialState)) {
       throw new Error(

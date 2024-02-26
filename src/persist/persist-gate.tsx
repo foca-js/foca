@@ -20,6 +20,7 @@ export const PersistGate: FC<PersistGateProps> = (props) => {
       });
   }, []);
 
+  /* istanbul ignore else -- @preserve */
   if (process.env.NODE_ENV !== 'production') {
     if (loading && isFunction(children)) {
       console.error('[PersistGate] 当前children为函数类型，loading属性无效');

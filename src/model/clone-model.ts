@@ -54,6 +54,7 @@ export const cloneModel = <
   if (options) {
     Object.assign(nextOpts, isFunction(options) ? options(nextOpts) : options);
 
+    /* istanbul ignore else -- @preserve  */
     if (process.env.NODE_ENV !== 'production') {
       (Object.keys(nextOpts) as EditableKeys[]).forEach((key) => {
         if (

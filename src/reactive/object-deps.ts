@@ -97,6 +97,7 @@ export class ObjectDeps<T = any> implements Deps {
       });
     }
 
+    /* istanbul ignore else -- @preserve */
     if (process.env.NODE_ENV !== 'production') {
       Object.freeze(nextState);
     }
