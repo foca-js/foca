@@ -355,7 +355,7 @@ foca.init({
   persist: [
     {
       key: 'root',
-      storage: localStorage,
+      engine: localStorage,
       models: [counterModel],
     },
   ],
