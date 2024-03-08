@@ -28,7 +28,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-        ts-version: [5.0.x, 5.1.x, 5.2.x, 5.3.x]
+        ts-version: [5.0.x, 5.1.x, 5.2.x, 5.3.x, 5.4.x]
         react-version: [18.x]
     runs-on: ubuntu-latest
     steps:
