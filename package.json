@@ -52,11 +52,15 @@
   },
   "packageManager": "pnpm@8.4.0",
   "peerDependencies": {
-    "react": "^18",
+    "react": "^18.0",
+    "react-native": ">=0.69",
     "typescript": "^5"
   },
   "peerDependenciesMeta": {
     "typescript": {
+      "optional": true
+    },
+    "react-native": {
       "optional": true
     }
   },
