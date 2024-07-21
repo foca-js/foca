@@ -59,18 +59,15 @@
 
 一个前置下划线(`_`)就能让方法变成私有的，外部使用时 TS 不会提示私有方法和私有变量，简单好记又省心。
 
-#### 使用ES5语法，兼容性一流
-
-npm包已经转译成ES5的语法和特性，适用于各种新旧浏览器甚至IE11（符合中国国情）。而且API方面我们只用了 `Promise` 和 `Object.assign` 这两个ES6的特性。
-
 # 生态
 
 #### 网络请求
 
-| 仓库                                                | 版本                                                                                        | 描述                           |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------ |
-| [axios](https://github.com/axios/axios)             | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)           | 当下最流行的请求库             |
-| [foca-axios](https://github.com/foca-js/foca-axios) | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios) | axios 适配器，节流、缓存、重试 |
+| 仓库                                                    | 版本                                                                                            | 描述                          |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------- |
+| [axios](https://github.com/axios/axios)                 | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)               | 当下最流行的请求库            |
+| [foca-axios](https://github.com/foca-js/foca-axios)     | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)     | axios++ 支持 节流、缓存、重试 |
+| [foca-openapi](https://github.com/foca-js/foca-openapi) | [![npm](https://img.shields.io/npm/v/foca-openapi)](https://www.npmjs.com/package/foca-openapi) | 使用openapi文档生成请求服务   |
 
 #### 持久化存储引擎
 

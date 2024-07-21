@@ -26,7 +26,6 @@
 - 可定制的多引擎数据持久化
 - 支持局部模型，用完即扔
 - 支持私有方法
-- 使用ES5语法，兼容性一流
 
 # 使用环境
 
@@ -223,10 +222,11 @@ Taro 案例仓库：https://github.com/foca-js/foca-demo-taro
 
 #### 网络请求
 
-| 仓库                                                | 版本                                                                                        | 描述                           |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------ |
-| [axios](https://github.com/axios/axios)             | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)           | 当下最流行的请求库             |
-| [foca-axios](https://github.com/foca-js/foca-axios) | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios) | axios 适配器，节流、缓存、重试 |
+| 仓库                                                    | 版本                                                                                            | 描述                          |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------- |
+| [axios](https://github.com/axios/axios)                 | [![npm](https://img.shields.io/npm/v/axios)](https://www.npmjs.com/package/axios)               | 当下最流行的请求库            |
+| [foca-axios](https://github.com/foca-js/foca-axios)     | [![npm](https://img.shields.io/npm/v/foca-axios)](https://www.npmjs.com/package/foca-axios)     | axios++ 支持 节流、缓存、重试 |
+| [foca-openapi](https://github.com/foca-js/foca-openapi) | [![npm](https://img.shields.io/npm/v/foca-openapi)](https://www.npmjs.com/package/foca-openapi) | 使用openapi文档生成请求服务   |
 
 #### 持久化存储引擎
 
