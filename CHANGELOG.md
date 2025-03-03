@@ -1,3 +1,7 @@
+## [4.0.1](https://github.com/foca-js/foca/compare/v4.0.0...v4.0.1)&nbsp;&nbsp;(2025-03-03)
+
+- 发布时未生成dist目录
+
 ## [4.0.0](https://github.com/foca-js/foca/compare/v3.2.0...v4.0.0)&nbsp;&nbsp;(2025-03-03)
 
 - 升级npm包的目标语法 ES5 -> ES2020

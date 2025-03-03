@@ -15,8 +15,5 @@ jobs:
           cache: 'pnpm'
           node-version-file: 'package.json'
       - run: pnpm install
-      - uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: public
-          tag: latest
+      - run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+      - run: npm publish
