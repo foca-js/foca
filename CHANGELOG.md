@@ -1,3 +1,11 @@
+## [4.0.0](https://github.com/foca-js/foca/compare/v3.2.0...v4.0.0)&nbsp;&nbsp;(2025-03-03)
+
+- 升级npm包的目标语法 ES5 -> ES2020
+- 删除废弃的导出变量 `engines.localStorage` 和 `engines.sessionStorage`
+- react-native 的最低版本要求为 0.69
+- 底层包 redux 升级 4 -> 5 （目标语法为esnext）
+- 底层包 react-redux 升级 8 -> 9 （目标语法为esnext）
+
 ## [3.2.0](https://github.com/foca-js/foca/compare/v3.1.1...v3.2.0)&nbsp;&nbsp;(2023-10-20)
 
 - 增加局部模型钩子 `useIsolate`
