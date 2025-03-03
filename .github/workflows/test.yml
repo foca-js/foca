@@ -14,9 +14,9 @@ jobs:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: 'package.json'
           cache: 'pnpm'
@@ -27,38 +27,38 @@ jobs:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
-        ts-version: [5.0.x, 5.1.x, 5.2.x, 5.3.x, 5.4.x]
-        react-version: [18.x]
+        ts-version:
+          [5.0.x, 5.1.x, 5.2.x, 5.3.x, 5.4.x, 5.5.x, 5.6.x, 5.7.x, 5.8.x]
+        react-version: [18.x, 19.x]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - name: Use Node.js ${{ matrix.node-version }} & Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - name: Use Typescript ${{ matrix.ts-version }} & React ${{ matrix.react-version }}
+        uses: actions/setup-node@v4
         with:
           cache: 'pnpm'
-          node-version: ${{ matrix.node-version }}
+          node-version-file: 'package.json'
       - run: |
           pnpm install
           pnpm add -D \
             typescript@${{ matrix.ts-version }} \
-            react@${{ matrix.react-version }} \
-            react-dom@${{ matrix.react-version }}
+            @types/react@${{ matrix.react-version }} \
+            @types/react-dom@${{ matrix.react-version }}
       - run: npx --no-install tsc --noEmit
 
   test:
     if: "!contains(toJson(github.event.commits), '[skip ci]')"
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
-        react-version: [18.x]
+        node-version: [18.x, 20.x, 22.x]
+        react-version: [18.x, 19.x]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }} & React ${{ matrix.react-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: 'pnpm'
           node-version: ${{ matrix.node-version }}
@@ -70,8 +70,8 @@ jobs:
             react-test-renderer@${{ matrix.react-version }}
       - run: pnpm run test
       - name: Upload Coverage
-        uses: actions/upload-artifact@v3
-        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/master' && strategy.job-index == 0
         with:
           name: coverage
           path: coverage
@@ -83,10 +83,10 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download Coverage
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage
           path: coverage
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v5

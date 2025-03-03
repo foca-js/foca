@@ -1,15 +1,7 @@
 import { act, render } from '@testing-library/react';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, version } from 'react';
 import sleep from 'sleep-promise';
 import { defineModel, FocaProvider, store, useModel } from '../src';
-
-beforeEach(() => {
-  store.init();
-});
-
-afterEach(() => {
-  store.unmount();
-});
 
 const model = defineModel('aia' + Math.random(), {
   initialState: {
@@ -20,7 +12,7 @@ const model = defineModel('aia' + Math.random(), {
     plus(state) {
       state.count += 1;
     },
-    open(state) {
+    toggle(state) {
       state.open = !state.open;
     },
   },
@@ -29,19 +21,20 @@ const model = defineModel('aia' + Math.random(), {
 const OtherComponent: FC = () => {
   useEffect(() => {
     model.plus();
-  }, [model]);
-
+  }, []);
   return null;
 };
 
 const App: FC = () => {
   const { open } = useModel(model);
-
   return <>{open && <OtherComponent />}</>;
 };
 
-[true, false].forEach((legacy) => {
-  test(`[legacy: ${legacy}] forceUpdate should not cause action in action error`, async () => {
+test.runIf(version.split('.')[0] === '18').each([true, false])(
+  `[legacy: %s] forceUpdate should not cause action in action error`,
+  async (legacy) => {
+    store.init();
+
     render(
       <FocaProvider>
         <App />
@@ -62,12 +55,15 @@ const App: FC = () => {
           .map((_, i) =>
             act(async () => {
               await sleep(i * 2);
-              model.open();
+              model.toggle();
             }),
           ),
       ),
     ).resolves.toStrictEqual(Array(3).fill(void 0));
 
+    // 等待useEffect
+    await sleep(1000);
+    store.unmount();
     spy.mockRestore();
-  });
-});
+  },
+);

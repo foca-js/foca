@@ -41,7 +41,7 @@ export const useIsolate = <
       ? useProdName(globalModel.name, initialCount)
       : useDevName(globalModel, initialCount, new Error());
 
-  const localModelRef = useRef<typeof globalModel>();
+  const localModelRef = useRef<typeof globalModel | undefined>(undefined);
   useEffect(() => {
     localModelRef.current = isolateModel;
   });

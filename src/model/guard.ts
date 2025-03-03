@@ -5,7 +5,7 @@ export const guard = (modelName: string) => {
 
   if (process.env.NODE_ENV !== 'production') {
     setTimeout(() => {
-      --counter[modelName];
+      --counter[modelName]!;
     });
   }
 

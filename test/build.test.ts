@@ -1,4 +1,4 @@
-import { rmSync } from 'fs';
+import { writeFileSync } from 'fs';
 import { execSync, exec } from 'child_process';
 
 function testFile(filename: string, expectCode: number) {
@@ -23,7 +23,7 @@ test('ESM with type=module', async () => {
 });
 
 test('ESM with type=commonjs', async () => {
-  rmSync('dist/esm/package.json');
+  writeFileSync('dist/esm/package.json', '{"type": "commonjs"}');
   await testFile('dist/esm/index.js', 1);
 });
 

@@ -27,8 +27,8 @@ export const actionInActionInterceptor: Middleware = () => {
       dispatching = true;
       prevAction = action;
       /**
-       * react-redux@8 主要服务于react18
-       * 在react17中有可能出现redux遍历subscriber时立即触发dispatch，然后这边来不及设置dispatching=false
+       * react-redux@8+ 主要服务于react18
+       * 在react17中，有可能出现redux遍历subscriber时立即触发dispatch，然后这边来不及设置dispatching=false
        * 在react18中，如果使用`ReactDOM.render()`旧入口，则依旧会有这个问题。
        * @link https://github.com/foca-js/foca/issues/20
        */
